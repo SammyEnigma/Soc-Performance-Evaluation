@@ -1,6 +1,9 @@
-#include "globalvars.h"
+#include "runtimeinfo.h"
 
-globalvars::globalvars()
+RuntimeInfo* rt;
+
+void initGlobal()
 {
+    rt = new RuntimeInfo();
 
 }

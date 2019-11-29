@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="cursor">resources/icons/cursor.png</file>
+    </qresource>
+    <qresource prefix="/thumbs"/>
+</RCC>

@@ -1,11 +1,10 @@
 #ifndef GLOBALVARS_H
 #define GLOBALVARS_H
 
+#include "runtimeinfo.h"
 
-class globalvars
-{
-public:
-    globalvars();
-};
+extern RuntimeInfo* rt;
+
+extern void initGlobal();
 
 #endif // GLOBALVARS_H

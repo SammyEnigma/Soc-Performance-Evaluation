@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>803</width>
+    <height>626</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,4">
+    <item>
+     <widget class="QListWidget" name="listWidget">
+      <property name="dragDropOverwriteMode">
+       <bool>false</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::DragDrop</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollCenterWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>621</width>
+         <height>561</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>803</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionOpen_Recent"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="actionRename"/>
+    <addaction name="actionClose"/>
+    <addaction name="separator"/>
+    <addaction name="actionPreference"/>
+    <addaction name="actionStyle_Configurator"/>
+    <addaction name="actionShortcut_Mapper"/>
+    <addaction name="separator"/>
+    <addaction name="actionPrint"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>编辑</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+    <addaction name="actionDelete"/>
+    <addaction name="actionSelect_All"/>
+    <addaction name="actionBegin_End_Select"/>
+    <addaction name="separator"/>
+    <addaction name="actionSet_Read_Only"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>插入</string>
+    </property>
+    <widget class="QMenu" name="menuShapes">
+     <property name="title">
+      <string>Shapes</string>
+     </property>
+     <addaction name="actionShape_Base"/>
+    </widget>
+    <addaction name="menuShapes"/>
+    <addaction name="actionText"/>
+    <addaction name="actionImage"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>设计</string>
+    </property>
+    <widget class="QMenu" name="menuAlign">
+     <property name="title">
+      <string>Align</string>
+     </property>
+     <addaction name="actionAlign_Top"/>
+     <addaction name="actionAlign_Left"/>
+     <addaction name="actionAlign_Right"/>
+     <addaction name="actionAlign_Bottom"/>
+     <addaction name="separator"/>
+     <addaction name="actionAlign_Center"/>
+     <addaction name="actionAlign_HCenter"/>
+     <addaction name="actionAlign_VCenter"/>
+    </widget>
+    <addaction name="actionAuto_Resize"/>
+    <addaction name="actionAuto_Connect"/>
+    <addaction name="actionAuto_Layout"/>
+    <addaction name="separator"/>
+    <addaction name="menuAlign"/>
+   </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>数据</string>
+    </property>
+    <addaction name="actionFind"/>
+    <addaction name="actionFind_Next"/>
+    <addaction name="actionFind_Previous"/>
+    <addaction name="actionReplace"/>
+    <addaction name="separator"/>
+    <addaction name="actionMark"/>
+    <addaction name="actionMark_All"/>
+    <addaction name="actionUnmark_All"/>
+    <addaction name="actionJump_Up"/>
+    <addaction name="actionJump_Down"/>
+   </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>流程</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_7">
+    <property name="title">
+     <string>调试</string>
+    </property>
+    <addaction name="actionRun"/>
+    <addaction name="actionDebug"/>
+   </widget>
+   <widget class="QMenu" name="menu_8">
+    <property name="title">
+     <string>视图</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_9">
+    <property name="title">
+     <string>开发工具</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_10">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_5"/>
+   <addaction name="menu_4"/>
+   <addaction name="menu_6"/>
+   <addaction name="menu_7"/>
+   <addaction name="menu_8"/>
+   <addaction name="menu_9"/>
+   <addaction name="menu_10"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionOpen_Recent">
+   <property name="text">
+    <string>Open Recent</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="text">
+    <string>Save As</string>
+   </property>
+  </action>
+  <action name="actionRename">
+   <property name="text">
+    <string>Rename</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="text">
+    <string>Print</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="text">
+    <string>Cut</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionSelect_All">
+   <property name="text">
+    <string>Select All</string>
+   </property>
+  </action>
+  <action name="actionBegin_End_Select">
+   <property name="text">
+    <string>Begin/End Select</string>
+   </property>
+  </action>
+  <action name="actionSet_Read_Only">
+   <property name="text">
+    <string>Set Read-Only</string>
+   </property>
+  </action>
+  <action name="actionFind">
+   <property name="text">
+    <string>Find</string>
+   </property>
+  </action>
+  <action name="actionFind_Next">
+   <property name="text">
+    <string>Find Next</string>
+   </property>
+  </action>
+  <action name="actionFind_Previous">
+   <property name="text">
+    <string>Find Previous</string>
+   </property>
+  </action>
+  <action name="actionReplace">
+   <property name="text">
+    <string>Replace</string>
+   </property>
+  </action>
+  <action name="actionPreference">
+   <property name="text">
+    <string>Preference</string>
+   </property>
+  </action>
+  <action name="actionStyle_Configurator">
+   <property name="text">
+    <string>Style Configurator</string>
+   </property>
+  </action>
+  <action name="actionShortcut_Mapper">
+   <property name="text">
+    <string>Shortcut Mapper</string>
+   </property>
+  </action>
+  <action name="actionMark">
+   <property name="text">
+    <string>Mark</string>
+   </property>
+  </action>
+  <action name="actionMark_All">
+   <property name="text">
+    <string>Mark All</string>
+   </property>
+  </action>
+  <action name="actionUnmark_All">
+   <property name="text">
+    <string>Unmark All</string>
+   </property>
+  </action>
+  <action name="actionJump_Up">
+   <property name="text">
+    <string>Jump Up</string>
+   </property>
+  </action>
+  <action name="actionJump_Down">
+   <property name="text">
+    <string>Jump Down</string>
+   </property>
+  </action>
+  <action name="actionAuto_Resize">
+   <property name="text">
+    <string>Auto Resize</string>
+   </property>
+  </action>
+  <action name="actionAlign_Top">
+   <property name="text">
+    <string>Align Top</string>
+   </property>
+  </action>
+  <action name="actionAlign_Left">
+   <property name="text">
+    <string>Align Left</string>
+   </property>
+  </action>
+  <action name="actionAlign_Right">
+   <property name="text">
+    <string>Align Right</string>
+   </property>
+  </action>
+  <action name="actionAlign_Bottom">
+   <property name="text">
+    <string>Align Bottom</string>
+   </property>
+  </action>
+  <action name="actionAlign_Center">
+   <property name="text">
+    <string>Align Center</string>
+   </property>
+  </action>
+  <action name="actionAlign_HCenter">
+   <property name="text">
+    <string>Align HCenter</string>
+   </property>
+  </action>
+  <action name="actionAlign_VCenter">
+   <property name="text">
+    <string>Align VCenter</string>
+   </property>
+  </action>
+  <action name="actionShape_Base">
+   <property name="text">
+    <string>Shape Base</string>
+   </property>
+  </action>
+  <action name="actionText">
+   <property name="text">
+    <string>Text</string>
+   </property>
+  </action>
+  <action name="actionImage">
+   <property name="text">
+    <string>Image</string>
+   </property>
+  </action>
+  <action name="actionAuto_Connect">
+   <property name="text">
+    <string>Auto Connect</string>
+   </property>
+  </action>
+  <action name="actionAuto_Layout">
+   <property name="text">
+    <string>Auto Layout</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="text">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionDebug">
+   <property name="text">
+    <string>Debug</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
