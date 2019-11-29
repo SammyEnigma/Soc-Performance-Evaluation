@@ -11,11 +11,13 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    log("初始化MainWindow");
     ui->setupUi(this);
 
     initSystem();
     initView();
     initData();
+    log("初始化MainWindow结束");
 }
 
 MainWindow::~MainWindow()
@@ -65,20 +67,29 @@ void MainWindow::loadShapes()
 }
 
 /**
- * 从一个文件夹中读取自定义的形状
- * 
+ * 从一个目录中读取自定义的形状
+ * 包括缩略图、大小、端口、自定义数据等
  */
 void MainWindow::loadOneShape(const QString name)
 {
-    qDebug() << "读取形状：" << name;
+    log("读取形状："+name);
     QString path = rt->SHAPE_PATH + name + "/";
     new QListWidgetItem(QIcon(path + "thumb.png"), name, ui->listWidget);
+
+    log("加载形状信息："+name);
+    ShapeBase* shape = new ShapeBase(name, QPixmap(path+"thumb.png"), this);
+    shape->hide(); // 隐藏起来
+    shape_units.append(shape);
 }
 
-void MainWindow::on_listWidget_itemActivated(QListWidgetItem *item)
+/**
+ * 左边选择的形状改变
+ */
+void MainWindow::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     // 列表项的名字
-    QString name = item->text();
+    QString name = current->text();
+    log("选中项改变"+name);
 
     // 如果选中的是指针
     if (name == MOVING_CURSOR_NAME)
@@ -93,6 +104,7 @@ void MainWindow::on_listWidget_itemActivated(QListWidgetItem *item)
             if (shape->getName() == name)
             {
                 rt->current_choosed_shape = shape;
+                log("设置形状："+name);
                 break;
             }
         }

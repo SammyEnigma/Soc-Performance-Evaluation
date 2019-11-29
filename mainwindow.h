@@ -32,8 +32,7 @@ public:
     ~MainWindow();
 
 private slots:
-
-    void on_listWidget_itemActivated(QListWidgetItem *item);
+    void on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
     void initSystem(); // 初始化系统（比如目录结构）

@@ -20,16 +20,22 @@ INCLUDEPATH += \
     global \
     utils \
     shapes/base \
+    graphic \
 
 SOURCES += \
     global/globalvars.cpp \
+    graphic/graphicarea.cpp \
     main.cpp \
     mainwindow.cpp \
     shapes/base/portbase.cpp \
-    shapes/base/shapebase.cpp
+    shapes/base/shapebase.cpp \
+    shapes/base/shapelistwidget.cpp
 
 HEADERS += \
+    graphic/graphicarea.h \
     shapes/base/portbase.h \
+    shapes/base/shapelistwidget.h \
+    utils/bytearrayutil.h \
     utils/fileutil.h \
     global/globalvars.h \
     global/runtimeinfo.h \

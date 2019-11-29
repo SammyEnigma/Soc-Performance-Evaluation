@@ -21,9 +21,11 @@ class ShapeBase : public QWidget
 public:
     ShapeBase(QWidget *parent = nullptr);
     ShapeBase(QString text, QWidget *parent = nullptr);
+    ShapeBase(QString text, QPixmap pixmap, QWidget *parent = nullptr);
     ~ShapeBase() override;
 
     QString getName();
+    QPixmap getPixmap();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

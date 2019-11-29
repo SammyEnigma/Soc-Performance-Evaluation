@@ -17,6 +17,11 @@ ShapeBase::ShapeBase(QString text, QWidget *parent) : ShapeBase(parent)
     _name = _text = text;
 }
 
+ShapeBase::ShapeBase(QString text, QPixmap pixmap, QWidget *parent) : ShapeBase(text, parent)
+{
+    _pixmap = pixmap;
+}
+
 ShapeBase::~ShapeBase()
 {
 }
@@ -24,6 +29,11 @@ ShapeBase::~ShapeBase()
 QString ShapeBase::getName()
 {
     return _name;
+}
+
+QPixmap ShapeBase::getPixmap()
+{
+    return _pixmap;
 }
 
 void ShapeBase::paintEvent(QPaintEvent *event)

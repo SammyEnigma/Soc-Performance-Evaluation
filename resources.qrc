@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/icons">
         <file alias="cursor">resources/icons/cursor.png</file>
+        <file alias="locate">resources/icons/locate.png</file>
     </qresource>
     <qresource prefix="/thumbs"/>
 </RCC>
