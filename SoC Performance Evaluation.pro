@@ -24,6 +24,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     global/globalvars.cpp \
+    global/usettings.cpp \
     graphic/graphicarea.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -32,6 +33,8 @@ SOURCES += \
     shapes/base/shapelistwidget.cpp
 
 HEADERS += \
+    global/settings.h \
+    global/usettings.h \
     graphic/graphicarea.h \
     shapes/base/portbase.h \
     shapes/base/shapelistwidget.h \

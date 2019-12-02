@@ -25,6 +25,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/**
+ * 保存绘制的形状到文件，以便下次读取
+ * @param file_path 文件路径
+ */
 void MainWindow::saveToFile(QString file_path)
 {
     log("保存至文件：" + file_path);
@@ -43,9 +47,13 @@ void MainWindow::saveToFile(QString file_path)
     FileUtil::writeTextFile(file_path, full_string);
 }
 
+/**
+ * 从XML文件中读取形状实例，并且在绘图区域中绘制
+ * @param file_path 文件路径
+ */
 void MainWindow::readFromFile(QString file_path)
 {
-    log("从完美读取：" + file_path);
+    log("从文件读取：" + file_path);
     QString full_string = FileUtil::readTextFileIfExist(file_path);
     if (full_string.trimmed().isEmpty())
         return ;
@@ -61,7 +69,6 @@ void MainWindow::readFromFile(QString file_path)
 
         // 创建形状实例
         ShapeBase* type = ui->listWidget->getShapeByName(name);
-
         ShapeBase* shape = ui->scrollAreaWidgetContents_2->insertShapeByRect(type, QRect(left, top, width, height));
         shape->setText(text);
     }
@@ -82,9 +89,13 @@ void MainWindow::initSystem()
  */
 void MainWindow::initView()
 {
-
+    // 这个在UI设计师中初始化，不需要在重新设置了
 }
 
+/**
+ * 初始化数据
+ * （自动读取上次打开的文件）
+ */
 void MainWindow::initData()
 {
     graphic_file_path = rt->DATA_PATH + "graphic.xml";

@@ -1,16 +1,18 @@
-#include "runtimeinfo.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDateTime>
+#include "runtimeinfo.h"
+#include "usettings.h"
 #include "fileutil.h"
 
 bool DEBUG_MODE = true;
 RuntimeInfo* rt;
+USettings* us;
 
 void initGlobal()
 {
     rt = new RuntimeInfo();
-
+    us = new USettings(rt->DATA_PATH+"settings.ini");
 }
 
 QString log(QVariant str)
