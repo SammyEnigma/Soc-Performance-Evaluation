@@ -43,6 +43,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    QRect getValidRect(QRect rect); // 负数矩形变成有效的正数矩形
 
 signals:
 
@@ -53,6 +54,7 @@ protected:
 
     QPoint _press_pos;  // 鼠标左键按下的坐标
     QRect _select_rect; // 鼠标左键拖拽的形状
+    ShapeBase* _drag_prev_shape; // 拖拽生成形状的预览形状，press生成，release时删掉
 };
 
 #endif // GRAPHICAREA_H
