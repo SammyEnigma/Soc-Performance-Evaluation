@@ -38,12 +38,12 @@ ShapeBase* ShapeBase::newInstanceBySelf(QWidget* parent)
     return shape;
 }
 
-QString ShapeBase::getName()
+const QString ShapeBase::getName()
 {
     return _name;
 }
 
-QPixmap ShapeBase::getPixmap()
+const QPixmap ShapeBase::getPixmap()
 {
     return _pixmap;
 }
@@ -54,7 +54,7 @@ QPixmap ShapeBase::getPixmap()
  * 高度取所有数据累加结果（因为是竖着排列的）
  * 坐标是根据鼠标摆放的位置来的
  */
-QRect ShapeBase::suitableRect(QPoint point)
+QRect ShapeBase::getSuitableRect(QPoint point)
 {
     // 自适应大小
     int width = 0, height = 0;
@@ -157,6 +157,34 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
     }
 
     return QWidget::resizeEvent(event);
+}
+
+void ShapeBase::mousePressEvent(QMouseEvent *event)
+{
+    // 按下聚焦
+    if (event->button() == Qt::LeftButton)
+    {
+
+    }
+
+    return QWidget::mousePressEvent(event);
+}
+
+void ShapeBase::mouseMoveEvent(QMouseEvent *event)
+{
+    // 拖拽移动
+    if (event->buttons() & Qt::LeftButton)
+    {
+
+    }
+
+    return QWidget::mouseMoveEvent(event);
+}
+
+void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
+{
+
+    return QWidget::mouseReleaseEvent(event);
 }
 
 /**

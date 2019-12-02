@@ -25,20 +25,34 @@ class GraphicArea : public QWidget
 public:
     GraphicArea(QWidget *parent = nullptr);
 
-    void insertShapeByType(ShapeBase *type, QPoint point = QPoint(-1, -1));
+    // 全局操作
+    void insertShapeByType(ShapeBase *type, QPoint point = QPoint(-1, -1)); // 根据种类自动生成形状
+    void insertShapeByRect(ShapeBase *type, QRect rect);
+
+    // 操作
+    void select(ShapeBase* shape, bool opposite = true); // 选中一个形状，或者取消选中
+    void select(QList<ShapeBase*> shapes); // 选中多个形状
+    void unselect(ShapeBase* shape = nullptr); // 取消选中一个形状，或者全不选
 
 protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
-    
+    void paintEvent(QPaintEvent *event) override;
+
 private:
 
 signals:
 
 public slots:
-	
-private:
-	QList<ShapeBase*> shape_lists; // 添加的形状对象
+
+protected:
+    QList<ShapeBase *> shape_lists; // 添加的形状对象
+
+    QPoint _press_pos;  // 鼠标左键按下的坐标
+    QRect _select_rect; // 鼠标左键拖拽的形状
 };
 
 #endif // GRAPHICAREA_H

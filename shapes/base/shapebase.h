@@ -21,20 +21,24 @@ class ShapeBase : public QWidget
 {
     Q_OBJECT
 public:
+    // 构造
     ShapeBase(QWidget *parent = nullptr);
     ShapeBase(QString text, QWidget *parent = nullptr);
     ShapeBase(QString text, QPixmap pixmap, QWidget *parent = nullptr);
     ~ShapeBase() override;
-
     virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr);
+    virtual QRect getSuitableRect(QPoint point); // 从列表拖到绘图区域时，自适应大小和坐标
 
-    QString getName();
-    QPixmap getPixmap();
-    virtual QRect suitableRect(QPoint point); // 从列表拖到绘图区域时，自适应大小和坐标
+    // 属性
+    const QString getName();
+    const QPixmap getPixmap();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
     virtual QPainterPath getShapePainterPath();                  // 获取绘图区域（基类）
     virtual void initDrawArea();                                 // 设置绘制区域大小
@@ -51,6 +55,10 @@ private:
     QString _text;      // 前景文字
     QPixmap _pixmap;    // 前景图标
     bool _pixmap_scale; // 是否拉伸图标
+
+    QString file_path; // 保存的XML文件路径
+    ShapeBase* current_shape; // 当前选中的形状（多选则为最后一个选中）
+    QList<ShapeBase*> selected_shapes; // 当前选中的形状集合
 };
 
 #endif // SHAPEBASE_H
