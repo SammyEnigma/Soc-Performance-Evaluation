@@ -109,7 +109,6 @@ void ShapeListWidget::loadOneShape(const QString name)
     QString path = rt->SHAPE_PATH + name + "/";
     new QListWidgetItem(QIcon(path + "thumb.png"), name, this);
 
-    log("加载形状信息：" + name);
     ShapeBase *shape = new ShapeBase(name, QPixmap(path + "thumb.png"), this);
     shape->hide(); // 隐藏起来
     shape_units.append(shape);

@@ -15,6 +15,8 @@
 #include <QDropEvent>
 #include <QMimeData>
 #include <QDebug>
+#include <QMenu>
+#include <QAction>
 #include "globalvars.h"
 #include "bytearrayutil.h"
 #include "shapebase.h"
@@ -59,9 +61,12 @@ signals:
     void signalEnsurePosVisible(int x, int y);
 
 public slots:
+    void slotMenuShowed(const QPoint &pos);
 
 public:
     QList<ShapeBase *> shape_lists; // 添加的形状对象
+    ShapeBase* selected_shape;
+    QList<ShapeBase*> selected_shapes;
 
 private:
     QPoint _press_pos;  // 鼠标左键按下的坐标

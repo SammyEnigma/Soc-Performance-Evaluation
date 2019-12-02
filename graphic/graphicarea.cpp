@@ -9,9 +9,12 @@
 #include "graphicarea.h"
 
 GraphicArea::GraphicArea(QWidget *parent) : QWidget(parent),
+    selected_shape(nullptr),
     _press_pos(-1,-1), _select_rect(0,0,0,0), _drag_prev_shape(nullptr)
 {
     setAcceptDrops(true);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotMenuShowed(const QPoint &)));
 }
 
 /**
@@ -328,6 +331,32 @@ QRect GraphicArea::getValidRect(QRect rect)
                     );
     }
     return rect;
+}
+
+/**
+ * 自定义菜单
+ */
+void GraphicArea::slotMenuShowed(const QPoint &pos)
+{
+    log("自定义菜单");
+    QMenu* menu = new QMenu("menu", this);
+    QAction* delete_action = new QAction("delete", this);
+    menu->addAction(delete_action);
+
+    // 没有选中形状，禁用删除等菜单
+    if (selected_shapes.size() == 0)
+    {
+        delete_action->setEnabled(false);
+    }
+
+    connect(delete_action, &QAction::triggered, this, [=]{
+        log("删除形状 action");
+
+    });
+
+    // 显示菜单
+    menu->exec(QCursor::pos());
+    delete menu;
 }
 
 /**
