@@ -2,12 +2,12 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-11-29 18:00:15
+ * @LastEditTime: 2019-12-02 09:44:12
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
 
-ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent)
+ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false)
 {
     setMinimumSize(32, 32);
 }
@@ -52,19 +52,49 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 {
     // 绘制背景
     QPainter painter(this);
-//    QPainterPath path = getShapePainterPath();
-//    painter.fillPath(path, Qt::gray);
+
+    // 一行文字的高度
+    QFontMetrics fm(this->font());
+    int spacing = fm.lineSpacing();
+
+    // 根据是否有文字判断是否要缩减图标区域
+    QRect draw_rect( 1, 1, width() - 2, height() - 2);
+    QRect text_rect(1, height() - 1 - spacing, width() - 2, spacing);
+    if (!_text.isEmpty())
+    {
+        int h = draw_rect.height() - spacing;
+        if (h <= 0) // 如果连一行文字的高度都不到，最多两个平分高度
+            h = draw_rect.height()/2;
+        draw_rect.setHeight(h);
+    }
 
     // 绘制图标
     if (!_pixmap.isNull())
     {
-        painter.drawPixmap(0,0,_pixmap);
+        if (_pixmap_scale) // 允许缩放
+        {
+            // 不进行其他操作
+        }
+        else
+        {
+            // 计算比例
+            double w_prop = (double)draw_rect.width() / _pixmap.width();
+            double h_prop = (double)draw_rect.height() / _pixmap.height();
+            double smaller_prop = qMin(w_prop, h_prop);
+            draw_rect = QRect(
+                        draw_rect.center().x() - _pixmap.width() * smaller_prop / 2,
+                        draw_rect.center().y() - _pixmap.height() * smaller_prop / 2,
+                        _pixmap.width() * smaller_prop,
+                        _pixmap.height() * smaller_prop
+                        );
+        }
+        painter.drawPixmap(draw_rect, _pixmap);
     }
 
     // 绘制文字
     if (!_text.isEmpty())
     {
-        painter.drawText(0,0,_text);
+        painter.drawText(text_rect,Qt::AlignCenter, _text);
     }
 
     return QWidget::paintEvent(event);
@@ -72,7 +102,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 
 void ShapeBase::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "shape resize" << size();
+    qDebug() << "shape resize" << size() << event->oldSize();
 
     if (event->oldSize() == QSize(-1, -1)) // 第一次初始化
     {

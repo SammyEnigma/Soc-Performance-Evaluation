@@ -47,6 +47,7 @@ private:
     QString _name;   // 名字（默认设为前景文字）
     QString _text;   // 前景文字
     QPixmap _pixmap; // 前景图标
+    bool _pixmap_scale; // 是否拉伸图标
 };
 
 #endif // SHAPEBASE_H
