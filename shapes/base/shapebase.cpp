@@ -173,12 +173,14 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
 void ShapeBase::mousePressEvent(QMouseEvent *event)
 {
     // 按下聚焦
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr)
     {
         _press_pos_global= mapToGlobal(event->pos());
         _press_topLeft = geometry().topLeft();
+        this->raise(); // 出现在最上层
+        event->accept();
+        return ;
     }
-    this->raise(); // 出现在最上层
 
     return QWidget::mousePressEvent(event);
 }
@@ -186,12 +188,14 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 {
     // 拖拽移动
-    if (event->buttons() & Qt::LeftButton)
+    if (event->buttons() & Qt::LeftButton && rt->current_choosed_shape==nullptr)
     {
         QPoint& press_global = _press_pos_global;
         QPoint event_global = QCursor::pos();
         QPoint delta = event_global - press_global;
         this->move(_press_topLeft + delta);
+        event->accept();
+        return ;
     }
 
     return QWidget::mouseMoveEvent(event);
@@ -200,10 +204,12 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
 {
     // 松开还原
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr)
     {
         _press_pos_global= QPoint(-1,-1);
         _press_topLeft = geometry().topLeft();
+        event->accept();
+        return ;
     }
 
     return QWidget::mouseReleaseEvent(event);

@@ -176,6 +176,8 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
             _drag_prev_shape->setMinimumSize(0,0);
             _drag_prev_shape->hide(); // 先隐藏，需要拖拽一段距离才能显示
         }
+        event->accept();
+        return ;
     }
 
     return QWidget::mousePressEvent(event);
@@ -214,6 +216,8 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                 }
             }
         }
+        event->accept();
+        return ;
     }
 
     return QWidget::mouseMoveEvent(event);
@@ -276,6 +280,8 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
         }
 
         autoSave();
+        event->accept();
+        return ;
     }
 
     return QWidget::mouseReleaseEvent(event);

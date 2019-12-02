@@ -14,6 +14,7 @@
 #include <QPainterPath>
 #include <QResizeEvent>
 #include <QDebug>
+#include "globalvars.h"
 
 #define BORDER_SIZE 2
 
