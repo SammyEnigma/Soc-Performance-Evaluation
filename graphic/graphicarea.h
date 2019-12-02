@@ -32,6 +32,7 @@ public:
     ShapeBase* insertShapeByRect(ShapeBase *type, QRect rect);
 
     void save();
+    void autoSave();
 
     // 操作
     void select(ShapeBase* shape, bool opposite = true); // 选中一个形状，或者取消选中
@@ -52,7 +53,8 @@ private:
     QRect getValidRect(QRect rect); // 负数矩形变成有效的正数矩形
 
 signals:
-    void signalSave();
+    void signalSave();     // 必须保存的
+    void signalAutoSave(); // 开启设置的话自动保存
     void signalScrollToPos(int x, int y);
     void signalEnsurePosVisible(int x, int y);
 

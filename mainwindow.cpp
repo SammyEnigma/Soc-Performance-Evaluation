@@ -58,6 +58,9 @@ void MainWindow::readFromFile(QString file_path)
     QString full_string = FileUtil::readTextFileIfExist(file_path);
     if (full_string.trimmed().isEmpty())
         return ;
+
+    int widthest = ui->scrollAreaWidgetContents_2->width(),
+        heightest = ui->scrollAreaWidgetContents_2->height();
     QStringList shape_string_list = StringUtil::getXmls(full_string, "SHAPE");
     foreach (QString shape_string, shape_string_list)
     {
@@ -72,7 +75,14 @@ void MainWindow::readFromFile(QString file_path)
         ShapeBase* type = ui->listWidget->getShapeByName(name);
         ShapeBase* shape = ui->scrollAreaWidgetContents_2->insertShapeByRect(type, QRect(left, top, width, height));
         shape->setText(text);
+
+        // 读取时自适应宽度
+        if (left+width > widthest)
+            widthest = left+width;
+        if (top+height > heightest)
+            heightest = top + height;
     }
+    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
 
 /**
@@ -113,7 +123,11 @@ void MainWindow::initView()
             ui->scrollArea->verticalScrollBar()->setSliderPosition(y-ui->scrollArea->height());
     });
 
-//    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalSave, this, SLOT(on_actionSave_triggered()));
+    connect(ui->scrollAreaWidgetContents_2, SIGNAL(signalSave()), this, SLOT(on_actionSave_triggered()));
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalAutoSave, this, [=]{
+        if (us->auto_save)
+            on_actionSave_triggered();
+    });
 }
 
 /**

@@ -55,6 +55,11 @@ void GraphicArea::save()
     emit signalSave();
 }
 
+void GraphicArea::autoSave()
+{
+    emit signalAutoSave();
+}
+
 /**
  * 选中某一个形状
  * @param shape    要选中的形状
@@ -269,6 +274,8 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
         {
             emit signalEnsurePosVisible(event->pos().x(), event->pos().y());
         }
+
+        autoSave();
     }
 
     return QWidget::mouseReleaseEvent(event);
@@ -346,6 +353,7 @@ void GraphicArea::dropEvent(QDropEvent *event)
         ShapeBase *shape = (ShapeBase *)value;
         log("拖放：" + shape->getName());
         insertShapeByType(shape);
+        autoSave();
 
         event->accept();
     }

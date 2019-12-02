@@ -11,7 +11,7 @@ public:
     void init();
 
 public:
-
+    bool auto_save;
 };
 
 #endif // USETTINGS_H
