@@ -26,7 +26,7 @@ void GraphicArea::insertShapeByType(ShapeBase* type, QPoint point)
     shape_lists.append(shape);
     if (point == QPoint(-1, -1))
         point = mapFromGlobal(QCursor::pos());
-    shape->move(point);
+    shape->setGeometry(shape->suitableRect(point));
     shape->show();
 }
 

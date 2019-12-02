@@ -15,6 +15,8 @@
 #include <QResizeEvent>
 #include <QDebug>
 
+#define BORDER_SIZE 2
+
 class ShapeBase : public QWidget
 {
     Q_OBJECT
@@ -28,6 +30,7 @@ public:
 
     QString getName();
     QPixmap getPixmap();
+    virtual QRect suitableRect(QPoint point); // 从列表拖到绘图区域时，自适应大小和坐标
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -43,10 +46,10 @@ signals:
 public slots:
 
 private:
-    QRect _area;     // 有效的显示区域（非控件大小）
-    QString _name;   // 名字（默认设为前景文字）
-    QString _text;   // 前景文字
-    QPixmap _pixmap; // 前景图标
+    QRect _area;        // 有效的显示区域（非控件大小）
+    QString _name;      // 名字（默认设为前景文字）
+    QString _text;      // 前景文字
+    QPixmap _pixmap;    // 前景图标
     bool _pixmap_scale; // 是否拉伸图标
 };
 

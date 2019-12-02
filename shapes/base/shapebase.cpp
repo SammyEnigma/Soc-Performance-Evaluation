@@ -48,6 +48,49 @@ QPixmap ShapeBase::getPixmap()
     return _pixmap;
 }
 
+/**
+ * 获取合适的尺寸（根据图标和文字生成的默认尺寸）
+ * 宽度取最宽的一个
+ * 高度取所有数据累加结果（因为是竖着排列的）
+ * 坐标是根据鼠标摆放的位置来的
+ */
+QRect ShapeBase::suitableRect(QPoint point)
+{
+    // 自适应大小
+    int width = 0, height = 0;
+    if (!_pixmap.isNull()) // 图标
+    {
+        width = qMax(width, _pixmap.width());
+        height += _pixmap.height();
+    }
+    if (!_text.isEmpty()) // 文字
+    {
+        QFontMetrics fm(this->font());
+        width = qMax(width, fm.horizontalAdvance(_text));
+        height += fm.lineSpacing();
+    }
+
+    // 自适应坐标（有边界差）
+    int left = point.x(), top = point.y();
+    if (!_pixmap.isNull())
+    {
+        if (width != _pixmap.width()) // 表示文字比图标长
+        {
+            left += (_pixmap.width() - width) / 2;
+        }
+    }
+
+    // 鼠标的宽高
+    QSize cur_size(10, 10);
+
+    return QRect(
+                left - BORDER_SIZE + cur_size.width(),
+                top - BORDER_SIZE + cur_size.height(),
+                width + BORDER_SIZE * 2,
+                height + BORDER_SIZE * 2
+                );
+}
+
 void ShapeBase::paintEvent(QPaintEvent *event)
 {
     // 绘制背景
@@ -58,8 +101,8 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     int spacing = fm.lineSpacing();
 
     // 根据是否有文字判断是否要缩减图标区域
-    QRect draw_rect( 1, 1, width() - 2, height() - 2);
-    QRect text_rect(1, height() - 1 - spacing, width() - 2, spacing);
+    QRect draw_rect(_area);
+    QRect text_rect(0, _area.height() - spacing, _area.width(), spacing);
     if (!_text.isEmpty())
     {
         int h = draw_rect.height() - spacing;
@@ -78,14 +121,14 @@ void ShapeBase::paintEvent(QPaintEvent *event)
         else
         {
             // 计算比例
-            double w_prop = (double)draw_rect.width() / _pixmap.width();
-            double h_prop = (double)draw_rect.height() / _pixmap.height();
+            double w_prop = static_cast<double>(draw_rect.width()) / _pixmap.width();
+            double h_prop = static_cast<double>(draw_rect.height()) / _pixmap.height();
             double smaller_prop = qMin(w_prop, h_prop);
             draw_rect = QRect(
-                        draw_rect.center().x() - _pixmap.width() * smaller_prop / 2,
-                        draw_rect.center().y() - _pixmap.height() * smaller_prop / 2,
-                        _pixmap.width() * smaller_prop,
-                        _pixmap.height() * smaller_prop
+                        static_cast<int>(draw_rect.center().x() - _pixmap.width() * smaller_prop / 2),
+                        static_cast<int>(draw_rect.center().y() - _pixmap.height() * smaller_prop / 2),
+                        static_cast<int>(_pixmap.width() * smaller_prop),
+                        static_cast<int>(_pixmap.height() * smaller_prop)
                         );
         }
         painter.drawPixmap(draw_rect, _pixmap);
@@ -102,8 +145,6 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 
 void ShapeBase::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "shape resize" << size() << event->oldSize();
-
     if (event->oldSize() == QSize(-1, -1)) // 第一次初始化
     {
         // 调整可视区域
@@ -136,7 +177,7 @@ QPainterPath ShapeBase::getShapePainterPath()
  */
 void ShapeBase::initDrawArea()
 {
-    _area = QRect(1, 1, width() - 2, height() - 2);
+    _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE*2, height() - BORDER_SIZE*2);
 }
 
 /**
@@ -146,5 +187,7 @@ void ShapeBase::initDrawArea()
  */
 void ShapeBase::resizeDrawArea(QSize old_size, QSize new_size)
 {
-    _area = QRect(1, 1, width() - 2, height() - 2);
+    Q_UNUSED(old_size)
+    Q_UNUSED(new_size)
+    _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE*2, height() - BORDER_SIZE*2);
 }
