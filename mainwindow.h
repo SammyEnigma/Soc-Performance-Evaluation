@@ -32,7 +32,6 @@ public:
     void readFromFile(QString file_path);
 
 private slots:
-
     void on_actionSave_triggered();
 
 private:

@@ -37,7 +37,7 @@ public:
     void select(ShapeBase* shape, bool opposite = true); // 选中一个形状，或者取消选中
     void select(QList<ShapeBase*> shapes); // 选中多个形状
     void unselect(ShapeBase* shape = nullptr); // 取消选中一个形状，或者全不选
-    void scrollViewPort(int delta_x, int delta_y); // 调整视图的位置
+    void expandViewPort(int delta_x, int delta_y); // 调整视图的位置
     void moveShapesPos(int delta_x, int delta_y, QList<ShapeBase*>shapes = QList<ShapeBase*>()); // 调整所选控件的位置
 
 protected:
@@ -53,12 +53,13 @@ private:
 
 signals:
     void signalSave();
+    void signalScrollToPos(int x, int y);
+    void signalEnsurePosVisible(int x, int y);
 
 public slots:
 
 public:
     QList<ShapeBase *> shape_lists; // 添加的形状对象
-    QString file_path; // 保存的XML文件路径
 
 private:
     QPoint _press_pos;  // 鼠标左键按下的坐标

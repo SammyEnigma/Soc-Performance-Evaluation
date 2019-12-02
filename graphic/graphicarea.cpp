@@ -95,19 +95,31 @@ void GraphicArea::unselect(ShapeBase *shape)
  * @param delta_x 横向移动（不足则扩展）
  * @param delta_y 纵向移动（不足则扩展）
  */
-void GraphicArea::scrollViewPort(int delta_x, int delta_y)
+void GraphicArea::expandViewPort(int delta_x, int delta_y)
 {
     // 横向
     if (delta_x < 0) // 左移
     {
-
+        setMinimumWidth(width() + qAbs(delta_x));
+        moveShapesPos(-delta_x, 0);
     }
     else if (delta_x > 0) // 右移
     {
-
+        setMinimumWidth(width() + qAbs(delta_x));
+        emit signalScrollToPos(width(), -1);
     }
 
     // 纵向
+    if (delta_y < 0) // 左移
+    {
+        setMinimumHeight(height() + qAbs(delta_y));
+        moveShapesPos(0, -delta_y);
+    }
+    else if (delta_y > 0) // 右移
+    {
+        setMinimumHeight(height() + qAbs(delta_y));
+        emit signalScrollToPos(-1, height());
+    }
 }
 
 /**
@@ -250,8 +262,12 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
 
             if (delta_x || delta_y)
             {
-                scrollViewPort(delta_x, delta_y);
+                expandViewPort(delta_x, delta_y);
             }
+        }
+        else
+        {
+            emit signalEnsurePosVisible(event->pos().x(), event->pos().y());
         }
     }
 

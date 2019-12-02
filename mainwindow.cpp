@@ -7,6 +7,7 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -89,7 +90,30 @@ void MainWindow::initSystem()
  */
 void MainWindow::initView()
 {
-    // 这个在UI设计师中初始化，不需要在重新设置了
+    // 其他的在UI设计师中初始化，不需要在重新设置了
+
+    // 连接绘图区域信号槽
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollToPos, this, [=](int x, int y){
+       if (x != -1)
+           ui->scrollArea->horizontalScrollBar()->setSliderPosition(x);
+
+       if (y != -1)
+           ui->scrollArea->verticalScrollBar()->setSliderPosition(y);
+    });
+
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalEnsurePosVisible, this, [=](int x, int y){
+        if (x < ui->scrollArea->horizontalScrollBar()->sliderPosition())
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(x);
+        else if (x > ui->scrollArea->horizontalScrollBar()->sliderPosition() + ui->scrollArea->width())
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(x-ui->scrollArea->width());
+
+        if (y < ui->scrollArea->verticalScrollBar()->sliderPosition())
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(y);
+        else if (y > ui->scrollArea->verticalScrollBar()->sliderPosition() + ui->scrollArea->height())
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(y-ui->scrollArea->height());
+    });
+
+//    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalSave, this, SLOT(on_actionSave_triggered()));
 }
 
 /**
