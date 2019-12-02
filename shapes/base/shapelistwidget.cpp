@@ -15,6 +15,7 @@ ShapeListWidget::ShapeListWidget(QWidget *parent) : QListWidget(parent),
     connect(this, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)), this, SLOT(slotItemChanged(QListWidgetItem *, QListWidgetItem *)));
 
     loadShapes();
+    setCurrentRow(us->getInt("recent/choosed_shape_unit"));
 }
 
 /**
@@ -121,6 +122,7 @@ void ShapeListWidget::slotItemChanged(QListWidgetItem *current, QListWidgetItem 
 {
     // 列表项的名字
     QString name = current->text();
+    us->setVal("recent/choosed_shape_unit", currentRow()); // 保存选中的形状单元
     log("选中项改变" + name);
 
     // 如果选中的是指针

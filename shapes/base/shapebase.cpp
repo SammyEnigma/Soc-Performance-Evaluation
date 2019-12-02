@@ -194,11 +194,13 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
     // 拖拽移动
     if (event->buttons() & Qt::LeftButton && rt->current_choosed_shape==nullptr && _pressing)
     {
-        QPoint& press_global = _press_pos_global;
-        QPoint event_global = QCursor::pos();
-        QPoint delta = event_global - press_global;
+        QPoint& press_global = _press_pos_global; // 按下时鼠标的全局坐标
+        QPoint event_global = QCursor::pos();     // 当前鼠标的全局坐标
+        QPoint delta = event_global - press_global; // 相对于按下时的差
+        QPoint delta_real = _press_topLeft+delta-geometry().topLeft(); // 相对于当前的差
         this->move(_press_topLeft + delta);
         event->accept();
+        emit signalMoved(delta_real);
         return ;
     }
 

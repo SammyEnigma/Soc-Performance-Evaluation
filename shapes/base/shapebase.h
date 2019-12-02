@@ -54,6 +54,7 @@ private:
 signals:
     void signalResized(QSize size);
     void signalSelected(ShapeBase* shape);
+    void signalMoved(QPoint delta);
 
 public slots:
 
