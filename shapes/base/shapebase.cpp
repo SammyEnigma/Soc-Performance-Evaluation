@@ -264,6 +264,21 @@ bool ShapeBase::hasColor(QPoint pos)
     QImage img(size(), QImage::Format_ARGB32);
     img.fill(Qt::transparent);
     render(&img, QPoint(0,0), QRect(0,0,width(),height()));
-    QColor c = img.pixelColor(pos);
-    return c.alpha() > 0;
+
+    // 判断自己以及上下左右四个点
+    int x = pos.x(), y = pos.y();
+    int E = 4; // 允许的误差
+    for (int i = x-E; i <= x+E; i++)
+    {
+        if (i < 0 || i > width())
+            continue;
+        for (int j = y-E; j <= y+E; j++)
+        {
+            if (j < 0 || j > height())
+                continue;
+            if (img.pixelColor(i, j).alpha() > 0)
+                return true;
+        }
+    }
+    return false;
 }
