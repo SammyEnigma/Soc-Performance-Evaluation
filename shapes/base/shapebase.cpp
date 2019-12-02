@@ -8,9 +8,10 @@
 #include "shapebase.h"
 
 ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
-    _press_pos_global(-1,-1)
+    _press_pos_global(-1,-1), _pressing(false)
 {
     setMinimumSize(32, 32);
+    setStyleSheet("background: transparent;"); // 设置之后才可以获取透明背景，实现点击透明区域穿透
 }
 
 ShapeBase::ShapeBase(QString text, QWidget *parent) : ShapeBase(parent)
@@ -173,12 +174,15 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
 void ShapeBase::mousePressEvent(QMouseEvent *event)
 {
     // 按下聚焦
-    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr)
+    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr && hasColor(event->pos()))
     {
         _press_pos_global= mapToGlobal(event->pos());
         _press_topLeft = geometry().topLeft();
+        _pressing = true;
         this->raise(); // 出现在最上层
         event->accept();
+
+        emit signalSelected(this);
         return ;
     }
 
@@ -188,7 +192,7 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 {
     // 拖拽移动
-    if (event->buttons() & Qt::LeftButton && rt->current_choosed_shape==nullptr)
+    if (event->buttons() & Qt::LeftButton && rt->current_choosed_shape==nullptr && _pressing)
     {
         QPoint& press_global = _press_pos_global;
         QPoint event_global = QCursor::pos();
@@ -204,10 +208,11 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
 {
     // 松开还原
-    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr)
+    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr && _pressing)
     {
         _press_pos_global= QPoint(-1,-1);
         _press_topLeft = geometry().topLeft();
+        _pressing = false;
         event->accept();
         return ;
     }
@@ -246,4 +251,19 @@ void ShapeBase::resizeDrawArea(QSize old_size, QSize new_size)
     Q_UNUSED(old_size)
     Q_UNUSED(new_size)
     _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE*2, height() - BORDER_SIZE*2);
+}
+
+/**
+ * 判断控件中的某一个点是否有颜色
+ * 没有颜色（透明）的话则点击穿透
+ * @param pos 坐标
+ * @return    是否有颜色
+ */
+bool ShapeBase::hasColor(QPoint pos)
+{
+    QImage img(size(), QImage::Format_ARGB32);
+    img.fill(Qt::transparent);
+    render(&img, QPoint(0,0), QRect(0,0,width(),height()));
+    QColor c = img.pixelColor(pos);
+    return c.alpha() > 0;
 }

@@ -14,6 +14,7 @@
 #include <QPainterPath>
 #include <QResizeEvent>
 #include <QDebug>
+#include <QImage>
 #include "globalvars.h"
 
 #define BORDER_SIZE 2
@@ -47,8 +48,12 @@ protected:
     virtual void initDrawArea();                                 // 设置绘制区域大小
     virtual void resizeDrawArea(QSize old_size, QSize new_size); // 调整控件大小时，调整绘制区域的大小
 
+private:
+    bool hasColor(QPoint pos); // 某一个点是否有颜色（没有颜色则点击穿透）
+
 signals:
     void signalResized(QSize size);
+    void signalSelected(ShapeBase* shape);
 
 public slots:
 
@@ -62,8 +67,9 @@ private:
     ShapeBase* current_shape; // 当前选中的形状（多选则为最后一个选中）
     QList<ShapeBase*> selected_shapes; // 当前选中的形状集合
 
-    QPoint _press_pos_global;
-    QPoint _press_topLeft;
+    QPoint _press_pos_global; // 鼠标左键按下时鼠标的全局坐标
+    QPoint _press_topLeft;    // 鼠标左键按下时控件的左上角坐标（用来移动）
+    bool _pressing; // 是否正在单击/拖拽本形状
 };
 
 #endif // SHAPEBASE_H
