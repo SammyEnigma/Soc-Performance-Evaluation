@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-11-29 14:40:43
+ * @LastEditTime: 2019-11-29 18:00:15
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
@@ -26,6 +26,18 @@ ShapeBase::~ShapeBase()
 {
 }
 
+/**
+ * 拷贝函数
+ */
+ShapeBase* ShapeBase::newInstanceBySelf(QWidget* parent)
+{
+    ShapeBase* shape = new ShapeBase(parent);
+    shape->_name = this->_name;
+    shape->_text = this->_text;
+    shape->_pixmap = this->_pixmap;
+    return shape;
+}
+
 QString ShapeBase::getName()
 {
     return _name;
@@ -40,17 +52,19 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 {
     // 绘制背景
     QPainter painter(this);
-    QPainterPath path = getShapePainterPath();
-    painter.fillPath(path, Qt::gray);
+//    QPainterPath path = getShapePainterPath();
+//    painter.fillPath(path, Qt::gray);
 
     // 绘制图标
     if (!_pixmap.isNull())
     {
+        painter.drawPixmap(0,0,_pixmap);
     }
 
     // 绘制文字
     if (!_text.isEmpty())
     {
+        painter.drawText(0,0,_text);
     }
 
     return QWidget::paintEvent(event);

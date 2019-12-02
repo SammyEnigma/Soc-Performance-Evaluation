@@ -17,6 +17,9 @@ ShapeListWidget::ShapeListWidget(QWidget *parent) : QListWidget(parent),
     loadShapes();
 }
 
+/**
+ * 鼠标按下，记录按下位置，用来结合 mouseMoveEvent 判断拖拽事件
+ */
 void ShapeListWidget::mousePressEvent(QMouseEvent *event)
 {
     QListWidget::mousePressEvent(event);
@@ -28,6 +31,11 @@ void ShapeListWidget::mousePressEvent(QMouseEvent *event)
     }
 }
 
+/**
+ * 鼠标移动
+ * 拖拽形状至右边绘图区域来添加图形
+ * 也可能没有图形，而是鼠标形状的选择工具
+ */
 void ShapeListWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if (_has_draged || !(event->buttons() & Qt::LeftButton))
@@ -51,7 +59,7 @@ void ShapeListWidget::mouseMoveEvent(QMouseEvent *event)
     drag->setPixmap(rt->current_choosed_shape->getPixmap());
     drag->setDragCursor(QPixmap(":/icons/locate"), Qt::DropAction::MoveAction);
     drag->exec(Qt::MoveAction);
-//    _has_draged = true; // 避免移动时触发重复拖拽或判断
+    _has_draged = true; // 避免移动时触发重复拖拽或判断
 
     return QListWidget::mouseMoveEvent(event);
 }

@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-11-29 14:29:14
+ * @LastEditTime: 2019-11-29 17:59:59
  * @Description : 所有形状的基类，包含所有通用API
  */
 #ifndef SHAPEBASE_H
@@ -23,6 +23,8 @@ public:
     ShapeBase(QString text, QWidget *parent = nullptr);
     ShapeBase(QString text, QPixmap pixmap, QWidget *parent = nullptr);
     ~ShapeBase() override;
+
+    virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr);
 
     QString getName();
     QPixmap getPixmap();
