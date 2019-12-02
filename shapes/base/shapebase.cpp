@@ -7,7 +7,8 @@
  */
 #include "shapebase.h"
 
-ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false)
+ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
+    _press_pos_global(-1,-1)
 {
     setMinimumSize(32, 32);
 }
@@ -174,8 +175,10 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
     // 按下聚焦
     if (event->button() == Qt::LeftButton)
     {
-
+        _press_pos_global= mapToGlobal(event->pos());
+        _press_topLeft = geometry().topLeft();
     }
+    this->raise(); // 出现在最上层
 
     return QWidget::mousePressEvent(event);
 }
@@ -185,7 +188,10 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
     // 拖拽移动
     if (event->buttons() & Qt::LeftButton)
     {
-
+        QPoint& press_global = _press_pos_global;
+        QPoint event_global = QCursor::pos();
+        QPoint delta = event_global - press_global;
+        this->move(_press_topLeft + delta);
     }
 
     return QWidget::mouseMoveEvent(event);
@@ -193,6 +199,12 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 
 void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
 {
+    // 松开还原
+    if (event->button() == Qt::LeftButton)
+    {
+        _press_pos_global= QPoint(-1,-1);
+        _press_topLeft = geometry().topLeft();
+    }
 
     return QWidget::mouseReleaseEvent(event);
 }

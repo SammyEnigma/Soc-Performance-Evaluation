@@ -60,6 +60,9 @@ private:
 
     ShapeBase* current_shape; // 当前选中的形状（多选则为最后一个选中）
     QList<ShapeBase*> selected_shapes; // 当前选中的形状集合
+
+    QPoint _press_pos_global;
+    QPoint _press_topLeft;
 };
 
 #endif // SHAPEBASE_H
