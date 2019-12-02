@@ -18,6 +18,23 @@ ShapeListWidget::ShapeListWidget(QWidget *parent) : QListWidget(parent),
 }
 
 /**
+ * 通过形状名字来获取一个形状
+ * @param name 名字（请先确保不重复）
+ * @return     形状模板。如果未找到，返回 nullptr
+ */
+ShapeBase *ShapeListWidget::getShapeByName(QString name)
+{
+    foreach (ShapeBase *shape, shape_units)
+    {
+        if (shape->getName() == name)
+        {
+            return shape;
+        }
+    }
+    return nullptr;
+}
+
+/**
  * 鼠标按下，记录按下位置，用来结合 mouseMoveEvent 判断拖拽事件
  */
 void ShapeListWidget::mousePressEvent(QMouseEvent *event)

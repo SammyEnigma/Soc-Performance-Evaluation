@@ -19,8 +19,9 @@ GraphicArea::GraphicArea(QWidget *parent) : QWidget(parent),
  * 注意：添加这一类型的形状，而不是添加这一个形状
  * @param type  形状类型
  * @param point 左上角坐标
+ * @return      创建的形状实例
  */
-void GraphicArea::insertShapeByType(ShapeBase *type, QPoint point)
+ShapeBase *GraphicArea::insertShapeByType(ShapeBase *type, QPoint point)
 {
     log("insertShapeByType");
     ShapeBase *shape = type->newInstanceBySelf(this);
@@ -29,14 +30,16 @@ void GraphicArea::insertShapeByType(ShapeBase *type, QPoint point)
         point = mapFromGlobal(QCursor::pos());
     shape->setGeometry(shape->getSuitableRect(point));
     shape->show();
+    return shape;
 }
 
 /**
  * 根据所给的矩形，添加一个形状实例
  * @param type 形状类型
  * @param rect 矩形
+ * @return      创建的形状实例
  */
-void GraphicArea::insertShapeByRect(ShapeBase *type, QRect rect)
+ShapeBase *GraphicArea::insertShapeByRect(ShapeBase *type, QRect rect)
 {
     log("insertShapeByRect");
     ShapeBase *shape = type->newInstanceBySelf(this);
@@ -44,6 +47,12 @@ void GraphicArea::insertShapeByRect(ShapeBase *type, QRect rect)
     rect = getValidRect(rect);
     shape->setGeometry(rect); // 设置为选中区域的大小
     shape->show();
+    return shape;
+}
+
+void GraphicArea::save()
+{
+    emit signalSave();
 }
 
 /**
@@ -78,6 +87,45 @@ void GraphicArea::unselect(ShapeBase *shape)
     else
     {
 
+    }
+}
+
+/**
+ * 移动窗口的位置
+ * @param delta_x 横向移动（不足则扩展）
+ * @param delta_y 纵向移动（不足则扩展）
+ */
+void GraphicArea::scrollViewPort(int delta_x, int delta_y)
+{
+    // 横向
+    if (delta_x < 0) // 左移
+    {
+
+    }
+    else if (delta_x > 0) // 右移
+    {
+
+    }
+
+    // 纵向
+}
+
+/**
+ * 移动对应控件的坐标
+ * @param delta_x 横向移动
+ * @param delta_y 纵向移动
+ * @param shapes  要移动的控件（如果没有，则移动全部）
+ */
+void GraphicArea::moveShapesPos(int delta_x, int delta_y, QList<ShapeBase *> shapes)
+{
+    if (shapes.size() == 0) // 全选
+        shapes = shape_lists;
+    if (shapes.size() == 0) // 没有形状
+        return ;
+
+    foreach (ShapeBase* shape, shapes)
+    {
+        shape->move(shape->x() + delta_x, shape->y() + delta_y);
     }
 }
 
@@ -175,6 +223,34 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                 }
                 _select_rect = QRect(0,0,0,0);
                 update();
+            }
+        }
+
+        // 判断左键弹起的坐标，如果在外面，则可视区域的大小
+        if (!QRect(0,0,width(),height()).contains(event->pos()))
+        {
+            int delta_x = 0, delta_y = 0;
+            if (event->pos().x() < 0) // 向左扩展/滚动
+            {
+                delta_x = event->pos().x() - 0;
+            }
+            else if (event->pos().x() > width()) // 向右扩展/滚动
+            {
+                delta_x = event->pos().x() - width();
+            }
+
+            if (event->pos().y() < 0) // 向上扩展/滚动
+            {
+                delta_y = event->pos().y() - 0;
+            }
+            else if (event->pos().y() > height()) // 向下扩展/滚动
+            {
+                delta_y = event->pos().y() - height();
+            }
+
+            if (delta_x || delta_y)
+            {
+                scrollViewPort(delta_x, delta_y);
             }
         }
     }

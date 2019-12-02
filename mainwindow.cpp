@@ -25,6 +25,48 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::saveToFile(QString file_path)
+{
+    log("保存至文件：" + file_path);
+    QString full_string;
+    foreach (ShapeBase* shape, ui->scrollAreaWidgetContents_2->shape_lists)
+    {
+        QString shape_string;
+        shape_string += "\n\t" + StringUtil::makeXml(shape->geometry().left(), "LEFT");
+        shape_string += "\n\t" + StringUtil::makeXml(shape->geometry().top(), "TOP");
+        shape_string += "\n\t" + StringUtil::makeXml(shape->geometry().width(), "WIDTH");
+        shape_string += "\n\t" + StringUtil::makeXml(shape->geometry().height(), "HEIGHT");
+        shape_string += "\n\t" + StringUtil::makeXml(shape->getName(), "NAME");
+        shape_string += "\n\t" + StringUtil::makeXml(shape->getText(), "TEXT");
+        full_string += "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
+    }
+    FileUtil::writeTextFile(file_path, full_string);
+}
+
+void MainWindow::readFromFile(QString file_path)
+{
+    log("从完美读取：" + file_path);
+    QString full_string = FileUtil::readTextFileIfExist(file_path);
+    if (full_string.trimmed().isEmpty())
+        return ;
+    QStringList shape_string_list = StringUtil::getXmls(full_string, "SHAPE");
+    foreach (QString shape_string, shape_string_list)
+    {
+        int left = StringUtil::getXmlInt(shape_string, "LEFT");
+        int top = StringUtil::getXmlInt(shape_string, "TOP");
+        int width = StringUtil::getXmlInt(shape_string, "WIDTH");
+        int height = StringUtil::getXmlInt(shape_string, "HEIGHT");
+        QString name = StringUtil::getXml(shape_string, "NAME");
+        QString text = StringUtil::getXml(shape_string, "TEXT");
+
+        // 创建形状实例
+        ShapeBase* type = ui->listWidget->getShapeByName(name);
+
+        ShapeBase* shape = ui->scrollAreaWidgetContents_2->insertShapeByRect(type, QRect(left, top, width, height));
+        shape->setText(text);
+    }
+}
+
 /**
  * 初始化整个系统
  * 比如初始化目录结构
@@ -45,5 +87,11 @@ void MainWindow::initView()
 
 void MainWindow::initData()
 {
-    
+    graphic_file_path = rt->DATA_PATH + "graphic.xml";
+    readFromFile(graphic_file_path);
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    saveToFile(graphic_file_path);
 }

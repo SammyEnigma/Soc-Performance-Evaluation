@@ -31,7 +31,9 @@ public:
 
     // 属性
     const QString getName();
+    const QString getText();
     const QPixmap getPixmap();
+    void setText(QString text);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -56,7 +58,6 @@ private:
     QPixmap _pixmap;    // 前景图标
     bool _pixmap_scale; // 是否拉伸图标
 
-    QString file_path; // 保存的XML文件路径
     ShapeBase* current_shape; // 当前选中的形状（多选则为最后一个选中）
     QList<ShapeBase*> selected_shapes; // 当前选中的形状集合
 };

@@ -43,9 +43,19 @@ const QString ShapeBase::getName()
     return _name;
 }
 
+const QString ShapeBase::getText()
+{
+    return _text;
+}
+
 const QPixmap ShapeBase::getPixmap()
 {
     return _pixmap;
+}
+
+void ShapeBase::setText(QString text)
+{
+    _text = text;
 }
 
 /**

@@ -28,7 +28,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void saveToFile(QString file_path);
+    void readFromFile(QString file_path);
+
 private slots:
+
+    void on_actionSave_triggered();
 
 private:
     void initSystem(); // 初始化系统（比如目录结构）
@@ -37,5 +42,6 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    QString graphic_file_path;
 };
 #endif // MAINWINDOW_H

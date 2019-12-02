@@ -28,6 +28,8 @@ class ShapeListWidget : public QListWidget
 public:
     ShapeListWidget(QWidget *parent = nullptr);
 
+    ShapeBase* getShapeByName(QString name);
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

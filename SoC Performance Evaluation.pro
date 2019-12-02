@@ -40,7 +40,8 @@ HEADERS += \
     global/globalvars.h \
     global/runtimeinfo.h \
     mainwindow.h \
-    shapes/base/shapebase.h
+    shapes/base/shapebase.h \
+    utils/stringutil.h
 
 FORMS += \
     mainwindow.ui
