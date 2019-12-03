@@ -193,7 +193,7 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton &&QApplication::keyboardModifiers() == Qt::AltModifier) // alt+左键 是移动，可能会有误点，这里去除误点
         return QWidget::mousePressEvent(event);
 
-    // 按下聚焦
+    // 按下选中
     if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr && hasColor(event->pos()))
     {
         _press_pos_global = mapToGlobal(event->pos());
@@ -205,7 +205,12 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
         if (QApplication::keyboardModifiers() == Qt::ControlModifier)
             emit signalCtrlClicked(this);
         else
-            emit signalClicked(this);
+        {
+            if (!isEdgeShowed())
+                emit signalClicked(this);
+            else
+            {}
+        }
         return;
     }
 

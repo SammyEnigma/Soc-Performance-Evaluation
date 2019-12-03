@@ -258,6 +258,7 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
             else if (QApplication::keyboardModifiers() == Qt::AltModifier) // alt + 单击
             {
                 _drag_oper = DRAG_MOVE; // 拖拽移动
+                setCursor(Qt::ClosedHandCursor);
             }
         }
         else // 生成形状预览
@@ -342,7 +343,11 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
     {
         if (rt->current_choosed_shape == nullptr) // 鼠标，暂时不进行操作
         {
-            if (_drag_oper != DRAG_MOVE)
+            if (_drag_oper == DRAG_MOVE)
+            {
+                setCursor(Qt::ArrowCursor);
+            }
+            else
             {
                 select(_select_rect, QApplication::keyboardModifiers() == Qt::ControlModifier);
             }
