@@ -235,6 +235,29 @@ void GraphicArea::moveShapesPos(int delta_x, int delta_y, QList<ShapeBase *> sha
     }
 }
 
+/**
+ * 删除形状
+ * @param shape 如果是nullptr，则删除选中的形状；否则只删除这一个形状
+ */
+void GraphicArea::remove(ShapeBase *shape)
+{
+    if (shape == nullptr) // 删除所选形状
+    {
+        foreach (ShapeBase* shape, selected_shapes)
+        {
+            selected_shapes.removeOne(shape);
+            shape_lists.removeOne(shape);
+            shape->deleteLater();
+        }
+        return ;
+    }
+
+    // 删除单个形状
+    selected_shapes.removeOne(shape);
+    shape_lists.removeOne(shape);
+    shape->deleteLater();
+}
+
 void GraphicArea::mousePressEvent(QMouseEvent *event)
 {
     // 鼠标左键在空白处按下
@@ -533,6 +556,10 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             }
         }
     });
+
+    connect(shape, &ShapeBase::signalLeftButtonReleased, this, [=] {
+        autoSave();
+    });
 }
 
 /**
@@ -553,6 +580,8 @@ void GraphicArea::slotMenuShowed(const QPoint &)
 
     connect(delete_action, &QAction::triggered, this, [=] {
         log("删除形状 action");
+        remove();
+        autoSave();
     });
 
     // 显示菜单

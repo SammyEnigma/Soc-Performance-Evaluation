@@ -50,6 +50,7 @@ public:
     void unselect(QList<ShapeBase *> shapes, bool ctrl = false);                                    // 取消选择多个形状
     void expandViewPort(int delta_x, int delta_y);                                                  // 调整视图的位置
     void moveShapesPos(int delta_x, int delta_y, QList<ShapeBase *> shapes = QList<ShapeBase *>()); // 调整所选控件的位置
+    void remove(ShapeBase *shape = nullptr); // 删除指定形状，或者删除所选形状
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

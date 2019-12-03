@@ -68,6 +68,7 @@ signals:
     void signalCtrlClicked();
     void signalCtrlClickReleased();
     void signalMoved(int dx, int dy);
+    void signalLeftButtonReleased();
 
 public slots:
 

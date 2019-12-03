@@ -272,6 +272,7 @@ void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
         _press_moved = false;
         _press_effected = false;
         event->accept();
+        emit signalLeftButtonReleased();
         return;
     }
 
