@@ -483,22 +483,44 @@ QRect GraphicArea::getValidRect(QRect rect)
  */
 void GraphicArea::connectShapeEvent(ShapeBase *shape)
 {
-    connect(shape, &ShapeBase::signalClicked, this, [=](ShapeBase *shape) {
-        if (shape->isEdgeShowed())
+    connect(shape, &ShapeBase::signalClicked, this, [=] {
+        if (!shape->isEdgeShowed())
         {
-            if (selected_shapes.size() > 1) // 有多个选择
-                select(shape);
-            else
-                unselect(shape, false);
-        }
-        else
             select(shape, false);
+            shape->setPressOperatorEffected();
+        }
     });
-    connect(shape, &ShapeBase::signalCtrlClicked, this, [=](ShapeBase *shape) {
+
+    connect(shape, &ShapeBase::signalClickReleased, this, [=]{
+        if (selected_shapes.size() > 1)
+            select(shape);
+        else
+            unselect(shape, false);
+    });
+    connect(shape, &ShapeBase::signalCtrlClicked, this, [=] {
+        if (!shape->isEdgeShowed())
+        {
+            select(shape, true);
+            shape->setPressOperatorEffected();
+        }
+    });
+    connect(shape, &ShapeBase::signalCtrlClickReleased, this, [=] {
         if (shape->isEdgeShowed())
             unselect(shape, true);
         else
             select(shape, true);
+    });
+
+    connect(shape, &ShapeBase::signalMoved, this, [=](int dx, int dy) {
+        if (selected_shapes.size() > 1) // 如果有多选（若只选了一个则只有这一个在移动）
+        {
+            foreach (ShapeBase* s, selected_shapes) // 遍历每一个选中的，同步移动
+            {
+                if (s == shape)
+                    continue;
+                s->move(s->geometry().left()+dx, s->geometry().top()+dy);
+            }
+        }
     });
 }
 

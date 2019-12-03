@@ -42,6 +42,7 @@ public:
     void showEdge();
     void hideEdge();
     bool isEdgeShowed();
+    void setPressOperatorEffected();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -59,9 +60,11 @@ private:
 
 signals:
     void signalResized(QSize size);
-    void signalClicked(ShapeBase* shape);
-    void signalCtrlClicked(ShapeBase *shape);
-    void signalMoved(QPoint delta);
+    void signalClicked();
+    void signalClickReleased();
+    void signalCtrlClicked();
+    void signalCtrlClickReleased();
+    void signalMoved(int dx, int dy);
 
 public slots:
 
@@ -79,6 +82,8 @@ private:
     QPoint _press_pos_global; // 鼠标左键按下时鼠标的全局坐标
     QPoint _press_topLeft;    // 鼠标左键按下时控件的左上角坐标（用来移动）
     bool _pressing; // 是否正在单击/拖拽本形状
+    bool _press_moved; // 这次单击是否移动了
+    bool _press_effected; // 按下时特殊操作是否已经生效
 };
 
 #endif // SHAPEBASE_H

@@ -190,7 +190,7 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
 
 void ShapeBase::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton &&QApplication::keyboardModifiers() == Qt::AltModifier) // alt+左键 是移动，可能会有误点，这里去除误点
+    if (event->button() == Qt::LeftButton && QApplication::keyboardModifiers() == Qt::AltModifier) // alt+左键 是移动，可能会有误点，这里去除误点
         return QWidget::mousePressEvent(event);
 
     // 按下选中
@@ -199,22 +199,24 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
         _press_pos_global = mapToGlobal(event->pos());
         _press_topLeft = geometry().topLeft();
         _pressing = true;
+        _press_moved = false;
+        _press_effected = false;
         this->raise(); // 出现在最上层
         event->accept();
 
         if (QApplication::keyboardModifiers() == Qt::ControlModifier)
-            emit signalCtrlClicked(this);
+            emit signalCtrlClicked();
         else
-        {
-            if (!isEdgeShowed())
-                emit signalClicked(this);
-            else
-            {}
-        }
+            emit signalClicked();
         return;
     }
 
     return QWidget::mousePressEvent(event);
+}
+
+void ShapeBase::setPressOperatorEffected()
+{
+    _press_effected = true;
 }
 
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)
@@ -227,8 +229,10 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
         QPoint delta = event_global - press_global;                        // 相对于按下时的差
         QPoint delta_real = _press_topLeft + delta - geometry().topLeft(); // 相对于当前的差
         this->move(_press_topLeft + delta);
+        _press_moved = true;
+        emit signalMoved(delta_real.x(), delta_real.y()); // 如果有多选，则移动其他一起选中的
+
         event->accept();
-        emit signalMoved(delta_real);
         return;
     }
 
@@ -243,6 +247,15 @@ void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
         _press_pos_global = QPoint(-1, -1);
         _press_topLeft = geometry().topLeft();
         _pressing = false;
+        if (!_press_moved && !_press_effected)
+        {
+            if (QApplication::keyboardModifiers() == Qt::NoModifier)
+                emit signalClickReleased();
+            else
+                emit signalCtrlClickReleased();
+        }
+        _press_moved = false;
+        _press_effected = false;
         event->accept();
         return;
     }
