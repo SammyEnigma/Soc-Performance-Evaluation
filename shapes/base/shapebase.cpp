@@ -2,13 +2,13 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-02 09:44:12
+ * @LastEditTime: 2019-12-03 09:56:15
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
 
 ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
-    _press_pos_global(-1,-1), _pressing(false)
+    edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false)
 {
     setMinimumSize(32, 32);
     setStyleSheet("background: transparent;"); // 设置之后才可以获取透明背景，实现点击透明区域穿透
@@ -31,9 +31,9 @@ ShapeBase::~ShapeBase()
 /**
  * 拷贝函数
  */
-ShapeBase* ShapeBase::newInstanceBySelf(QWidget* parent)
+ShapeBase *ShapeBase::newInstanceBySelf(QWidget *parent)
 {
-    ShapeBase* shape = new ShapeBase(parent);
+    ShapeBase *shape = new ShapeBase(parent);
     shape->_name = this->_name;
     shape->_text = this->_text;
     shape->_pixmap = this->_pixmap;
@@ -96,11 +96,10 @@ QRect ShapeBase::getSuitableRect(QPoint point)
     QSize cur_size(10, 10);
 
     return QRect(
-                left - BORDER_SIZE + cur_size.width(),
-                top - BORDER_SIZE + cur_size.height(),
-                width + BORDER_SIZE * 2,
-                height + BORDER_SIZE * 2
-                );
+        left - BORDER_SIZE + cur_size.width(),
+        top - BORDER_SIZE + cur_size.height(),
+        width + BORDER_SIZE * 2,
+        height + BORDER_SIZE * 2);
 }
 
 void ShapeBase::paintEvent(QPaintEvent *event)
@@ -119,7 +118,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     {
         int h = draw_rect.height() - spacing;
         if (h <= 0) // 如果连一行文字的高度都不到，最多两个平分高度
-            h = draw_rect.height()/2;
+            h = draw_rect.height() / 2;
         draw_rect.setHeight(h);
     }
 
@@ -137,11 +136,10 @@ void ShapeBase::paintEvent(QPaintEvent *event)
             double h_prop = static_cast<double>(draw_rect.height()) / _pixmap.height();
             double smaller_prop = qMin(w_prop, h_prop);
             draw_rect = QRect(
-                        static_cast<int>(draw_rect.center().x() - _pixmap.width() * smaller_prop / 2),
-                        static_cast<int>(draw_rect.center().y() - _pixmap.height() * smaller_prop / 2),
-                        static_cast<int>(_pixmap.width() * smaller_prop),
-                        static_cast<int>(_pixmap.height() * smaller_prop)
-                        );
+                static_cast<int>(draw_rect.center().x() - _pixmap.width() * smaller_prop / 2),
+                static_cast<int>(draw_rect.center().y() - _pixmap.height() * smaller_prop / 2),
+                static_cast<int>(_pixmap.width() * smaller_prop),
+                static_cast<int>(_pixmap.height() * smaller_prop));
         }
         painter.drawPixmap(draw_rect, _pixmap);
     }
@@ -149,7 +147,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     // 绘制文字
     if (!_text.isEmpty())
     {
-        painter.drawText(text_rect,Qt::AlignCenter, _text);
+        painter.drawText(text_rect, Qt::AlignCenter, _text);
     }
 
     return QWidget::paintEvent(event);
@@ -168,22 +166,25 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
         resizeDrawArea(event->oldSize(), event->size());
     }
 
+    // 调整边缘
+    edge->setGeometry(0,0,width(),height());
+
     return QWidget::resizeEvent(event);
 }
 
 void ShapeBase::mousePressEvent(QMouseEvent *event)
 {
     // 按下聚焦
-    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr && hasColor(event->pos()))
+    if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr && hasColor(event->pos()))
     {
-        _press_pos_global= mapToGlobal(event->pos());
+        _press_pos_global = mapToGlobal(event->pos());
         _press_topLeft = geometry().topLeft();
         _pressing = true;
         this->raise(); // 出现在最上层
         event->accept();
 
         emit signalSelected(this);
-        return ;
+        return;
     }
 
     return QWidget::mousePressEvent(event);
@@ -192,16 +193,16 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 {
     // 拖拽移动
-    if (event->buttons() & Qt::LeftButton && rt->current_choosed_shape==nullptr && _pressing)
+    if (event->buttons() & Qt::LeftButton && rt->current_choosed_shape == nullptr && _pressing)
     {
-        QPoint& press_global = _press_pos_global; // 按下时鼠标的全局坐标
-        QPoint event_global = QCursor::pos();     // 当前鼠标的全局坐标
-        QPoint delta = event_global - press_global; // 相对于按下时的差
-        QPoint delta_real = _press_topLeft+delta-geometry().topLeft(); // 相对于当前的差
+        QPoint &press_global = _press_pos_global;                          // 按下时鼠标的全局坐标
+        QPoint event_global = QCursor::pos();                              // 当前鼠标的全局坐标
+        QPoint delta = event_global - press_global;                        // 相对于按下时的差
+        QPoint delta_real = _press_topLeft + delta - geometry().topLeft(); // 相对于当前的差
         this->move(_press_topLeft + delta);
         event->accept();
         emit signalMoved(delta_real);
-        return ;
+        return;
     }
 
     return QWidget::mouseMoveEvent(event);
@@ -210,13 +211,13 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
 {
     // 松开还原
-    if (event->button() == Qt::LeftButton && rt->current_choosed_shape==nullptr && _pressing)
+    if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr && _pressing)
     {
-        _press_pos_global= QPoint(-1,-1);
+        _press_pos_global = QPoint(-1, -1);
         _press_topLeft = geometry().topLeft();
         _pressing = false;
         event->accept();
-        return ;
+        return;
     }
 
     return QWidget::mouseReleaseEvent(event);
@@ -240,7 +241,7 @@ QPainterPath ShapeBase::getShapePainterPath()
  */
 void ShapeBase::initDrawArea()
 {
-    _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE*2, height() - BORDER_SIZE*2);
+    _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE * 2, height() - BORDER_SIZE * 2);
 }
 
 /**
@@ -252,7 +253,7 @@ void ShapeBase::resizeDrawArea(QSize old_size, QSize new_size)
 {
     Q_UNUSED(old_size)
     Q_UNUSED(new_size)
-    _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE*2, height() - BORDER_SIZE*2);
+    _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE * 2, height() - BORDER_SIZE * 2);
 }
 
 /**
@@ -265,16 +266,16 @@ bool ShapeBase::hasColor(QPoint pos)
 {
     QImage img(size(), QImage::Format_ARGB32);
     img.fill(Qt::transparent);
-    render(&img, QPoint(0,0), QRect(0,0,width(),height()));
+    render(&img, QPoint(0, 0), QRect(0, 0, width(), height()));
 
     // 判断自己以及上下左右四个点
     int x = pos.x(), y = pos.y();
     int E = 4; // 允许的误差
-    for (int i = x-E; i <= x+E; i++)
+    for (int i = x - E; i <= x + E; i++)
     {
         if (i < 0 || i > width())
             continue;
-        for (int j = y-E; j <= y+E; j++)
+        for (int j = y - E; j <= y + E; j++)
         {
             if (j < 0 || j > height())
                 continue;

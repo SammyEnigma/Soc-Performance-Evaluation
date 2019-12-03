@@ -16,6 +16,7 @@
 #include <QDebug>
 #include <QImage>
 #include "globalvars.h"
+#include "selectedge.h"
 
 #define BORDER_SIZE 2
 
@@ -67,6 +68,7 @@ private:
 
     ShapeBase* current_shape; // 当前选中的形状（多选则为最后一个选中）
     QList<ShapeBase*> selected_shapes; // 当前选中的形状集合
+    SelectEdge* edge;
 
     QPoint _press_pos_global; // 鼠标左键按下时鼠标的全局坐标
     QPoint _press_topLeft;    // 鼠标左键按下时控件的左上角坐标（用来移动）
