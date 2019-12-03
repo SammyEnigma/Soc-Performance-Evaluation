@@ -123,6 +123,14 @@ void MainWindow::initView()
             ui->scrollArea->verticalScrollBar()->setSliderPosition(y-ui->scrollArea->height());
     });
 
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollAreaScroll, this, [=](int h, int v){
+        if (h)
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition()+h);
+
+        if (v)
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition()+v);
+    });
+
     connect(ui->scrollAreaWidgetContents_2, SIGNAL(signalSave()), this, SLOT(on_actionSave_triggered()));
     connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalAutoSave, this, [=]{
         if (us->auto_save)

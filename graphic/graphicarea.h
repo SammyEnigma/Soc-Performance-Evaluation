@@ -29,6 +29,12 @@ class GraphicArea : public QWidget
 public:
     GraphicArea(QWidget *parent = nullptr);
 
+    enum DragOperator {
+        DRAG_NONE,
+        DRAG_CTRL,
+        DRAG_MOVE
+    };
+
     // 全局操作
     ShapeBase *insertShapeByType(ShapeBase *type, QPoint point = QPoint(-1, -1)); // 根据种类自动生成形状
     ShapeBase *insertShapeByRect(ShapeBase *type, QRect rect);
@@ -63,18 +69,19 @@ signals:
     void signalAutoSave(); // 开启设置的话自动保存
     void signalScrollToPos(int x, int y);
     void signalEnsurePosVisible(int x, int y);
+    void signalScrollAreaScroll(int h, int v);
 
 public slots:
-    void slotMenuShowed(const QPoint &pos);
+    void slotMenuShowed(const QPoint &);
 
 public:
     QList<ShapeBase *> shape_lists; // 添加的形状对象
     QList<ShapeBase *> selected_shapes;
 
 private:
-    QPoint _press_pos;  // 鼠标左键按下的坐标
+    QPoint _press_pos, _press_global_pos;  // 鼠标左键按下的坐标
     QRect _select_rect; // 鼠标左键拖拽的形状
-
+    DragOperator _drag_oper; // 鼠标左键按下的操作，以及决定之后移动、松开的操作
     ShapeBase *_drag_prev_shape; // 拖拽生成形状的预览形状，press生成，release时删掉
 };
 

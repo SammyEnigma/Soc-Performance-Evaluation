@@ -190,6 +190,9 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
 
 void ShapeBase::mousePressEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::LeftButton &&QApplication::keyboardModifiers() == Qt::AltModifier) // alt+左键 是移动，可能会有误点，这里去除误点
+        return QWidget::mousePressEvent(event);
+
     // 按下聚焦
     if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr && hasColor(event->pos()))
     {

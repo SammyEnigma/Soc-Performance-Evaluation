@@ -243,14 +243,22 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         _press_pos = event->pos();
+        _press_global_pos = QCursor::pos();
         if (rt->current_choosed_shape == nullptr) // 指针，看情况进行操作
         {
             if (QApplication::keyboardModifiers() == Qt::NoModifier) // 单击
+            {
                 unselect(); // 直接点击空白处，取消所有选中（后续支持多拽选中）
+                _drag_oper = DRAG_NONE;
+            }
             else if (QApplication::keyboardModifiers() == Qt::ControlModifier) // ctrl + 单击
-                ; // ctrl键支持多选，暂不进行操作
+            {
+                _drag_oper = DRAG_CTRL; // ctrl键支持多选，暂不进行操作
+            }
             else if (QApplication::keyboardModifiers() == Qt::AltModifier) // alt + 单击
-                ; // 拖拽移动
+            {
+                _drag_oper = DRAG_MOVE; // 拖拽移动
+            }
         }
         else // 生成形状预览
         {
@@ -289,7 +297,17 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         this->update();
         if (rt->current_choosed_shape == nullptr) // 多选
         {
-            // 如果按下了空格键
+            // 如果是移动
+            if (_drag_oper == DRAG_MOVE)
+            {
+                _select_rect = QRect(0,0,0,0); // 取消显示矩形
+                // 移动滚动条
+                QPoint& prev_gloabl = _press_global_pos;
+                QPoint event_global = QCursor::pos();
+                QPoint delta = event_global - prev_gloabl;
+                prev_gloabl = event_global;
+                emit signalScrollAreaScroll(-delta.x(), -delta.y()); // 反向滚动
+            }
         }
         else
         {
@@ -324,7 +342,10 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
     {
         if (rt->current_choosed_shape == nullptr) // 鼠标，暂时不进行操作
         {
-            select(_select_rect, QApplication::keyboardModifiers() == Qt::ControlModifier);
+            if (_drag_oper != DRAG_MOVE)
+            {
+                select(_select_rect, QApplication::keyboardModifiers() == Qt::ControlModifier);
+            }
         }
         else // 形状
         {
@@ -479,7 +500,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
 /**
  * 自定义菜单
  */
-void GraphicArea::slotMenuShowed(const QPoint &pos)
+void GraphicArea::slotMenuShowed(const QPoint &)
 {
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
