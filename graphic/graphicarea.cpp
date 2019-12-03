@@ -13,6 +13,7 @@ GraphicArea::GraphicArea(QWidget *parent) : QWidget(parent),
 {
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
+    setFocusPolicy(Qt::StrongFocus);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotMenuShowed(const QPoint &)));
 }
 
@@ -378,6 +379,35 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
     }
 
     return QWidget::mouseReleaseEvent(event);
+}
+
+void GraphicArea::keyPressEvent(QKeyEvent *event)
+{
+    auto key = event->key();
+    auto modifiers = event->modifiers();
+    bool ctrl = modifiers & Qt::ControlModifier,
+         shift = modifiers & Qt::ShiftModifier,
+         alt = modifiers & Qt::AltModifier;
+
+    switch (key)
+    {
+    case Qt::Key_A: // 全选
+        if (ctrl && !shift && !alt)
+        {
+            select(shape_lists);
+            return ;
+        }
+        break;
+    case Qt::Key_D :
+        if (ctrl && !shift && !alt)
+        {
+            unselect();
+            return ;
+        }
+        break;
+    }
+
+    return QWidget::keyPressEvent(event);
 }
 
 void GraphicArea::paintEvent(QPaintEvent *event)

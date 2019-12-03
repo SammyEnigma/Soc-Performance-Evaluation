@@ -38,7 +38,7 @@ public:
 
     // 操作
     void select(ShapeBase *shape, bool ctrl = false);                                               // 选中一个形状，或者取消选中
-    void select(QList<ShapeBase *> shapes, bool ctrl = false);                                      // 选中多个形状
+    void select(QList<ShapeBase *> shapes, bool ctrl = false);                                      // 选中多个形状。select(shape_lists)为全选
     void select(QRect rect, bool ctrl = false);                                                     // 选中一个区域内的所有形状
     void unselect(ShapeBase *shape = nullptr, bool ctrl = false);                                   // 取消选择一个形状，或者全不选
     void unselect(QList<ShapeBase *> shapes, bool ctrl = false);                                    // 取消选择多个形状
@@ -49,6 +49,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
