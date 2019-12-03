@@ -13,6 +13,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QDebug>
 
 #define EDGE_LINE_SIZE 4 // 边缘线的宽度
 
