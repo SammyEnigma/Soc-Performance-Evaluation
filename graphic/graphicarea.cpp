@@ -296,10 +296,9 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         // 生成表示拖拽的矩形
         _select_rect = QRect(_press_pos, event->pos());
         this->update();
-        if (rt->current_choosed_shape == nullptr) // 多选
+        if (rt->current_choosed_shape == nullptr) // 鼠标指针
         {
-            // 如果是移动
-            if (_drag_oper == DRAG_MOVE)
+            if (_drag_oper == DRAG_MOVE) // 移动视图
             {
                 _select_rect = QRect(0,0,0,0); // 取消显示矩形
                 // 移动滚动条
@@ -309,8 +308,16 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                 prev_gloabl = event_global;
                 emit signalScrollAreaScroll(-delta.x(), -delta.y()); // 反向滚动
             }
+            else // 多选
+            {
+                // 显示对应的形状的边框
+                foreach (ShapeBase* shape, shape_lists)
+                {
+                    shape->setLightEdgeShowed(_select_rect.intersects(shape->geometry()));
+                }
+            }
         }
-        else
+        else // 拖拽生成形状
         {
             if (_drag_prev_shape != nullptr)
             {
@@ -343,13 +350,17 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
     {
         if (rt->current_choosed_shape == nullptr) // 鼠标，暂时不进行操作
         {
-            if (_drag_oper == DRAG_MOVE)
+            if (_drag_oper == DRAG_MOVE) // 移动
             {
                 setCursor(Qt::ArrowCursor);
             }
-            else
+            else // 多选
             {
                 select(_select_rect, QApplication::keyboardModifiers() == Qt::ControlModifier);
+                foreach (ShapeBase* shape, shape_lists)
+                {
+                    shape->setLightEdgeShowed(false);
+                }
             }
         }
         else // 形状

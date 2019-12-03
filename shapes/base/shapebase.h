@@ -43,6 +43,7 @@ public:
     void hideEdge();
     bool isEdgeShowed();
     void setPressOperatorEffected();
+    void setLightEdgeShowed(bool show);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -87,6 +88,7 @@ private:
     bool _press_moved; // 这次单击是否移动了
     bool _press_effected; // 按下时特殊操作是否已经生效
     bool _hovering; // 是否鼠标悬浮期间
+    bool _show_light_edge; // 是否显示淡淡的边界
 };
 
 #endif // SHAPEBASE_H

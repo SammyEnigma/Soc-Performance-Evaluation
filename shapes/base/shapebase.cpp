@@ -122,7 +122,8 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 {
     // 绘制背景
     QPainter painter(this);
-    if (_hovering && QApplication::keyboardModifiers() == Qt::ControlModifier) // 鼠标悬浮+ctrl键，显示形状边缘（便于多选）
+    if (_show_light_edge // 外来条件显示
+            || (_hovering && QApplication::keyboardModifiers() == Qt::ControlModifier)) // 鼠标悬浮+ctrl键，显示形状边缘（便于多选）
     {
         // 画四条边的背景
         painter.fillPath(edge->getEdgePath(), QColor(204,204,255));
@@ -222,6 +223,15 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
 void ShapeBase::setPressOperatorEffected()
 {
     _press_effected = true;
+}
+
+void ShapeBase::setLightEdgeShowed(bool show)
+{
+    if (_show_light_edge != show)
+    {
+        _show_light_edge = show;
+        update();
+    }
 }
 
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)
