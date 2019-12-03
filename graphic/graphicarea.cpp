@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-02 11:03:12
+ * @LastEditTime: 2019-12-03 10:01:29
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -245,9 +245,9 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     _drag_prev_shape->deleteLater();
                     _drag_prev_shape = nullptr;
                 }
-                _select_rect = QRect(0,0,0,0);
-                update();
             }
+            _select_rect = QRect(0,0,0,0);
+            update();
         }
 
         // 判断左键弹起的坐标，如果在外面，则可视区域的大小
