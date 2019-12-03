@@ -464,7 +464,7 @@
   </action>
   <action name="actionRegresh_Graphics_G">
    <property name="text">
-    <string>Regresh Graphics (&amp;G)</string>
+    <string>Refresh Graphics (&amp;G)</string>
    </property>
   </action>
  </widget>

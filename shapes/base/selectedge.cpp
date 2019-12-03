@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-03 09:16:52
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-03 09:55:12
+ * @LastEditTime: 2019-12-03 10:06:36
  * @Description: 形状边缘的选择边缘控件，可调整形状的大小
  */
 #include "selectedge.h"
@@ -33,14 +33,13 @@ void SelectEdge::mousePressEvent(QMouseEvent *event)
 
 void SelectEdge::mouseMoveEvent(QMouseEvent *event)
 {
-	if (event->button() == Qt::LeftButton && _press_draging)
+    if (event->button() == Qt::LeftButton && _press_draging)
     {
-        QPoint& press_global = _press_pos_global;
+        QPoint &press_global = _press_pos_global;
         QPoint event_global = QCursor::pos();
         QPoint delta = event_global - press_global;
         if (lefting) // 移动 上
         {
-            
         }
         else if (righting) // 移动 下
         {
@@ -53,7 +52,7 @@ void SelectEdge::mouseMoveEvent(QMouseEvent *event)
         {
         }
     }
-    
+
     return QWidget::mouseMoveEvent(event);
 }
 
@@ -76,10 +75,12 @@ void SelectEdge::paintEvent(QPaintEvent *event)
 
     // 直接绘制，不管选择框有没有出现（Hidden时应该不会绘制吧？）
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), EDGE_LINE_SIZE, Qt::blue);                                                           // 上
-    painter.fillRect(0, height() - EDGE_LINE_SIZE, width(), EDGE_LINE_SIZE, Qt::blue);                                   // 下
-    painter.fillRect(0, EDGE_LINE_SIZE, EDGE_LINE_SIZE, height() - EDGE_LINE_SIZE * 2, Qt::blue);                        // 左
-    painter.fillRect(width() - EDGE_LINE_SIZE, EDGE_LINE_SIZE, EDGE_LINE_SIZE, height() - EDGE_LINE_SIZE * 2, Qt::blue); // 右
+    int e = EDGE_LINE_SIZE;
+    QColor c = QColor(36, 171, 242);
+    painter.fillRect(0, 0, width(), e, c);                    // 上
+    painter.fillRect(0, height() - e, width(), e, c);         // 下
+    painter.fillRect(0, e, e, height() - e * 2, c);           // 左
+    painter.fillRect(width() - e, e, e, height() - e * 2, c); // 右
 }
 
 /**
