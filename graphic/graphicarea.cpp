@@ -517,6 +517,12 @@ QRect GraphicArea::getValidRect(QRect rect)
  */
 void GraphicArea::connectShapeEvent(ShapeBase *shape)
 {
+    connect(shape, &ShapeBase::signalRaised, this, [=]{
+        // 假装是刚创建的，保持在最上层，以便于点击穿透逆序遍历时确保控件是从上到下排列的
+        shape_lists.removeOne(shape);
+        shape_lists.append(shape);
+    });
+
     connect(shape, &ShapeBase::signalClicked, this, [=] {
         if (!shape->isEdgeShowed())
         {
@@ -563,8 +569,9 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
 
     connect(shape, &ShapeBase::signalTransparentForMousePressEvents, this, [=](QMouseEvent*event){
         QPoint pos = event->pos() + shape->geometry().topLeft(); // 转换为相对绘图区域的坐标
-        foreach (ShapeBase* s, shape_lists) // 遍历，找到能够传递点击事件的控件
+        for (int i = shape_lists.size()-1; i>=0; --i) // 逆序遍历，找到能够传递点击事件的控件
         {
+            ShapeBase* s = shape_lists.at(i);
             QPoint p = pos - s->geometry().topLeft(); // 相对于内部
             if (s->geometry().contains(pos) && s->hasColor(p)) // 先判断点是否在里面，则会快速很多；否则每次都要渲染一大堆的，严重影响效率
             {

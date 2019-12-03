@@ -210,6 +210,7 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
             _press_moved = false;
             _press_effected = false;
             this->raise(); // 出现在最上层
+            emit signalRaised(); // GraphicArea 全局raise，用来判断点击穿透
             event->accept();
 
             if (QApplication::keyboardModifiers() == Qt::ControlModifier)

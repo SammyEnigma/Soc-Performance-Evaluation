@@ -62,6 +62,7 @@ protected:
 
 signals:
     void signalResized(QSize size);
+    void signalRaised();
     void signalTransparentForMousePressEvents(QMouseEvent* event);
     void signalClicked();
     void signalClickReleased();
