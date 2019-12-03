@@ -200,23 +200,31 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
         return QWidget::mousePressEvent(event);
 
     // 按下选中
-    if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr && hasColor(event->pos()))
+    if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr)
     {
-        _press_pos_global = mapToGlobal(event->pos());
-        _press_topLeft = geometry().topLeft();
-        _pressing = true;
-        _press_moved = false;
-        _press_effected = false;
-        this->raise(); // 出现在最上层
-        event->accept();
+        if (hasColor(event->pos()))
+        {
+            _press_pos_global = mapToGlobal(event->pos());
+            _press_topLeft = geometry().topLeft();
+            _pressing = true;
+            _press_moved = false;
+            _press_effected = false;
+            this->raise(); // 出现在最上层
+            event->accept();
 
-        if (QApplication::keyboardModifiers() == Qt::ControlModifier)
-            emit signalCtrlClicked();
-        else
-            emit signalClicked();
-        return;
+            if (QApplication::keyboardModifiers() == Qt::ControlModifier)
+                emit signalCtrlClicked();
+            else
+                emit signalClicked();
+            return;
+        }
+        else // 手动点击穿透（默认的穿透只能在父子对象中实现，同级不行）
+        {
+            emit signalTransparentForMousePressEvents(event);
+            if (event->isAccepted()) // 已经穿透到其他的形状上了
+                return ;
+        }
     }
-
     return QWidget::mousePressEvent(event);
 }
 
@@ -232,6 +240,12 @@ void ShapeBase::setLightEdgeShowed(bool show)
         _show_light_edge = show;
         update();
     }
+}
+
+void ShapeBase::simulatePress(QMouseEvent *event)
+{
+    event->accept();
+    mousePressEvent(event);
 }
 
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)

@@ -37,6 +37,7 @@ public:
     const QString getText();
     const QPixmap getPixmap();
     void setText(QString text);
+    bool hasColor(QPoint pos); // 某一个点是否有颜色（没有颜色则点击穿透）
     
     // 操作
     void showEdge();
@@ -44,6 +45,7 @@ public:
     bool isEdgeShowed();
     void setPressOperatorEffected();
     void setLightEdgeShowed(bool show);
+    void simulatePress(QMouseEvent* event);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -58,11 +60,9 @@ protected:
     virtual void initDrawArea();                                 // 设置绘制区域大小
     virtual void resizeDrawArea(QSize old_size, QSize new_size); // 调整控件大小时，调整绘制区域的大小
 
-private:
-    bool hasColor(QPoint pos); // 某一个点是否有颜色（没有颜色则点击穿透）
-
 signals:
     void signalResized(QSize size);
+    void signalTransparentForMousePressEvents(QMouseEvent* event);
     void signalClicked();
     void signalClickReleased();
     void signalCtrlClicked();
