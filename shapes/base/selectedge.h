@@ -23,6 +23,8 @@ class SelectEdge : public QWidget
 public:
     SelectEdge(QWidget *parent = nullptr);
 
+    QPainterPath getEdgePath();
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

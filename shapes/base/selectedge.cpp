@@ -132,12 +132,21 @@ void SelectEdge::paintEvent(QPaintEvent *event)
 
     // 直接绘制，不管选择框有没有出现（Hidden时应该不会绘制吧？）
     QPainter painter(this);
+    painter.fillPath(getEdgePath(), QColor(36, 171, 242));
+}
+
+/**
+ * 边缘线的path，直接填充这个部分就是边缘线了
+ */
+QPainterPath SelectEdge::getEdgePath()
+{
+    QPainterPath path;
     int e = EDGE_LINE_SIZE;
-    QColor c = QColor(36, 171, 242);
-    painter.fillRect(0, 0, width(), e, c);                    // 上
-    painter.fillRect(0, height() - e, width(), e, c);         // 下
-    painter.fillRect(0, e, e, height() - e * 2, c);           // 左
-    painter.fillRect(width() - e, e, e, height() - e * 2, c); // 右
+    path.addRect(0, 0, width(), e);
+    path.addRect(0, height() - e, width(), e);
+    path.addRect(0, e, e, height() - e * 2);
+    path.addRect(width() - e, e, e, height() - e * 2);
+    return path;
 }
 
 /**

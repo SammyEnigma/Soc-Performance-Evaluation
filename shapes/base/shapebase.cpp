@@ -122,6 +122,11 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 {
     // 绘制背景
     QPainter painter(this);
+    if (_hovering && QApplication::keyboardModifiers() == Qt::ControlModifier) // 鼠标悬浮+ctrl键，显示形状边缘（便于多选）
+    {
+        // 画四条边的背景
+        painter.fillPath(edge->getEdgePath(), QColor(204,204,255));
+    }
 
     // 一行文字的高度
     QFontMetrics fm(this->font());
@@ -261,6 +266,20 @@ void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
     }
 
     return QWidget::mouseReleaseEvent(event);
+}
+
+void ShapeBase::enterEvent(QEvent *event)
+{
+    _hovering = true;
+    update();
+    return QWidget::enterEvent(event);
+}
+
+void ShapeBase::leaveEvent(QEvent *event)
+{
+    _hovering = false;
+    update();
+    return QWidget::leaveEvent(event);
 }
 
 /**

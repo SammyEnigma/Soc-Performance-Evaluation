@@ -50,6 +50,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void enterEvent(QEvent *event) override;
+    void leaveEvent(QEvent *event) override;
 
     virtual QPainterPath getShapePainterPath();                  // 获取绘图区域（基类）
     virtual void initDrawArea();                                 // 设置绘制区域大小
@@ -84,6 +86,7 @@ private:
     bool _pressing; // 是否正在单击/拖拽本形状
     bool _press_moved; // 这次单击是否移动了
     bool _press_effected; // 按下时特殊操作是否已经生效
+    bool _hovering; // 是否鼠标悬浮期间
 };
 
 #endif // SHAPEBASE_H
