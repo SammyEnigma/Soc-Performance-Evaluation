@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-03 14:46:50
+ * @LastEditTime: 2019-12-03 15:01:17
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -90,6 +90,55 @@ void GraphicArea::select(QList<ShapeBase *> shapes, bool ctrl)
     {
         selected_shapes.append(shape);
         shape->showEdge();
+    }
+}
+
+/**
+ * 选中一个区域内的所有形状
+ * 如果全选了，则取消选择
+ */
+void GraphicArea::select(QRect rect, bool ctrl)
+{
+    if (!ctrl)
+        unselect();
+    
+    // 找到矩形区域内的形状
+    QList<ShapeBase *> in_shapes;
+    foreach (ShapeBase *shape, shape_lists)
+    {
+        if (rect.contains(shape->geometry()))
+            in_shapes.append(shape);
+    }
+
+    // 判断是不是全部选择了
+    bool all_selected = true;
+    foreach (ShapeBase* shape, in_shapes)
+    {
+        if (!selected_shapes.contains(shape))
+        {
+            all_selected = false;
+            break;
+        }
+    }
+
+    if (all_selected) // 已经全选，则全部取消选择
+    {
+        foreach (ShapeBase* shape, in_shapes)
+        {
+            selected_shapes.removeOne(shape);
+            shape->hideEdge();
+        }
+    }
+    else // 没有选中的选择
+    {
+        foreach (ShapeBase* shape, in_shapes)
+        {
+            if (!selected_shapes.contains(shape))
+            {
+                selected_shapes.append(shape);
+                shape->showEdge();
+            }
+        }
     }
 }
 
@@ -193,9 +242,14 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         _press_pos = event->pos();
-        if (rt->current_choosed_shape == nullptr)
+        if (rt->current_choosed_shape == nullptr) // 指针，看情况进行操作
         {
-            // 指针，不进行操作
+            if (QApplication::keyboardModifiers() == Qt::NoModifier) // 单击
+                unselect(); // 直接点击空白处，取消所有选中（后续支持多拽选中）
+            else if (QApplication::keyboardModifiers() == Qt::ControlModifier) // ctrl + 单击
+                ; // ctrl键支持多选，暂不进行操作
+            else if (QApplication::keyboardModifiers() == Qt::AltModifier) // alt + 单击
+                ; // 拖拽移动
         }
         else // 生成形状预览
         {
@@ -229,14 +283,15 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
     // 如果是形状，则拖拽生成一个
     if (event->buttons() & Qt::LeftButton)
     {
-        if (rt->current_choosed_shape == nullptr) // 滚动 scrollArea
+        // 生成表示拖拽的矩形
+        _select_rect = QRect(_press_pos, event->pos());
+        this->update();
+        if (rt->current_choosed_shape == nullptr) // 多选
         {
+            // 如果按下了空格键
         }
-        else // 生成矩形
+        else
         {
-            _select_rect = QRect(_press_pos, event->pos());
-            this->update();
-
             if (_drag_prev_shape != nullptr)
             {
                 if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 && _drag_prev_shape->isHidden()) // 开始显示
@@ -268,6 +323,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
     {
         if (rt->current_choosed_shape == nullptr) // 鼠标，暂时不进行操作
         {
+            select(_select_rect, QApplication::keyboardModifiers() == Qt::ControlModifier);
         }
         else // 形状
         {
@@ -280,8 +336,6 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     _drag_prev_shape = nullptr;
                 }
             }
-            _select_rect = QRect(0, 0, 0, 0);
-            update();
         }
 
         // 判断左键弹起的坐标，如果在外面，则可视区域的大小
@@ -315,6 +369,8 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
         {
             emit signalEnsurePosVisible(event->pos().x(), event->pos().y());
         }
+        _select_rect = QRect(0, 0, 0, 0);
+        update();
 
         autoSave();
         event->accept();

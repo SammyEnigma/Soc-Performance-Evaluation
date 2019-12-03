@@ -39,6 +39,7 @@ public:
     // 操作
     void select(ShapeBase *shape, bool ctrl = false);                                               // 选中一个形状，或者取消选中
     void select(QList<ShapeBase *> shapes, bool ctrl = false);                                      // 选中多个形状
+    void select(QRect rect, bool ctrl = false);                                                     // 选中一个区域内的所有形状
     void unselect(ShapeBase *shape = nullptr, bool ctrl = false);                                   // 取消选择一个形状，或者全不选
     void unselect(QList<ShapeBase *> shapes, bool ctrl = false);                                    // 取消选择多个形状
     void expandViewPort(int delta_x, int delta_y);                                                  // 调整视图的位置
@@ -70,8 +71,9 @@ public:
     QList<ShapeBase *> selected_shapes;
 
 private:
-    QPoint _press_pos;           // 鼠标左键按下的坐标
-    QRect _select_rect;          // 鼠标左键拖拽的形状
+    QPoint _press_pos;  // 鼠标左键按下的坐标
+    QRect _select_rect; // 鼠标左键拖拽的形状
+
     ShapeBase *_drag_prev_shape; // 拖拽生成形状的预览形状，press生成，release时删掉
 };
 
