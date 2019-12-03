@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-03 09:16:52
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-03 10:20:55
+ * @LastEditTime: 2019-12-03 14:05:33
  * @Description: 形状边缘的选择边缘控件，可调整形状的大小
  */
 #include "selectedge.h"
@@ -10,6 +10,7 @@
 SelectEdge::SelectEdge(QWidget *parent)
     : QWidget(parent), widget(parent), _press_pos_global(QPoint(-1, -1)), _press_draging(false)
 {
+    setMouseTracking(true);
 }
 
 void SelectEdge::mousePressEvent(QMouseEvent *event)
@@ -87,6 +88,22 @@ void SelectEdge::mouseMoveEvent(QMouseEvent *event)
 
         event->accept();
         return;
+    }
+    else if (event->buttons()==Qt::NoButton)
+    {
+        // 根据不同的位置变成不同的光标
+        bool t = event->y() <= EDGE_LINE_SIZE, b = event->y() >= height()-EDGE_LINE_SIZE;
+        bool l = event->x() <= EDGE_LINE_SIZE, r = event->x() >= width()-EDGE_LINE_SIZE;
+        if ((t&&l) || (b&&r))
+            setCursor(Qt::SizeFDiagCursor);
+        else if ((t&&r) || (b&&l))
+            setCursor(Qt::SizeBDiagCursor);
+        else if (l||r)
+            setCursor(Qt::SizeHorCursor);
+        else if (t||b)
+            setCursor(Qt::SizeVerCursor);
+        else
+            setCursor(Qt::ArrowCursor);
     }
 
     return QWidget::mouseMoveEvent(event);

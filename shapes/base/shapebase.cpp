@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-03 09:56:15
+ * @LastEditTime: 2019-12-03 14:40:49
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
@@ -12,6 +12,7 @@ ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
 {
     setMinimumSize(32, 32);
     setStyleSheet("background: transparent;"); // 设置之后才可以获取透明背景，实现点击透明区域穿透
+    hideEdge();
 }
 
 ShapeBase::ShapeBase(QString text, QWidget *parent) : ShapeBase(parent)
@@ -58,6 +59,21 @@ const QPixmap ShapeBase::getPixmap()
 void ShapeBase::setText(QString text)
 {
     _text = text;
+}
+
+void ShapeBase::showEdge()
+{
+    edge->show();
+}
+
+void ShapeBase::hideEdge()
+{
+    edge->hide();
+}
+
+bool ShapeBase::isEdgeShowed()
+{
+    return !edge->isHidden();
 }
 
 /**
@@ -183,7 +199,10 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
         this->raise(); // 出现在最上层
         event->accept();
 
-        emit signalSelected(this);
+        if (QApplication::keyboardModifiers() == Qt::ControlModifier)
+            emit signalCtrlClicked(this);
+        else
+            emit signalClicked(this);
         return;
     }
 

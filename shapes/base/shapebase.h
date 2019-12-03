@@ -37,6 +37,11 @@ public:
     const QString getText();
     const QPixmap getPixmap();
     void setText(QString text);
+    
+    // 操作
+    void showEdge();
+    void hideEdge();
+    bool isEdgeShowed();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -54,7 +59,8 @@ private:
 
 signals:
     void signalResized(QSize size);
-    void signalSelected(ShapeBase* shape);
+    void signalClicked(ShapeBase* shape);
+    void signalCtrlClicked(ShapeBase *shape);
     void signalMoved(QPoint delta);
 
 public slots:

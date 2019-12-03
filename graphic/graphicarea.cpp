@@ -2,15 +2,14 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-03 10:01:29
+ * @LastEditTime: 2019-12-03 14:46:50
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
 #include "graphicarea.h"
 
 GraphicArea::GraphicArea(QWidget *parent) : QWidget(parent),
-    selected_shape(nullptr),
-    _press_pos(-1,-1), _select_rect(0,0,0,0), _drag_prev_shape(nullptr)
+                                            _press_pos(-1, -1), _select_rect(0, 0, 0, 0), _drag_prev_shape(nullptr)
 {
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -33,6 +32,7 @@ ShapeBase *GraphicArea::insertShapeByType(ShapeBase *type, QPoint point)
         point = mapFromGlobal(QCursor::pos());
     shape->setGeometry(shape->getSuitableRect(point));
     shape->show();
+    connectShapeEvent(shape);
     return shape;
 }
 
@@ -50,6 +50,7 @@ ShapeBase *GraphicArea::insertShapeByRect(ShapeBase *type, QRect rect)
     rect = getValidRect(rect);
     shape->setGeometry(rect); // 设置为选中区域的大小
     shape->show();
+    connectShapeEvent(shape);
     return shape;
 }
 
@@ -65,36 +66,71 @@ void GraphicArea::autoSave()
 
 /**
  * 选中某一个形状
- * @param shape    要选中的形状
- * @param opposite 如果已经选中，是否允许取消选择
+ * @param shape 要选中的形状
+ * @param ctrl  是否按住ctrl多选
  */
-void GraphicArea::select(ShapeBase *shape, bool opposite)
+void GraphicArea::select(ShapeBase *shape, bool ctrl)
 {
-
+    if (!ctrl) // 只选中这一个，取消全部选择
+        unselect();
+    selected_shapes.append(shape);
+    shape->showEdge();
 }
 
 /**
  * 选中多个形状
  * @param shapes 要选中的形状集合
+ * @param ctrl  是否按住ctrl多选
  */
-void GraphicArea::select(QList<ShapeBase *> shapes)
+void GraphicArea::select(QList<ShapeBase *> shapes, bool ctrl)
 {
-
+    if (!ctrl) // 只选中这一个，取消全部选择
+        unselect();
+    foreach (ShapeBase *shape, shapes)
+    {
+        selected_shapes.append(shape);
+        shape->showEdge();
+    }
 }
 
 /**
- * 取消选中某一个形状
+ * 取消选中某一个形状，或者全部取消选择
  * @param shape 形状实例。如果为空，则取消选择全部
+ * @param ctrl  是否按住ctrl多选
  */
-void GraphicArea::unselect(ShapeBase *shape)
+void GraphicArea::unselect(ShapeBase *shape, bool ctrl)
 {
-    if (shape == nullptr) // 全不选
+	if (shape == nullptr) // 取消全选
     {
-
+        foreach (ShapeBase *shape, selected_shapes)
+        {
+            shape->hideEdge();
+        }
+        selected_shapes.clear();
+        return ;
     }
-    else
-    {
+    if (!ctrl)
+        unselect();
+    selected_shapes.removeOne(shape);
+    shape->hideEdge();
+}
 
+/**
+ * 取消选中多个形状
+ * @param shapes 要取消选中的形状集合
+ * @param ctrl  是否按住ctrl多选
+ */
+void GraphicArea::unselect(QList<ShapeBase *> shapes, bool ctrl)
+{
+    if (!ctrl)
+    {
+        unselect();
+        return ; // 没有必要继续了
+    }
+    foreach (ShapeBase *shape, shapes)
+    {
+        selected_shapes.removeOne(shape);
+        shape->hideEdge();
     }
 }
 
@@ -141,9 +177,9 @@ void GraphicArea::moveShapesPos(int delta_x, int delta_y, QList<ShapeBase *> sha
     if (shapes.size() == 0) // 全选
         shapes = shape_lists;
     if (shapes.size() == 0) // 没有形状
-        return ;
+        return;
 
-    foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase *shape, shapes)
     {
         shape->move(shape->x() + delta_x, shape->y() + delta_y);
     }
@@ -176,11 +212,11 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
 
             // 生成对应位置的预览
             _drag_prev_shape = rt->current_choosed_shape->newInstanceBySelf(this);
-            _drag_prev_shape->setMinimumSize(0,0);
+            _drag_prev_shape->setMinimumSize(0, 0);
             _drag_prev_shape->hide(); // 先隐藏，需要拖拽一段距离才能显示
         }
         event->accept();
-        return ;
+        return;
     }
 
     return QWidget::mousePressEvent(event);
@@ -195,7 +231,6 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
     {
         if (rt->current_choosed_shape == nullptr) // 滚动 scrollArea
         {
-
         }
         else // 生成矩形
         {
@@ -204,23 +239,23 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
 
             if (_drag_prev_shape != nullptr)
             {
-                if ((event->pos()-_press_pos).manhattanLength() > QApplication::startDragDistance()*2 && _drag_prev_shape->isHidden()) // 开始显示
+                if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 && _drag_prev_shape->isHidden()) // 开始显示
                 {
                     _drag_prev_shape->show();
                 }
-                else if ((event->pos()-_press_pos).manhattanLength() <= QApplication::startDragDistance()*2 && !_drag_prev_shape->isHidden()) // 开始隐藏
+                else if ((event->pos() - _press_pos).manhattanLength() <= QApplication::startDragDistance() * 2 && !_drag_prev_shape->isHidden()) // 开始隐藏
                 {
                     _drag_prev_shape->hide();
                 }
 
-                if ((event->pos()-_press_pos).manhattanLength() > QApplication::startDragDistance()*2) // 调整大小
+                if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2) // 调整大小
                 {
                     _drag_prev_shape->setGeometry(getValidRect(_select_rect));
                 }
             }
         }
         event->accept();
-        return ;
+        return;
     }
 
     return QWidget::mouseMoveEvent(event);
@@ -233,11 +268,10 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
     {
         if (rt->current_choosed_shape == nullptr) // 鼠标，暂时不进行操作
         {
-
         }
         else // 形状
         {
-            if ((event->pos()-_press_pos).manhattanLength() > QApplication::startDragDistance()*2) // 拖拽生成形状
+            if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2) // 拖拽生成形状
             {
                 insertShapeByRect(rt->current_choosed_shape, _select_rect);
                 if (_drag_prev_shape != nullptr)
@@ -246,12 +280,12 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     _drag_prev_shape = nullptr;
                 }
             }
-            _select_rect = QRect(0,0,0,0);
+            _select_rect = QRect(0, 0, 0, 0);
             update();
         }
 
         // 判断左键弹起的坐标，如果在外面，则可视区域的大小
-        if (!QRect(0,0,width(),height()).contains(event->pos()))
+        if (!QRect(0, 0, width(), height()).contains(event->pos()))
         {
             int delta_x = 0, delta_y = 0;
             if (event->pos().x() < 0) // 向左扩展/滚动
@@ -284,7 +318,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
 
         autoSave();
         event->accept();
-        return ;
+        return;
     }
 
     return QWidget::mouseReleaseEvent(event);
@@ -295,7 +329,7 @@ void GraphicArea::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 
     QPainter painter(this);
-    if (_select_rect.size() != QSize(0,0))
+    if (_select_rect.size() != QSize(0, 0))
     {
         QColor c = this->palette().color(QPalette::Midlight);
         painter.fillRect(_select_rect, c);
@@ -315,22 +349,45 @@ QRect GraphicArea::getValidRect(QRect rect)
     if (rect.width() < 0) // 需要左右翻转
     {
         rect = QRect(
-                    rect.right(),
-                    rect.top(),
-                    -rect.width(),
-                    rect.height()
-                    );
+            rect.right(),
+            rect.top(),
+            -rect.width(),
+            rect.height());
     }
     if (rect.height() < 0) // 需要上下翻转
     {
         rect = QRect(
-                    rect.left(),
-                    rect.bottom(),
-                    rect.width(),
-                    -rect.height()
-                    );
+            rect.left(),
+            rect.bottom(),
+            rect.width(),
+            -rect.height());
     }
     return rect;
+}
+
+/**
+ * 形状创建后，连接形状的各种事件信号槽
+ * 由于有多种创建形状的方式，所以统一由这里的方法来连接事件
+ */
+void GraphicArea::connectShapeEvent(ShapeBase *shape)
+{
+    connect(shape, &ShapeBase::signalClicked, this, [=](ShapeBase *shape) {
+        if (shape->isEdgeShowed())
+        {
+            if (selected_shapes.size() > 1) // 有多个选择
+                select(shape);
+            else
+                unselect(shape, false);
+        }
+        else
+            select(shape, false);
+    });
+    connect(shape, &ShapeBase::signalCtrlClicked, this, [=](ShapeBase *shape) {
+        if (shape->isEdgeShowed())
+            unselect(shape, true);
+        else
+            select(shape, true);
+    });
 }
 
 /**
@@ -339,8 +396,8 @@ QRect GraphicArea::getValidRect(QRect rect)
 void GraphicArea::slotMenuShowed(const QPoint &pos)
 {
     log("自定义菜单");
-    QMenu* menu = new QMenu("menu", this);
-    QAction* delete_action = new QAction("delete", this);
+    QMenu *menu = new QMenu("menu", this);
+    QAction *delete_action = new QAction("delete", this);
     menu->addAction(delete_action);
 
     // 没有选中形状，禁用删除等菜单
@@ -349,9 +406,8 @@ void GraphicArea::slotMenuShowed(const QPoint &pos)
         delete_action->setEnabled(false);
     }
 
-    connect(delete_action, &QAction::triggered, this, [=]{
+    connect(delete_action, &QAction::triggered, this, [=] {
         log("删除形状 action");
-
     });
 
     // 显示菜单
