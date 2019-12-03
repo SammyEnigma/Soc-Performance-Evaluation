@@ -103,7 +103,7 @@
     </property>
     <widget class="QMenu" name="menuAlign">
      <property name="title">
-      <string>Align</string>
+      <string>Align (&amp;A)</string>
      </property>
      <addaction name="actionAlign_Top"/>
      <addaction name="actionAlign_Left"/>
@@ -141,24 +141,35 @@
     </property>
     <addaction name="actionRun"/>
     <addaction name="actionDebug"/>
+    <addaction name="actionRun_To_Break_B"/>
     <addaction name="separator"/>
     <addaction name="actionStep"/>
+    <addaction name="actionTen_Step_T"/>
+    <addaction name="separator"/>
+    <addaction name="actionOne_Clock_C"/>
+    <addaction name="actionTen_Clock_E"/>
    </widget>
    <widget class="QMenu" name="menu_8">
     <property name="title">
      <string>View (&amp;V)</string>
     </property>
+    <addaction name="actionFull_Screen_F"/>
+    <addaction name="actionRefresh_Shapes_R"/>
+    <addaction name="actionRegresh_Graphics_G"/>
    </widget>
    <widget class="QMenu" name="menu_9">
     <property name="title">
      <string>Tool (&amp;T)</string>
     </property>
+    <addaction name="actionShapes_Directory"/>
+    <addaction name="actionApplication_Directory_A"/>
    </widget>
    <widget class="QMenu" name="menu_10">
     <property name="title">
      <string>Help (&amp;H)</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionGithub_G"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -193,12 +204,12 @@
   </action>
   <action name="actionSave_As">
    <property name="text">
-    <string>Save As</string>
+    <string>Save As (&amp;A)</string>
    </property>
   </action>
   <action name="actionRename">
    <property name="text">
-    <string>Rename</string>
+    <string>Rename (&amp;M)</string>
    </property>
   </action>
   <action name="actionClose">
@@ -253,12 +264,12 @@
   </action>
   <action name="actionBegin_End_Select">
    <property name="text">
-    <string>Begin/End Select</string>
+    <string>Begin/End Select (&amp;B)</string>
    </property>
   </action>
   <action name="actionSet_Read_Only">
    <property name="text">
-    <string>Set Read-Only</string>
+    <string>Set Read-Only (&amp;O)</string>
    </property>
   </action>
   <action name="actionFind">
@@ -268,12 +279,12 @@
   </action>
   <action name="actionFind_Next">
    <property name="text">
-    <string>Find Next</string>
+    <string>Find Next (&amp;N)</string>
    </property>
   </action>
   <action name="actionFind_Previous">
    <property name="text">
-    <string>Find Previous</string>
+    <string>Find Previous (&amp;P)</string>
    </property>
   </action>
   <action name="actionReplace">
@@ -303,17 +314,17 @@
   </action>
   <action name="actionMark_All">
    <property name="text">
-    <string>Mark All</string>
+    <string>Mark All (&amp;A)</string>
    </property>
   </action>
   <action name="actionUnmark_All">
    <property name="text">
-    <string>Unmark All</string>
+    <string>Unmark All (&amp;U)</string>
    </property>
   </action>
   <action name="actionJump_Up">
    <property name="text">
-    <string>Jump Up (&amp;U)</string>
+    <string>Jump Up (&amp;J)</string>
    </property>
   </action>
   <action name="actionJump_Down">
@@ -328,37 +339,37 @@
   </action>
   <action name="actionAlign_Top">
    <property name="text">
-    <string>Align Top</string>
+    <string>Align Top (&amp;T)</string>
    </property>
   </action>
   <action name="actionAlign_Left">
    <property name="text">
-    <string>Align Left</string>
+    <string>Align Left (&amp;L)</string>
    </property>
   </action>
   <action name="actionAlign_Right">
    <property name="text">
-    <string>Align Right</string>
+    <string>Align Right (&amp;R)</string>
    </property>
   </action>
   <action name="actionAlign_Bottom">
    <property name="text">
-    <string>Align Bottom</string>
+    <string>Align Bottom (&amp;B)</string>
    </property>
   </action>
   <action name="actionAlign_Center">
    <property name="text">
-    <string>Align Center</string>
+    <string>Align Center (&amp;C)</string>
    </property>
   </action>
   <action name="actionAlign_HCenter">
    <property name="text">
-    <string>Align HCenter</string>
+    <string>Align HCenter (&amp;H)</string>
    </property>
   </action>
   <action name="actionAlign_VCenter">
    <property name="text">
-    <string>Align VCenter</string>
+    <string>Align VCenter (&amp;V)</string>
    </property>
   </action>
   <action name="actionShape_Base">
@@ -403,7 +414,57 @@
   </action>
   <action name="actionStep">
    <property name="text">
-    <string>Step (&amp;S)</string>
+    <string>One Step (&amp;O)</string>
+   </property>
+  </action>
+  <action name="actionShapes_Directory">
+   <property name="text">
+    <string>Shapes Directory (&amp;S)</string>
+   </property>
+  </action>
+  <action name="actionApplication_Directory_A">
+   <property name="text">
+    <string>Application Directory (&amp;A)</string>
+   </property>
+  </action>
+  <action name="actionGithub_G">
+   <property name="text">
+    <string>Github (&amp;G)</string>
+   </property>
+  </action>
+  <action name="actionTen_Step_T">
+   <property name="text">
+    <string>Ten Step (&amp;T)</string>
+   </property>
+  </action>
+  <action name="actionOne_Clock_C">
+   <property name="text">
+    <string>One Clock (C)</string>
+   </property>
+  </action>
+  <action name="actionTen_Clock_E">
+   <property name="text">
+    <string>Ten Clock (E)</string>
+   </property>
+  </action>
+  <action name="actionFull_Screen_F">
+   <property name="text">
+    <string>Full Screen (&amp;F)</string>
+   </property>
+  </action>
+  <action name="actionRun_To_Break_B">
+   <property name="text">
+    <string>Run To Break (&amp;B)</string>
+   </property>
+  </action>
+  <action name="actionRefresh_Shapes_R">
+   <property name="text">
+    <string>Refresh Shapes (&amp;S)</string>
+   </property>
+  </action>
+  <action name="actionRegresh_Graphics_G">
+   <property name="text">
+    <string>Regresh Graphics (&amp;G)</string>
    </property>
   </action>
  </widget>
