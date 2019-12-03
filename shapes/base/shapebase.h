@@ -28,7 +28,7 @@ public:
     ShapeBase(QString text, QWidget *parent = nullptr);
     ShapeBase(QString text, QPixmap pixmap, QWidget *parent = nullptr);
     ~ShapeBase() override;
-    virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr);
+    virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr); // 根据形状类型创建对应的形状实例
     virtual QRect getSuitableRect(QPoint point); // 从列表拖到绘图区域时，自适应大小和坐标
 
     // 属性
