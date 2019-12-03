@@ -29,6 +29,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     shapes/base/portbase.cpp \
+    shapes/base/selectedge.cpp \
     shapes/base/shapebase.cpp \
     shapes/base/shapelistwidget.cpp
 
@@ -37,6 +38,7 @@ HEADERS += \
     global/usettings.h \
     graphic/graphicarea.h \
     shapes/base/portbase.h \
+    shapes/base/selectedge.h \
     shapes/base/shapelistwidget.h \
     utils/bytearrayutil.h \
     utils/fileutil.h \
