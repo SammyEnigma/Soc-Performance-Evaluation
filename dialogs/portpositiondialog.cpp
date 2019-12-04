@@ -5,39 +5,49 @@ PortPositionDialog::PortPositionDialog(QWidget *widget, PortBase *port) : QDialo
     setMinimumSize(300, 200);
 
     current_point = QPointF(0.5, 0.5);
+
+    initView();
 }
 
 bool PortPositionDialog::getPosition(QWidget *widget, PortBase* port)
 {
     PortPositionDialog* ppd = new PortPositionDialog(widget, port);
-    ppd->exec();
+    return (ppd->exec() == QDialog::Accepted);
 }
 
 void PortPositionDialog::initView()
 {
+    bg_btn = new QPushButton(this);
+    po_btn = new QPushButton(this);
+    bg_btn->setStyleSheet("background-color:rgb(200,200,200); border:none;");
+    po_btn->setStyleSheet("background-color:rgb(50,100,200);");
+    po_btn->setFixedSize(5, 5);
 
+    // 调整端口位置
+    connect(bg_btn, &QPushButton::clicked, this, [=]{
+        QRect rect = bg_btn->geometry();
+        QPoint pos = bg_btn->mapFromGlobal(QCursor::pos());
+        current_point = QPointF(static_cast<double>(pos.x()) / rect.width(), static_cast<double>(pos.y()) / rect.height());
+        adjustPortShowed();
+    });
+
+    // 确定端口位置
+    connect(po_btn, &QPushButton::clicked, this, [=]{
+        port->setPortPosition(current_point.x(), current_point.y());
+        this->accept();
+    });
 }
 
-void PortPositionDialog::paintEvent(QPaintEvent *event)
+void PortPositionDialog::adjustPortShowed()
 {
-    QDialog::paintEvent(event);
-
-    QPainter painter(this);
-    int w = width(), h = height();
-    painter.fillRect(0,0,w,h, qApp->palette().color(QPalette::Background));
-
-    // 绘制边框
-    painter.fillRect(10, 10, w-20, h-20, QColor(200, 200, 200));
-
-    // 绘制端口位置
-    int x = w * current_point.x(), y = h * current_point.y();
-    painter.drawEllipse(x, y, 3, 3);
+    po_btn->move(static_cast<int>(bg_btn->width()*current_point.x()+bg_btn->geometry().left()-po_btn->width()/2),
+                 static_cast<int>(bg_btn->height()*current_point.y()+bg_btn->geometry().top()-po_btn->height()/2));
 }
 
-void PortPositionDialog::mousePressEvent(QMouseEvent *event)
+void PortPositionDialog::resizeEvent(QResizeEvent *event)
 {
-    QDialog::mousePressEvent(event);
+    QDialog::resizeEvent(event);
 
-
-
+    bg_btn->setGeometry(10, 10, width()-20, height()-20);
+    adjustPortShowed();
 }

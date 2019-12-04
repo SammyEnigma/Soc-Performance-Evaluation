@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QList>
 #include <QPushButton>
+#include <QDebug>
 #include "portbase.h"
 
 class PortPositionDialog : public QDialog
@@ -17,12 +18,12 @@ public:
 
     static bool getPosition(QWidget* widget, PortBase* port);
 
+protected:
+    void resizeEvent(QResizeEvent* event) override;
+
 private:
     void initView();
-
-protected:
-    void paintEvent(QPaintEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
+    void adjustPortShowed();
 
 signals:
 
