@@ -21,8 +21,10 @@ INCLUDEPATH += \
     utils \
     shapes/base \
     graphic \
+    dialogs \
 
 SOURCES += \
+    dialogs/portpositiondialog.cpp \
     global/globalvars.cpp \
     global/usettings.cpp \
     graphic/graphicarea.cpp \
@@ -34,6 +36,7 @@ SOURCES += \
     shapes/base/shapelistwidget.cpp
 
 HEADERS += \
+    dialogs/portpositiondialog.h \
     global/settings.h \
     global/usettings.h \
     graphic/graphicarea.h \
