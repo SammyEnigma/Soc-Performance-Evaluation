@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-03 15:01:17
+ * @LastEditTime: 2019-12-04 17:38:01
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -615,17 +615,34 @@ void GraphicArea::slotMenuShowed(const QPoint &)
 {
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
+    QAction* property_action = new QAction("property", this);
     QAction *delete_action = new QAction("delete", this);
     QAction *add_port_action = new QAction("add port", this);
+    menu->addAction(property_action);
+    menu->addSeparator();
     menu->addAction(delete_action);
     menu->addAction(add_port_action);
 
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
     {
+        property_action->setEnabled(false);
         delete_action->setEnabled(false);
         add_port_action->setEnabled(false);
     }
+    // 如果选中了多个
+    else if (selected_shapes.size() > 1)
+    {
+        property_action->setEnabled(false);
+    }
+    
+    connect(property_action, &QAction::triggered, this, [=]{
+        ShapeBase* shape = selected_shapes.last();
+        // 打开属性界面
+        ShapePropertyDialog* spd = new ShapePropertyDialog(shape);
+        spd->exec();
+        spd->deleteLater();
+    });
 
     connect(delete_action, &QAction::triggered, this, [=] {
         log("删除形状 action");

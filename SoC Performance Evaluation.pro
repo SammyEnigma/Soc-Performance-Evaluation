@@ -25,6 +25,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     dialogs/portpositiondialog.cpp \
+    dialogs/shapepropertydialog.cpp \
     global/globalvars.cpp \
     global/usettings.cpp \
     graphic/graphicarea.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
 
 HEADERS += \
     dialogs/portpositiondialog.h \
+    dialogs/shapepropertydialog.h \
     global/settings.h \
     global/usettings.h \
     graphic/graphicarea.h \
@@ -52,7 +54,8 @@ HEADERS += \
     utils/stringutil.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    shapepropertydialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -24,6 +24,7 @@
 #include "fileutil.h"
 #include "stringutil.h"
 #include "portpositiondialog.h"
+#include "shapepropertydialog.h"
 
 class GraphicArea : public QWidget
 {

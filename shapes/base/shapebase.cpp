@@ -39,6 +39,7 @@ ShapeBase *ShapeBase::newInstanceBySelf(QWidget *parent)
     shape->_class = this->_class;
     shape->_text = this->_text;
     shape->_pixmap = this->_pixmap;
+    shape->_text_align = this->_text_align;
     return shape;
 }
 

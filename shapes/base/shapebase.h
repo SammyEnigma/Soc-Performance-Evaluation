@@ -90,6 +90,7 @@ private:
     QRect _area;        // 有效的显示区域（非控件大小）
     QString _class;      // 名字（默认设为前景文字）
     QString _text;      // 前景文字
+    Qt::AlignmentFlag _text_align;
     QPixmap _pixmap;    // 前景图标
     bool _pixmap_scale; // 是否拉伸图标
 
