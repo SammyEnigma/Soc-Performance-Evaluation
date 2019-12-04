@@ -91,19 +91,7 @@ void SelectEdge::mouseMoveEvent(QMouseEvent *event)
     }
     else if (event->buttons()==Qt::NoButton)
     {
-        // 根据不同的位置变成不同的光标
-        bool t = event->y() <= EDGE_LINE_SIZE, b = event->y() >= height()-EDGE_LINE_SIZE;
-        bool l = event->x() <= EDGE_LINE_SIZE, r = event->x() >= width()-EDGE_LINE_SIZE;
-        if ((t&&l) || (b&&r))
-            setCursor(Qt::SizeFDiagCursor);
-        else if ((t&&r) || (b&&l))
-            setCursor(Qt::SizeBDiagCursor);
-        else if (l||r)
-            setCursor(Qt::SizeHorCursor);
-        else if (t||b)
-            setCursor(Qt::SizeVerCursor);
-        else
-            setCursor(Qt::ArrowCursor);
+        adjustCursor(event->pos());
     }
 
     return QWidget::mouseMoveEvent(event);
@@ -133,6 +121,20 @@ void SelectEdge::paintEvent(QPaintEvent *event)
     // 直接绘制，不管选择框有没有出现（Hidden时应该不会绘制吧？）
     QPainter painter(this);
     painter.fillPath(getEdgePath(), QColor(36, 171, 242));
+}
+
+void SelectEdge::enterEvent(QEvent *event)
+{
+    adjustCursor(mapFromGlobal(QCursor::pos()));
+
+    return QWidget::enterEvent(event);
+}
+
+void SelectEdge::leaveEvent(QEvent *event)
+{
+    setCursor(Qt::ArrowCursor);
+
+    return QWidget::leaveEvent(event);
 }
 
 /**
@@ -166,4 +168,21 @@ bool SelectEdge::isInEdge(QPoint pos)
 
     // 在形状非边缘线的内部
     return false;
+}
+
+void SelectEdge::adjustCursor(QPoint p)
+{
+    // 根据不同的位置变成不同的光标
+    bool t = p.y() <= EDGE_LINE_SIZE, b = p.y() >= height()-EDGE_LINE_SIZE;
+    bool l = p.x() <= EDGE_LINE_SIZE, r = p.x() >= width()-EDGE_LINE_SIZE;
+    if ((t&&l) || (b&&r))
+        setCursor(Qt::SizeFDiagCursor);
+    else if ((t&&r) || (b&&l))
+        setCursor(Qt::SizeBDiagCursor);
+    else if (l||r)
+        setCursor(Qt::SizeHorCursor);
+    else if (t||b)
+        setCursor(Qt::SizeVerCursor);
+    else
+        setCursor(Qt::ArrowCursor);
 }

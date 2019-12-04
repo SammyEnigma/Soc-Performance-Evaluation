@@ -17,11 +17,13 @@
 #include <QDebug>
 #include <QMenu>
 #include <QAction>
+#include <QTimer>
 #include "globalvars.h"
 #include "bytearrayutil.h"
 #include "shapebase.h"
 #include "fileutil.h"
 #include "stringutil.h"
+#include "portpositiondialog.h"
 
 class GraphicArea : public QWidget
 {

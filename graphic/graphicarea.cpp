@@ -271,7 +271,9 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
         {
             if (QApplication::keyboardModifiers() == Qt::NoModifier) // 单击
             {
-                unselect(); // 直接点击空白处，取消所有选中（后续支持多拽选中）
+                if (selected_shapes.size() > 0) // shape->hideEdge() 会抢走鼠标焦点(原因未知)，所以这里必须捕捉鼠标（记得要释放）
+                    grabMouse();
+                unselect(); // 直接点击空白处，取消所有选中（支持后续的拖拽选中）
                 _drag_oper = DRAG_NONE;
             }
             else if (QApplication::keyboardModifiers() == Qt::ControlModifier) // ctrl + 单击
@@ -283,6 +285,7 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
                 _drag_oper = DRAG_MOVE; // 拖拽移动
                 setCursor(Qt::ClosedHandCursor);
             }
+            event->accept();
         }
         else // 生成形状预览
         {
@@ -383,6 +386,11 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                 foreach (ShapeBase* shape, shape_lists)
                 {
                     shape->setLightEdgeShowed(false);
+                }
+
+                if (_drag_oper == DRAG_NONE)
+                {
+                    releaseMouse();
                 }
             }
         }
@@ -578,7 +586,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
                 log("鼠标穿透至目标"+s->getName());
                 event->setLocalPos(p);
                 s->simulatePress(event);
-                break;
+                return;
             }
         }
     });
@@ -592,18 +600,39 @@ void GraphicArea::slotMenuShowed(const QPoint &)
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
     QAction *delete_action = new QAction("delete", this);
+    QAction *add_port_action = new QAction("add port", this);
     menu->addAction(delete_action);
+    menu->addAction(add_port_action);
 
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
     {
         delete_action->setEnabled(false);
+        add_port_action->setEnabled(false);
     }
 
     connect(delete_action, &QAction::triggered, this, [=] {
         log("删除形状 action");
         remove();
         autoSave();
+    });
+
+    connect(add_port_action, &QAction::triggered, this, [=]{
+        ShapeBase* shape = selected_shapes.last();
+        if (shape == nullptr)
+            return ;
+
+        // 获取新端口的信息以及其他信息
+        PortBase* port = new PortBase(shape);
+        bool ok = PortPositionDialog::getPosition(shape, port);
+        if (!ok)
+        {
+            delete port;
+            return ;
+        }
+
+        // 添加port
+
     });
 
     // 显示菜单

@@ -8,7 +8,7 @@
 #include "shapebase.h"
 
 ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
-    edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false)
+    edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false)
 {
     setMinimumSize(32, 32);
     setStyleSheet("background: transparent;"); // 设置之后才可以获取透明背景，实现点击透明区域穿透
@@ -221,26 +221,14 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
         }
         else // 手动点击穿透（默认的穿透只能在父子对象中实现，同级不行）
         {
+            _pressing = false;
+            event->setAccepted(false); // 似乎此处原来是true？需要强制设置成false，以便于后面的判断
             emit signalTransparentForMousePressEvents(event);
             if (event->isAccepted()) // 已经穿透到其他的形状上了
                 return ;
         }
     }
     return QWidget::mousePressEvent(event);
-}
-
-void ShapeBase::setPressOperatorEffected()
-{
-    _press_effected = true;
-}
-
-void ShapeBase::setLightEdgeShowed(bool show)
-{
-    if (_show_light_edge != show)
-    {
-        _show_light_edge = show;
-        update();
-    }
 }
 
 void ShapeBase::simulatePress(QMouseEvent *event)
@@ -369,4 +357,18 @@ bool ShapeBase::hasColor(QPoint pos)
         }
     }
     return false;
+}
+
+void ShapeBase::setPressOperatorEffected()
+{
+    _press_effected = true;
+}
+
+void ShapeBase::setLightEdgeShowed(bool show)
+{
+    if (_show_light_edge != show)
+    {
+        _show_light_edge = show;
+        update();
+    }
 }
