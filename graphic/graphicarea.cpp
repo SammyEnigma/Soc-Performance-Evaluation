@@ -630,8 +630,7 @@ void GraphicArea::slotMenuShowed(const QPoint &)
 
         // 获取新端口的信息以及其他信息
         PortBase* port = new PortBase(shape);
-        bool ok = PortPositionDialog::getPortPosition(shape, port);
-        if (!ok)
+        if (!PortPositionDialog::getPortPosition(shape, port))
         {
             delete port;
             return ;

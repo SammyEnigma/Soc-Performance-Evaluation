@@ -95,10 +95,16 @@ void ShapeBase::addPort(PortBase *port)
     
     // 处理端口的事件
     connect(port, &PortBase::signalModifyPosition, this, [=]{
-        
+        // 获取新端口的信息以及其他信息
+        PortPositionDialog::getPortPosition(this, port);
+        adjustPortsPosition();
     });
     connect(port, &PortBase::signalDelete, this, [=]{
-        
+        // 如果已经连接了，则先断开连接
+
+        // 从列表中删除、释放空间
+        ports.removeOne(port);
+        port->deleteLater();
     });
 }
 

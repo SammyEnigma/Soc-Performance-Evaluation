@@ -4,7 +4,7 @@ PortPositionDialog::PortPositionDialog(QWidget *widget, PortBase *port) : QDialo
 {
     setMinimumSize(300, 200);
 
-    current_point = QPointF(0.5, 0.5);
+    current_point = port->getPosition();
 
     initView();
 }

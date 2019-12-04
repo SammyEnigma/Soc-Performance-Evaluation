@@ -16,6 +16,8 @@ PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent)
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotMenuShowed(const QPoint &)));
+
+    prop_pos = QPointF(0.5, 0.5);
 }
 
 void PortBase::setText(QString text)

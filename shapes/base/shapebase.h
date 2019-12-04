@@ -18,6 +18,7 @@
 #include "globalvars.h"
 #include "selectedge.h"
 #include "portbase.h"
+#include "portpositiondialog.h"
 
 #define BORDER_SIZE 2
 
