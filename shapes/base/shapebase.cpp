@@ -418,7 +418,7 @@ void ShapeBase::adjustPortsPosition()
     foreach (PortBase* port, ports)
     {
         int x = static_cast<int>(port->getPosition().x()*width()-port->width()/2);
-        int y = static_cast<int>(port->getPosition().y()*width()-port->height()/2);
+        int y = static_cast<int>(port->getPosition().y()*height()-port->height()/2);
         port->move(x, y);
     }
 }

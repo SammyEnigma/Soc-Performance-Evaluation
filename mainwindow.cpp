@@ -50,16 +50,26 @@ void MainWindow::readFromFile(QString file_path)
 
     int widthest = ui->scrollAreaWidgetContents_2->width(),
         heightest = ui->scrollAreaWidgetContents_2->height();
+
+    int graphic_left = StringUtil::getXmlInt(full_string, "GRAPHIC_LEFT");
+    int graphic_top = StringUtil::getXmlInt(full_string, "GRAPHIC_TOP");
+    int graphic_width = StringUtil::getXmlInt(full_string, "GRAPHIC_WIDTH");
+    int graphic_height = StringUtil::getXmlInt(full_string, "GRAPHIC_HEIGHT");
+    if (graphic_width != 0 && graphic_height != 0)
+        ui->scrollAreaWidgetContents_2->setGeometry(graphic_left, graphic_top, graphic_width, graphic_height);
+
     QStringList shape_string_list = StringUtil::getXmls(full_string, "SHAPE");
     foreach (QString shape_string, shape_string_list)
     {
-        // 因为要控制视图的宽高，所以这一部分就在这里设置了
         QString name = StringUtil::getXml(shape_string, "CLASS");
 
         // 创建形状实例
         ShapeBase* type = ui->listWidget->getShapeByName(name);
         ShapeBase* shape = ui->scrollAreaWidgetContents_2->insertShapeByType(type, QPoint(0,0));
         shape->fromString(shape_string);
+
+        if (StringUtil::getXmlInt(shape_string, "SELECTED") != 0)
+            ui->scrollAreaWidgetContents_2->select(shape, true);
     }
     ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
