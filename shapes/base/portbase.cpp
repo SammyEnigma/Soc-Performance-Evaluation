@@ -43,6 +43,21 @@ void PortBase::updatePosition()
     move(x, y);
 }
 
+void PortBase::fromString(QString s)
+{
+
+}
+
+QString PortBase::toString()
+{
+    QString port_string;
+    QString indent = "\n\t\t";
+
+    port_string.replace("\n", "\n\t\t");
+    port_string = "\n\t<PORT>" + port_string + "\n\t</PORT>";
+    return port_string;
+}
+
 void PortBase::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);

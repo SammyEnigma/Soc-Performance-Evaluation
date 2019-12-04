@@ -35,7 +35,7 @@ public:
     virtual QRect getSuitableRect(QPoint point); // 从列表拖到绘图区域时，自适应大小和坐标
 
     // 属性
-    const QString getName();
+    const QString getClass();
     const QString getText();
     const QPixmap getPixmap();
     void setText(QString text);
@@ -51,6 +51,10 @@ public:
 
     void setPressOperatorEffected();
     void simulatePress(QMouseEvent* event);
+
+    // 保存
+    void fromString(QString s);
+    QString toString();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -84,7 +88,7 @@ public slots:
 
 private:
     QRect _area;        // 有效的显示区域（非控件大小）
-    QString _name;      // 名字（默认设为前景文字）
+    QString _class;      // 名字（默认设为前景文字）
     QString _text;      // 前景文字
     QPixmap _pixmap;    // 前景图标
     bool _pixmap_scale; // 是否拉伸图标

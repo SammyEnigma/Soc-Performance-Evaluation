@@ -18,7 +18,7 @@ ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
 
 ShapeBase::ShapeBase(QString text, QWidget *parent) : ShapeBase(parent)
 {
-    _name = _text = text;
+    _class = _text = text;
 }
 
 ShapeBase::ShapeBase(QString text, QPixmap pixmap, QWidget *parent) : ShapeBase(text, parent)
@@ -36,15 +36,15 @@ ShapeBase::~ShapeBase()
 ShapeBase *ShapeBase::newInstanceBySelf(QWidget *parent)
 {
     ShapeBase *shape = new ShapeBase(parent);
-    shape->_name = this->_name;
+    shape->_class = this->_class;
     shape->_text = this->_text;
     shape->_pixmap = this->_pixmap;
     return shape;
 }
 
-const QString ShapeBase::getName()
+const QString ShapeBase::getClass()
 {
-    return _name;
+    return _class;
 }
 
 const QString ShapeBase::getText()
@@ -88,7 +88,7 @@ void ShapeBase::setLightEdgeShowed(bool show)
 
 void ShapeBase::addPort(PortBase *port)
 {
-    log(_name+"addPort");
+    log(_class+"addPort");
     ports.append(port);
     adjustPortsPosition();
     port->show(); // 不show就默认隐藏了
@@ -101,6 +101,7 @@ void ShapeBase::addPort(PortBase *port)
     });
     connect(port, &PortBase::signalDelete, this, [=]{
         // 如果已经连接了，则先断开连接
+        // 目前没有线，所以暂时不需要动它
 
         // 从列表中删除、释放空间
         ports.removeOne(port);
@@ -281,6 +282,43 @@ void ShapeBase::simulatePress(QMouseEvent *event)
 {
     event->accept();
     mousePressEvent(event);
+}
+
+void ShapeBase::fromString(QString s)
+{
+    int left = StringUtil::getXmlInt(s, "LEFT");
+    int top = StringUtil::getXmlInt(s, "TOP");
+    int width = StringUtil::getXmlInt(s, "WIDTH");
+    int height = StringUtil::getXmlInt(s, "HEIGHT");
+    QString text = StringUtil::getXml(s, "TEXT");
+    QStringList port_list = StringUtil::getXmls(s, "PORT");
+
+    setGeometry(left, top, width, height);
+    setText(text);
+    foreach (QString port_string, port_list)
+    {
+        PortBase* port = new PortBase(this);
+        port->fromString(port_string);
+    }
+}
+
+QString ShapeBase::toString()
+{
+    QString shape_string;
+    QString indent = "\n\t";
+    shape_string += indent + StringUtil::makeXml(geometry().left(), "LEFT");
+    shape_string += indent + StringUtil::makeXml(geometry().top(), "TOP");
+    shape_string += indent + StringUtil::makeXml(geometry().width(), "WIDTH");
+    shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
+    shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
+    shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
+    shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
+    foreach (PortBase* port, ports)
+    {
+        shape_string += port->toString();
+    }
+    shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
+    return shape_string;
 }
 
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)

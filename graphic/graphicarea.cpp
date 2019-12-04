@@ -65,6 +65,16 @@ void GraphicArea::autoSave()
     emit signalAutoSave();
 }
 
+QString GraphicArea::toString()
+{
+    QString full_string;
+    foreach (ShapeBase* shape, shape_lists)
+    {
+        full_string += shape->toString();
+    }
+    return full_string;
+}
+
 /**
  * 选中某一个形状
  * @param shape 要选中的形状
@@ -583,7 +593,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             QPoint p = pos - s->geometry().topLeft(); // 相对于内部
             if (s->geometry().contains(pos) && s->hasColor(p)) // 先判断点是否在里面，则会快速很多；否则每次都要渲染一大堆的，严重影响效率
             {
-                log("鼠标穿透至目标"+s->getName());
+                log("鼠标穿透至目标"+s->getClass());
                 event->setLocalPos(p);
                 s->simulatePress(event);
                 return;
@@ -673,7 +683,7 @@ void GraphicArea::dropEvent(QDropEvent *event)
     {
         int value = ByteArrayUtil::bytesToInt(ba);
         ShapeBase *shape = (ShapeBase *)value;
-        log("拖放：" + shape->getName());
+        log("拖放：" + shape->getClass());
         insertShapeByType(shape);
         autoSave();
 

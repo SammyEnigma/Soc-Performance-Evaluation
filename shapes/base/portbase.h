@@ -17,6 +17,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QDebug>
+#include "stringutil.h"
 
 class PortBase : public QWidget
 {
@@ -28,6 +29,9 @@ public:
     void setPortPosition(double x, double y);
     QPointF getPosition();
     void updatePosition();
+
+    void fromString(QString s);
+    QString toString();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

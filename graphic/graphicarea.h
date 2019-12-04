@@ -43,6 +43,7 @@ public:
 
     void save();
     void autoSave();
+    QString toString();
 
     // 操作
     void select(ShapeBase *shape, bool ctrl = false);                                               // 选中一个形状，或者取消选中

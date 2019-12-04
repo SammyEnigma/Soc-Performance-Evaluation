@@ -27,7 +27,7 @@ ShapeBase *ShapeListWidget::getShapeByName(QString name)
 {
     foreach (ShapeBase *shape, shape_units)
     {
-        if (shape->getName() == name)
+        if (shape->getClass() == name)
         {
             return shape;
         }
@@ -134,7 +134,7 @@ void ShapeListWidget::slotItemChanged(QListWidgetItem *current, QListWidgetItem 
     {
         foreach (ShapeBase *shape, shape_units)
         {
-            if (shape->getName() == name)
+            if (shape->getClass() == name)
             {
                 rt->current_choosed_shape = shape;
                 log("设置形状：" + name);
