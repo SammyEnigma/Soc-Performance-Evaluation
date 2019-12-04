@@ -590,6 +590,12 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             }
         }
     });
+
+    connect(shape, &ShapeBase::signalMenuShowed, this, [=] {
+        // 如果当前没有选中，而在这一个形状上右键的话，则选中这个形状
+        if (selected_shapes.size() == 0 || (selected_shapes.size() == 1 && selected_shapes.last() != shape))
+            select(shape);
+    });
 }
 
 /**

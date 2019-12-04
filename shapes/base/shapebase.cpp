@@ -76,6 +76,20 @@ bool ShapeBase::isEdgeShowed()
     return !edge->isHidden();
 }
 
+void ShapeBase::setLightEdgeShowed(bool show)
+{
+    if (_show_light_edge != show)
+    {
+        _show_light_edge = show;
+        update();
+    }
+}
+
+void ShapeBase::addPort(PortBase *port)
+{
+    ports.append(port);
+}
+
 /**
  * 获取合适的尺寸（根据图标和文字生成的默认尺寸）
  * 宽度取最宽的一个
@@ -228,7 +242,18 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
                 return ;
         }
     }
+    else if (event->button() == Qt::RightButton)
+    {
+        if (hasColor(event->pos()))
+            emit signalMenuShowed();
+    }
+
     return QWidget::mousePressEvent(event);
+}
+
+void ShapeBase::setPressOperatorEffected()
+{
+    _press_effected = true;
 }
 
 void ShapeBase::simulatePress(QMouseEvent *event)
@@ -357,18 +382,4 @@ bool ShapeBase::hasColor(QPoint pos)
         }
     }
     return false;
-}
-
-void ShapeBase::setPressOperatorEffected()
-{
-    _press_effected = true;
-}
-
-void ShapeBase::setLightEdgeShowed(bool show)
-{
-    if (_show_light_edge != show)
-    {
-        _show_light_edge = show;
-        update();
-    }
 }

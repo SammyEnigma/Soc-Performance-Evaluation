@@ -17,6 +17,7 @@
 #include <QImage>
 #include "globalvars.h"
 #include "selectedge.h"
+#include "portbase.h"
 
 #define BORDER_SIZE 2
 
@@ -43,8 +44,11 @@ public:
     void showEdge();
     void hideEdge();
     bool isEdgeShowed();
-    void setPressOperatorEffected();
     void setLightEdgeShowed(bool show);
+
+    void addPort(PortBase* port);
+
+    void setPressOperatorEffected();
     void simulatePress(QMouseEvent* event);
 
 protected:
@@ -70,6 +74,7 @@ signals:
     void signalCtrlClickReleased();
     void signalMoved(int dx, int dy);
     void signalLeftButtonReleased();
+    void signalMenuShowed();
 
 public slots:
 
@@ -80,9 +85,8 @@ private:
     QPixmap _pixmap;    // 前景图标
     bool _pixmap_scale; // 是否拉伸图标
 
-    ShapeBase* current_shape; // 当前选中的形状（多选则为最后一个选中）
-    QList<ShapeBase*> selected_shapes; // 当前选中的形状集合
     SelectEdge* edge;
+    QList<PortBase*> ports;
 
     QPoint _press_pos_global; // 鼠标左键按下时鼠标的全局坐标
     QPoint _press_topLeft;    // 鼠标左键按下时控件的左上角坐标（用来移动）
