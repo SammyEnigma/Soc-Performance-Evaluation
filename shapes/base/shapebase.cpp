@@ -11,7 +11,8 @@ ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
     edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false)
 {
     setMinimumSize(32, 32);
-    setStyleSheet("background: transparent;"); // 设置之后才可以获取透明背景，实现点击透明区域穿透
+    setObjectName("shape"); // 使用ID来设置stylesheet，可以不影响子控件（否则背景透明时菜单背景会变成黑色的）
+    setStyleSheet("QWidget#shape { background: transparent; } "); // 设置之后才可以获取透明背景，实现点击透明区域穿透
     hideEdge();
 }
 

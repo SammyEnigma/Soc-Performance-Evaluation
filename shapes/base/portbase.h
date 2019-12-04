@@ -14,6 +14,9 @@
 #include <QWidget>
 #include <QPainter>
 #include <QPainterPath>
+#include <QMenu>
+#include <QAction>
+#include <QDebug>
 
 class PortBase : public QWidget
 {
@@ -23,14 +26,18 @@ public:
 
     void setText(QString text);
     void setPortPosition(double x, double y);
+    QPointF getPosition();
     void updatePosition();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 signals:
+    void signalModifyPosition();
+    void signalDelete();
 
 public slots:
+    void slotMenuShowed(const QPoint&);
 	
 private:
     QWidget* widget;
