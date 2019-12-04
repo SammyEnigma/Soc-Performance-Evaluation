@@ -87,7 +87,18 @@ void ShapeBase::setLightEdgeShowed(bool show)
 
 void ShapeBase::addPort(PortBase *port)
 {
+    log(_name+"addPort");
     ports.append(port);
+    adjustPortsPosition();
+    port->show(); // 不show就默认隐藏了
+    
+    // 处理端口的事件
+    connect(port, &PortBase::signalModifyPosition, this, [=]{
+        
+    });
+    connect(port, &PortBase::signalDelete, this, [=]{
+        
+    });
 }
 
 /**
@@ -204,6 +215,9 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
 
     // 调整边缘
     edge->setGeometry(0,0,width(),height());
+
+    // 调整端口
+    adjustPortsPosition();
 
     return QWidget::resizeEvent(event);
 }
@@ -352,6 +366,16 @@ void ShapeBase::resizeDrawArea(QSize old_size, QSize new_size)
     Q_UNUSED(old_size)
     Q_UNUSED(new_size)
     _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE * 2, height() - BORDER_SIZE * 2);
+}
+
+void ShapeBase::adjustPortsPosition()
+{
+    foreach (PortBase* port, ports)
+    {
+        int x = static_cast<int>(port->getPosition().x()*width()-port->width()/2);
+        int y = static_cast<int>(port->getPosition().y()*width()-port->height()/2);
+        port->move(x, y);
+    }
 }
 
 /**

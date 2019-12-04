@@ -9,7 +9,7 @@ PortPositionDialog::PortPositionDialog(QWidget *widget, PortBase *port) : QDialo
     initView();
 }
 
-bool PortPositionDialog::getPosition(QWidget *widget, PortBase* port)
+bool PortPositionDialog::getPortPosition(QWidget *widget, PortBase* port)
 {
     PortPositionDialog* ppd = new PortPositionDialog(widget, port);
     return (ppd->exec() == QDialog::Accepted);

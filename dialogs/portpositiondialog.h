@@ -14,9 +14,9 @@ class PortPositionDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit PortPositionDialog(QWidget *widget, PortBase* port);
+    PortPositionDialog(QWidget *widget, PortBase* port);
 
-    static bool getPosition(QWidget* widget, PortBase* port);
+    static bool getPortPosition(QWidget* widget, PortBase* port);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;

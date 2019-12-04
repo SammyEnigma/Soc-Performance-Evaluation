@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-11-29 17:59:59
+ * @LastEditTime: 2019-12-04 10:37:56
  * @Description : 所有形状的基类，包含所有通用API
  */
 #ifndef SHAPEBASE_H
@@ -63,6 +63,9 @@ protected:
     virtual QPainterPath getShapePainterPath();                  // 获取绘图区域（基类）
     virtual void initDrawArea();                                 // 设置绘制区域大小
     virtual void resizeDrawArea(QSize old_size, QSize new_size); // 调整控件大小时，调整绘制区域的大小
+
+private:
+    void adjustPortsPosition();
 
 signals:
     void signalResized(QSize size);

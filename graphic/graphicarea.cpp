@@ -630,7 +630,7 @@ void GraphicArea::slotMenuShowed(const QPoint &)
 
         // 获取新端口的信息以及其他信息
         PortBase* port = new PortBase(shape);
-        bool ok = PortPositionDialog::getPosition(shape, port);
+        bool ok = PortPositionDialog::getPortPosition(shape, port);
         if (!ok)
         {
             delete port;
@@ -638,7 +638,8 @@ void GraphicArea::slotMenuShowed(const QPoint &)
         }
 
         // 添加port
-
+        shape->addPort(port);
+        autoSave();
     });
 
     // 显示菜单
