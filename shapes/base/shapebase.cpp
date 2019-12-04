@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-03 14:40:49
+ * @LastEditTime: 2019-12-04 17:19:53
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
@@ -299,6 +299,7 @@ void ShapeBase::fromString(QString s)
     {
         PortBase* port = new PortBase(this);
         port->fromString(port_string);
+        addPort(port);
     }
 }
 

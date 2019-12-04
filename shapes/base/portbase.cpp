@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:01:12
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-03 16:39:25
+ * @LastEditTime: 2019-12-04 15:26:26
  * @Description: Shape的端口，可用来外接其他Shape
  * 位置是按照比例来存的，所以只保存相对比例而不保存绝对位置
  * 两个Port连接，中间就是一条线（可能是弯曲的线）
@@ -45,15 +45,19 @@ void PortBase::updatePosition()
 
 void PortBase::fromString(QString s)
 {
-
+    QString text = StringUtil::getXml(s, "TEXT");
+    double x = StringUtil::getXml(s, "PROP_POS_X").toDouble();
+    double y = StringUtil::getXml(s, "PROP_POS_Y").toDouble();
+    prop_pos = QPointF(x, y);
+    setText(text);
 }
 
 QString PortBase::toString()
 {
     QString port_string;
     QString indent = "\n\t\t";
-
-    port_string.replace("\n", "\n\t\t");
+    port_string += StringUtil::makeXml(QString::number(prop_pos.x()), "PROP_POS_X");
+    port_string += StringUtil::makeXml(QString::number(prop_pos.y()), "PROP_POS_Y");
     port_string = "\n\t<PORT>" + port_string + "\n\t</PORT>";
     return port_string;
 }
