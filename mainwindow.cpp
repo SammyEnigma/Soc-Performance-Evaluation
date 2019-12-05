@@ -131,8 +131,8 @@ void MainWindow::initView()
             on_actionSave_triggered();
     });
     connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalTurnBackToPointer, this, [=] {
-        if (us->auto_return_pointer)
-            ui->listWidget->setCurrentRow(0); // 实现绘制完一个模块后调色板上的选项回到指针
+        if (us->drag_shape_auto_return)
+            ui->listWidget->recoverDragPrevIndex(); // 实现绘制完一个模块后调色板上的选项回到先前位置
     });
 }
 

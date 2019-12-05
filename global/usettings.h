@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-02 15:29:29
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 15:02:04
+ * @LastEditTime: 2019-12-05 17:42:37
  * @Description: 文件描述
  */
 #ifndef USETTINGS_H
@@ -18,7 +18,7 @@ public:
 
 public:
     bool auto_save = getBool("us/auto_save", false);
-    bool auto_return_pointer = getBool("us/auto_return_pointer", true);
+    bool drag_shape_auto_return = getBool("us/drag_shape_auto_return", true);
 };
 
 #endif // USETTINGS_H

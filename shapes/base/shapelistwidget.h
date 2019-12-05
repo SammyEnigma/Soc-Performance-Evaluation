@@ -31,6 +31,7 @@ public:
     ShapeListWidget(QWidget *parent = nullptr);
 
     ShapeBase* getShapeByName(QString name);
+    void recoverDragPrevIndex();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -51,6 +52,7 @@ private:
 
     QPoint _drag_start_pos;
     bool _has_draged;
+    int _drag_prev_index;
 };
 
 #endif // SHAPELISTWIDGET_H

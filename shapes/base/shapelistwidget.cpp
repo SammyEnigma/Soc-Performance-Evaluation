@@ -2,16 +2,17 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 15:53:37
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 15:24:34
+ * @LastEditTime: 2019-12-05 17:40:43
  * @Description: 左边的形状单元列表框
  */
 #include "shapelistwidget.h"
 
-ShapeListWidget::ShapeListWidget(QWidget *parent) : QListWidget(parent),
-                                                    _has_draged(false)
+ShapeListWidget::ShapeListWidget(QWidget *parent)
+    : QListWidget(parent),
+      _has_draged(false), _drag_prev_index(-1)
 {
     setViewMode(QListView::IconMode); // 设置图标模式
-    
+
     connect(this, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)), this, SLOT(slotItemChanged(QListWidgetItem *, QListWidgetItem *)));
 
     loadShapes();
@@ -35,11 +36,22 @@ ShapeBase *ShapeListWidget::getShapeByName(QString name)
     return nullptr;
 }
 
+void ShapeListWidget::recoverDragPrevIndex()
+{
+    if (_drag_prev_index > -1 && _drag_prev_index < count())
+    {
+        setCurrentRow(_drag_prev_index);
+        _drag_prev_index = -1;
+    }
+}
+
 /**
  * 鼠标按下，记录按下位置，用来结合 mouseMoveEvent 判断拖拽事件
  */
 void ShapeListWidget::mousePressEvent(QMouseEvent *event)
 {
+    _drag_prev_index = currentRow(); // 保存拖拽前的位置
+	
     QListWidget::mousePressEvent(event);
 
     if (event->button() == Qt::LeftButton)
