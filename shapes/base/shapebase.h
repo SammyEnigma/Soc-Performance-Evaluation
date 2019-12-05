@@ -24,6 +24,8 @@
 
 class ShapeBase : public QWidget
 {
+    friend class GraphicArea;
+
     Q_OBJECT
 public:
     // 构造

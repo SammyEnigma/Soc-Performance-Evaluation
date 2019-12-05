@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 15:13:51
+ * @LastEditTime: 2019-12-05 17:08:26
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -87,6 +87,7 @@ void GraphicArea::select(ShapeBase *shape, bool ctrl)
 {
     if (!ctrl) // 只选中这一个，取消全部选择
         unselect();
+    log("select: " + shape->getClass() + "." + shape->getText());
     selected_shapes.append(shape);
     shape->showEdge();
 }
@@ -100,6 +101,7 @@ void GraphicArea::select(QList<ShapeBase *> shapes, bool ctrl)
 {
     if (!ctrl) // 只选中这一个，取消全部选择
         unselect();
+    log("select: " + QString::number(shapes.size()));
     foreach (ShapeBase *shape, shapes)
     {
         selected_shapes.append(shape);
@@ -165,6 +167,10 @@ void GraphicArea::unselect(ShapeBase *shape, bool ctrl)
 {
 	if (shape == nullptr) // 取消全选
     {
+        if (selected_shapes.size() == 0) // 不需要取消选择
+            return ;
+
+        log("取消所有选择: " + QString::number(selected_shapes.size()) + " 个");
         foreach (ShapeBase *shape, selected_shapes)
         {
             shape->hideEdge();
@@ -190,6 +196,7 @@ void GraphicArea::unselect(QList<ShapeBase *> shapes, bool ctrl)
         unselect();
         return ; // 没有必要继续了
     }
+    log("取消所有选择: " + QString::number(selected_shapes.size()) + " 个");
     foreach (ShapeBase *shape, shapes)
     {
         selected_shapes.removeOne(shape);
@@ -721,11 +728,13 @@ void GraphicArea::dropEvent(QDropEvent *event)
         int value = ByteArrayUtil::bytesToInt(ba);
         ShapeBase *shape = (ShapeBase *)value;
         log("拖放：" + shape->getClass());
-        insertShapeByType(shape);
+        shape = insertShapeByType(shape);
         autoSave();
 
         event->accept();
-        emit signalTurnBackToPointer();
+        emit signalTurnBackToPointer(); // 拖放结束后返回之前的状态，以便于选择
+
+        select(shape, QApplication::keyboardModifiers() == Qt::ControlModifier); // 创建后自动选中形状
     }
 
     return QWidget::dropEvent(event);
