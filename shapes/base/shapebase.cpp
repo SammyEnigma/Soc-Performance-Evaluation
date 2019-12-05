@@ -70,7 +70,8 @@ void ShapeBase::setText(QString text)
 
 void ShapeBase::setTextAlign(Qt::Alignment align)
 {
-    _text_align = align;
+    if (align != 0)
+        _text_align = align;
 }
 
 void ShapeBase::showEdge()
@@ -303,10 +304,12 @@ void ShapeBase::fromString(QString s)
     int width = StringUtil::getXmlInt(s, "WIDTH");
     int height = StringUtil::getXmlInt(s, "HEIGHT");
     QString text = StringUtil::getXml(s, "TEXT");
+    int text_align = StringUtil::getXmlInt(s, "TEXT_ALIGN");
     QStringList port_list = StringUtil::getXmls(s, "PORT");
 
     setGeometry(left, top, width, height);
     setText(text);
+    setTextAlign(static_cast<Qt::Alignment>(text_align));
     foreach (QString port_string, port_list)
     {
         PortBase* port = new PortBase(this);
@@ -325,6 +328,7 @@ QString ShapeBase::toString()
     shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
     shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
     shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
+    shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
     shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
     foreach (PortBase* port, ports)
     {

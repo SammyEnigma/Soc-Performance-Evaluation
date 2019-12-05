@@ -645,6 +645,7 @@ void GraphicArea::slotMenuShowed(const QPoint &)
     
     // 形状属性
     connect(property_action, &QAction::triggered, this, [=]{
+        log("打开属性界面");
         ShapeBase* shape = selected_shapes.last();
         // 打开属性界面
         ShapePropertyDialog* spd = new ShapePropertyDialog(shape);

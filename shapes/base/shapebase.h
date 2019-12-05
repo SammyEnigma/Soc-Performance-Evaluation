@@ -20,7 +20,7 @@
 #include "portbase.h"
 #include "portpositiondialog.h"
 
-#define BORDER_SIZE 2
+#define BORDER_SIZE 2 // 边缘padding，用来放调整大小的边界线
 
 class ShapeBase : public QWidget
 {
