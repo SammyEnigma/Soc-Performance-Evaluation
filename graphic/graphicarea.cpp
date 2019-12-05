@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 15:01:57
+ * @LastEditTime: 2019-12-05 15:13:51
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -492,6 +492,10 @@ void GraphicArea::keyPressEvent(QKeyEvent *event)
             return ;
         }
         break;
+    case Qt::Key_Delete :
+    case Qt::Key_Backspace :
+        remove();
+        return ;
     }
 
     return QWidget::keyPressEvent(event);
