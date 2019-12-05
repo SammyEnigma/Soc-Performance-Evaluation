@@ -28,8 +28,9 @@ GraphicArea::GraphicArea(QWidget *parent) : QWidget(parent),
  */
 ShapeBase *GraphicArea::insertShapeByType(ShapeBase *type, QPoint point)
 {
-    log("insertShapeByType");
+    log("GraphicArea::insertShapeByType");
     ShapeBase *shape = type->newInstanceBySelf(this);
+    log("insert finished");
     shape_lists.append(shape);
     if (point == QPoint(-1, -1))
         point = mapFromGlobal(QCursor::pos());

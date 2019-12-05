@@ -92,6 +92,7 @@ void ShapeListWidget::loadShapes()
 
     // 加载自定义形状
     loadCustomShape(new CircleShape(this));
+    loadCustomShape(new EllipseShape(this));
 
     // 遍历文件目录，逐个加载
     QDir dir(rt->SHAPE_PATH);

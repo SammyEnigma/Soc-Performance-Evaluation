@@ -38,6 +38,7 @@ ShapeBase::~ShapeBase()
  */
 ShapeBase *ShapeBase::newInstanceBySelf(QWidget *parent)
 {
+    log("ShapeBase::newInstanceBySelf");
     ShapeBase *shape = new ShapeBase(parent);
     shape->copyDataFrom(this);
     return shape;

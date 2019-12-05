@@ -65,6 +65,11 @@ void MainWindow::readFromFile(QString file_path)
 
         // 创建形状实例
         ShapeBase *type = ui->listWidget->getShapeByName(name);
+        if (type == nullptr) // 没有找到这个类，可能后期被删掉了
+        {
+            log("无法找到形状类：" + name);
+            continue;
+        }
         ShapeBase *shape = ui->scrollAreaWidgetContents_2->insertShapeByType(type, QPoint(0, 0));
         shape->fromString(shape_string);
 

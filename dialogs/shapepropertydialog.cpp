@@ -56,6 +56,7 @@ void ShapePropertyDialog::on_text_color_btn_clicked()
 
         foreach (ShapeBase* shape, shapes) {
             shape->_text_color = c;
+            shape->update();
         }
     });
 

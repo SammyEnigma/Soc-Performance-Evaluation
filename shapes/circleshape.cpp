@@ -2,17 +2,18 @@
 
 CircleShape::CircleShape(QWidget *parent) : ShapeBase(parent)
 {
-    _class = _text = "My Circle";
+    _class = _text = "Circle Class";
 
     QPixmap pixmap(128, 128);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawShapePixmap(painter, QRect(0,0,128,128));
+    drawShapePixmap(painter, QRect(2,2,124,124));
     _pixmap = pixmap;
 }
 
 CircleShape *CircleShape::newInstanceBySelf(QWidget *parent)
 {
+    log("CircleShape::newInstanceBySelf");
     CircleShape* shape = new CircleShape(parent);
     shape->copyDataFrom(this);
     return shape;

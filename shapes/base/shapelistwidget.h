@@ -20,6 +20,7 @@
 #include "fileutil.h"
 #include "bytearrayutil.h"
 #include "circleshape.h"
+#include "ellipseshape.h"
 
 #define MOVING_CURSOR_NAME tr("指针") // 选择控件的鼠标列表项的名字
 
