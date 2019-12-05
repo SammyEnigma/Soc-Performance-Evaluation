@@ -36,7 +36,8 @@ SOURCES += \
     shapes/base/shapebase.cpp \
     shapes/base/shapelistwidget.cpp \
     shapes/circleshape.cpp \
-    shapes/ellipseshape.cpp
+    shapes/ellipseshape.cpp \
+    shapes/hexagonshape.cpp
 
 HEADERS += \
     dialogs/portpositiondialog.h \
@@ -49,6 +50,7 @@ HEADERS += \
     shapes/base/shapelistwidget.h \
     shapes/circleshape.h \
     shapes/ellipseshape.h \
+    shapes/hexagonshape.h \
     utils/bytearrayutil.h \
     utils/fileutil.h \
     global/globalvars.h \

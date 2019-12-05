@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 15:53:37
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 17:40:43
+ * @LastEditTime: 2019-12-05 18:06:14
  * @Description: 左边的形状单元列表框
  */
 #include "shapelistwidget.h"
@@ -105,6 +105,7 @@ void ShapeListWidget::loadShapes()
     // 加载自定义形状
     loadCustomShape(new CircleShape(this));
     loadCustomShape(new EllipseShape(this));
+    loadCustomShape(new HexagonShape(this));
 
     // 遍历文件目录，逐个加载
     QDir dir(rt->SHAPE_PATH);
