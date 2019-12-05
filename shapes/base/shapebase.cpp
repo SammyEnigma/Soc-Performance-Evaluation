@@ -201,7 +201,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
                 static_cast<int>(_pixmap.width() * smaller_prop),
                 static_cast<int>(_pixmap.height() * smaller_prop));
         }
-        painter.drawPixmap(draw_rect, _pixmap);
+        drawShapePixmap(painter, draw_rect);
     }
 
     // 绘制文字
@@ -212,6 +212,11 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     }
 
     return QWidget::paintEvent(event);
+}
+
+void ShapeBase::drawShapePixmap(QPainter &painter, QRect draw_rect)
+{
+    painter.drawPixmap(draw_rect, _pixmap);
 }
 
 void ShapeBase::resizeEvent(QResizeEvent *event)

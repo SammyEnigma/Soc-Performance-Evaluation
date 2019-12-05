@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 15:53:37
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-11-29 17:31:09
+ * @LastEditTime: 2019-12-05 15:24:34
  * @Description: 左边的形状单元列表框
  */
 #include "shapelistwidget.h"
@@ -90,6 +90,9 @@ void ShapeListWidget::loadShapes()
     // 加载默认的鼠标
     new QListWidgetItem(QIcon(":/icons/cursor"), MOVING_CURSOR_NAME, this);
 
+    // 加载自定义形状
+    loadCustomShape(new CircleShape(this));
+
     // 遍历文件目录，逐个加载
     QDir dir(rt->SHAPE_PATH);
     QStringList list = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -97,6 +100,18 @@ void ShapeListWidget::loadShapes()
     {
         loadOneShape(info);
     }
+}
+
+/**
+ * 加载自定义的形状
+ * @param shape
+ */
+void ShapeListWidget::loadCustomShape(ShapeBase *shape)
+{
+    new QListWidgetItem(QIcon(shape->getPixmap()), shape->getText(), this);
+    shape->hide();
+
+    shape_units.append(shape);
 }
 
 /**

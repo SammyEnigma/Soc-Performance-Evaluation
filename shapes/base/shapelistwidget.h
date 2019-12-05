@@ -19,6 +19,7 @@
 #include "shapebase.h"
 #include "fileutil.h"
 #include "bytearrayutil.h"
+#include "circleshape.h"
 
 #define MOVING_CURSOR_NAME tr("指针") // 选择控件的鼠标列表项的名字
 
@@ -36,6 +37,7 @@ protected:
 
 private:
     void loadShapes();                     // 加载所有形状
+    void loadCustomShape(ShapeBase* shape); // 加载自定义的形状
     void loadOneShape(const QString name); // 从文件中读取一个形状
     
 signals:

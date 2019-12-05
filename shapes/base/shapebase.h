@@ -38,10 +38,10 @@ public:
     virtual QRect getSuitableRect(QPoint point);                     // 从列表拖到绘图区域时，自适应大小和坐标
 
     // 属性
-    const QString getClass();
-    const QString getText();
-    const QPixmap getPixmap();
-    void setText(QString text);
+    virtual const QString getClass();
+    virtual const QString getText();
+    virtual const QPixmap getPixmap();
+    virtual void setText(QString text);
     bool hasColor(QPoint pos); // 某一个点是否有颜色（没有颜色则点击穿透）
 
     // 操作
@@ -68,11 +68,12 @@ protected:
     void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
+    virtual void drawShapePixmap(QPainter& painter, QRect draw_rect);
     virtual QPainterPath getShapePainterPath();                  // 获取绘图区域（基类）
     virtual void initDrawArea();                                 // 设置绘制区域大小
     virtual void resizeDrawArea(QSize old_size, QSize new_size); // 调整控件大小时，调整绘制区域的大小
 
-private:
+protected:
     void adjustPortsPosition();
 
 signals:
@@ -89,7 +90,7 @@ signals:
 
 public slots:
 
-private:
+protected:
     QRect _area;               // 有效的显示区域（非控件大小）
     QString _class;            // 名字（默认设为前景文字）
     QString _text;             // 前景文字
