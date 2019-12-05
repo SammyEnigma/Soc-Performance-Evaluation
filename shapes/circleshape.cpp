@@ -14,10 +14,7 @@ CircleShape::CircleShape(QWidget *parent) : ShapeBase(parent)
 CircleShape *CircleShape::newInstanceBySelf(QWidget *parent)
 {
     CircleShape* shape = new CircleShape(parent);
-    shape->_class = this->_class;
-    shape->_text = this->_text;
-    shape->_pixmap = this->_pixmap;
-    shape->_text_align = this->_text_align;
+    shape->copyDataFrom(this);
     return shape;
 }
 
@@ -25,8 +22,7 @@ void CircleShape::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
     QPainterPath path;
     path.addEllipse(draw_rect);
-
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(Qt::gray);
+    painter.setPen(QPen(Qt::gray, 3));
     painter.drawEllipse(draw_rect);
 }

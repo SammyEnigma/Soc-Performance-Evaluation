@@ -39,11 +39,17 @@ ShapeBase::~ShapeBase()
 ShapeBase *ShapeBase::newInstanceBySelf(QWidget *parent)
 {
     ShapeBase *shape = new ShapeBase(parent);
-    shape->_class = this->_class;
-    shape->_text = this->_text;
-    shape->_pixmap = this->_pixmap;
-    shape->_text_align = this->_text_align;
+    shape->copyDataFrom(this);
     return shape;
+}
+
+void ShapeBase::copyDataFrom(ShapeBase *shape)
+{
+    this->_class = shape->_class;
+    this->_text = shape->_text;
+    this->_pixmap = shape->_pixmap;
+//    this->_text_align = shape->_text_align;
+    this->_text_color = shape->_text_color;
 }
 
 const QString ShapeBase::getClass()
@@ -308,8 +314,10 @@ void ShapeBase::fromString(QString s)
 
     setGeometry(left, top, width, height);
     setText(text);
-    _text_align = static_cast<Qt::Alignment>(text_align);
-    _text_color = qvariant_cast<QColor>(text_color);
+    if (text_align != 0)
+        _text_align = static_cast<Qt::Alignment>(text_align);
+    if (_text_color != Qt::transparent)
+        _text_color = qvariant_cast<QColor>(text_color);
 
     foreach (QString port_string, port_list)
     {
@@ -329,7 +337,7 @@ QString ShapeBase::toString()
     shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
     shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
     shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
-    if (_text_align != (Qt::AlignBottom | Qt::AlignHCenter))
+    if (_text_align != (Qt::AlignBottom | Qt::AlignHCenter) && _text_align != 0)
         shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
     if (_text_color != Qt::black)
         shape_string += indent + StringUtil::makeXml(QVariant(_text_color).toString(), "TEXT_COLOR");
