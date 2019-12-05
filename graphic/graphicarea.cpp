@@ -651,6 +651,7 @@ void GraphicArea::slotMenuShowed(const QPoint &)
         if (spd->exec() == QDialog::Accepted)
         {
             shape->setText(spd->ui->text_lineEdit->text());
+            shape->setTextAlign(spd->aligns.at(spd->ui->text_align_comboBox->currentIndex()));
 
             autoSave();
         }

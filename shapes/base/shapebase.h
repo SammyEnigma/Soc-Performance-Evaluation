@@ -31,6 +31,9 @@ public:
     ShapeBase(QString text, QWidget *parent = nullptr);
     ShapeBase(QString text, QPixmap pixmap, QWidget *parent = nullptr);
     ~ShapeBase() override;
+
+    friend class ShapePropertyDialog;
+
     virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr); // 根据形状类型创建对应的形状实例
     virtual QRect getSuitableRect(QPoint point); // 从列表拖到绘图区域时，自适应大小和坐标
 
@@ -38,7 +41,9 @@ public:
     const QString getClass();
     const QString getText();
     const QPixmap getPixmap();
+    const Qt::Alignment getTextAlign();
     void setText(QString text);
+    void setTextAlign(Qt::Alignment align);
     bool hasColor(QPoint pos); // 某一个点是否有颜色（没有颜色则点击穿透）
     
     // 操作
@@ -90,7 +95,7 @@ private:
     QRect _area;        // 有效的显示区域（非控件大小）
     QString _class;      // 名字（默认设为前景文字）
     QString _text;      // 前景文字
-    Qt::AlignmentFlag _text_align;
+    Qt::Alignment _text_align;
     QPixmap _pixmap;    // 前景图标
     bool _pixmap_scale; // 是否拉伸图标
 

@@ -7,7 +7,7 @@
  */
 #include "shapebase.h"
 
-ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _pixmap_scale(false),
+ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _text_align(Qt::AlignBottom|Qt::AlignHCenter), _pixmap_scale(false),
     edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false)
 {
     setMinimumSize(32, 32);
@@ -58,9 +58,19 @@ const QPixmap ShapeBase::getPixmap()
     return _pixmap;
 }
 
+const Qt::Alignment ShapeBase::getTextAlign()
+{
+    return _text_align;
+}
+
 void ShapeBase::setText(QString text)
 {
     _text = text;
+}
+
+void ShapeBase::setTextAlign(Qt::Alignment align)
+{
+    _text_align = align;
 }
 
 void ShapeBase::showEdge()
@@ -166,16 +176,17 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     // 一行文字的高度
     QFontMetrics fm(this->font());
     int spacing = fm.lineSpacing();
+    int text_height = spacing < height() ? spacing : spacing / 2; // 如果连一行文字的高度都不到，最多两个平分高度
 
     // 根据是否有文字判断是否要缩减图标区域
     QRect draw_rect(_area);
-    QRect text_rect(0, _area.height() - spacing, _area.width(), spacing);
+    QRect text_rect = _area;
     if (!_text.isEmpty())
     {
-        int h = draw_rect.height() - spacing;
-        if (h <= 0) // 如果连一行文字的高度都不到，最多两个平分高度
-            h = draw_rect.height() / 2;
-        draw_rect.setHeight(h);
+        if ((_text_align & Qt::AlignTop) || (_text_align & Qt::AlignBottom))
+            draw_rect.setHeight(draw_rect.height() - text_height);
+        if (_text_align & Qt::AlignTop)
+            draw_rect.moveTop(draw_rect.top() + text_height);
     }
 
     // 绘制图标
@@ -203,7 +214,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     // 绘制文字
     if (!_text.isEmpty())
     {
-        painter.drawText(text_rect, Qt::AlignCenter, _text);
+        painter.drawText(text_rect, _text_align, _text);
     }
 
     return QWidget::paintEvent(event);

@@ -16,15 +16,12 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout">
-     <item row="1" column="0">
-      <widget class="QLabel" name="label">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>文本</string>
+        <string>类型</string>
        </property>
       </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="text_lineEdit"/>
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="class_lineEdit">
@@ -33,11 +30,79 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>类型</string>
+        <string>文字</string>
        </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="text_lineEdit"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>文字位置</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="text_align_comboBox">
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentText">
+        <string>下</string>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>上</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>下</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>左</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>右</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>中</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>左上</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>右上</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>左下</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>右下</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

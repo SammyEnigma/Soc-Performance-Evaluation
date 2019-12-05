@@ -14,6 +14,10 @@ ShapePropertyDialog::ShapePropertyDialog(ShapeBase *shape) : QDialog(shape), ui(
     ui->class_lineEdit->setText(shape->getClass());
     ui->text_lineEdit->setText(shape->getText());
 
+    int index = aligns.indexOf(shape->_text_align);
+    ui->text_align_comboBox->setCurrentIndex(index!=-1 ? index : 1/*默认=下*/);
+
+
 }
 
 ShapePropertyDialog::~ShapePropertyDialog()
