@@ -51,6 +51,8 @@ private slots:
 
     void on_text_align_comboBox_activated(int index);
 
+    void on_pixmap_scale_comboBox_activated(int index);
+
 private:
     Ui::ShapePropertyDialog *ui;
 	ShapeBase* shape;

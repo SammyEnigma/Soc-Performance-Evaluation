@@ -92,3 +92,12 @@ void ShapePropertyDialog::on_text_align_comboBox_activated(int index)
         shape->update();
     }
 }
+
+void ShapePropertyDialog::on_pixmap_scale_comboBox_activated(int index)
+{
+    bool scale = (index == 1);
+    foreach (ShapeBase* shape, shapes) {
+        shape->_pixmap_scale = scale;
+        shape->update();
+    }
+}

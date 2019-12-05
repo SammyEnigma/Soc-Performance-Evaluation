@@ -312,13 +312,16 @@ void ShapeBase::fromString(QString s)
     int text_align = StringUtil::getXmlInt(s, "TEXT_ALIGN");
     QStringList port_list = StringUtil::getXmls(s, "PORT");
     QString text_color = StringUtil::getXml(s, "TEXT_COLOR");
+    int pixmap_scale = StringUtil::getXmlInt(s, "PIXMAP_SCALE");
 
     setGeometry(left, top, width, height);
     setText(text);
     if (text_align != 0)
         _text_align = static_cast<Qt::Alignment>(text_align);
-    if (_text_color != Qt::transparent)
+    if (text_color != Qt::transparent)
         _text_color = qvariant_cast<QColor>(text_color);
+    if (pixmap_scale != 0)
+        _pixmap_scale = pixmap_scale;
 
     foreach (QString port_string, port_list)
     {
@@ -346,6 +349,8 @@ QString ShapeBase::toString()
         shape_string += indent + StringUtil::makeXml(_pixmap_name, "PIXMAP_NAME");
     if (_pixmap_color != Qt::transparent)
         shape_string += indent + StringUtil::makeXml(QVariant(_pixmap_color).toString(), "PIXMAP_COLOR");
+    if (_pixmap_scale != 0)
+        shape_string += indent + StringUtil::makeXml(_pixmap_scale, "PIXMAP_SCALE");
     shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
     foreach (PortBase *port, ports)
     {
