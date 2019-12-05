@@ -78,6 +78,7 @@ signals:
 
 public slots:
     void slotMenuShowed(const QPoint &);
+    void slotShapeProperty();
 
 public:
     QList<ShapeBase *> shape_lists; // 添加的形状对象

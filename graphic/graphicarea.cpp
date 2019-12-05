@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 08:59:10
+ * @LastEditTime: 2019-12-05 10:18:13
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -640,24 +640,11 @@ void GraphicArea::slotMenuShowed(const QPoint &)
     // 如果选中了多个
     else if (selected_shapes.size() > 1)
     {
-        property_action->setEnabled(false);
+
     }
     
     // 形状属性
-    connect(property_action, &QAction::triggered, this, [=]{
-        log("打开属性界面");
-        ShapeBase* shape = selected_shapes.last();
-        // 打开属性界面
-        ShapePropertyDialog* spd = new ShapePropertyDialog(shape);
-        if (spd->exec() == QDialog::Accepted)
-        {
-            shape->setText(spd->ui->text_lineEdit->text());
-            shape->setTextAlign(spd->aligns.at(spd->ui->text_align_comboBox->currentIndex()));
-
-            autoSave();
-        }
-        spd->deleteLater();
-    });
+    connect(property_action, &QAction::triggered, this, &GraphicArea::slotShapeProperty);
 
     // 删除形状
     connect(delete_action, &QAction::triggered, this, [=] {
@@ -688,6 +675,15 @@ void GraphicArea::slotMenuShowed(const QPoint &)
     // 显示菜单
     menu->exec(QCursor::pos());
     delete menu;
+}
+
+void GraphicArea::slotShapeProperty()
+{
+    log("打开属性界面");
+    // 打开属性界面
+    ShapePropertyDialog* spd = new ShapePropertyDialog(selected_shapes);
+    spd->exec();
+    spd->deleteLater();
 }
 
 /**

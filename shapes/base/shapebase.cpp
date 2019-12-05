@@ -2,16 +2,19 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-04 17:19:53
+ * @LastEditTime: 2019-12-05 10:29:44
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
 
-ShapeBase::ShapeBase(QWidget *parent) : QWidget(parent), _text_align(Qt::AlignBottom|Qt::AlignHCenter), _pixmap_scale(false),
-    edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false)
+ShapeBase::ShapeBase(QWidget *parent)
+    : QWidget(parent),
+      _text_align(Qt::AlignBottom | Qt::AlignHCenter), _text_color(Qt::black),
+      _pixmap_scale(false), _pixmap_color(Qt::transparent), 
+      edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false)
 {
     setMinimumSize(32, 32);
-    setObjectName("shape"); // 使用ID来设置stylesheet，可以不影响子控件（否则背景透明时菜单背景会变成黑色的）
+    setObjectName("shape");                                       // 使用ID来设置stylesheet，可以不影响子控件（否则背景透明时菜单背景会变成黑色的）
     setStyleSheet("QWidget#shape { background: transparent; } "); // 设置之后才可以获取透明背景，实现点击透明区域穿透
     hideEdge();
 }
@@ -58,20 +61,9 @@ const QPixmap ShapeBase::getPixmap()
     return _pixmap;
 }
 
-const Qt::Alignment ShapeBase::getTextAlign()
-{
-    return _text_align;
-}
-
 void ShapeBase::setText(QString text)
 {
     _text = text;
-}
-
-void ShapeBase::setTextAlign(Qt::Alignment align)
-{
-    if (align != 0)
-        _text_align = align;
 }
 
 void ShapeBase::showEdge()
@@ -100,18 +92,18 @@ void ShapeBase::setLightEdgeShowed(bool show)
 
 void ShapeBase::addPort(PortBase *port)
 {
-    log(_class+"addPort");
+    log(_class + "addPort");
     ports.append(port);
     adjustPortsPosition();
     port->show(); // 不show就默认隐藏了
-    
+
     // 处理端口的事件
-    connect(port, &PortBase::signalModifyPosition, this, [=]{
+    connect(port, &PortBase::signalModifyPosition, this, [=] {
         // 获取新端口的信息以及其他信息
         PortPositionDialog::getPortPosition(this, port);
         adjustPortsPosition();
     });
-    connect(port, &PortBase::signalDelete, this, [=]{
+    connect(port, &PortBase::signalDelete, this, [=] {
         // 如果已经连接了，则先断开连接
         // 目前没有线，所以暂时不需要动它
 
@@ -167,11 +159,11 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 {
     // 绘制背景
     QPainter painter(this);
-    if (_show_light_edge // 外来条件显示
-            || (_hovering && QApplication::keyboardModifiers() == Qt::ControlModifier)) // 鼠标悬浮+ctrl键，显示形状边缘（便于多选）
+    if (_show_light_edge                                                            // 外来条件显示
+        || (_hovering && QApplication::keyboardModifiers() == Qt::ControlModifier)) // 鼠标悬浮+ctrl键，显示形状边缘（便于多选）
     {
         // 画四条边的背景
-        painter.fillPath(edge->getEdgePath(), QColor(204,204,255));
+        painter.fillPath(edge->getEdgePath(), QColor(204, 204, 255));
     }
 
     // 一行文字的高度
@@ -215,6 +207,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     // 绘制文字
     if (!_text.isEmpty())
     {
+        painter.setPen(_text_color);
         painter.drawText(text_rect, _text_align, _text);
     }
 
@@ -235,7 +228,7 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
     }
 
     // 调整边缘
-    edge->setGeometry(0,0,width(),height());
+    edge->setGeometry(0, 0, width(), height());
 
     // 调整端口
     adjustPortsPosition();
@@ -258,7 +251,7 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
             _pressing = true;
             _press_moved = false;
             _press_effected = false;
-            this->raise(); // 出现在最上层
+            this->raise();       // 出现在最上层
             emit signalRaised(); // GraphicArea 全局raise，用来判断点击穿透
             event->accept();
 
@@ -274,7 +267,7 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
             event->setAccepted(false); // 似乎此处原来是true？需要强制设置成false，以便于后面的判断
             emit signalTransparentForMousePressEvents(event);
             if (event->isAccepted()) // 已经穿透到其他的形状上了
-                return ;
+                return;
         }
     }
     else if (event->button() == Qt::RightButton)
@@ -306,13 +299,16 @@ void ShapeBase::fromString(QString s)
     QString text = StringUtil::getXml(s, "TEXT");
     int text_align = StringUtil::getXmlInt(s, "TEXT_ALIGN");
     QStringList port_list = StringUtil::getXmls(s, "PORT");
+    QString text_color = StringUtil::getXml(s, "TEXT_COLOR");
 
     setGeometry(left, top, width, height);
     setText(text);
-    setTextAlign(static_cast<Qt::Alignment>(text_align));
+    _text_align = static_cast<Qt::Alignment>(text_align);
+    _text_color = qvariant_cast<QColor>(text_color);
+
     foreach (QString port_string, port_list)
     {
-        PortBase* port = new PortBase(this);
+        PortBase *port = new PortBase(this);
         port->fromString(port_string);
         addPort(port);
     }
@@ -328,9 +324,16 @@ QString ShapeBase::toString()
     shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
     shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
     shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
-    shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
+    if (_text_align != (Qt::AlignBottom | Qt::AlignHCenter))
+        shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
+    if (_text_color != Qt::black)
+        shape_string += indent + StringUtil::makeXml(QVariant(_text_color).toString(), "TEXT_COLOR");
+    if (!_pixmap_name.isEmpty())
+        shape_string += indent + StringUtil::makeXml(_pixmap_name, "PIXMAP_NAME");
+    if (_pixmap_color != Qt::transparent)
+        shape_string += indent + StringUtil::makeXml(QVariant(_pixmap_color).toString(), "PIXMAP_COLOR");
     shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
-    foreach (PortBase* port, ports)
+    foreach (PortBase *port, ports)
     {
         shape_string += port->toString();
     }
@@ -432,10 +435,10 @@ void ShapeBase::resizeDrawArea(QSize old_size, QSize new_size)
 
 void ShapeBase::adjustPortsPosition()
 {
-    foreach (PortBase* port, ports)
+    foreach (PortBase *port, ports)
     {
-        int x = static_cast<int>(port->getPosition().x()*width()-port->width()/2);
-        int y = static_cast<int>(port->getPosition().y()*height()-port->height()/2);
+        int x = static_cast<int>(port->getPosition().x() * width() - port->width() / 2);
+        int y = static_cast<int>(port->getPosition().y() * height() - port->height() / 2);
         port->move(x, y);
     }
 }
