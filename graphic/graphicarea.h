@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-03 14:34:29
+ * @LastEditTime: 2019-12-05 14:47:31
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -75,6 +75,7 @@ signals:
     void signalScrollToPos(int x, int y);
     void signalEnsurePosVisible(int x, int y);
     void signalScrollAreaScroll(int h, int v);
+    void signalTurnBackToPointer();
 
 public slots:
     void slotMenuShowed(const QPoint &);

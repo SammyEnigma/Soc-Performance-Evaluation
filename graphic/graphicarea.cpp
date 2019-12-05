@@ -1,11 +1,13 @@
+
 /*
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 10:18:13
+ * @LastEditTime: 2019-12-05 15:01:57
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
+
 #include "graphicarea.h"
 
 GraphicArea::GraphicArea(QWidget *parent) : QWidget(parent),
@@ -718,6 +720,7 @@ void GraphicArea::dropEvent(QDropEvent *event)
         autoSave();
 
         event->accept();
+        emit signalTurnBackToPointer();
     }
 
     return QWidget::dropEvent(event);

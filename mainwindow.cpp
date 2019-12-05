@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-27 18:00:02
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-11-29 14:43:25
+ * @LastEditTime: 2019-12-05 14:56:35
  * @Description: 主窗口
  */
 #include "mainwindow.h"
@@ -46,7 +46,7 @@ void MainWindow::readFromFile(QString file_path)
     log("从文件读取：" + file_path);
     QString full_string = FileUtil::readTextFileIfExist(file_path);
     if (full_string.trimmed().isEmpty())
-        return ;
+        return;
 
     int widthest = ui->scrollAreaWidgetContents_2->width(),
         heightest = ui->scrollAreaWidgetContents_2->height();
@@ -64,8 +64,8 @@ void MainWindow::readFromFile(QString file_path)
         QString name = StringUtil::getXml(shape_string, "CLASS");
 
         // 创建形状实例
-        ShapeBase* type = ui->listWidget->getShapeByName(name);
-        ShapeBase* shape = ui->scrollAreaWidgetContents_2->insertShapeByType(type, QPoint(0,0));
+        ShapeBase *type = ui->listWidget->getShapeByName(name);
+        ShapeBase *shape = ui->scrollAreaWidgetContents_2->insertShapeByType(type, QPoint(0, 0));
         shape->fromString(shape_string);
 
         if (StringUtil::getXmlInt(shape_string, "SELECTED") != 0)
@@ -92,38 +92,42 @@ void MainWindow::initView()
     // 其他的在UI设计师中初始化，不需要在重新设置了
 
     // 连接绘图区域信号槽
-    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollToPos, this, [=](int x, int y){
-       if (x != -1)
-           ui->scrollArea->horizontalScrollBar()->setSliderPosition(x);
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollToPos, this, [=](int x, int y) {
+        if (x != -1)
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(x);
 
-       if (y != -1)
-           ui->scrollArea->verticalScrollBar()->setSliderPosition(y);
+        if (y != -1)
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(y);
     });
 
-    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalEnsurePosVisible, this, [=](int x, int y){
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalEnsurePosVisible, this, [=](int x, int y) {
         if (x < ui->scrollArea->horizontalScrollBar()->sliderPosition())
             ui->scrollArea->horizontalScrollBar()->setSliderPosition(x);
         else if (x > ui->scrollArea->horizontalScrollBar()->sliderPosition() + ui->scrollArea->width())
-            ui->scrollArea->horizontalScrollBar()->setSliderPosition(x-ui->scrollArea->width());
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(x - ui->scrollArea->width());
 
         if (y < ui->scrollArea->verticalScrollBar()->sliderPosition())
             ui->scrollArea->verticalScrollBar()->setSliderPosition(y);
         else if (y > ui->scrollArea->verticalScrollBar()->sliderPosition() + ui->scrollArea->height())
-            ui->scrollArea->verticalScrollBar()->setSliderPosition(y-ui->scrollArea->height());
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(y - ui->scrollArea->height());
     });
 
-    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollAreaScroll, this, [=](int h, int v){
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollAreaScroll, this, [=](int h, int v) {
         if (h)
-            ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition()+h);
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + h);
 
         if (v)
-            ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition()+v);
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + v);
     });
 
     connect(ui->scrollAreaWidgetContents_2, SIGNAL(signalSave()), this, SLOT(on_actionSave_triggered()));
-    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalAutoSave, this, [=]{
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalAutoSave, this, [=] {
         if (us->auto_save)
             on_actionSave_triggered();
+    });
+    connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalTurnBackToPointer, this, [=] {
+        if (us->auto_return_pointer)
+            ui->listWidget->setCurrentRow(0); // 实现绘制完一个模块后调色板上的选项回到指针
     });
 }
 

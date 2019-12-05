@@ -80,12 +80,12 @@ void ShapePropertyDialog::on_text_lineEdit_textEdited(const QString &text)
 {
     foreach (ShapeBase* shape, shapes) {
         shape->setText(text);
+        shape->update();
     }
 }
 
 void ShapePropertyDialog::on_text_align_comboBox_activated(int index)
 {
-    qDebug() << "收到信号" << shapes.size();
     foreach (ShapeBase* shape, shapes) {
         shape->_text_align = aligns.at(index);
         shape->update();
