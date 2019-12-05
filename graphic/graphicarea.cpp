@@ -416,7 +416,8 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
         }
         else // 形状
         {
-            if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2) // 拖拽生成形状
+            if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 // 拖拽生成形状
+                && _drag_prev_shape != nullptr ) // ESC取消创建，但是鼠标拖拽事件还在
             {
                 insertShapeByRect(rt->current_choosed_shape, _select_rect);
                 if (_drag_prev_shape != nullptr)
@@ -504,6 +505,15 @@ void GraphicArea::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Backspace :
         remove();
         return ;
+    case Qt::Key_Escape :
+        if (_drag_prev_shape != nullptr)
+        {
+            _drag_prev_shape->deleteLater();
+            _drag_prev_shape = nullptr;
+            _drag_oper = DRAG_NONE;
+            return ;
+        }
+        break;
     }
 
     return QWidget::keyPressEvent(event);
