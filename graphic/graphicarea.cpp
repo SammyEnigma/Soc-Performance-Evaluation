@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-04 17:38:01
+ * @LastEditTime: 2019-12-05 08:59:10
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -483,6 +483,13 @@ void GraphicArea::keyPressEvent(QKeyEvent *event)
             return ;
         }
         break;
+    case Qt::Key_S :
+        if (ctrl && !shift && !alt)
+        {
+            save();
+            return ;
+        }
+        break;
     }
 
     return QWidget::keyPressEvent(event);
@@ -636,20 +643,28 @@ void GraphicArea::slotMenuShowed(const QPoint &)
         property_action->setEnabled(false);
     }
     
+    // 形状属性
     connect(property_action, &QAction::triggered, this, [=]{
         ShapeBase* shape = selected_shapes.last();
         // 打开属性界面
         ShapePropertyDialog* spd = new ShapePropertyDialog(shape);
-        spd->exec();
+        if (spd->exec() == QDialog::Accepted)
+        {
+            shape->setText(spd->ui->text_lineEdit->text());
+
+            autoSave();
+        }
         spd->deleteLater();
     });
 
+    // 删除形状
     connect(delete_action, &QAction::triggered, this, [=] {
         log("删除形状 action");
         remove();
         autoSave();
     });
 
+    // 添加端口
     connect(add_port_action, &QAction::triggered, this, [=]{
         ShapeBase* shape = selected_shapes.last();
         if (shape == nullptr)

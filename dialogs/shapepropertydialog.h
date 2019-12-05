@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QDialog>
 #include "shapebase.h"
+#include "ui_shapepropertydialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,6 +25,10 @@ class ShapePropertyDialog : public QDialog
 public:
     ShapePropertyDialog(ShapeBase *shape);
     ~ShapePropertyDialog();
+
+    friend class MainWindow;
+    friend class GraphicArea;
+    friend class ShapeBase;
 
 signals:
 

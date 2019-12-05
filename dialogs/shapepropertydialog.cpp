@@ -6,11 +6,14 @@
  * @Description: 形状的属性设置对话框
  */
 #include "shapepropertydialog.h"
-#include "ui_shapepropertydialog.h"
 
 ShapePropertyDialog::ShapePropertyDialog(ShapeBase *shape) : QDialog(shape), ui(new Ui::ShapePropertyDialog), shape(shape)
 {
     ui->setupUi(this);
+
+    ui->class_lineEdit->setText(shape->getClass());
+    ui->text_lineEdit->setText(shape->getText());
+
 }
 
 ShapePropertyDialog::~ShapePropertyDialog()
