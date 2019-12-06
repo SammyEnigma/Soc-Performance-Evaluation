@@ -61,7 +61,8 @@ public:
     bool isEdgeShowed();
     void setLightEdgeShowed(bool show);
 
-    void addPort(PortBase *port);
+    virtual void addPort(PortBase *port);
+    QList<PortBase*> getPorts();
 
     void setPressOperatorEffected();
     void simulatePress(QMouseEvent *event);
@@ -99,10 +100,13 @@ signals:
     void signalLeftButtonReleased();
     void signalMenuShowed();
 
+    void signalPortInserted(PortBase* port);
+    void signalPortDeleted(PortBase* port);
+
 public slots:
 
 protected:
-    QString _class;            // 名字（默认设为前景文字）
+    QString _class;            // 形状类名（默认设为前景文字）
     QString _text;             // 前景文字
     Qt::Alignment _text_align; // 文字对齐
     QColor _text_color;        // 文字颜色

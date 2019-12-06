@@ -122,14 +122,14 @@
      <item row="5" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>形状颜色</string>
+        <string>填充颜色</string>
        </property>
       </widget>
      </item>
      <item row="6" column="0">
       <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>形状格式</string>
+        <string>比例格式</string>
        </property>
       </widget>
      </item>
@@ -189,7 +189,11 @@
       </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QSpinBox" name="border_size_spin"/>
+      <widget class="QSpinBox" name="border_size_spin">
+       <property name="value">
+        <number>1</number>
+       </property>
+      </widget>
      </item>
      <item row="8" column="1">
       <widget class="QPushButton" name="border_color_btn">

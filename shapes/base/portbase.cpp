@@ -17,7 +17,30 @@ PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent)
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotMenuShowed(const QPoint &)));
 
-    prop_pos = QPointF(0.5, 0.5);
+    _prop_pos = QPointF(0.5, 0.5);
+}
+
+PortBase *PortBase::newInstanceBySelf(QWidget *parent)
+{
+    PortBase* port = new PortBase(parent);
+    port->_text = this->_text;
+    port->_prop_pos = this->_prop_pos;
+    return port;
+}
+
+void PortBase::setPortId(QString id)
+{
+    _port_id = id;
+}
+
+QString PortBase::getPortId()
+{
+    return _port_id;
+}
+
+QWidget *PortBase::getShape()
+{
+    return widget;
 }
 
 void PortBase::setText(QString text)
@@ -27,19 +50,24 @@ void PortBase::setText(QString text)
 
 void PortBase::setPortPosition(double x, double y)
 {
-    prop_pos = QPointF(x, y);
+    _prop_pos = QPointF(x, y);
     updatePosition();
 }
 
 QPointF PortBase::getPosition()
 {
-    return prop_pos;
+    return _prop_pos;
+}
+
+QPoint PortBase::getGlobalPos()
+{
+    return geometry().center() + widget->geometry().topLeft();
 }
 
 void PortBase::updatePosition()
 {
-    int x = static_cast<int>(prop_pos.x() * widget->width());
-    int y = static_cast<int>(prop_pos.y() * widget->height());
+    int x = static_cast<int>(_prop_pos.x() * widget->width());
+    int y = static_cast<int>(_prop_pos.y() * widget->height());
     move(x, y);
 }
 
@@ -48,7 +76,8 @@ void PortBase::fromString(QString s)
     QString text = StringUtil::getXml(s, "TEXT");
     double x = StringUtil::getXml(s, "PROP_POS_X").toDouble();
     double y = StringUtil::getXml(s, "PROP_POS_Y").toDouble();
-    prop_pos = QPointF(x, y);
+    _prop_pos = QPointF(x, y);
+    _port_id = StringUtil::getXml(s, "PORT_ID");
     setText(text);
 }
 
@@ -56,8 +85,11 @@ QString PortBase::toString()
 {
     QString port_string;
     QString indent = "\n\t\t";
-    port_string += StringUtil::makeXml(QString::number(prop_pos.x()), "PROP_POS_X");
-    port_string += StringUtil::makeXml(QString::number(prop_pos.y()), "PROP_POS_Y");
+    port_string += indent + StringUtil::makeXml(_port_id, "PORT_ID");
+    if (!_text.isEmpty())
+        port_string += indent + StringUtil::makeXml(_text, "TEXT");
+    port_string += indent + StringUtil::makeXml(QString::number(_prop_pos.x()), "PROP_POS_X");
+    port_string += indent + StringUtil::makeXml(QString::number(_prop_pos.y()), "PROP_POS_Y");
     port_string = "\n\t<PORT>" + port_string + "\n\t</PORT>";
     return port_string;
 }
