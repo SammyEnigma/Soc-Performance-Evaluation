@@ -23,6 +23,8 @@ ShapePropertyDialog::ShapePropertyDialog(QList<ShapeBase *> shapes) : QDialog(sh
     ui->text_align_comboBox->setCurrentIndex(index!=-1 ? index : 1/*默认=下*/);
 
     ui->pixmap_scale_combo->setCurrentIndex(shape->_pixmap_scale ? 1 : 0);
+
+    ui->border_size_spin->setValue(shape->_border_size);
 }
 
 ShapePropertyDialog::~ShapePropertyDialog()
