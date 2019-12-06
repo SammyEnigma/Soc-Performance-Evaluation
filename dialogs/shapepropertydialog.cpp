@@ -11,7 +11,12 @@ ShapePropertyDialog::ShapePropertyDialog(QList<ShapeBase *> shapes) : QDialog(sh
 {
     ui->setupUi(this);
 
-    ui->class_lineEdit->setText(shape->getClass());
+    QSet<QString>class_set;
+    foreach (ShapeBase* shape, shapes)
+    {
+        class_set.insert(shape->getClass());
+    }
+    ui->class_lineEdit->setText(class_set.toList().join(", "));
     ui->text_lineEdit->setText(shape->getText());
 
     int index = aligns.indexOf(shape->_text_align);
