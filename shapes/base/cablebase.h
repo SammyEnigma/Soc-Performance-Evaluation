@@ -14,6 +14,8 @@ public:
 
     virtual CableBase* newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual void copyDataFrom(ShapeBase *shape) override;
+    virtual void fromStringAppend(QString s) override;
+    virtual QString toStringAppend() override;
 
     void setPorts(PortBase* p1, PortBase* p2);
 

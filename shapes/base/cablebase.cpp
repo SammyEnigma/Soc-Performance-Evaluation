@@ -47,6 +47,26 @@ void CableBase::copyDataFrom(ShapeBase *shape)
     }
 }
 
+void CableBase::fromStringAppend(QString s)
+{
+    QString line_type = StringUtil::getXml(s, "LINE_TYPE");
+    if (!line_type.isEmpty())
+        _line_type = line_type.toInt();
+}
+
+QString CableBase::toStringAppend()
+{
+    QString string;
+    QString indent = "\n\t";
+    if (from_port != nullptr)
+        string += indent + StringUtil::makeXml(from_port->getPortId(), "FROM_PORT_ID");
+    if (to_port != nullptr)
+        string += indent + StringUtil::makeXml(to_port->getPortId(), "TO_PORT_ID");
+    if (_line_type != DEFAULT_LINE_TYPE)
+        string += indent + StringUtil::makeXml(_line_type, "LINE_TYPE");
+    return string;
+}
+
 void CableBase::setPorts(PortBase *p1, PortBase *p2)
 {
     from_port = p1;

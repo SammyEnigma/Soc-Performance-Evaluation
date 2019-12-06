@@ -101,6 +101,11 @@ void ShapeBase::fromString(QString s)
     }
 }
 
+void ShapeBase::fromStringAppend(QString s)
+{
+    Q_UNUSED(s)
+}
+
 QString ShapeBase::toString()
 {
     QString shape_string;
@@ -127,12 +132,18 @@ QString ShapeBase::toString()
         shape_string += indent + StringUtil::makeXml(QVariant(_border_color).toString(), "BORDER_COLOR");
 
     shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
+    shape_string += toStringAppend();
     foreach (PortBase *port, ports)
     {
         shape_string += port->toString();
     }
     shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
     return shape_string;
+}
+
+QString ShapeBase::toStringAppend()
+{
+    return "";
 }
 
 const QString ShapeBase::getClass()

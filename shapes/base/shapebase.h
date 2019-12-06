@@ -69,7 +69,9 @@ public:
 
     // 保存
     void fromString(QString s);
+    virtual void fromStringAppend(QString s);
     QString toString();
+    virtual QString toStringAppend();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
