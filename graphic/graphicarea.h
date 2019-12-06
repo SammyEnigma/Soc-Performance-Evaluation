@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 15:08:58
+ * @LastEditTime: 2019-12-06 10:11:35
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -89,6 +89,7 @@ private:
     QPoint _press_pos, _press_global_pos;  // 鼠标左键按下的坐标
     QRect _select_rect; // 鼠标左键拖拽的形状
     DragOperator _drag_oper; // 鼠标左键按下的操作，以及决定之后移动、松开的操作
+    bool _press_moved;
     ShapeBase *_drag_prev_shape; // 拖拽生成形状的预览形状，press生成，release时删掉
 };
 

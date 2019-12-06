@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-06 09:39:36
+ * @LastEditTime: 2019-12-06 10:34:42
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
@@ -56,6 +56,83 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
     this->_pixmap_color = shape->_pixmap_color;
     this->_border_size = shape->_border_size;
     this->_border_color = shape->_border_color;
+}
+
+void ShapeBase::fromString(QString s)
+{
+    int left = StringUtil::getXmlInt(s, "LEFT");
+    int top = StringUtil::getXmlInt(s, "TOP");
+    int width = StringUtil::getXmlInt(s, "WIDTH");
+    int height = StringUtil::getXmlInt(s, "HEIGHT");
+    QString text = StringUtil::getXml(s, "TEXT");
+    QString text_align = StringUtil::getXml(s, "TEXT_ALIGN");
+    QString text_color = StringUtil::getXml(s, "TEXT_COLOR");
+    QString pixmap_name = StringUtil::getXml(s, "PIXMAP_NAME");
+    QString pixmap_scale = StringUtil::getXml(s, "PIXMAP_SCALE");
+    QString pixmap_color = StringUtil::getXml(s, "PIXMAP_COLOR");
+    QString border_size = StringUtil::getXml(s, "BORDER_SIZE");
+    QString border_color = StringUtil::getXml(s, "BORDER_COLOR");
+    QStringList port_list = StringUtil::getXmls(s, "PORT");
+
+    setGeometry(left, top, width, height);
+    setText(text);
+    if (!text_align.isEmpty())
+        _text_align = static_cast<Qt::Alignment>(text_align.toInt());
+    if (text_color != Qt::transparent)
+        _text_color = qvariant_cast<QColor>(text_color);
+    if (pixmap_name.isEmpty())
+    {
+        // TODO: 加载图标文件
+        _pixmap_name = pixmap_name;
+    }
+    if (!pixmap_scale.isEmpty())
+        _pixmap_scale = pixmap_scale.toInt();
+    if (!pixmap_color.isEmpty())
+        _pixmap_color = qvariant_cast<QColor>(pixmap_color);
+    if (!border_size.isEmpty())
+        _border_size = border_size.toInt();
+    if (!border_color.isEmpty())
+        _border_color = qvariant_cast<QColor>(border_color);
+    foreach (QString port_string, port_list)
+    {
+        PortBase *port = new PortBase(this);
+        port->fromString(port_string);
+        addPort(port);
+    }
+}
+
+QString ShapeBase::toString()
+{
+    QString shape_string;
+    QString indent = "\n\t";
+    shape_string += indent + StringUtil::makeXml(geometry().left(), "LEFT");
+    shape_string += indent + StringUtil::makeXml(geometry().top(), "TOP");
+    shape_string += indent + StringUtil::makeXml(geometry().width(), "WIDTH");
+    shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
+    shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
+    shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
+    if (_text_align != DEFAULT_TEXT_ALIGN && _text_align != 0)
+        shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
+    if (_text_color != DEFAULT_TEXT_COLOR)
+        shape_string += indent + StringUtil::makeXml(QVariant(_text_color).toString(), "TEXT_COLOR");
+    if (!_pixmap_name.isEmpty())
+        shape_string += indent + StringUtil::makeXml(_pixmap_name, "PIXMAP_NAME");
+    if (_pixmap_scale != DEFAULT_PIXMAP_SCALE)
+        shape_string += indent + StringUtil::makeXml(_pixmap_scale, "PIXMAP_SCALE");
+    if (_pixmap_color != DEFAULT_PIXMAP_COLOR)
+        shape_string += indent + StringUtil::makeXml(QVariant(_pixmap_color).toString(), "PIXMAP_COLOR");
+    if (_border_size != DEFAULT_BORDER_SIZE)
+        shape_string += indent + StringUtil::makeXml(_border_size, "BORDER_SIZE");
+    if (_border_color != DEFAULT_BORDER_COLOR)
+        shape_string += indent + StringUtil::makeXml(QVariant(_border_color).toString(), "BORDER_COLOR");
+
+    shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
+    foreach (PortBase *port, ports)
+    {
+        shape_string += port->toString();
+    }
+    shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
+    return shape_string;
 }
 
 const QString ShapeBase::getClass()
@@ -259,7 +336,7 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
         return QWidget::mousePressEvent(event);
 
     // 按下选中
-    if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr)
+    if (event->button() == Qt::LeftButton && (rt->current_choosed_shape == nullptr || isEdgeShowed()))
     {
         if (hasColor(event->pos()))
         {
@@ -307,87 +384,10 @@ void ShapeBase::simulatePress(QMouseEvent *event)
     mousePressEvent(event);
 }
 
-void ShapeBase::fromString(QString s)
-{
-    int left = StringUtil::getXmlInt(s, "LEFT");
-    int top = StringUtil::getXmlInt(s, "TOP");
-    int width = StringUtil::getXmlInt(s, "WIDTH");
-    int height = StringUtil::getXmlInt(s, "HEIGHT");
-    QString text = StringUtil::getXml(s, "TEXT");
-    QString text_align = StringUtil::getXml(s, "TEXT_ALIGN");
-    QString text_color = StringUtil::getXml(s, "TEXT_COLOR");
-    QString pixmap_name = StringUtil::getXml(s, "PIXMAP_NAME");
-    QString pixmap_scale = StringUtil::getXml(s, "PIXMAP_SCALE");
-    QString pixmap_color = StringUtil::getXml(s, "PIXMAP_COLOR");
-    QString border_size = StringUtil::getXml(s, "BORDER_SIZE");
-    QString border_color = StringUtil::getXml(s, "BORDER_COLOR");
-    QStringList port_list = StringUtil::getXmls(s, "PORT");
-
-    setGeometry(left, top, width, height);
-    setText(text);
-    if (!text_align.isEmpty())
-        _text_align = static_cast<Qt::Alignment>(text_align.toInt());
-    if (text_color != Qt::transparent)
-        _text_color = qvariant_cast<QColor>(text_color);
-    if (pixmap_name.isEmpty())
-    {
-        // TODO: 加载图标文件
-        _pixmap_name = pixmap_name;
-    }
-    if (!pixmap_scale.isEmpty())
-        _pixmap_scale = pixmap_scale.toInt();
-    if (!pixmap_color.isEmpty())
-        _pixmap_color = qvariant_cast<QColor>(pixmap_color);
-    if (!border_size.isEmpty())
-        _border_size = border_size.toInt();
-    if (!border_color.isEmpty())
-        _border_color = qvariant_cast<QColor>(border_color);
-    foreach (QString port_string, port_list)
-    {
-        PortBase *port = new PortBase(this);
-        port->fromString(port_string);
-        addPort(port);
-    }
-}
-
-QString ShapeBase::toString()
-{
-    QString shape_string;
-    QString indent = "\n\t";
-    shape_string += indent + StringUtil::makeXml(geometry().left(), "LEFT");
-    shape_string += indent + StringUtil::makeXml(geometry().top(), "TOP");
-    shape_string += indent + StringUtil::makeXml(geometry().width(), "WIDTH");
-    shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
-    shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
-    shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
-    if (_text_align != DEFAULT_TEXT_ALIGN && _text_align != 0)
-        shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
-    if (_text_color != DEFAULT_TEXT_COLOR)
-        shape_string += indent + StringUtil::makeXml(QVariant(_text_color).toString(), "TEXT_COLOR");
-    if (!_pixmap_name.isEmpty())
-        shape_string += indent + StringUtil::makeXml(_pixmap_name, "PIXMAP_NAME");
-    if (_pixmap_scale != DEFAULT_PIXMAP_SCALE)
-        shape_string += indent + StringUtil::makeXml(_pixmap_scale, "PIXMAP_SCALE");
-    if (_pixmap_color != DEFAULT_PIXMAP_COLOR)
-        shape_string += indent + StringUtil::makeXml(QVariant(_pixmap_color).toString(), "PIXMAP_COLOR");
-    if (_border_size != DEFAULT_BORDER_SIZE)
-        shape_string += indent + StringUtil::makeXml(_border_size, "BORDER_SIZE");
-    if (_border_color != DEFAULT_BORDER_COLOR)
-        shape_string += indent + StringUtil::makeXml(QVariant(_border_color).toString(), "BORDER_COLOR");
-
-    shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
-    foreach (PortBase *port, ports)
-    {
-        shape_string += port->toString();
-    }
-    shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
-    return shape_string;
-}
-
 void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 {
     // 拖拽移动
-    if (event->buttons() & Qt::LeftButton && rt->current_choosed_shape == nullptr && _pressing)
+    if (event->buttons() & Qt::LeftButton && (rt->current_choosed_shape == nullptr || isEdgeShowed()) && _pressing)
     {
         QPoint &press_global = _press_pos_global;                          // 按下时鼠标的全局坐标
         QPoint event_global = QCursor::pos();                              // 当前鼠标的全局坐标
@@ -407,7 +407,7 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
 void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
 {
     // 松开还原
-    if (event->button() == Qt::LeftButton && rt->current_choosed_shape == nullptr && _pressing)
+    if (event->button() == Qt::LeftButton && (rt->current_choosed_shape == nullptr || isEdgeShowed()) && _pressing)
     {
         _press_pos_global = QPoint(-1, -1);
         _press_topLeft = geometry().topLeft();

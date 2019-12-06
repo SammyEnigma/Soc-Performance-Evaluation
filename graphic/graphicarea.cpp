@@ -3,15 +3,16 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 17:08:26
+ * @LastEditTime: 2019-12-06 10:29:44
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
 
 #include "graphicarea.h"
 
-GraphicArea::GraphicArea(QWidget *parent) : QWidget(parent),
-                                            _press_pos(-1, -1), _select_rect(0, 0, 0, 0), _drag_prev_shape(nullptr)
+GraphicArea::GraphicArea(QWidget *parent)
+    : QWidget(parent),
+      _press_pos(-1, -1), _select_rect(0, 0, 0, 0), _press_moved(false), _drag_prev_shape(nullptr)
 {
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -71,7 +72,7 @@ void GraphicArea::autoSave()
 QString GraphicArea::toString()
 {
     QString full_string;
-    foreach (ShapeBase* shape, shape_lists)
+    foreach (ShapeBase *shape, shape_lists)
     {
         full_string += shape->toString();
     }
@@ -117,7 +118,7 @@ void GraphicArea::select(QRect rect, bool ctrl)
 {
     if (!ctrl)
         unselect();
-    
+
     // 找到矩形区域内的形状
     QList<ShapeBase *> in_shapes;
     foreach (ShapeBase *shape, shape_lists)
@@ -128,7 +129,7 @@ void GraphicArea::select(QRect rect, bool ctrl)
 
     // 判断是不是全部选择了
     bool all_selected = true;
-    foreach (ShapeBase* shape, in_shapes)
+    foreach (ShapeBase *shape, in_shapes)
     {
         if (!selected_shapes.contains(shape))
         {
@@ -139,7 +140,7 @@ void GraphicArea::select(QRect rect, bool ctrl)
 
     if (all_selected) // 已经全选，则全部取消选择
     {
-        foreach (ShapeBase* shape, in_shapes)
+        foreach (ShapeBase *shape, in_shapes)
         {
             selected_shapes.removeOne(shape);
             shape->hideEdge();
@@ -147,7 +148,7 @@ void GraphicArea::select(QRect rect, bool ctrl)
     }
     else // 没有选中的选择
     {
-        foreach (ShapeBase* shape, in_shapes)
+        foreach (ShapeBase *shape, in_shapes)
         {
             if (!selected_shapes.contains(shape))
             {
@@ -165,10 +166,10 @@ void GraphicArea::select(QRect rect, bool ctrl)
  */
 void GraphicArea::unselect(ShapeBase *shape, bool ctrl)
 {
-	if (shape == nullptr) // 取消全选
+    if (shape == nullptr) // 取消全选
     {
         if (selected_shapes.size() == 0) // 不需要取消选择
-            return ;
+            return;
 
         log("取消所有选择: " + QString::number(selected_shapes.size()) + " 个");
         foreach (ShapeBase *shape, selected_shapes)
@@ -176,7 +177,7 @@ void GraphicArea::unselect(ShapeBase *shape, bool ctrl)
             shape->hideEdge();
         }
         selected_shapes.clear();
-        return ;
+        return;
     }
     if (!ctrl)
         unselect();
@@ -194,7 +195,7 @@ void GraphicArea::unselect(QList<ShapeBase *> shapes, bool ctrl)
     if (!ctrl)
     {
         unselect();
-        return ; // 没有必要继续了
+        return; // 没有必要继续了
     }
     log("取消所有选择: " + QString::number(selected_shapes.size()) + " 个");
     foreach (ShapeBase *shape, shapes)
@@ -263,13 +264,13 @@ void GraphicArea::remove(ShapeBase *shape)
 {
     if (shape == nullptr) // 删除所选形状
     {
-        foreach (ShapeBase* shape, selected_shapes)
+        foreach (ShapeBase *shape, selected_shapes)
         {
             selected_shapes.removeOne(shape);
             shape_lists.removeOne(shape);
             shape->deleteLater();
         }
-        return ;
+        return;
     }
 
     // 删除单个形状
@@ -287,6 +288,7 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
     {
         _press_pos = event->pos();
         _press_global_pos = QCursor::pos();
+        _press_moved = false;
         if (rt->current_choosed_shape == nullptr) // 指针，看情况进行操作
         {
             if (QApplication::keyboardModifiers() == Qt::NoModifier) // 单击
@@ -309,7 +311,7 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
         }
         else // 生成形状预览
         {
-            this->unselect(); // 取消其余的选中
+            // this->unselect(); // 取消其余的选中
 
             // 如果之前预览没有删掉，则先删掉
             if (_drag_prev_shape != nullptr)
@@ -346,9 +348,9 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         {
             if (_drag_oper == DRAG_MOVE) // 移动视图
             {
-                _select_rect = QRect(0,0,0,0); // 取消显示矩形
+                _select_rect = QRect(0, 0, 0, 0); // 取消显示矩形
                 // 移动滚动条
-                QPoint& prev_gloabl = _press_global_pos;
+                QPoint &prev_gloabl = _press_global_pos;
                 QPoint event_global = QCursor::pos();
                 QPoint delta = event_global - prev_gloabl;
                 prev_gloabl = event_global;
@@ -357,7 +359,7 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
             else // 多选
             {
                 // 显示对应的形状的边框
-                foreach (ShapeBase* shape, shape_lists)
+                foreach (ShapeBase *shape, shape_lists)
                 {
                     shape->setLightEdgeShowed(_select_rect.intersects(shape->geometry()));
                 }
@@ -367,6 +369,13 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         {
             if (_drag_prev_shape != nullptr)
             {
+                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance())
+                {
+                    _press_moved = true;
+                    unselect(); // 开始拖拽，先取消其他形状
+                    grabMouse();
+                }
+                
                 if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 && _drag_prev_shape->isHidden()) // 开始显示
                 {
                     _drag_prev_shape->show();
@@ -403,21 +412,16 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
             else // 多选
             {
                 select(_select_rect, QApplication::keyboardModifiers() == Qt::ControlModifier);
-                foreach (ShapeBase* shape, shape_lists)
+                foreach (ShapeBase *shape, shape_lists)
                 {
                     shape->setLightEdgeShowed(false);
-                }
-
-                if (_drag_oper == DRAG_NONE)
-                {
-                    releaseMouse();
                 }
             }
         }
         else // 形状
         {
             if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 // 拖拽生成形状
-                && _drag_prev_shape != nullptr ) // ESC取消创建，但是鼠标拖拽事件还在
+                && _drag_prev_shape != nullptr)                                                       // ESC取消创建，但是鼠标拖拽事件还在
             {
                 insertShapeByRect(rt->current_choosed_shape, _select_rect);
                 if (_drag_prev_shape != nullptr)
@@ -426,7 +430,24 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     _drag_prev_shape = nullptr;
                 }
             }
+            else if (!_press_moved) // 没有移动，相当于点击
+            {
+                // 判断鼠标下面有没有颜色
+                QPoint pos = event->pos();                        // 转换为相对绘图区域的坐标
+                for (int i = shape_lists.size() - 1; i >= 0; --i) // 逆序遍历，找到能够传递点击事件的控件
+                {
+                    ShapeBase *s = shape_lists.at(i);
+                    QPoint p = pos - s->geometry().topLeft();          // 相对于内部
+                    if (s->geometry().contains(pos) && s->hasColor(p)) // 先判断点是否在里面，则会快速很多；否则每次都要渲染一大堆的，严重影响效率
+                    {
+                        log("!press_moved, 鼠标穿透至选中目标" + s->getClass());
+                        select(s, QApplication::keyboardModifiers() == Qt::ControlModifier);
+                        return;
+                    }
+                }
+            }
         }
+        releaseMouse();
 
         // 判断左键弹起的坐标，如果在外面，则可视区域的大小
         if (!QRect(0, 0, width(), height()).contains(event->pos()))
@@ -484,34 +505,34 @@ void GraphicArea::keyPressEvent(QKeyEvent *event)
         if (ctrl && !shift && !alt)
         {
             select(shape_lists);
-            return ;
+            return;
         }
         break;
-    case Qt::Key_D :
+    case Qt::Key_D:
         if (ctrl && !shift && !alt)
         {
             unselect();
-            return ;
+            return;
         }
         break;
-    case Qt::Key_S :
+    case Qt::Key_S:
         if (ctrl && !shift && !alt)
         {
             save();
-            return ;
+            return;
         }
         break;
-    case Qt::Key_Delete :
-    case Qt::Key_Backspace :
+    case Qt::Key_Delete:
+    case Qt::Key_Backspace:
         remove();
-        return ;
-    case Qt::Key_Escape :
+        return;
+    case Qt::Key_Escape:
         if (_drag_prev_shape != nullptr)
         {
             _drag_prev_shape->deleteLater();
             _drag_prev_shape = nullptr;
             _drag_oper = DRAG_NONE;
-            return ;
+            return;
         }
         break;
     }
@@ -566,7 +587,7 @@ QRect GraphicArea::getValidRect(QRect rect)
  */
 void GraphicArea::connectShapeEvent(ShapeBase *shape)
 {
-    connect(shape, &ShapeBase::signalRaised, this, [=]{
+    connect(shape, &ShapeBase::signalRaised, this, [=] {
         // 假装是刚创建的，保持在最上层，以便于点击穿透逆序遍历时确保控件是从上到下排列的
         shape_lists.removeOne(shape);
         shape_lists.append(shape);
@@ -580,7 +601,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         }
     });
 
-    connect(shape, &ShapeBase::signalClickReleased, this, [=]{
+    connect(shape, &ShapeBase::signalClickReleased, this, [=] {
         if (selected_shapes.size() > 1)
             select(shape);
         else
@@ -603,11 +624,11 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     connect(shape, &ShapeBase::signalMoved, this, [=](int dx, int dy) {
         if (selected_shapes.size() > 1) // 如果有多选（若只选了一个则只有这一个在移动）
         {
-            foreach (ShapeBase* s, selected_shapes) // 遍历每一个选中的，同步移动
+            foreach (ShapeBase *s, selected_shapes) // 遍历每一个选中的，同步移动
             {
                 if (s == shape)
                     continue;
-                s->move(s->geometry().left()+dx, s->geometry().top()+dy);
+                s->move(s->geometry().left() + dx, s->geometry().top() + dy);
             }
         }
     });
@@ -616,15 +637,15 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         autoSave();
     });
 
-    connect(shape, &ShapeBase::signalTransparentForMousePressEvents, this, [=](QMouseEvent*event){
+    connect(shape, &ShapeBase::signalTransparentForMousePressEvents, this, [=](QMouseEvent *event) {
         QPoint pos = event->pos() + shape->geometry().topLeft(); // 转换为相对绘图区域的坐标
-        for (int i = shape_lists.size()-1; i>=0; --i) // 逆序遍历，找到能够传递点击事件的控件
+        for (int i = shape_lists.size() - 1; i >= 0; --i)        // 逆序遍历，找到能够传递点击事件的控件
         {
-            ShapeBase* s = shape_lists.at(i);
-            QPoint p = pos - s->geometry().topLeft(); // 相对于内部
+            ShapeBase *s = shape_lists.at(i);
+            QPoint p = pos - s->geometry().topLeft();          // 相对于内部
             if (s->geometry().contains(pos) && s->hasColor(p)) // 先判断点是否在里面，则会快速很多；否则每次都要渲染一大堆的，严重影响效率
             {
-                log("鼠标穿透至目标"+s->getClass());
+                log("鼠标穿透至目标" + s->getClass());
                 event->setLocalPos(p);
                 s->simulatePress(event);
                 return;
@@ -646,7 +667,7 @@ void GraphicArea::slotMenuShowed(const QPoint &)
 {
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
-    QAction* property_action = new QAction("property", this);
+    QAction *property_action = new QAction("property", this);
     QAction *delete_action = new QAction("delete", this);
     QAction *add_port_action = new QAction("add port", this);
     menu->addAction(property_action);
@@ -664,9 +685,8 @@ void GraphicArea::slotMenuShowed(const QPoint &)
     // 如果选中了多个
     else if (selected_shapes.size() > 1)
     {
-
     }
-    
+
     // 形状属性
     connect(property_action, &QAction::triggered, this, &GraphicArea::slotShapeProperty);
 
@@ -678,17 +698,17 @@ void GraphicArea::slotMenuShowed(const QPoint &)
     });
 
     // 添加端口
-    connect(add_port_action, &QAction::triggered, this, [=]{
-        ShapeBase* shape = selected_shapes.last();
+    connect(add_port_action, &QAction::triggered, this, [=] {
+        ShapeBase *shape = selected_shapes.last();
         if (shape == nullptr)
-            return ;
+            return;
 
         // 获取新端口的信息以及其他信息
-        PortBase* port = new PortBase(shape);
+        PortBase *port = new PortBase(shape);
         if (!PortPositionDialog::getPortPosition(shape, port))
         {
             delete port;
-            return ;
+            return;
         }
 
         // 添加port
@@ -705,7 +725,7 @@ void GraphicArea::slotShapeProperty()
 {
     log("打开属性界面");
     // 打开属性界面
-    ShapePropertyDialog* spd = new ShapePropertyDialog(selected_shapes);
+    ShapePropertyDialog *spd = new ShapePropertyDialog(selected_shapes);
     spd->exec();
     spd->deleteLater();
 }
