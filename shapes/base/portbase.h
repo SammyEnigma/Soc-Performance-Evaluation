@@ -24,7 +24,11 @@ class PortBase : public QWidget
     Q_OBJECT
 public:
     PortBase(QWidget *parent = nullptr);
+    PortBase* newInstanceBySelf(QWidget* parent = nullptr);
 
+    void setPortId(QString id);
+    QString getPortId();
+    QWidget* getShape();
     void setText(QString text);
     void setPortPosition(double x, double y);
     QPointF getPosition();
@@ -46,9 +50,8 @@ public slots:
 private:
     QWidget* widget;
 	QString _text;
-    int portID;
-
-    QPointF prop_pos; // 相对于形状的比例（x比例、y比例）
+    QString _port_id;
+    QPointF _prop_pos; // 相对于形状的比例（x比例、y比例）
 };
 
 #endif // PORTBASE_H

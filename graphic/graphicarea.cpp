@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 11:33:33
+ * @LastEditTime: 2019-12-06 14:33:35
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -371,13 +371,13 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         {
             if (_drag_prev_shape != nullptr)
             {
-                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >=  QApplication::startDragDistance())
+                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
                 {
                     _press_moved = true;
                     unselect(); // 开始拖拽，先取消其他形状
                     grabMouse();
                 }
-                
+
                 if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 && _drag_prev_shape->isHidden()) // 开始显示
                 {
                     _drag_prev_shape->show();
@@ -448,7 +448,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                         return;
                     }
                 }
-                
+
                 // 没有可选择的形状，再次确认取消所有的选中形状
                 unselect();
             }
@@ -683,6 +683,32 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         if (selected_shapes.size() == 0 || (selected_shapes.size() == 1 && selected_shapes.last() != shape))
             select(shape);
     });
+
+    connect(shape, &ShapeBase::signalPortInserted, this, [=](PortBase *port) {
+        if (port->getPortId().isEmpty()) // 这个真的是新手动添加的
+        {
+            port->setPortId(getRandomPortId());
+        }
+        ports_map.insert(port->getPortId(), port);
+    });
+
+    connect(shape, &ShapeBase::signalPortDeleted, this, [=](PortBase *port) {
+        ports_map.remove(port->getPortId());
+    });
+}
+
+QString GraphicArea::getRandomPortId()
+{
+    QString id;
+    QString all_str = "1234567890qwertyuiopasdfghjklzxcvbnm";
+    do
+    {
+        id = "";
+        int x = 10;
+        while (x--)
+            id += all_str.at(rand() % all_str.length());
+    } while (ports_map.contains(id));
+    return id;
 }
 
 /**
@@ -691,7 +717,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
 void GraphicArea::slotMenuShowed(const QPoint &p)
 {
     _press_pos = p; // 用来记录粘贴的位置
-	
+
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
     QAction *property_action = new QAction("Property", this);
@@ -722,6 +748,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     else if (selected_shapes.size() > 1)
     {
         property_action->setText(property_action->text() + " [multi]");
+        add_port_action->setText(add_port_action->text() + " [multi]");
         copy_action->setText(copy_action->text() + " [multi]");
         delete_action->setText(delete_action->text() + " [multi]");
     }
@@ -736,7 +763,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     }
     else
     {
-        paste_action->setText(paste_action->text() + " ("+QString::number(clip_board.count())+")");
+        paste_action->setText(paste_action->text() + " (" + QString::number(clip_board.count()) + ")");
     }
 
     // 形状属性
@@ -748,23 +775,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     connect(delete_action, &QAction::triggered, this, &GraphicArea::actionDelete);
 
     // 添加端口
-    connect(add_port_action, &QAction::triggered, this, [=] {
-        ShapeBase *shape = selected_shapes.last();
-        if (shape == nullptr)
-            return;
-
-        // 获取新端口的信息以及其他信息
-        PortBase *port = new PortBase(shape);
-        if (!PortPositionDialog::getPortPosition(shape, port))
-        {
-            delete port;
-            return;
-        }
-
-        // 添加port
-        shape->addPort(port);
-        autoSave();
-    });
+    connect(add_port_action, &QAction::triggered, this, &GraphicArea::actionInsertPort);
 
     // 显示菜单
     menu->exec(QCursor::pos());
@@ -779,6 +790,30 @@ void GraphicArea::slotShapeProperty()
     ShapePropertyDialog *spd = new ShapePropertyDialog(selected_shapes);
     spd->exec();
     spd->deleteLater();
+    autoSave();
+}
+
+void GraphicArea::actionInsertPort()
+{
+    ShapeBase *shape = selected_shapes.last();
+    if (shape == nullptr)
+        return;
+
+    // 获取新端口的信息以及其他信息
+    PortBase *port = new PortBase(shape);
+    if (!PortPositionDialog::getPortPosition(shape, port)) // 取消添加
+    {
+        delete port;
+        return;
+    }
+
+    // 添加port，支持批量添加，所以放到了外面
+    foreach (ShapeBase *shape, selected_shapes)
+    {
+        shape->addPort(port->newInstanceBySelf(shape));
+    }
+    delete port;
+
     autoSave();
 }
 
@@ -797,7 +832,7 @@ void GraphicArea::actionUnselect()
 void GraphicArea::actionCopy()
 {
     if (selected_shapes.count() == 0) // 没有选中
-        return ;
+        return;
 
     clip_board = selected_shapes;
 }
@@ -805,13 +840,13 @@ void GraphicArea::actionCopy()
 void GraphicArea::actionPaste()
 {
     if (clip_board.count() == 0) // 没有复制的数据
-        return ;
-        
+        return;
+
     // 粘贴到鼠标的位置
     QPoint mouse_pos = _press_pos;
     if (mouse_pos == QPoint(-1, -1))
         mouse_pos = mapFromGlobal(QCursor::pos());
-    
+
     // 确定最左上角的位置
     QPoint copied_topLeft = clip_board.first()->geometry().topLeft();
     foreach (ShapeBase *shape, clip_board)
@@ -822,15 +857,15 @@ void GraphicArea::actionPaste()
             copied_topLeft.setY(shape->geometry().top());
     }
     QPoint offset = mouse_pos - copied_topLeft;
-    
+
     // 开始粘贴
     unselect(); // 取消全选，后续选中粘贴的
-    foreach (ShapeBase* shape, clip_board)
+    foreach (ShapeBase *shape, clip_board)
     {
-        ShapeBase* copied_shape = insertShapeByType(shape);
+        ShapeBase *copied_shape = insertShapeByType(shape);
         copied_shape->copyDataFrom(shape);
         QRect geo = shape->geometry();
-        geo.moveTo(geo.topLeft()+offset);
+        geo.moveTo(geo.topLeft() + offset);
         copied_shape->setGeometry(geo);
         select(copied_shape, true);
     }

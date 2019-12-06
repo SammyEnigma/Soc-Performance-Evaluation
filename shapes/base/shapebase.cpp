@@ -198,8 +198,16 @@ void ShapeBase::addPort(PortBase *port)
 
         // 从列表中删除、释放空间
         ports.removeOne(port);
+        emit signalPortDeleted(port);
         port->deleteLater();
     });
+
+    emit signalPortInserted(port);
+}
+
+QList<PortBase *> ShapeBase::getPorts()
+{
+    return ports;
 }
 
 /**
