@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 10:11:35
+ * @LastEditTime: 2019-12-06 10:52:42
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -80,6 +80,12 @@ signals:
 public slots:
     void slotMenuShowed(const QPoint &);
     void slotShapeProperty();
+    
+    void actionSelectAll();
+    void actionUnselect();
+    void actionCopy();
+    void actionPaste();
+    void actionDelete();
 
 public:
     QList<ShapeBase *> shape_lists; // 添加的形状对象
@@ -91,6 +97,8 @@ private:
     DragOperator _drag_oper; // 鼠标左键按下的操作，以及决定之后移动、松开的操作
     bool _press_moved;
     ShapeBase *_drag_prev_shape; // 拖拽生成形状的预览形状，press生成，release时删掉
+
+    QList<ShapeBase*> clip_board;
 };
 
 #endif // GRAPHICAREA_H

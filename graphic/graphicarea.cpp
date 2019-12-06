@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 10:40:00
+ * @LastEditTime: 2019-12-06 11:14:15
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -268,6 +268,7 @@ void GraphicArea::remove(ShapeBase *shape)
         {
             selected_shapes.removeOne(shape);
             shape_lists.removeOne(shape);
+            clip_board.removeOne(shape);
             shape->deleteLater();
         }
         return;
@@ -276,6 +277,7 @@ void GraphicArea::remove(ShapeBase *shape)
     // 删除单个形状
     selected_shapes.removeOne(shape);
     shape_lists.removeOne(shape);
+    clip_board.removeOne(shape);
     shape->deleteLater();
 }
 
@@ -504,17 +506,31 @@ void GraphicArea::keyPressEvent(QKeyEvent *event)
 
     switch (key)
     {
-    case Qt::Key_A: // 全选
+    case Qt::Key_A:
         if (ctrl && !shift && !alt)
         {
-            select(shape_lists);
+            actionSelectAll();
+            return;
+        }
+        break;
+    case Qt::Key_C:
+        if (ctrl && !shift && !alt)
+        {
+            actionCopy();
+            return;
+        }
+        break;
+    case Qt::Key_V:
+        if (ctrl && !shift && !alt)
+        {
+            actionPaste();
             return;
         }
         break;
     case Qt::Key_D:
         if (ctrl && !shift && !alt)
         {
-            unselect();
+            actionUnselect();
             return;
         }
         break;
@@ -527,7 +543,7 @@ void GraphicArea::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Delete:
     case Qt::Key_Backspace:
-        remove();
+        actionDelete();
         return;
     case Qt::Key_Escape:
         if (_drag_prev_shape != nullptr)
@@ -670,35 +686,53 @@ void GraphicArea::slotMenuShowed(const QPoint &)
 {
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
-    QAction *property_action = new QAction("property", this);
-    QAction *delete_action = new QAction("delete", this);
-    QAction *add_port_action = new QAction("add port", this);
+    QAction *property_action = new QAction("Property", this);
+    QAction *add_port_action = new QAction("Add Port", this);
+    QAction *select_all_action = new QAction("Select All", this);
+    QAction *copy_action = new QAction("Copy", this);
+    QAction *paste_action = new QAction("Paste", this);
+    QAction *delete_action = new QAction("Delete", this);
     menu->addAction(property_action);
     menu->addSeparator();
-    menu->addAction(delete_action);
     menu->addAction(add_port_action);
+    menu->addSeparator();
+    menu->addAction(select_all_action);
+    menu->addAction(copy_action);
+    menu->addAction(paste_action);
+    menu->addAction(delete_action);
+    menu->addAction(delete_action);
 
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
     {
         property_action->setEnabled(false);
+        copy_action->setEnabled(false);
         delete_action->setEnabled(false);
         add_port_action->setEnabled(false);
     }
     // 如果选中了多个
     else if (selected_shapes.size() > 1)
     {
+        property_action->setText(property_action->text() + " [multi]");
+        copy_action->setText(copy_action->text() + " [multi]");
+        delete_action->setText(delete_action->text() + " [multi]");
+    }
+    if (selected_shapes.count() == shape_lists.count())
+    {
+        select_all_action->setEnabled(false);
+    }
+    if (clip_board.count() == 0)
+    {
+        paste_action->setEnabled(false);
     }
 
     // 形状属性
     connect(property_action, &QAction::triggered, this, &GraphicArea::slotShapeProperty);
 
-    // 删除形状
-    connect(delete_action, &QAction::triggered, this, [=] {
-        log("删除形状 action");
-        remove();
-        autoSave();
-    });
+    connect(select_all_action, &QAction::triggered, this, &GraphicArea::actionSelectAll);
+    connect(copy_action, &QAction::triggered, this, &GraphicArea::actionCopy);
+    connect(paste_action, &QAction::triggered, this, &GraphicArea::actionPaste);
+    connect(delete_action, &QAction::triggered, this, &GraphicArea::actionDelete);
 
     // 添加端口
     connect(add_port_action, &QAction::triggered, this, [=] {
@@ -731,6 +765,44 @@ void GraphicArea::slotShapeProperty()
     ShapePropertyDialog *spd = new ShapePropertyDialog(selected_shapes);
     spd->exec();
     spd->deleteLater();
+    autoSave();
+}
+
+void GraphicArea::actionSelectAll()
+{
+    select(shape_lists);
+    autoSave();
+}
+
+void GraphicArea::actionUnselect()
+{
+    unselect();
+    autoSave();
+}
+
+void GraphicArea::actionCopy()
+{
+    if (selected_shapes.count() == 0) // 没有选中
+        return ;
+
+    clip_board = selected_shapes;
+}
+
+void GraphicArea::actionPaste()
+{
+    if (clip_board.count() == 0) // 没有复制的数据
+        return ;
+        
+    // 粘贴到鼠标的位置
+    
+
+    autoSave();
+}
+
+void GraphicArea::actionDelete()
+{
+    remove();
+    autoSave();
 }
 
 /**
