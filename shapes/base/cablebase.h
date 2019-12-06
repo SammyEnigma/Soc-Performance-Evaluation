@@ -10,10 +10,14 @@ public:
     CableBase(QWidget* parent = nullptr);
     CableBase(PortBase* p1, PortBase* p2, QWidget* parent = nullptr);
 
+    virtual CableBase* newInstanceBySelf(QWidget *parent = nullptr) override;
+    virtual void copyDataFrom(ShapeBase *shape) override;
+
     void setPorts(PortBase* p1, PortBase* p2);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
 
 signals:
 
