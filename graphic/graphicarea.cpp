@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 11:14:15
+ * @LastEditTime: 2019-12-06 11:27:18
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -444,6 +444,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     {
                         log("!press_moved, 鼠标穿透至选中目标" + s->getClass());
                         select(s, QApplication::keyboardModifiers() == Qt::ControlModifier);
+                        _press_pos = QPoint(-1, -1);
                         return;
                     }
                 }
@@ -486,11 +487,16 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
             emit signalEnsurePosVisible(event->pos().x(), event->pos().y());
         }
         _select_rect = QRect(0, 0, 0, 0);
+        _press_pos = QPoint(-1, -1);
         update();
 
         autoSave();
         event->accept();
         return;
+    }
+    if (event->buttons() == Qt::NoButton)
+    {
+        _press_pos = QPoint(-1, -1);
     }
 
     return QWidget::mouseReleaseEvent(event);
@@ -682,8 +688,10 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
 /**
  * 自定义菜单
  */
-void GraphicArea::slotMenuShowed(const QPoint &)
+void GraphicArea::slotMenuShowed(const QPoint &p)
 {
+    _press_pos = p; // 用来记录粘贴的位置
+	
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
     QAction *property_action = new QAction("Property", this);
@@ -756,6 +764,7 @@ void GraphicArea::slotMenuShowed(const QPoint &)
     // 显示菜单
     menu->exec(QCursor::pos());
     delete menu;
+    _press_pos = QPoint(-1, -1);
 }
 
 void GraphicArea::slotShapeProperty()
@@ -794,6 +803,22 @@ void GraphicArea::actionPaste()
         return ;
         
     // 粘贴到鼠标的位置
+    QPoint mouse_pos = _press_pos;
+    if (mouse_pos == QPoint(-1, -1))
+        mouse_pos = mapFromGlobal(QCursor::pos());
+    
+    // 确定最左上角的位置
+    QPoint copied_topLeft = clip_board.first()->geometry().topLeft();
+    foreach (ShapeBase *shape, clip_board)
+    {
+        if (shape->geometry().left() < copied_topLeft.x())
+            copied_topLeft.setX(shape->geometry().left());
+        if (shape->geometry().top() < copied_topLeft.y())
+            copied_topLeft.setY(shape->geometry().top());
+    }
+    QPoint offset = mouse_pos - copied_topLeft;
+    
+    // 开始粘贴
     
 
     autoSave();

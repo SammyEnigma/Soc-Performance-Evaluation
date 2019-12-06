@@ -78,7 +78,7 @@ signals:
     void signalTurnBackToPointer();
 
 public slots:
-    void slotMenuShowed(const QPoint &);
+    void slotMenuShowed(const QPoint &p);
     void slotShapeProperty();
     
     void actionSelectAll();
