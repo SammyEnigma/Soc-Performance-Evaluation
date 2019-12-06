@@ -31,6 +31,7 @@ SOURCES += \
     graphic/graphicarea.cpp \
     main.cpp \
     mainwindow.cpp \
+    shapes/base/cablebase.cpp \
     shapes/base/portbase.cpp \
     shapes/base/selectedge.cpp \
     shapes/base/shapebase.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     global/settings.h \
     global/usettings.h \
     graphic/graphicarea.h \
+    shapes/base/cablebase.h \
     shapes/base/portbase.h \
     shapes/base/selectedge.h \
     shapes/base/shapelistwidget.h \
