@@ -142,6 +142,9 @@
      </item>
      <item row="4" column="1">
       <widget class="QPushButton" name="pixmap_name_btn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>保持</string>
        </property>
