@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 10:29:44
+ * @LastEditTime: 2019-12-06 10:40:00
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -369,7 +369,7 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         {
             if (_drag_prev_shape != nullptr)
             {
-                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance())
+                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >=  QApplication::startDragDistance())
                 {
                     _press_moved = true;
                     unselect(); // 开始拖拽，先取消其他形状
@@ -432,7 +432,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
             }
             else if (!_press_moved) // 没有移动，相当于点击
             {
-                // 判断鼠标下面有没有颜色
+                // 判断鼠标下面有没有可选择的形状
                 QPoint pos = event->pos();                        // 转换为相对绘图区域的坐标
                 for (int i = shape_lists.size() - 1; i >= 0; --i) // 逆序遍历，找到能够传递点击事件的控件
                 {
@@ -445,6 +445,9 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                         return;
                     }
                 }
+                
+                // 没有可选择的形状，再次确认取消所有的选中形状
+                unselect();
             }
         }
         releaseMouse();
