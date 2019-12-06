@@ -80,14 +80,25 @@ void CableBase::paintEvent(QPaintEvent *event)
     }
     else // 两个都确定了
     {
-//        _line_type = 1;
+        _line_type = 1;
         if (_line_type == 0)
         {
             painter.drawLine(arrow_pos1, arrow_pos2);
         }
         else if (_line_type == 1)
         {
-//            if (arrow_pos1.x())
+            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
+            {
+                // 左上角 - 右下角
+                painter.drawLine(0,0, width(), 0);
+                painter.drawLine(width(), 0, width(), height());
+            }
+            else
+            {
+                // 右上角 - 左下角
+                painter.drawLine(width(), 0, width(), height());
+                painter.drawLine(width(), height(), 0, height());
+            }
         }
     }
 
