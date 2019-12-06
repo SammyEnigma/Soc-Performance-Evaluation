@@ -72,12 +72,8 @@ void CableBase::slotAdjustGeometryByPorts()
         return ;
     }
 
-    QPoint pos1 = from_port->geometry().topLeft() + from_port->getShape()->geometry().topLeft();
-    QPoint pos2 = to_port->geometry().topLeft() + to_port->getShape()->geometry().topLeft();
-    QSize size1 = from_port->size();
-    QSize size2 = to_port->size();
-    QPoint cen1 = QPoint(pos1.x() + size1.width()/2, pos1.y() + size2.height()/2);
-    QPoint cen2 = QPoint(pos2.x() + size2.width()/2, pos2.y() + size2.height()/2);
+    QPoint cen1 = from_port->getGlobalPos();
+    QPoint cen2 = to_port->getGlobalPos();
 
     int left = qMin(cen1.x(), cen2.x());
     int top = qMin(cen1.y(), cen2.y());

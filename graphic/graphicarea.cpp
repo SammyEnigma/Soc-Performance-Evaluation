@@ -380,13 +380,14 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                     grabMouse();
                 }
 
-                // RIIT 动态判断类型，只有连接线才贴靠
+                // 只有连接线才贴靠（已取消：RIIT 动态判断类型（因为无法识别））
                 if (!_press_moved && rt->auto_stick_ports)
                 {
                     // 遍历寻找最近的端口
                     int min_dis = 200;
                     PortBase* nearest_port = nullptr;
                     QPoint mouse_pos = event->pos();
+                    CableBase* cable = static_cast<CableBase*>(_drag_prev_shape);
                     foreach (PortBase* port, ports_map)
                     {
                         QPoint port_pos = port->getGlobalPos();
@@ -400,6 +401,7 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                     // 暂存连接点
                     if (nearest_port != nullptr)
                     {
+                        cable->setPorts(nearest_port, nullptr);
                         _stick_from_port = nearest_port;
                         _press_pos = nearest_port->getGlobalPos();
                         _press_global_pos = mapToGlobal(_press_pos);
@@ -407,7 +409,7 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                     else
                     {
                         _stick_from_port = nullptr;
-                        DEB << log("连接线没有找到合适的端口");
+                        DEB << log("连接线没有找到合适的端口1");
                     }
                     _press_moved = true;
                 }
@@ -459,6 +461,41 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
             if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 // 拖拽生成形状
                 && _drag_prev_shape != nullptr)                                                       // ESC取消创建，但是鼠标拖拽事件还在
             {
+                // 松开自动停靠
+                if (rt->auto_stick_ports)
+                {
+                    // 遍历寻找最近的端口
+                    int min_dis = 200;
+                    PortBase* nearest_port = nullptr;
+                    QPoint mouse_pos = event->pos();
+                    CableBase* cable = static_cast<CableBase*>(_drag_prev_shape);
+                    foreach (PortBase* port, ports_map)
+                    {
+                        if (port == _stick_from_port)
+                            continue;
+                        QPoint port_pos = port->getGlobalPos();
+                        int dis = (port_pos-mouse_pos).manhattanLength();
+                        if (dis < min_dis)
+                        {
+                            min_dis = dis;
+                            nearest_port = port;
+                        }
+                    }
+                    // 暂存连接点
+                    if (nearest_port != nullptr)
+                    {
+                        cable->setPorts(_stick_from_port, nearest_port);
+                        cable->slotAdjustGeometryByPorts();
+                        _stick_to_port = nearest_port;
+                        _select_rect = cable->geometry();
+                    }
+                    else
+                    {
+                        _stick_from_port = nullptr;
+                        DEB << log("连接线没有找到合适的端口2");
+                    }
+                }
+                // 创建形状
                 insertShapeByRect(rt->current_choosed_shape, _select_rect);
                 if (_drag_prev_shape != nullptr)
                 {
