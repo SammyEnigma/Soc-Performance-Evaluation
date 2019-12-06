@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 11:27:18
+ * @LastEditTime: 2019-12-06 11:33:33
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -729,9 +729,14 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     {
         select_all_action->setEnabled(false);
     }
+    // 剪贴板
     if (clip_board.count() == 0)
     {
         paste_action->setEnabled(false);
+    }
+    else
+    {
+        paste_action->setText(paste_action->text() + " ("+QString::number(clip_board.count())+")");
     }
 
     // 形状属性
@@ -819,7 +824,16 @@ void GraphicArea::actionPaste()
     QPoint offset = mouse_pos - copied_topLeft;
     
     // 开始粘贴
-    
+    unselect(); // 取消全选，后续选中粘贴的
+    foreach (ShapeBase* shape, clip_board)
+    {
+        ShapeBase* copied_shape = insertShapeByType(shape);
+        copied_shape->copyDataFrom(shape);
+        QRect geo = shape->geometry();
+        geo.moveTo(geo.topLeft()+offset);
+        copied_shape->setGeometry(geo);
+        select(copied_shape, true);
+    }
 
     autoSave();
 }
