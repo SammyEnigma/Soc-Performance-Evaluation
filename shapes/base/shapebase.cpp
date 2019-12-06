@@ -2,15 +2,16 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-05 10:29:44
+ * @LastEditTime: 2019-12-06 09:39:36
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
 
 ShapeBase::ShapeBase(QWidget *parent)
     : QWidget(parent),
-      _text_align(Qt::AlignBottom | Qt::AlignHCenter), _text_color(Qt::black),
-      _pixmap_scale(false), _pixmap_color(Qt::transparent), 
+      _text_align(DEFAULT_TEXT_ALIGN), _text_color(DEFAULT_TEXT_COLOR),
+      _pixmap_scale(DEFAULT_PIXMAP_SCALE), _pixmap_color(DEFAULT_PIXMAP_COLOR),
+      _border_size(DEFAULT_BORDER_SIZE), _border_color(DEFAULT_BORDER_COLOR),
       edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false)
 {
     setMinimumSize(32, 32);
@@ -48,9 +49,13 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
 {
     this->_class = shape->_class;
     this->_text = shape->_text;
-    this->_pixmap = shape->_pixmap;
-//    this->_text_align = shape->_text_align;
+    this->_text_align = shape->_text_align;
     this->_text_color = shape->_text_color;
+    this->_pixmap = shape->_pixmap;
+    this->_pixmap_scale = shape->_pixmap_scale;
+    this->_pixmap_color = shape->_pixmap_color;
+    this->_border_size = shape->_border_size;
+    this->_border_color = shape->_border_color;
 }
 
 const QString ShapeBase::getClass()
@@ -99,7 +104,7 @@ void ShapeBase::setLightEdgeShowed(bool show)
 
 void ShapeBase::addPort(PortBase *port)
 {
-    log(_class + "addPort");
+    log(_class + ".addPort");
     ports.append(port);
     adjustPortsPosition();
     port->show(); // 不show就默认隐藏了
@@ -309,20 +314,34 @@ void ShapeBase::fromString(QString s)
     int width = StringUtil::getXmlInt(s, "WIDTH");
     int height = StringUtil::getXmlInt(s, "HEIGHT");
     QString text = StringUtil::getXml(s, "TEXT");
-    int text_align = StringUtil::getXmlInt(s, "TEXT_ALIGN");
-    QStringList port_list = StringUtil::getXmls(s, "PORT");
+    QString text_align = StringUtil::getXml(s, "TEXT_ALIGN");
     QString text_color = StringUtil::getXml(s, "TEXT_COLOR");
-    int pixmap_scale = StringUtil::getXmlInt(s, "PIXMAP_SCALE");
+    QString pixmap_name = StringUtil::getXml(s, "PIXMAP_NAME");
+    QString pixmap_scale = StringUtil::getXml(s, "PIXMAP_SCALE");
+    QString pixmap_color = StringUtil::getXml(s, "PIXMAP_COLOR");
+    QString border_size = StringUtil::getXml(s, "BORDER_SIZE");
+    QString border_color = StringUtil::getXml(s, "BORDER_COLOR");
+    QStringList port_list = StringUtil::getXmls(s, "PORT");
 
     setGeometry(left, top, width, height);
     setText(text);
-    if (text_align != 0)
-        _text_align = static_cast<Qt::Alignment>(text_align);
+    if (!text_align.isEmpty())
+        _text_align = static_cast<Qt::Alignment>(text_align.toInt());
     if (text_color != Qt::transparent)
         _text_color = qvariant_cast<QColor>(text_color);
-    if (pixmap_scale != 0)
-        _pixmap_scale = pixmap_scale;
-
+    if (pixmap_name.isEmpty())
+    {
+        // TODO: 加载图标文件
+        _pixmap_name = pixmap_name;
+    }
+    if (!pixmap_scale.isEmpty())
+        _pixmap_scale = pixmap_scale.toInt();
+    if (!pixmap_color.isEmpty())
+        _pixmap_color = qvariant_cast<QColor>(pixmap_color);
+    if (!border_size.isEmpty())
+        _border_size = border_size.toInt();
+    if (!border_color.isEmpty())
+        _border_color = qvariant_cast<QColor>(border_color);
     foreach (QString port_string, port_list)
     {
         PortBase *port = new PortBase(this);
@@ -341,16 +360,21 @@ QString ShapeBase::toString()
     shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
     shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
     shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
-    if (_text_align != (Qt::AlignBottom | Qt::AlignHCenter) && _text_align != 0)
+    if (_text_align != DEFAULT_TEXT_ALIGN && _text_align != 0)
         shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
-    if (_text_color != Qt::black)
+    if (_text_color != DEFAULT_TEXT_COLOR)
         shape_string += indent + StringUtil::makeXml(QVariant(_text_color).toString(), "TEXT_COLOR");
     if (!_pixmap_name.isEmpty())
         shape_string += indent + StringUtil::makeXml(_pixmap_name, "PIXMAP_NAME");
-    if (_pixmap_color != Qt::transparent)
-        shape_string += indent + StringUtil::makeXml(QVariant(_pixmap_color).toString(), "PIXMAP_COLOR");
-    if (_pixmap_scale != 0)
+    if (_pixmap_scale != DEFAULT_PIXMAP_SCALE)
         shape_string += indent + StringUtil::makeXml(_pixmap_scale, "PIXMAP_SCALE");
+    if (_pixmap_color != DEFAULT_PIXMAP_COLOR)
+        shape_string += indent + StringUtil::makeXml(QVariant(_pixmap_color).toString(), "PIXMAP_COLOR");
+    if (_border_size != DEFAULT_BORDER_SIZE)
+        shape_string += indent + StringUtil::makeXml(_border_size, "BORDER_SIZE");
+    if (_border_color != DEFAULT_BORDER_COLOR)
+        shape_string += indent + StringUtil::makeXml(QVariant(_border_color).toString(), "BORDER_COLOR");
+
     shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
     foreach (PortBase *port, ports)
     {

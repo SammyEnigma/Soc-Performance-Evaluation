@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-05 10:26:54
+ * @LastEditTime: 2019-12-06 09:29:29
  * @Description : 所有形状的基类，包含所有通用API
  */
 #ifndef SHAPEBASE_H
@@ -22,6 +22,13 @@
 
 #define BORDER_SIZE 2 // 边缘padding，用来放调整大小的边界线
 
+const Qt::Alignment DEFAULT_TEXT_ALIGN = Qt::AlignBottom | Qt::AlignHCenter;
+const QColor DEFAULT_TEXT_COLOR = Qt::black;
+const bool DEFAULT_PIXMAP_SCALE = false;
+const QColor DEFAULT_PIXMAP_COLOR = Qt::transparent;
+const int DEFAULT_BORDER_SIZE = 3;
+const QColor DEFAULT_BORDER_COLOR = Qt::gray;
+
 class ShapeBase : public QWidget
 {
     friend class GraphicArea;
@@ -38,7 +45,7 @@ public:
     friend class MainWindow;
 
     virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr); // 根据形状类型创建对应的形状实例
-    virtual void copyDataFrom(ShapeBase* shape); // 从形状实例中拷贝数据
+    virtual void copyDataFrom(ShapeBase *shape);                     // 从形状实例中拷贝数据
     virtual QRect getSuitableRect(QPoint point);                     // 从列表拖到绘图区域时，自适应大小和坐标
 
     // 属性
@@ -72,7 +79,7 @@ protected:
     void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
-    virtual void drawShapePixmap(QPainter& painter, QRect draw_rect);
+    virtual void drawShapePixmap(QPainter &painter, QRect draw_rect);
     virtual QPainterPath getShapePainterPath();                  // 获取绘图区域（基类）
     virtual void initDrawArea();                                 // 设置绘制区域大小
     virtual void resizeDrawArea(QSize old_size, QSize new_size); // 调整控件大小时，调整绘制区域的大小
@@ -95,7 +102,6 @@ signals:
 public slots:
 
 protected:
-    QRect _area;               // 有效的显示区域（非控件大小）
     QString _class;            // 名字（默认设为前景文字）
     QString _text;             // 前景文字
     Qt::Alignment _text_align; // 文字对齐
@@ -104,7 +110,10 @@ protected:
     QString _pixmap_name;      // 图标路径（图片资源中的图标文件名）
     bool _pixmap_scale;        // 是否拉伸图标
     QColor _pixmap_color;      // 图标颜色
+    int _border_size;          // 边界粗细
+    QColor _border_color;      // 边界颜色
 
+    QRect _area;             // 有效的显示区域（非控件大小）
     SelectEdge *edge;        // 四周边界线
     QList<PortBase *> ports; // 连接线的端口
 

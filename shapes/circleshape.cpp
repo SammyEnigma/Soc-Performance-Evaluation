@@ -24,6 +24,13 @@ void CircleShape::drawShapePixmap(QPainter &painter, QRect draw_rect)
     QPainterPath path;
     path.addEllipse(draw_rect);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(QPen(Qt::gray, 3));
-    painter.drawEllipse(draw_rect);
+    if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
+    {
+        painter.fillPath(path, _pixmap_color);
+    }
+    if (_border_size>0 && _border_color!=Qt::transparent) // 画边界
+    {
+        painter.setPen(QPen(Qt::gray, 3));
+        painter.drawPath(path);
+    }
 }

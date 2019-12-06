@@ -2,6 +2,7 @@
 
 HexagonShape::HexagonShape(QWidget *parent) : ShapeBase(parent)
 {
+    _class = _text = "Hexagon Class";
     _pixmap_scale = true;
 
     QPixmap pixmap(128, 110);
@@ -21,9 +22,6 @@ HexagonShape *HexagonShape::newInstanceBySelf(QWidget *parent)
 
 void HexagonShape::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
-    const int a = 62;
-    const double gf3 = 1.732;
-
     int w = draw_rect.width(), h = draw_rect.height();
     // 3a^2 + 2wa - w^2 - h^2 = 0
     double delta = (2*w)*(2*w) - 4 * 3 * (-w*w-h*h);
@@ -37,7 +35,15 @@ void HexagonShape::drawShapePixmap(QPainter &painter, QRect draw_rect)
     path.lineTo((w-jie)/2, h);
     path.lineTo(0, h/2);
     path.lineTo((w-jie)/2, 0);
-    painter.setPen(QPen(Qt::gray, 3));
+
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.drawPath(path);
+    if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
+    {
+        painter.fillPath(path, _pixmap_color);
+    }
+    if (_border_size>0 && _border_color!=Qt::transparent) // 画边界
+    {
+        painter.setPen(QPen(_border_color, 3));
+        painter.drawPath(path);
+    }
 }

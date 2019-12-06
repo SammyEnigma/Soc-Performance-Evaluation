@@ -17,7 +17,7 @@ ShapePropertyDialog::ShapePropertyDialog(QList<ShapeBase *> shapes) : QDialog(sh
     int index = aligns.indexOf(shape->_text_align);
     ui->text_align_comboBox->setCurrentIndex(index!=-1 ? index : 1/*默认=下*/);
 
-    ui->pixmap_scale_comboBox->setCurrentIndex(shape->_pixmap_scale ? 1 : 0);
+    ui->pixmap_scale_combo->setCurrentIndex(shape->_pixmap_scale ? 1 : 0);
 }
 
 ShapePropertyDialog::~ShapePropertyDialog()
