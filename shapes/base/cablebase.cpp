@@ -3,7 +3,8 @@
 CableBase::CableBase(QWidget *parent)
     : ShapeBase(parent),
       from_port(nullptr), to_port(nullptr),
-      arrow_pos1(QPoint(-1,-1)), arrow_pos2(QPoint(-1,-1))
+      arrow_pos1(QPoint(-1,-1)), arrow_pos2(QPoint(-1,-1)),
+      _line_type(DEFAULT_LINE_TYPE)
 {
     _class = "Cable";
 
@@ -55,8 +56,41 @@ void CableBase::setPorts(PortBase *p1, PortBase *p2)
 void CableBase::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setPen(QPen(_border_color, 3));
+    if (from_port == nullptr) // 两个都没确定，预览
+    {
+        painter.drawLine(width()/10, height()/10, width()*9/10, height()*9/10);
+    }
+    else if (to_port == nullptr) // 已经确定了一个
+    {
+        QPoint pos = from_port->getGlobalPos();
+        pos = pos - geometry().topLeft(); // 相对连接线左上角
+        // 根据这个点在不同的角落，画对角线
+        QPoint rev_pos; // 相反的对角位置
+        if (pos.x() == 0)
+            rev_pos.setX(width());
+        else if (pos.x() == width())
+            rev_pos.setX(0);
+        if (pos.y() == 0)
+            rev_pos.setY(height());
+        else
+            rev_pos.setY(0);
+        painter.drawLine(pos, rev_pos);
+    }
+    else // 两个都确定了
+    {
+//        _line_type = 1;
+        if (_line_type == 0)
+        {
+            painter.drawLine(arrow_pos1, arrow_pos2);
+        }
+        else if (_line_type == 1)
+        {
+//            if (arrow_pos1.x())
+        }
+    }
 
-    painter.fillRect(QRect(0,0,width(),height()), Qt::red);
 }
 
 void CableBase::drawShapePixmap(QPainter &painter, QRect draw_rect)
@@ -81,6 +115,10 @@ void CableBase::slotAdjustGeometryByPorts()
     int bottom = qMax(cen1.y(), cen2.y());
 
     setGeometry(left, top, right-left, bottom-top);
+
+    // 计算相对位置，缓存两个 arrow_pos，提升性能
+    arrow_pos1 = cen1 - geometry().topLeft();
+    arrow_pos2 = cen2 - geometry().topLeft();
 }
 
 

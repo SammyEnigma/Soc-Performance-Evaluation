@@ -381,7 +381,7 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                 }
 
                 // 只有连接线才贴靠（已取消：RIIT 动态判断类型（因为无法识别））
-                if (!_press_moved && rt->auto_stick_ports)
+                if (!_press_moved && rt->auto_stick_ports && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
                 {
                     // 遍历寻找最近的端口
                     int min_dis = 200;
@@ -486,7 +486,6 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     {
                         cable->setPorts(_stick_from_port, nearest_port);
                         cable->slotAdjustGeometryByPorts();
-                        _stick_to_port = nearest_port;
                         _select_rect = cable->geometry();
                     }
                     else
@@ -494,9 +493,14 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                         _stick_from_port = nullptr;
                         DEB << log("连接线没有找到合适的端口2");
                     }
+                    ShapeBase* c = insertShapeByRect(_drag_prev_shape, cable->geometry());
+                    cable_lists.append(static_cast<CableBase*>(c));
                 }
-                // 创建形状
-                insertShapeByRect(rt->current_choosed_shape, _select_rect);
+                else
+                {
+                    // 创建形状
+                    insertShapeByRect(rt->current_choosed_shape, _select_rect);
+                }
                 if (_drag_prev_shape != nullptr)
                 {
                     _drag_prev_shape->deleteLater();
@@ -726,6 +730,12 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
                     continue;
                 s->move(s->geometry().left() + dx, s->geometry().top() + dy);
             }
+        }
+        // 移动所有端口连接线
+        // TODO: 只调整移动后的那些，提升性能
+        foreach (CableBase* cable, cable_lists)
+        {
+            cable->slotAdjustGeometryByPorts();
         }
     });
 
