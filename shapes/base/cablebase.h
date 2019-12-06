@@ -18,6 +18,7 @@ public:
     virtual QString toStringAppend() override;
 
     void setPorts(PortBase* p1, PortBase* p2);
+    bool usedPort(PortBase* port);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -29,7 +30,6 @@ public slots:
     void slotAdjustGeometryByPorts();
 
 private:
-public:
     PortBase* from_port; // 发送端口（其实两个端口暂时并没有什么区别，发送和接收是双向的，目前只是为了辨别）
     PortBase* to_port;   // 接收端口
 

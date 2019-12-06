@@ -765,6 +765,14 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             select(shape);
     });
 
+    connect(shape, &ShapeBase::signalPortPositionModified, this, [=](PortBase* port){
+        // 重新调整连接线的位置
+        foreach (CableBase* cable, cable_lists)
+        {
+            if (cable->usedPort(port))
+                cable->slotAdjustGeometryByPorts();
+        }
+    });
     connect(shape, &ShapeBase::signalPortInserted, this, [=](PortBase *port) {
         if (port->getPortId().isEmpty()) // 这个真的是新手动添加的
         {

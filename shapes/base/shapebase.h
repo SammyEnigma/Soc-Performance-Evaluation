@@ -102,6 +102,7 @@ signals:
     void signalLeftButtonReleased();
     void signalMenuShowed();
 
+    void signalPortPositionModified(PortBase* port);
     void signalPortInserted(PortBase* port);
     void signalPortDeleted(PortBase* port);
 

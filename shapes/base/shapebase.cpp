@@ -202,6 +202,7 @@ void ShapeBase::addPort(PortBase *port)
         // 获取新端口的信息以及其他信息
         PortPositionDialog::getPortPosition(this, port);
         adjustPortsPosition();
+        emit signalPortPositionModified(port);
     });
     connect(port, &PortBase::signalDelete, this, [=] {
         // 如果已经连接了，则先断开连接

@@ -149,6 +149,7 @@ void ShapeListWidget::loadOneShape(const QString name)
  */
 void ShapeListWidget::slotItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
+    Q_UNUSED(previous)
     // 列表项的名字
     QString name = current->text();
     us->setVal("recent/choosed_shape_unit", currentRow()); // 保存选中的形状单元

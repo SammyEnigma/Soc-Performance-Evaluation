@@ -73,8 +73,14 @@ void CableBase::setPorts(PortBase *p1, PortBase *p2)
     to_port = p2;
 }
 
+bool CableBase::usedPort(PortBase *port)
+{
+    return from_port == port || to_port == port;
+}
+
 void CableBase::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(_border_color, 3));
@@ -126,7 +132,8 @@ void CableBase::paintEvent(QPaintEvent *event)
 
 void CableBase::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
-
+    Q_UNUSED(painter)
+    Q_UNUSED(draw_rect)
 }
 
 void CableBase::slotAdjustGeometryByPorts()
