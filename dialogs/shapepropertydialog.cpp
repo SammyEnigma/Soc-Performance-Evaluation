@@ -74,7 +74,30 @@ void ShapePropertyDialog::on_pixmap_name_btn_clicked()
 
 void ShapePropertyDialog::on_pixmap_color_btn_clicked()
 {
+    QColorDialog* cd = new QColorDialog(this);
+    cd->setCurrentColor(shape->_pixmap_color);
+    cd->show();
 
+    // 更换颜色预览
+    connect(cd, &QColorDialog::currentColorChanged, this, [=](QColor c){
+        setBtnColor(ui->pixmap_color_btn, c, true);
+    });
+
+    // 确定选择颜色
+    connect(cd, &QColorDialog::colorSelected, this, [=](QColor c){
+        setBtnColor(ui->pixmap_color_btn, c, true);
+
+        foreach (ShapeBase* shape, shapes) {
+            shape->_pixmap_color = c;
+            shape->update();
+        }
+    });
+
+    // 取消选择颜色
+    connect(cd, &QColorDialog::rejected, this, [=]{
+        setBtnColor(ui->pixmap_color_btn, shape->_pixmap_color, true);
+        ui->pixmap_color_btn->setText("保持");
+    });
 }
 
 void ShapePropertyDialog::on_text_lineEdit_textEdited(const QString &text)
@@ -93,11 +116,47 @@ void ShapePropertyDialog::on_text_align_comboBox_activated(int index)
     }
 }
 
-void ShapePropertyDialog::on_pixmap_scale_comboBox_activated(int index)
+void ShapePropertyDialog::on_pixmap_scale_combo_activated(int index)
 {
     bool scale = (index == 1);
     foreach (ShapeBase* shape, shapes) {
         shape->_pixmap_scale = scale;
         shape->update();
     }
+}
+
+void ShapePropertyDialog::on_border_size_spin_valueChanged(int value)
+{
+    foreach (ShapeBase* shape, shapes) {
+        shape->_border_size = value;
+        shape->update();
+    }
+}
+
+void ShapePropertyDialog::on_border_color_btn_clicked()
+{
+    QColorDialog* cd = new QColorDialog(this);
+    cd->setCurrentColor(shape->_border_color);
+    cd->show();
+
+    // 更换颜色预览
+    connect(cd, &QColorDialog::currentColorChanged, this, [=](QColor c){
+        setBtnColor(ui->border_color_btn, c, true);
+    });
+
+    // 确定选择颜色
+    connect(cd, &QColorDialog::colorSelected, this, [=](QColor c){
+        setBtnColor(ui->border_color_btn, c, true);
+
+        foreach (ShapeBase* shape, shapes) {
+            shape->_border_color = c;
+            shape->update();
+        }
+    });
+
+    // 取消选择颜色
+    connect(cd, &QColorDialog::rejected, this, [=]{
+        setBtnColor(ui->border_color_btn, shape->_border_color, true);
+        ui->border_color_btn->setText("保持");
+    });
 }
