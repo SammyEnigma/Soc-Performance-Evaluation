@@ -377,35 +377,39 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                 {
                     _press_moved = true;
                     unselect(); // 开始拖拽，先取消其他形状
-                    // 判断是否需要自动对齐
-                    // RIIT 动态判断类型，只有连接线才贴靠
-                    if (rt->auto_stick_ports && typeid (rt->current_choosed_shape) == typeid (CableBase))
+                    grabMouse();
+                }
+
+                // RIIT 动态判断类型，只有连接线才贴靠
+                if (!_press_moved && rt->auto_stick_ports)
+                {
+                    // 遍历寻找最近的端口
+                    int min_dis = 200;
+                    PortBase* nearest_port = nullptr;
+                    QPoint mouse_pos = event->pos();
+                    foreach (PortBase* port, ports_map)
                     {
-                        // 遍历寻找最近的端口
-                        int min_dis = -1;
-                        PortBase* nearest_port = nullptr;
-                        QPoint mouse_pos = event->pos();
-                        foreach (PortBase* port, ports_map)
+                        QPoint port_pos = port->getGlobalPos();
+                        int dis = (port_pos-mouse_pos).manhattanLength();
+                        if (dis < min_dis)
                         {
-                            QPoint port_pos = port->getGlobalPos();
-                            int dis = (port_pos-mouse_pos).manhattanLength();
-                            if (dis < min_dis)
-                            {
-                                min_dis = dis;
-                                nearest_port = port;
-                            }
-                        }
-                        // 暂存连接点
-                        if (nearest_port != nullptr)
-                        {
-                            _stick_from_port = nearest_port;
-                        }
-                        else
-                        {
-                            _stick_from_port = nullptr;
+                            min_dis = dis;
+                            nearest_port = port;
                         }
                     }
-                    grabMouse();
+                    // 暂存连接点
+                    if (nearest_port != nullptr)
+                    {
+                        _stick_from_port = nearest_port;
+                        _press_pos = nearest_port->getGlobalPos();
+                        _press_global_pos = mapToGlobal(_press_pos);
+                    }
+                    else
+                    {
+                        _stick_from_port = nullptr;
+                        DEB << log("连接线没有找到合适的端口");
+                    }
+                    _press_moved = true;
                 }
 
                 if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 && _drag_prev_shape->isHidden()) // 开始显示

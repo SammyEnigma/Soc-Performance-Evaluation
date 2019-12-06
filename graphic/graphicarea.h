@@ -27,6 +27,8 @@
 #include "shapepropertydialog.h"
 #include "cablebase.h"
 
+#define DEB qDebug()
+
 class GraphicArea : public QWidget
 {
     Q_OBJECT

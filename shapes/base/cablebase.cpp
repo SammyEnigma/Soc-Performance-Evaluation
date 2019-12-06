@@ -32,9 +32,10 @@ void CableBase::copyDataFrom(ShapeBase *shape)
 {
     ShapeBase::copyDataFrom(shape);
 
-    // 运行时类型判断
+    // RTTI运行时类型判断
     // 是不是当前这个类，若是则执行转换
-    if (typeid (shape) == typeid (this))
+//    if (typeid (shape) == typeid (this))
+    if (dynamic_cast<CableBase*>(shape) != nullptr)
     {
         CableBase* cable = static_cast<CableBase*>(shape);
 
