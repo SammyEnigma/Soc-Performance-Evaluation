@@ -59,6 +59,11 @@ QPointF PortBase::getPosition()
     return _prop_pos;
 }
 
+QPoint PortBase::getGlobalPos()
+{
+    return geometry().center() + widget->geometry().topLeft();
+}
+
 void PortBase::updatePosition()
 {
     int x = static_cast<int>(_prop_pos.x() * widget->width());

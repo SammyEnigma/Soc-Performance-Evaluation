@@ -25,6 +25,7 @@
 #include "stringutil.h"
 #include "portpositiondialog.h"
 #include "shapepropertydialog.h"
+#include "cablebase.h"
 
 class GraphicArea : public QWidget
 {
@@ -99,6 +100,7 @@ private:
     DragOperator _drag_oper;              // 鼠标左键按下的操作，以及决定之后移动、松开的操作
     bool _press_moved;                    // 左键按下后有没有进行移动
     ShapeBase *_drag_prev_shape;          // 拖拽生成形状的预览形状，press生成，release时删掉
+    PortBase *_stick_from_port; // 拖拽一开始的暂存端口
 
     QList<ShapeBase *> clip_board;       // 剪贴板
     QMap<QString, PortBase *> ports_map; // 所有的可连接端口

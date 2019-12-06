@@ -103,6 +103,7 @@ void ShapeListWidget::loadShapes()
     new QListWidgetItem(QIcon(":/icons/cursor"), MOVING_CURSOR_NAME, this);
 
     // 加载自定义形状
+    loadCustomShape(new CableBase(this));
     loadCustomShape(new CircleShape(this));
     loadCustomShape(new EllipseShape(this));
     loadCustomShape(new HexagonShape(this));
@@ -122,7 +123,7 @@ void ShapeListWidget::loadShapes()
  */
 void ShapeListWidget::loadCustomShape(ShapeBase *shape)
 {
-    new QListWidgetItem(QIcon(shape->getPixmap()), shape->getText(), this);
+    new QListWidgetItem(QIcon(shape->getPixmap()), shape->getClass(), this);
     shape->hide();
 
     shape_units.append(shape);
@@ -170,5 +171,14 @@ void ShapeListWidget::slotItemChanged(QListWidgetItem *current, QListWidgetItem 
                 break;
             }
         }
+    }
+
+    if (name.contains("Cable",Qt::CaseInsensitive) || name.contains("Line",Qt::CaseInsensitive))
+    {
+        rt->auto_stick_ports = true;
+    }
+    else
+    {
+        rt->auto_stick_ports = false;
     }
 }

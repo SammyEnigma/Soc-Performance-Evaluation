@@ -32,6 +32,7 @@ public:
     void setText(QString text);
     void setPortPosition(double x, double y);
     QPointF getPosition();
+    QPoint getGlobalPos();
     void updatePosition();
 
     void fromString(QString s);

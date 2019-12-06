@@ -5,6 +5,7 @@
 #include <QString>
 
 class ShapeBase;
+class PortBase;
 
 class RuntimeInfo
 {
@@ -15,12 +16,15 @@ public:
         SHAPE_PATH = DATA_PATH + "shapes/";
 
         current_choosed_shape = nullptr;
+        auto_stick_ports = false;
     }
+
 
     QString DATA_PATH;
     QString SHAPE_PATH;
 
     ShapeBase* current_choosed_shape;
+    bool auto_stick_ports;
 };
 
 #endif // RUNTIMEINFO_H

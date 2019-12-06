@@ -12,7 +12,7 @@
 
 GraphicArea::GraphicArea(QWidget *parent)
     : QWidget(parent),
-      _press_pos(-1, -1), _select_rect(0, 0, 0, 0), _press_moved(false), _drag_prev_shape(nullptr)
+      _press_pos(-1, -1), _select_rect(0, 0, 0, 0), _press_moved(false), _drag_prev_shape(nullptr), _stick_from_port(nullptr)
 {
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -291,6 +291,7 @@ void GraphicArea::mousePressEvent(QMouseEvent *event)
         _press_pos = event->pos();
         _press_global_pos = QCursor::pos();
         _press_moved = false;
+        _stick_from_port = nullptr;
         if (rt->current_choosed_shape == nullptr) // 指针，看情况进行操作
         {
             if (QApplication::keyboardModifiers() == Qt::NoModifier) // 单击
@@ -371,10 +372,39 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         {
             if (_drag_prev_shape != nullptr)
             {
+                // 之前只是拖拽，现在开始移动了，进行一系列初始化操作
                 if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
                 {
                     _press_moved = true;
                     unselect(); // 开始拖拽，先取消其他形状
+                    // 判断是否需要自动对齐
+                    // RIIT 动态判断类型，只有连接线才贴靠
+                    if (rt->auto_stick_ports && typeid (rt->current_choosed_shape) == typeid (CableBase))
+                    {
+                        // 遍历寻找最近的端口
+                        int min_dis = -1;
+                        PortBase* nearest_port = nullptr;
+                        QPoint mouse_pos = event->pos();
+                        foreach (PortBase* port, ports_map)
+                        {
+                            QPoint port_pos = port->getGlobalPos();
+                            int dis = (port_pos-mouse_pos).manhattanLength();
+                            if (dis < min_dis)
+                            {
+                                min_dis = dis;
+                                nearest_port = port;
+                            }
+                        }
+                        // 暂存连接点
+                        if (nearest_port != nullptr)
+                        {
+                            _stick_from_port = nearest_port;
+                        }
+                        else
+                        {
+                            _stick_from_port = nullptr;
+                        }
+                    }
                     grabMouse();
                 }
 
