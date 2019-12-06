@@ -43,6 +43,7 @@ void ShapePropertyDialog::on_text_color_btn_clicked()
 {
     QColorDialog* cd = new QColorDialog(this);
     cd->setCurrentColor(shape->_text_color);
+    cd->setOption(QColorDialog::ShowAlphaChannel);
     cd->show();
 
     // 更换颜色预览
@@ -76,6 +77,7 @@ void ShapePropertyDialog::on_pixmap_color_btn_clicked()
 {
     QColorDialog* cd = new QColorDialog(this);
     cd->setCurrentColor(shape->_pixmap_color);
+    cd->setOption(QColorDialog::ShowAlphaChannel);
     cd->show();
 
     // 更换颜色预览
@@ -137,6 +139,7 @@ void ShapePropertyDialog::on_border_color_btn_clicked()
 {
     QColorDialog* cd = new QColorDialog(this);
     cd->setCurrentColor(shape->_border_color);
+    cd->setOption(QColorDialog::ShowAlphaChannel);
     cd->show();
 
     // 更换颜色预览
