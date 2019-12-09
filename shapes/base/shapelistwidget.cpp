@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 15:53:37
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 18:06:14
+ * @LastEditTime: 2019-12-09 14:30:58
  * @Description: 左边的形状单元列表框
  */
 #include "shapelistwidget.h"
@@ -103,6 +103,8 @@ void ShapeListWidget::loadShapes()
     new QListWidgetItem(QIcon(":/icons/cursor"), MOVING_CURSOR_NAME, this);
 
     // 加载自定义形状
+    loadCustomShape(new MasterModule(this));
+    loadCustomShape(new SlaveModule(this));
     loadCustomShape(new CableBase(this));
     loadCustomShape(new CircleShape(this));
     loadCustomShape(new EllipseShape(this));
