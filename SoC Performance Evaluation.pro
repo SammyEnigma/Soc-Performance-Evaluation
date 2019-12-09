@@ -47,7 +47,6 @@ SOURCES += \
     soc/flowcontrol.cpp \
     soc/interfaces/moduleinterface.cpp \
     soc/modules/mastermodule.cpp \
-    soc/modules/modulebase.cpp \
     soc/modules/slavemodule.cpp \
     soc/transmissions/datapacket.cpp
 
@@ -67,7 +66,6 @@ HEADERS += \
     soc/flowcontrol.h \
     soc/interfaces/moduleinterface.h \
     soc/modules/mastermodule.h \
-    soc/modules/modulebase.h \
     soc/modules/slavemodule.h \
     soc/transmissions/datapacket.h \
     utils/bytearrayutil.h \
