@@ -25,6 +25,18 @@ ShapePropertyDialog::ShapePropertyDialog(QList<ShapeBase *> shapes) : QDialog(sh
     ui->checkBox->setChecked(shape->_pixmap_scale);
 
     ui->border_size_spin->setValue(shape->_border_size);
+
+    if (shape->getLargeType() == CableType)
+    {
+        CableBase* cable = static_cast<CableBase*>(shape);
+        if (cable->_line_type == 0)
+            ui->radioButton->setChecked(true);
+        else if (cable->_line_type == 1)
+            ui->radioButton_2->setChecked(true);
+        else if (cable->_line_type == 2)
+            ui->radioButton_3->setChecked(true);
+    }
+
 }
 
 ShapePropertyDialog::~ShapePropertyDialog()
@@ -168,5 +180,41 @@ void ShapePropertyDialog::on_checkBox_clicked()
     foreach (ShapeBase* shape, shapes) {
         shape->_pixmap_scale = state;
         shape->update();
+    }
+}
+
+void ShapePropertyDialog::on_radioButton_clicked()
+{
+    foreach (ShapeBase* shape, shapes) {
+        if (shape->getLargeType() == CableType)
+        {
+            CableBase* cable = static_cast<CableBase*>(shape);
+            cable->_line_type = 0;
+            cable->update();
+        }
+    }
+}
+
+void ShapePropertyDialog::on_radioButton_2_clicked()
+{
+    foreach (ShapeBase* shape, shapes) {
+        if (shape->getLargeType() == CableType)
+        {
+            CableBase* cable = static_cast<CableBase*>(shape);
+            cable->_line_type = 1;
+            cable->update();
+        }
+    }
+}
+
+void ShapePropertyDialog::on_radioButton_3_clicked()
+{
+    foreach (ShapeBase* shape, shapes) {
+        if (shape->getLargeType() == CableType)
+        {
+            CableBase* cable = static_cast<CableBase*>(shape);
+            cable->_line_type = 2;
+            cable->update();
+        }
     }
 }

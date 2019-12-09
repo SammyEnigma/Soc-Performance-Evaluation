@@ -7,6 +7,7 @@ CableBase::CableBase(QWidget *parent)
       _line_type(DEFAULT_LINE_TYPE)
 {
     _class = "Cable";
+    setMinimumSize(8,8);
 
     // 缩略图
     QPixmap pixmap(128, 128);
@@ -108,7 +109,7 @@ void CableBase::paintEvent(QPaintEvent *event)
     Q_UNUSED(event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(QPen(_border_color, 3));
+    painter.setPen(QPen(_border_color, _border_size));
     if (from_port == nullptr) // 两个都没确定，预览
     {
         painter.drawLine(width()/10, height()/10, width()*9/10, height()*9/10);
@@ -135,13 +136,28 @@ void CableBase::paintEvent(QPaintEvent *event)
         {
             painter.drawLine(arrow_pos1, arrow_pos2);
         }
-        else if (_line_type == 1)
+        else if (_line_type == 1) // 横竖
         {
             if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
             {
                 // 左上角 - 右下角
                 painter.drawLine(0,0, width(), 0);
                 painter.drawLine(width(), 0, width(), height());
+            }
+            else
+            {
+                // 右上角 - 左下角
+                painter.drawLine(0,0,width(),0);
+                painter.drawLine(0,0,0,height());
+            }
+        }
+        else if (_line_type == 2) // 竖横
+        {
+            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
+            {
+                // 左上角 - 右下角
+                painter.drawLine(0,0,0,height());
+                painter.drawLine(0,height(),width(),height());
             }
             else
             {

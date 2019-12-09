@@ -13,6 +13,7 @@
 #include <QColorDialog>
 #include <QDebug>
 #include "shapebase.h"
+#include "cablebase.h"
 #include "ui_shapepropertydialog.h"
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +52,13 @@ private slots:
     void on_border_color_btn_clicked();
 
     void on_checkBox_clicked();
+
+    void on_radioButton_clicked();
+
+    void on_radioButton_2_clicked();
+
+    void on_radioButton_3_clicked();
+
 
 private:
     Ui::ShapePropertyDialog *ui;

@@ -8,6 +8,7 @@ const int DEFAULT_LINE_TYPE = 0;
 class CableBase : public ShapeBase
 {
     Q_OBJECT
+    friend class ShapePropertyDialog;
 public:
     CableBase(QWidget* parent = nullptr);
     CableBase(PortBase* p1, PortBase* p2, QWidget* parent = nullptr);
