@@ -67,6 +67,11 @@ QString CableBase::toStringAppend()
     return string;
 }
 
+LargeShapeType CableBase::getLargeType()
+{
+    return CableType;
+}
+
 void CableBase::setPorts(PortBase *p1, PortBase *p2)
 {
     from_port = p1;
@@ -76,6 +81,16 @@ void CableBase::setPorts(PortBase *p1, PortBase *p2)
 bool CableBase::usedPort(PortBase *port)
 {
     return from_port == port || to_port == port;
+}
+
+PortBase *CableBase::getFromPort()
+{
+    return from_port;
+}
+
+PortBase *CableBase::getToPort()
+{
+    return to_port;
 }
 
 void CableBase::paintEvent(QPaintEvent *event)
@@ -106,7 +121,6 @@ void CableBase::paintEvent(QPaintEvent *event)
     }
     else // 两个都确定了
     {
-        _line_type = 1;
         if (_line_type == 0)
         {
             painter.drawLine(arrow_pos1, arrow_pos2);

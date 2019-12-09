@@ -17,8 +17,13 @@ public:
     virtual void fromStringAppend(QString s) override;
     virtual QString toStringAppend() override;
 
+    virtual LargeShapeType getLargeType() override;
+
     void setPorts(PortBase* p1, PortBase* p2);
     bool usedPort(PortBase* port);
+
+    PortBase* getFromPort();
+    PortBase* getToPort();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

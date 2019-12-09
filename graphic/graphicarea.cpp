@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 14:33:35
+ * @LastEditTime: 2019-12-09 09:38:30
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -266,10 +266,7 @@ void GraphicArea::remove(ShapeBase *shape)
     {
         foreach (ShapeBase *shape, selected_shapes)
         {
-            selected_shapes.removeOne(shape);
-            shape_lists.removeOne(shape);
-            clip_board.removeOne(shape);
-            shape->deleteLater();
+            remove(shape);
         }
         return;
     }
@@ -278,6 +275,19 @@ void GraphicArea::remove(ShapeBase *shape)
     selected_shapes.removeOne(shape);
     shape_lists.removeOne(shape);
     clip_board.removeOne(shape);
+    // 删除形状的端口
+    QMap<QString, PortBase*>::iterator it = ports_map.begin();
+    while (it != ports_map.end())
+    {
+        if ((*it)->getShape() == shape)
+        {
+            ports_map.erase(it); // 删除后自动移到下一个，不需要自增
+        }
+        else
+        {
+            ++it;
+        }
+    }
     shape->deleteLater();
 }
 

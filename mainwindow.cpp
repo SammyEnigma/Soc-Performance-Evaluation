@@ -76,6 +76,29 @@ void MainWindow::readFromFile(QString file_path)
         if (StringUtil::getXmlInt(shape_string, "SELECTED") != 0)
             ui->scrollAreaWidgetContents_2->select(shape, true);
     }
+    // 遍历线连接（需要等port全部加载完成后）
+    QMap<QString, PortBase*>ports = ui->scrollAreaWidgetContents_2->ports_map;
+    foreach (ShapeBase* shape, ui->scrollAreaWidgetContents_2->shape_lists)
+    {
+        if (shape->getLargeType() == CableType)
+        {
+            CableBase* cable = static_cast<CableBase*>(shape);
+            QString portID1 = StringUtil::getXml(cable->readedText(), "FROM_PORT_ID");
+            QString portID2 = StringUtil::getXml(cable->readedText(), "TO_PORT_ID");
+            if (portID1.isEmpty() || portID2.isEmpty())
+            {
+                ERR("无法读取连接的ID")
+                continue ;
+            }
+            if (!ports.contains(portID1) || !ports.contains(portID2))
+            {
+                ERR("不存在连接ID")
+                continue;
+            }
+            cable->setPorts(ports.value(portID1), ports.value(portID2));
+            cable->slotAdjustGeometryByPorts();
+        }
+    }
     ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
 

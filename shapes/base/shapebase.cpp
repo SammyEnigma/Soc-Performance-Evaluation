@@ -60,6 +60,8 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
 
 void ShapeBase::fromString(QString s)
 {
+    _readed_text = s;
+
     int left = StringUtil::getXmlInt(s, "LEFT");
     int top = StringUtil::getXmlInt(s, "TOP");
     int width = StringUtil::getXmlInt(s, "WIDTH");
@@ -144,6 +146,11 @@ QString ShapeBase::toString()
 QString ShapeBase::toStringAppend()
 {
     return "";
+}
+
+QString ShapeBase::readedText()
+{
+    return _readed_text;
 }
 
 const QString ShapeBase::getClass()
@@ -261,7 +268,12 @@ QRect ShapeBase::getSuitableRect(QPoint point)
         left - BORDER_SIZE + cur_size.width(),
         top - BORDER_SIZE + cur_size.height(),
         width + BORDER_SIZE * 2,
-        height + BORDER_SIZE * 2);
+                height + BORDER_SIZE * 2);
+}
+
+LargeShapeType ShapeBase::getLargeType()
+{
+    return ShapeType;
 }
 
 void ShapeBase::paintEvent(QPaintEvent *event)
