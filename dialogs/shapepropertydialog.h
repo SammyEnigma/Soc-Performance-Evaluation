@@ -50,7 +50,7 @@ private slots:
 
     void on_border_color_btn_clicked();
 
-    void on_checkBox_stateChanged(int state);
+    void on_checkBox_clicked();
 
 private:
     Ui::ShapePropertyDialog *ui;

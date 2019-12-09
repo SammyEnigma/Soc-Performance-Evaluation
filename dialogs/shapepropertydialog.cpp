@@ -162,8 +162,9 @@ void ShapePropertyDialog::on_border_color_btn_clicked()
     });
 }
 
-void ShapePropertyDialog::on_checkBox_stateChanged(int state)
+void ShapePropertyDialog::on_checkBox_clicked()
 {
+    bool state = ui->checkBox->checkState();
     foreach (ShapeBase* shape, shapes) {
         shape->_pixmap_scale = state;
         shape->update();
