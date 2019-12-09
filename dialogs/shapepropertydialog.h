@@ -45,11 +45,12 @@ private slots:
     void on_pixmap_color_btn_clicked();
     void on_text_lineEdit_textEdited(const QString &text);
     void on_text_align_comboBox_activated(int index);
-    void on_pixmap_scale_combo_activated(int index);
 
     void on_border_size_spin_valueChanged(int value);
 
     void on_border_color_btn_clicked();
+
+    void on_checkBox_stateChanged(int state);
 
 private:
     Ui::ShapePropertyDialog *ui;

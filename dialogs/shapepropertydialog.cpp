@@ -22,7 +22,7 @@ ShapePropertyDialog::ShapePropertyDialog(QList<ShapeBase *> shapes) : QDialog(sh
     int index = aligns.indexOf(shape->_text_align);
     ui->text_align_comboBox->setCurrentIndex(index!=-1 ? index : 1/*默认=下*/);
 
-    ui->pixmap_scale_combo->setCurrentIndex(shape->_pixmap_scale ? 1 : 0);
+    ui->checkBox->setChecked(shape->_pixmap_scale);
 
     ui->border_size_spin->setValue(shape->_border_size);
 }
@@ -125,15 +125,6 @@ void ShapePropertyDialog::on_text_align_comboBox_activated(int index)
     }
 }
 
-void ShapePropertyDialog::on_pixmap_scale_combo_activated(int index)
-{
-    bool scale = (index == 1);
-    foreach (ShapeBase* shape, shapes) {
-        shape->_pixmap_scale = scale;
-        shape->update();
-    }
-}
-
 void ShapePropertyDialog::on_border_size_spin_valueChanged(int value)
 {
     foreach (ShapeBase* shape, shapes) {
@@ -169,4 +160,12 @@ void ShapePropertyDialog::on_border_color_btn_clicked()
         setBtnColor(ui->border_color_btn, shape->_border_color, true);
         ui->border_color_btn->setText("保持");
     });
+}
+
+void ShapePropertyDialog::on_checkBox_stateChanged(int state)
+{
+    foreach (ShapeBase* shape, shapes) {
+        shape->_pixmap_scale = state;
+        shape->update();
+    }
 }
