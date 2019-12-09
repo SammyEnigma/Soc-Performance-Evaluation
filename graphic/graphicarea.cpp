@@ -421,17 +421,12 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         {
             if (_drag_prev_shape != nullptr)
             {
-                // 之前只是拖拽，现在开始移动了，进行一系列初始化操作
-                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
-                {
-                    _press_moved = true;
-                    unselect(); // 开始拖拽，先取消其他形状
-                    grabMouse();
-                }
-
                 // 只有连接线才贴靠（已取消：RIIT 动态判断类型（因为无法识别））
                 if (!_press_moved && rt->auto_stick_ports && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
                 {
+                    if (selected_shapes.count() > 0)
+                        unselect();
+
                     // 遍历寻找最近的端口
                     int min_dis = 200;
                     PortBase* nearest_port = nullptr;
@@ -461,6 +456,14 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                         DEB << log("连接线没有找到合适的端口1");
                     }
                     _press_moved = true;
+                }
+
+                // 之前只是拖拽，现在开始移动了，进行一系列初始化操作
+                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
+                {
+                    _press_moved = true;
+                    unselect(); // 开始拖拽，先取消其他形状
+                    grabMouse();
                 }
 
                 if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 && _drag_prev_shape->isHidden()) // 开始显示
