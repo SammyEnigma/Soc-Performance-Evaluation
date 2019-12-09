@@ -97,6 +97,7 @@ void MainWindow::readFromFile(QString file_path)
             }
             cable->setPorts(ports.value(portID1), ports.value(portID2));
             cable->slotAdjustGeometryByPorts();
+            ui->scrollAreaWidgetContents_2->cable_lists.append(cable);
         }
     }
     ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
