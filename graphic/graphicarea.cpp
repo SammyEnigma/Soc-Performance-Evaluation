@@ -276,16 +276,27 @@ void GraphicArea::remove(ShapeBase *shape)
     shape_lists.removeOne(shape);
     clip_board.removeOne(shape);
     // 删除形状的端口
-    QMap<QString, PortBase*>::iterator it = ports_map.begin();
-    while (it != ports_map.end())
+    if (shape->getLargeType() != CableType) // 本身不是连接线
     {
-        if ((*it)->getShape() == shape)
+        QMap<QString, PortBase*>::iterator it = ports_map.begin();
+        while (it != ports_map.end())
         {
-            ports_map.erase(it); // 删除后自动移到下一个，不需要自增
-        }
-        else
-        {
-            ++it;
+            if ((*it)->getShape() == shape)
+            {
+                // 删除连接线
+                PortBase* port = (*it);
+                log("delete shape's port"+port->getPortId());
+                removePortCable(port);
+
+                // 删除后自动移到下一个，不需要自增
+                ports_map.erase(it);
+                // 注意：这里加个调试输出会导致崩溃！！！
+                it++; // Why??? 不是说自动next吗
+            }
+            else
+            {
+                ++it;
+            }
         }
     }
     shape->deleteLater();
@@ -831,6 +842,10 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     });
 
     connect(shape, &ShapeBase::signalPortDeleted, this, [=](PortBase *port) {
+        // 删除端口连接线
+        removePortCable(port);
+
+        // 端口列表中删除端口
         ports_map.remove(port->getPortId());
     });
 }
@@ -847,6 +862,21 @@ QString GraphicArea::getRandomPortId()
             id += all_str.at(rand() % all_str.length());
     } while (ports_map.contains(id));
     return id;
+}
+
+void GraphicArea::removePortCable(PortBase *port)
+{
+    log("GraphicArea::removePortCable"+port->getPortId());
+    // 连接线列表中删除连接线
+    for (int i = 0; i < cable_lists.count(); i++)
+    {
+        if (cable_lists.at(i)->usedPort(port))
+        {
+            CableBase* cable = cable_lists.at(i);
+            remove(cable);
+            cable_lists.removeAt(i--);
+        }
+    }
 }
 
 /**

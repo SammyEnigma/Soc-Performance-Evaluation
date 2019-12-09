@@ -76,6 +76,7 @@ private:
     QRect getValidRect(QRect rect); // 负数矩形变成有效的正数矩形
     void connectShapeEvent(ShapeBase *shape);
     QString getRandomPortId();
+    void removePortCable(PortBase* port);
 
 signals:
     void signalSave();     // 必须保存的
