@@ -21,6 +21,7 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent) : QObject(parent), gr
 void FlowControl::startRun()
 {
     run_timer->start();
+    //1232363656
     //这是一个测试
     //213123123
     //12321313
