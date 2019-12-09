@@ -19,9 +19,12 @@ INCLUDEPATH += \
     shapes \
     global \
     utils \
+    shapes \
     shapes/base \
     graphic \
     dialogs \
+    soc \
+    soc/transmission \
 
 SOURCES += \
     dialogs/portpositiondialog.cpp \
@@ -38,7 +41,8 @@ SOURCES += \
     shapes/base/shapelistwidget.cpp \
     shapes/circleshape.cpp \
     shapes/ellipseshape.cpp \
-    shapes/hexagonshape.cpp
+    shapes/hexagonshape.cpp \
+    soc/transmission/datapacket.cpp
 
 HEADERS += \
     dialogs/portpositiondialog.h \
@@ -53,6 +57,7 @@ HEADERS += \
     shapes/circleshape.h \
     shapes/ellipseshape.h \
     shapes/hexagonshape.h \
+    soc/transmission/datapacket.h \
     utils/bytearrayutil.h \
     utils/fileutil.h \
     global/globalvars.h \
