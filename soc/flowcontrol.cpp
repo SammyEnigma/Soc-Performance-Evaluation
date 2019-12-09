@@ -7,7 +7,10 @@
  */
 #include "flowcontrol.h"
 
-FlowControl::FlowControl(GraphicArea *ga, QObject *parent) : QObject(parent), graphic_area(ga)
+FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
+    : QObject(parent),
+      graphic_area(ga),
+      master(nullptr), slave(nullptr)
 {
     run_timer = new QTimer(this);
     run_timer->setInterval(1000); // 一秒钟执行一次 clock
@@ -21,6 +24,7 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent) : QObject(parent), gr
 void FlowControl::startRun()
 {
     run_timer->start();
+    // 内翻车文忽热
 }
 
 /**
@@ -29,6 +33,8 @@ void FlowControl::startRun()
 void FlowControl::pauseRun()
 {
     run_timer->stop();
+    //fnwerui8fr
+    //fewunmf
 }
 
 /**

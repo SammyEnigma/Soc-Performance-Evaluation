@@ -8,9 +8,8 @@
 #ifndef FLOWCONTROL_H
 #define FLOWCONTROL_H
 
-#include <QObject>
-#include "slavemodule.h"
 #include "mastermodule.h"
+#include "slavemodule.h"
 #include "graphicarea.h"
 
 class FlowControl : public QObject
@@ -32,6 +31,9 @@ signals:
 private:
     const GraphicArea* graphic_area;
     QTimer* run_timer;
+
+    MasterModule* master;
+    SlaveModule* slave;
 };
 
 #endif // FLOWCONTROL_H
