@@ -166,7 +166,9 @@ void CableBase::slotAdjustGeometryByPorts()
     int right = qMax(cen1.x(), cen2.x());
     int bottom = qMax(cen1.y(), cen2.y());
 
+//    setFixedSize(right-left, bottom-top);
     setGeometry(left, top, right-left, bottom-top);
+//    move(left, top);
 
     // 计算相对位置，缓存两个 arrow_pos，提升性能
     arrow_pos1 = cen1 - geometry().topLeft();

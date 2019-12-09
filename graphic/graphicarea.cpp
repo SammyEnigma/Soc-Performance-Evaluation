@@ -291,6 +291,34 @@ void GraphicArea::remove(ShapeBase *shape)
     shape->deleteLater();
 }
 
+void GraphicArea::zoomIn(double prop)
+{
+    int old_width = width();
+    int old_height = height();
+    int new_width = static_cast<int>(old_width * prop);
+    int new_height = static_cast<int>(old_height * prop);
+
+    // 修改画板大小
+    setFixedSize(new_width, new_height);
+
+    // TODO: 移动控件位置和大小
+    foreach (ShapeBase* shape, shape_lists)
+    {
+        int w = shape->width()*prop;
+        int h = shape->height()*prop;
+        // 调整形状位置以及端口位置
+        int x = shape->pos().x() * prop; // - shape->width() * (prop-1) / 2;
+        int y = shape->pos().y() * prop; // - shape->height() * (prop-1) / 2;
+        shape->setGeometry(x, y, w, h);
+    }
+
+    // 调整连接线的位置
+    foreach (CableBase* cable, cable_lists)
+    {
+        cable->slotAdjustGeometryByPorts();
+    }
+}
+
 void GraphicArea::mousePressEvent(QMouseEvent *event)
 {
     // 鼠标左键在空白处按下

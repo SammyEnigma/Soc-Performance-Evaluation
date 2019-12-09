@@ -174,3 +174,31 @@ void MainWindow::on_actionSave_triggered()
 {
     saveToFile(graphic_file_path);
 }
+
+/**
+ * 放大界面
+ */
+void MainWindow::on_actionZoom_In_I_triggered()
+{
+    double prop = 1.25;
+    QRect geo = ui->scrollAreaWidgetContents_2->geometry(); // 保存旧的大小
+    ui->scrollAreaWidgetContents_2->zoomIn(prop);
+
+    // 调整滚动条的位置
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + geo.width() * (prop-1) / 2);
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + geo.height() * (prop-1) / 2);
+}
+
+/**
+ * 缩小界面
+ */
+void MainWindow::on_actionZoom_Out_O_triggered()
+{
+    double prop = 0.8;
+    QRect geo = ui->scrollAreaWidgetContents_2->geometry(); // 保存旧的大小
+    ui->scrollAreaWidgetContents_2->zoomIn(prop);
+
+    // 调整滚动条的位置
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + geo.width() * (prop-1) / 2);
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + geo.height() * (prop-1) / 2);
+}

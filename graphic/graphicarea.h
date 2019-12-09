@@ -50,7 +50,7 @@ public:
     void autoSave();
     QString toString();
 
-    // 操作
+    // 形状操作
     void select(ShapeBase *shape, bool ctrl = false);                                               // 选中一个形状，或者取消选中
     void select(QList<ShapeBase *> shapes, bool ctrl = false);                                      // 选中多个形状。select(shape_lists)为全选
     void select(QRect rect, bool ctrl = false);                                                     // 选中一个区域内的所有形状
@@ -59,6 +59,9 @@ public:
     void expandViewPort(int delta_x, int delta_y);                                                  // 调整视图的位置
     void moveShapesPos(int delta_x, int delta_y, QList<ShapeBase *> shapes = QList<ShapeBase *>()); // 调整所选控件的位置
     void remove(ShapeBase *shape = nullptr);                                                        // 删除指定形状，或者删除所选形状
+
+    // 视口操作
+    void zoomIn(double prop);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
