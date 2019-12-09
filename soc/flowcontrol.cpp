@@ -44,5 +44,6 @@ void FlowControl::nextStep()
  */
 void FlowControl::passOneClock()
 {
+    DEB << "模拟流逝 1 个 clock";
 
 }

@@ -30,7 +30,7 @@ private slots:
 signals:
 	
 private:
-	GraphicArea* graphic_area;
+    const GraphicArea* graphic_area;
     QTimer* run_timer;
 };
 
