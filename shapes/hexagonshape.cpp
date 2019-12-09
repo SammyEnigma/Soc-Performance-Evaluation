@@ -43,7 +43,7 @@ void HexagonShape::drawShapePixmap(QPainter &painter, QRect draw_rect)
     }
     if (_border_size>0 && _border_color!=Qt::transparent) // 画边界
     {
-        painter.setPen(QPen(_border_color, 3));
+        painter.setPen(QPen(_border_color, _border_size));
         painter.drawPath(path);
     }
 }
