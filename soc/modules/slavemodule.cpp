@@ -1,6 +1,6 @@
 #include "slavemodule.h"
 
-SlaveModule::SlaveModule()
+SlaveModule::SlaveModule(QWidget *parent) : ModuleBase(parent)
 {
 
 }

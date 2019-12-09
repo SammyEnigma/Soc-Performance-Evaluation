@@ -8,7 +8,6 @@
 #ifndef MODULEBASE_H
 #define MODULEBASE_H
 
-#include <QObject>
 #include "shapebase.h"
 #include "moduleinterface.h"
 

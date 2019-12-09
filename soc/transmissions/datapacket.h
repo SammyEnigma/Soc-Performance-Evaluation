@@ -22,10 +22,10 @@ public:
     void delayToNext();       // 延迟到下一个阶段
     bool isDelayFinished();   // 延迟是否已经结束了
 
-signals:
-    void signalDelayFinished();
+//signals:
+//    void signalDelayFinished();
 
-public slots:
+//public slots:
 
 protected:
     bool valid;      // 是否有效

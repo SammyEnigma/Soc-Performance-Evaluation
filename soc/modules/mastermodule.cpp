@@ -1,6 +1,6 @@
 #include "mastermodule.h"
 
-MasterModule::MasterModule()
+MasterModule::MasterModule(QWidget *parent) : ModuleBase(parent)
 {
 
 }

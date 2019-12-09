@@ -1,12 +1,12 @@
 #ifndef SLAVEMODULE_H
 #define SLAVEMODULE_H
 
-#include <QObject>
+#include "modulebase.h"
 
-class SlaveModule
+class SlaveModule : public ModuleBase
 {
 public:
-    SlaveModule();
+    SlaveModule(QWidget* parent = nullptr);
 };
 
 #endif // SLAVEMODULE_H

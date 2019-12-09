@@ -7,7 +7,7 @@
  */
 #include "modulebase.h"
 
-ModuleBase::ModuleBase(QWidget *parent) : ShapeBase(parent), ModuleBase()
+ModuleBase::ModuleBase(QWidget *parent) : ShapeBase(parent), ModuleInterface()
 {
 
 }

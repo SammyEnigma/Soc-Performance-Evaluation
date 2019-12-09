@@ -20,8 +20,8 @@ public:
 signals:
 
 public slots:
-    virtual void sendPacket(DataPacket packet) = 0;
-    virtual void receivedPacket(DataPacket packet) = 0;
+    virtual void sendPacket(DataPacket packet);
+    virtual void receivedPacket(DataPacket packet);
 
 };
 

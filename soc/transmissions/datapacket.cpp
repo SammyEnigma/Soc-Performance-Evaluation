@@ -8,7 +8,7 @@
 #include "datapacket.h"
 
 DataPacket::DataPacket(QObject *parent)
-    : QObject(parent),
+    :
       valid(false), tag(0), data(0), par(0),
       delay_step(0), delay_max(0)
 {
@@ -23,8 +23,8 @@ void DataPacket::resetDelay(int max)
 void DataPacket::delayToNext()
 {
     delay_step++;
-    if (delay_max >= 0 && delay_step >= delay_max)
-        emit signalDelayFinished();
+//    if (delay_max >= 0 && delay_step >= delay_max)
+//        emit signalDelayFinished();
 }
 
 bool DataPacket::isDelayFinished()
