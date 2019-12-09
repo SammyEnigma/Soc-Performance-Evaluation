@@ -358,6 +358,7 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
 
     // 调整端口
     adjustPortsPosition();
+    emit signalResized(size());
 
     return QWidget::resizeEvent(event);
 }

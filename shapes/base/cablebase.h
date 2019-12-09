@@ -21,6 +21,7 @@ public:
 
     void setPorts(PortBase* p1, PortBase* p2);
     bool usedPort(PortBase* port);
+    bool usedPort(QList<PortBase*>ports);
 
     PortBase* getFromPort();
     PortBase* getToPort();

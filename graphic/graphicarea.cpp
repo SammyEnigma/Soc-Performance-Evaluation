@@ -770,10 +770,21 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             }
         }
         // 移动所有端口连接线
-        // TODO: 只调整移动后的那些，提升性能
+        QList<PortBase*>shape_ports = shape->getPorts();
         foreach (CableBase* cable, cable_lists)
         {
-            cable->slotAdjustGeometryByPorts();
+            if (cable->usedPort(shape_ports))
+                cable->slotAdjustGeometryByPorts();
+        }
+    });
+
+    connect(shape, &ShapeBase::signalResized, this, [=](QSize) {
+        // 移动所有端口连接线
+        QList<PortBase*>shape_ports = shape->getPorts();
+        foreach (CableBase* cable, cable_lists)
+        {
+            if (cable->usedPort(shape_ports))
+                cable->slotAdjustGeometryByPorts();
         }
     });
 

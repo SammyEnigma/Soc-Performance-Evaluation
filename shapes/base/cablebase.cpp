@@ -83,6 +83,16 @@ bool CableBase::usedPort(PortBase *port)
     return from_port == port || to_port == port;
 }
 
+bool CableBase::usedPort(QList<PortBase *> ports)
+{
+    foreach (PortBase* port, ports)
+    {
+        if (usedPort(port))
+            return true;
+    }
+    return false;
+}
+
 PortBase *CableBase::getFromPort()
 {
     return from_port;
