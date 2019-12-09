@@ -9,7 +9,7 @@
 
 FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
     : QObject(parent),
-      graphic(ga),
+      graphic_area(ga),
       master(nullptr), slave(nullptr)
 {
     run_timer = new QTimer(this);
@@ -23,9 +23,8 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
  */
 void FlowControl::startRun()
 {
-    if (!initModules())
-        return ;
     run_timer->start();
+    // 内翻车文忽热
 }
 
 /**
@@ -34,6 +33,8 @@ void FlowControl::startRun()
 void FlowControl::pauseRun()
 {
     run_timer->stop();
+    //fnwerui8fr
+    //fewunmf
 }
 
 /**
@@ -49,28 +50,6 @@ void FlowControl::nextStep()
  */
 void FlowControl::passOneClock()
 {
-    DEB << "模拟流逝1个clock";
+    DEB << "模拟流逝 1 个 clock";
 
-    master->passOneClock();
-    slave->passOneClock();
-}
-
-/**
- * 初始化所有的 module
- */
-bool FlowControl::initModules()
-{
-    master = static_cast<MasterModule*>(graphic->findShapeByClass("Master"));
-    slave = static_cast<SlaveModule*>(graphic->findShapeByClass("Slave"));
-    if (master == nullptr)
-    {
-        DEB << "无法找到 Master";
-        return false;
-    }
-    if (slave == nullptr)
-    {
-        DEB << "无法找到 Slave";
-        return false;
-    }
-    return true;
 }

@@ -21,3 +21,8 @@ void ModuleInterface::receivedPacket(DataPacket *packet)
 {
 
 }
+
+void ModuleInterface::passOneClock()
+{
+
+}

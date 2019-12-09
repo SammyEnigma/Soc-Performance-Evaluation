@@ -26,10 +26,13 @@ public slots:
 private slots:
     void passOneClock(); // 模拟时钟流逝 1 个 clock
 
+private:
+    bool initModules();
+
 signals:
 	
 private:
-    const GraphicArea* graphic_area;
+    GraphicArea* graphic;
     QTimer* run_timer;
 
     MasterModule* master;

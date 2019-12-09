@@ -330,6 +330,26 @@ void GraphicArea::zoomIn(double prop)
     }
 }
 
+ShapeBase *GraphicArea::findShapeByText(QString text)
+{
+    foreach (ShapeBase* shape, shape_lists)
+    {
+        if (shape->getText() == text)
+            return shape;
+    }
+    return nullptr;
+}
+
+ShapeBase *GraphicArea::findShapeByClass(QString text)
+{
+    foreach (ShapeBase* shape, shape_lists)
+    {
+        if (shape->getClass() == text)
+            return shape;
+    }
+    return nullptr;
+}
+
 void GraphicArea::mousePressEvent(QMouseEvent *event)
 {
     // 鼠标左键在空白处按下

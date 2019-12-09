@@ -64,6 +64,10 @@ public:
     // 视口操作
     void zoomIn(double prop);
 
+    // 流控操作
+    ShapeBase* findShapeByText(QString text);
+    ShapeBase *findShapeByClass(QString text);
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

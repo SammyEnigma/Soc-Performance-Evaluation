@@ -12,6 +12,13 @@ SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), buffer_size(0)
     _class = _text = "Slave";
 }
 
+SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
+{
+    SlaveModule *shape = new SlaveModule(parent);
+    shape->copyDataFrom(this);
+    return shape;
+}
+
 void SlaveModule::setBufferSize(int size)
 {
     buffer_size = size;

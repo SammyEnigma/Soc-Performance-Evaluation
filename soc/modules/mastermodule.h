@@ -15,6 +15,7 @@ class MasterModule : public CircleShape, public ModuleInterface
 {
 public:
     MasterModule(QWidget* parent = nullptr);
+    virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
 };
 
 #endif // MASTERMODULE_H

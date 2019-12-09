@@ -19,8 +19,9 @@ public:
 signals:
 
 public slots:
-    virtual void sendPacket(DataPacket *packet); // 发送一个数据包
+    virtual void sendPacket(DataPacket *packet);     // 发送一个数据包
     virtual void receivedPacket(DataPacket *packet); // 接收到一个数据包
+    virtual void passOneClock();                     // 模拟时钟流逝1个clock
 
 };
 
