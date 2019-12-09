@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-27 18:00:02
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 14:56:35
+ * @LastEditTime: 2019-12-09 16:29:37
  * @Description: 主窗口
  */
 #include "mainwindow.h"
@@ -183,6 +183,8 @@ void MainWindow::initData()
 {
     graphic_file_path = rt->DATA_PATH + "graphic.xml";
     readFromFile(graphic_file_path);
+    
+    flow_control = new FlowControl(ui->scrollAreaWidgetContents_2, this);
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -216,4 +218,9 @@ void MainWindow::on_actionZoom_Out_O_triggered()
     // 调整滚动条的位置
     ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + geo.width() * (prop-1) / 2);
     ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + geo.height() * (prop-1) / 2);
+}
+
+void MainWindow::on_actionRun_triggered()
+{
+    flow_control->startRun();
 }

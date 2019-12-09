@@ -32,6 +32,7 @@
 class GraphicArea : public QWidget
 {
     Q_OBJECT
+    friend class FlowControl;
 public:
     GraphicArea(QWidget *parent = nullptr);
 

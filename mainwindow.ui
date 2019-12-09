@@ -140,6 +140,7 @@
      <string>Run (&amp;R)</string>
     </property>
     <addaction name="actionRun"/>
+    <addaction name="actionPause_P"/>
     <addaction name="actionDebug"/>
     <addaction name="actionRun_To_Break_B"/>
     <addaction name="separator"/>
@@ -478,6 +479,11 @@
   <action name="actionZoom_Out_O">
    <property name="text">
     <string>Zoom Out (&amp;O)</string>
+   </property>
+  </action>
+  <action name="actionPause_P">
+   <property name="text">
+    <string>Pause (&amp;P)</string>
    </property>
   </action>
  </widget>
