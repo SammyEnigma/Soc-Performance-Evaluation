@@ -8,7 +8,7 @@
 #include "datapacket.h"
 
 DataPacket::DataPacket(QObject *parent)
-    :
+    : QObject(parent),
       valid(false), tag(0), data(0), par(0),
       delay_step(0), delay_max(0)
 {

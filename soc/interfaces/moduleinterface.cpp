@@ -12,12 +12,12 @@ ModuleInterface::ModuleInterface(QObject *parent) : QObject(parent)
 
 }
 
-void ModuleInterface::sendPacket(DataPacket packet)
+void ModuleInterface::sendPacket(DataPacket *packet)
 {
 
 }
 
-void ModuleInterface::receivedPacket(DataPacket packet)
+void ModuleInterface::receivedPacket(DataPacket *packet)
 {
 
 }
