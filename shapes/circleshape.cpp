@@ -30,7 +30,7 @@ void CircleShape::drawShapePixmap(QPainter &painter, QRect draw_rect)
     }
     if (_border_size>0 && _border_color!=Qt::transparent) // 画边界
     {
-        painter.setPen(QPen(Qt::gray, 3));
+        painter.setPen(QPen(Qt::gray, _border_size));
         painter.drawPath(path);
     }
 }

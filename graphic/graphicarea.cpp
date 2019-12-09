@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 14:33:35
+ * @LastEditTime: 2019-12-09 09:38:30
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -266,10 +266,7 @@ void GraphicArea::remove(ShapeBase *shape)
     {
         foreach (ShapeBase *shape, selected_shapes)
         {
-            selected_shapes.removeOne(shape);
-            shape_lists.removeOne(shape);
-            clip_board.removeOne(shape);
-            shape->deleteLater();
+            remove(shape);
         }
         return;
     }
@@ -278,7 +275,59 @@ void GraphicArea::remove(ShapeBase *shape)
     selected_shapes.removeOne(shape);
     shape_lists.removeOne(shape);
     clip_board.removeOne(shape);
+    // 删除形状的端口
+    if (shape->getLargeType() != CableType) // 本身不是连接线
+    {
+        QMap<QString, PortBase*>::iterator it = ports_map.begin();
+        while (it != ports_map.end())
+        {
+            if ((*it)->getShape() == shape)
+            {
+                // 删除连接线
+                PortBase* port = (*it);
+                log("delete shape's port"+port->getPortId());
+                removePortCable(port);
+
+                // 删除后自动移到下一个，不需要自增
+                ports_map.erase(it);
+                // 注意：这里加个调试输出会导致崩溃！！！
+                it++; // Why??? 不是说自动next吗
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
     shape->deleteLater();
+}
+
+void GraphicArea::zoomIn(double prop)
+{
+    int old_width = width();
+    int old_height = height();
+    int new_width = static_cast<int>(old_width * prop);
+    int new_height = static_cast<int>(old_height * prop);
+
+    // 修改画板大小
+    setFixedSize(new_width, new_height);
+
+    // TODO: 移动控件位置和大小
+    foreach (ShapeBase* shape, shape_lists)
+    {
+        int w = shape->width()*prop;
+        int h = shape->height()*prop;
+        // 调整形状位置以及端口位置
+        int x = shape->pos().x() * prop; // - shape->width() * (prop-1) / 2;
+        int y = shape->pos().y() * prop; // - shape->height() * (prop-1) / 2;
+        shape->setGeometry(x, y, w, h);
+    }
+
+    // 调整连接线的位置
+    foreach (CableBase* cable, cable_lists)
+    {
+        cable->slotAdjustGeometryByPorts();
+    }
 }
 
 void GraphicArea::mousePressEvent(QMouseEvent *event)
@@ -372,17 +421,12 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
         {
             if (_drag_prev_shape != nullptr)
             {
-                // 之前只是拖拽，现在开始移动了，进行一系列初始化操作
-                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
-                {
-                    _press_moved = true;
-                    unselect(); // 开始拖拽，先取消其他形状
-                    grabMouse();
-                }
-
                 // 只有连接线才贴靠（已取消：RIIT 动态判断类型（因为无法识别））
                 if (!_press_moved && rt->auto_stick_ports && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
                 {
+                    if (selected_shapes.count() > 0)
+                        unselect();
+
                     // 遍历寻找最近的端口
                     int min_dis = 200;
                     PortBase* nearest_port = nullptr;
@@ -412,6 +456,14 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
                         DEB << log("连接线没有找到合适的端口1");
                     }
                     _press_moved = true;
+                }
+
+                // 之前只是拖拽，现在开始移动了，进行一系列初始化操作
+                if (!_press_moved && selected_shapes.count() > 0 && (event->pos() - _press_pos).manhattanLength() >= QApplication::startDragDistance())
+                {
+                    _press_moved = true;
+                    unselect(); // 开始拖拽，先取消其他形状
+                    grabMouse();
                 }
 
                 if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 && _drag_prev_shape->isHidden()) // 开始显示
@@ -732,10 +784,21 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             }
         }
         // 移动所有端口连接线
-        // TODO: 只调整移动后的那些，提升性能
+        QList<PortBase*>shape_ports = shape->getPorts();
         foreach (CableBase* cable, cable_lists)
         {
-            cable->slotAdjustGeometryByPorts();
+            if (cable->usedPort(shape_ports))
+                cable->slotAdjustGeometryByPorts();
+        }
+    });
+
+    connect(shape, &ShapeBase::signalResized, this, [=](QSize) {
+        // 移动所有端口连接线
+        QList<PortBase*>shape_ports = shape->getPorts();
+        foreach (CableBase* cable, cable_lists)
+        {
+            if (cable->usedPort(shape_ports))
+                cable->slotAdjustGeometryByPorts();
         }
     });
 
@@ -765,6 +828,14 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             select(shape);
     });
 
+    connect(shape, &ShapeBase::signalPortPositionModified, this, [=](PortBase* port){
+        // 重新调整连接线的位置
+        foreach (CableBase* cable, cable_lists)
+        {
+            if (cable->usedPort(port))
+                cable->slotAdjustGeometryByPorts();
+        }
+    });
     connect(shape, &ShapeBase::signalPortInserted, this, [=](PortBase *port) {
         if (port->getPortId().isEmpty()) // 这个真的是新手动添加的
         {
@@ -774,6 +845,10 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     });
 
     connect(shape, &ShapeBase::signalPortDeleted, this, [=](PortBase *port) {
+        // 删除端口连接线
+        removePortCable(port);
+
+        // 端口列表中删除端口
         ports_map.remove(port->getPortId());
     });
 }
@@ -790,6 +865,21 @@ QString GraphicArea::getRandomPortId()
             id += all_str.at(rand() % all_str.length());
     } while (ports_map.contains(id));
     return id;
+}
+
+void GraphicArea::removePortCable(PortBase *port)
+{
+    log("GraphicArea::removePortCable"+port->getPortId());
+    // 连接线列表中删除连接线
+    for (int i = 0; i < cable_lists.count(); i++)
+    {
+        if (cable_lists.at(i)->usedPort(port))
+        {
+            CableBase* cable = cable_lists.at(i);
+            remove(cable);
+            cable_lists.removeAt(i--);
+        }
+    }
 }
 
 /**

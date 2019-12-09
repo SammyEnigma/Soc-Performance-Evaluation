@@ -13,6 +13,7 @@
 #include <QColorDialog>
 #include <QDebug>
 #include "shapebase.h"
+#include "cablebase.h"
 #include "ui_shapepropertydialog.h"
 
 QT_BEGIN_NAMESPACE
@@ -45,11 +46,19 @@ private slots:
     void on_pixmap_color_btn_clicked();
     void on_text_lineEdit_textEdited(const QString &text);
     void on_text_align_comboBox_activated(int index);
-    void on_pixmap_scale_combo_activated(int index);
 
     void on_border_size_spin_valueChanged(int value);
 
     void on_border_color_btn_clicked();
+
+    void on_checkBox_clicked();
+
+    void on_radioButton_clicked();
+
+    void on_radioButton_2_clicked();
+
+    void on_radioButton_3_clicked();
+
 
 private:
     Ui::ShapePropertyDialog *ui;

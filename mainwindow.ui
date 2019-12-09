@@ -156,6 +156,9 @@
     <addaction name="actionFull_Screen_F"/>
     <addaction name="actionRefresh_Shapes_R"/>
     <addaction name="actionRegresh_Graphics_G"/>
+    <addaction name="separator"/>
+    <addaction name="actionZoom_In_I"/>
+    <addaction name="actionZoom_Out_O"/>
    </widget>
    <widget class="QMenu" name="menu_9">
     <property name="title">
@@ -465,6 +468,16 @@
   <action name="actionRegresh_Graphics_G">
    <property name="text">
     <string>Refresh Graphics (&amp;G)</string>
+   </property>
+  </action>
+  <action name="actionZoom_In_I">
+   <property name="text">
+    <string>Zoom In (&amp;I)</string>
+   </property>
+  </action>
+  <action name="actionZoom_Out_O">
+   <property name="text">
+    <string>Zoom Out (&amp;O)</string>
    </property>
   </action>
  </widget>

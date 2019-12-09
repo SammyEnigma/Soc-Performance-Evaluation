@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 15:53:37
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 18:06:14
+ * @LastEditTime: 2019-12-09 14:30:58
  * @Description: 左边的形状单元列表框
  */
 #include "shapelistwidget.h"
@@ -103,6 +103,8 @@ void ShapeListWidget::loadShapes()
     new QListWidgetItem(QIcon(":/icons/cursor"), MOVING_CURSOR_NAME, this);
 
     // 加载自定义形状
+    loadCustomShape(new MasterModule(this));
+    loadCustomShape(new SlaveModule(this));
     loadCustomShape(new CableBase(this));
     loadCustomShape(new CircleShape(this));
     loadCustomShape(new EllipseShape(this));
@@ -149,6 +151,7 @@ void ShapeListWidget::loadOneShape(const QString name)
  */
 void ShapeListWidget::slotItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
+    Q_UNUSED(previous)
     // 列表项的名字
     QString name = current->text();
     us->setVal("recent/choosed_shape_unit", currentRow()); // 保存选中的形状单元

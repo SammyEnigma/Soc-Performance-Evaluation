@@ -21,6 +21,7 @@
 #include "portpositiondialog.h"
 
 #define BORDER_SIZE 2 // 边缘padding，用来放调整大小的边界线
+#define ERR(x) qDebug() << log(x);
 
 const Qt::Alignment DEFAULT_TEXT_ALIGN = Qt::AlignBottom | Qt::AlignHCenter;
 const QColor DEFAULT_TEXT_COLOR = Qt::black;
@@ -28,6 +29,11 @@ const bool DEFAULT_PIXMAP_SCALE = false;
 const QColor DEFAULT_PIXMAP_COLOR = Qt::transparent;
 const int DEFAULT_BORDER_SIZE = 3;
 const QColor DEFAULT_BORDER_COLOR = Qt::gray;
+
+enum LargeShapeType {
+    ShapeType,
+    CableType
+};
 
 class ShapeBase : public QWidget
 {
@@ -49,6 +55,7 @@ public:
     virtual QRect getSuitableRect(QPoint point);                     // 从列表拖到绘图区域时，自适应大小和坐标
 
     // 属性
+    virtual LargeShapeType getLargeType();
     virtual const QString getClass();
     virtual const QString getText();
     virtual const QPixmap getPixmap();
@@ -69,7 +76,10 @@ public:
 
     // 保存
     void fromString(QString s);
+    virtual void fromStringAppend(QString s);
     QString toString();
+    virtual QString toStringAppend();
+    QString readedText();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -100,6 +110,7 @@ signals:
     void signalLeftButtonReleased();
     void signalMenuShowed();
 
+    void signalPortPositionModified(PortBase* port);
     void signalPortInserted(PortBase* port);
     void signalPortDeleted(PortBase* port);
 
@@ -128,6 +139,8 @@ protected:
     bool _press_effected;     // 按下时特殊操作是否已经生效
     bool _hovering;           // 是否鼠标悬浮期间
     bool _show_light_edge;    // 是否显示淡淡的边界
+
+    QString _readed_text;     // 读取时的内容（即fromString的文本）
 };
 
 #endif // SHAPEBASE_H

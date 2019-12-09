@@ -60,6 +60,8 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
 
 void ShapeBase::fromString(QString s)
 {
+    _readed_text = s;
+
     int left = StringUtil::getXmlInt(s, "LEFT");
     int top = StringUtil::getXmlInt(s, "TOP");
     int width = StringUtil::getXmlInt(s, "WIDTH");
@@ -101,6 +103,11 @@ void ShapeBase::fromString(QString s)
     }
 }
 
+void ShapeBase::fromStringAppend(QString s)
+{
+    Q_UNUSED(s)
+}
+
 QString ShapeBase::toString()
 {
     QString shape_string;
@@ -127,12 +134,23 @@ QString ShapeBase::toString()
         shape_string += indent + StringUtil::makeXml(QVariant(_border_color).toString(), "BORDER_COLOR");
 
     shape_string += indent + StringUtil::makeXml(isEdgeShowed(), "SELECTED");
+    shape_string += toStringAppend();
     foreach (PortBase *port, ports)
     {
         shape_string += port->toString();
     }
     shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
     return shape_string;
+}
+
+QString ShapeBase::toStringAppend()
+{
+    return "";
+}
+
+QString ShapeBase::readedText()
+{
+    return _readed_text;
 }
 
 const QString ShapeBase::getClass()
@@ -191,6 +209,7 @@ void ShapeBase::addPort(PortBase *port)
         // 获取新端口的信息以及其他信息
         PortPositionDialog::getPortPosition(this, port);
         adjustPortsPosition();
+        emit signalPortPositionModified(port);
     });
     connect(port, &PortBase::signalDelete, this, [=] {
         // 如果已经连接了，则先断开连接
@@ -249,7 +268,12 @@ QRect ShapeBase::getSuitableRect(QPoint point)
         left - BORDER_SIZE + cur_size.width(),
         top - BORDER_SIZE + cur_size.height(),
         width + BORDER_SIZE * 2,
-        height + BORDER_SIZE * 2);
+                height + BORDER_SIZE * 2);
+}
+
+LargeShapeType ShapeBase::getLargeType()
+{
+    return ShapeType;
 }
 
 void ShapeBase::paintEvent(QPaintEvent *event)
@@ -334,6 +358,7 @@ void ShapeBase::resizeEvent(QResizeEvent *event)
 
     // 调整端口
     adjustPortsPosition();
+    emit signalResized(size());
 
     return QWidget::resizeEvent(event);
 }

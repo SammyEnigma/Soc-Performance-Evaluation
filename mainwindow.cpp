@@ -33,7 +33,12 @@ MainWindow::~MainWindow()
 void MainWindow::saveToFile(QString file_path)
 {
     log("保存至文件：" + file_path);
-    QString full_string = ui->scrollAreaWidgetContents_2->toString();
+    QString full_string;
+    full_string += StringUtil::makeXml(ui->scrollArea->horizontalScrollBar()->sliderPosition(), "SCROLL_HORIZONTAL");
+    full_string += "\n"+StringUtil::makeXml(ui->scrollArea->verticalScrollBar()->sliderPosition(), "SCROLL_VERTICAL");
+    full_string += "\n"+StringUtil::makeXml(ui->scrollAreaWidgetContents_2->width(), "GRAPHIC_WIDTH");
+    full_string += "\n"+StringUtil::makeXml(ui->scrollAreaWidgetContents_2->height(), "GRAPHIC_HEIGHT");
+    full_string += "\n"+ui->scrollAreaWidgetContents_2->toString();
     FileUtil::writeTextFile(file_path, full_string);
 }
 
@@ -56,7 +61,17 @@ void MainWindow::readFromFile(QString file_path)
     int graphic_width = StringUtil::getXmlInt(full_string, "GRAPHIC_WIDTH");
     int graphic_height = StringUtil::getXmlInt(full_string, "GRAPHIC_HEIGHT");
     if (graphic_width != 0 && graphic_height != 0)
-        ui->scrollAreaWidgetContents_2->setGeometry(graphic_left, graphic_top, graphic_width, graphic_height);
+        ui->scrollAreaWidgetContents_2->setFixedSize(graphic_width, graphic_height);
+
+    int scroll_h = StringUtil::getXmlInt(full_string, "SCROLL_HORIZONTAL");
+    int scroll_v = StringUtil::getXmlInt(full_string, "SCROLL_VERTICAL");
+    if (scroll_h != 0 || scroll_v != 0)
+    {
+        QTimer::singleShot(0, [=]{ // 不知道为什么必须要延迟才可以滚动，不如不生效（可能是上限没有改过来？）
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(scroll_h);
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(scroll_v);
+        });
+    }
 
     QStringList shape_string_list = StringUtil::getXmls(full_string, "SHAPE");
     foreach (QString shape_string, shape_string_list)
@@ -76,7 +91,31 @@ void MainWindow::readFromFile(QString file_path)
         if (StringUtil::getXmlInt(shape_string, "SELECTED") != 0)
             ui->scrollAreaWidgetContents_2->select(shape, true);
     }
-    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
+    // 遍历线连接（需要等port全部加载完成后）
+    QMap<QString, PortBase*>ports = ui->scrollAreaWidgetContents_2->ports_map;
+    foreach (ShapeBase* shape, ui->scrollAreaWidgetContents_2->shape_lists)
+    {
+        if (shape->getLargeType() == CableType)
+        {
+            CableBase* cable = static_cast<CableBase*>(shape);
+            QString portID1 = StringUtil::getXml(cable->readedText(), "FROM_PORT_ID");
+            QString portID2 = StringUtil::getXml(cable->readedText(), "TO_PORT_ID");
+            if (portID1.isEmpty() || portID2.isEmpty())
+            {
+                ERR("无法读取连接的ID")
+                continue ;
+            }
+            if (!ports.contains(portID1) || !ports.contains(portID2))
+            {
+                ERR("不存在连接ID")
+                continue;
+            }
+            cable->setPorts(ports.value(portID1), ports.value(portID2));
+            cable->slotAdjustGeometryByPorts();
+            ui->scrollAreaWidgetContents_2->cable_lists.append(cable);
+        }
+    }
+//    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
 
 /**
@@ -149,4 +188,32 @@ void MainWindow::initData()
 void MainWindow::on_actionSave_triggered()
 {
     saveToFile(graphic_file_path);
+}
+
+/**
+ * 放大界面
+ */
+void MainWindow::on_actionZoom_In_I_triggered()
+{
+    double prop = 1.25;
+    QRect geo = ui->scrollAreaWidgetContents_2->geometry(); // 保存旧的大小
+    ui->scrollAreaWidgetContents_2->zoomIn(prop);
+
+    // 调整滚动条的位置
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + geo.width() * (prop-1) / 2);
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + geo.height() * (prop-1) / 2);
+}
+
+/**
+ * 缩小界面
+ */
+void MainWindow::on_actionZoom_Out_O_triggered()
+{
+    double prop = 0.8;
+    QRect geo = ui->scrollAreaWidgetContents_2->geometry(); // 保存旧的大小
+    ui->scrollAreaWidgetContents_2->zoomIn(prop);
+
+    // 调整滚动条的位置
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + geo.width() * (prop-1) / 2);
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + geo.height() * (prop-1) / 2);
 }
