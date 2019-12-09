@@ -26,7 +26,6 @@ void FlowControl::startRun()
     if (!initModules())
         return ;
     run_timer->start();
-
 }
 
 /**
@@ -74,5 +73,4 @@ bool FlowControl::initModules()
         return false;
     }
     return true;
-
 }

@@ -9,20 +9,23 @@
 #define MODULEINTERFACE_H
 
 #include "datapacket.h"
+#include "QList"
 
 class ModuleInterface : public QObject
 {
     Q_OBJECT
 public:
     ModuleInterface(QObject *parent = nullptr);
+    void setDataPacket(QList<DataPacket*> dataList = QList<DataPacket*>());
 
 signals:
 
 public slots:
     virtual void sendPacket(DataPacket *packet);     // 发送一个数据包
     virtual void receivedPacket(DataPacket *packet); // 接收到一个数据包
-    virtual void passOneClock();                     // 模拟时钟流逝1个clock
-
+    virtual void passOneClock();                     // 模拟时钟流逝1个clock 
+private:
+    QList<DataPacket*> dataList;
 };
 
 #endif // MODULEINTERFACE_H

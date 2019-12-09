@@ -7,10 +7,7 @@
  */
 #include "flowcontrol.h"
 
-FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
-    : QObject(parent),
-      graphic(ga),
-      master(nullptr), slave(nullptr)
+FlowControl::FlowControl(GraphicArea *ga, QObject *parent) : QObject(parent), graphic_area(ga)
 {
     run_timer = new QTimer(this);
     run_timer->setInterval(1000); // 一秒钟执行一次 clock
@@ -23,10 +20,11 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
  */
 void FlowControl::startRun()
 {
-    if (!initModules())
-        return ;
     run_timer->start();
-
+    //1232363656
+    //这是一个测试
+    //213123123
+    //12321313
 }
 
 /**
@@ -50,29 +48,6 @@ void FlowControl::nextStep()
  */
 void FlowControl::passOneClock()
 {
-    DEB << "模拟流逝1个clock";
-
-    master->passOneClock();
-    slave->passOneClock();
-}
-
-/**
- * 初始化所有的 module
- */
-bool FlowControl::initModules()
-{
-    master = static_cast<MasterModule*>(graphic->findShapeByClass("Master"));
-    slave = static_cast<SlaveModule*>(graphic->findShapeByClass("Slave"));
-    if (master == nullptr)
-    {
-        DEB << "无法找到 Master";
-        return false;
-    }
-    if (slave == nullptr)
-    {
-        DEB << "无法找到 Slave";
-        return false;
-    }
-    return true;
+    DEB << "模拟流逝 1 个 clock";
 
 }
