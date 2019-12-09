@@ -11,3 +11,4 @@ MasterModule::MasterModule(QWidget *parent) : CircleShape(parent)
 {
     _class = _text = "Master";
 }
+//

@@ -10,11 +10,21 @@
 
 #include "ellipseshape.h"
 #include "moduleinterface.h"
+#include "qqueue.h"
 
 class SlaveModule : public EllipseShape, public ModuleInterface
 {
 public:
     SlaveModule(QWidget* parent = nullptr);
+     void setBufferSize(int size); //设定buffer大小
+     virtual void sendPacket(DataPacket *packet); // 发送一个数据包
+     virtual void receivedPacket(DataPacket *packet); // 接收到一个数据包
+
+signals:
+     void signalBufferSize(int size);//发送slave空间的信号
+private:
+     int buffer_size;
+     QQueue<DataPacket*> dataQueue;
 };
 
 #endif // SLAVEMODULE_H

@@ -18,6 +18,7 @@ void DataPacket::resetDelay(int max)
 {
     delay_step = 0;
     delay_max = max;
+
 }
 
 void DataPacket::delayToNext()

@@ -44,6 +44,7 @@ SOURCES += \
     shapes/circleshape.cpp \
     shapes/ellipseshape.cpp \
     shapes/hexagonshape.cpp \
+    soc/flowcontrol.cpp \
     soc/interfaces/moduleinterface.cpp \
     soc/modules/mastermodule.cpp \
     soc/modules/modulebase.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     shapes/circleshape.h \
     shapes/ellipseshape.h \
     shapes/hexagonshape.h \
+    soc/flowcontrol.h \
     soc/interfaces/moduleinterface.h \
     soc/modules/mastermodule.h \
     soc/modules/modulebase.h \

@@ -11,3 +11,21 @@ SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent)
 {
     _class = _text = "Slave";
 }
+
+void SlaveModule::setBufferSize(int size)
+{
+    buffer_size = size;
+}
+
+void SlaveModule::sendPacket(DataPacket *packet)
+{
+
+
+}
+
+void SlaveModule::receivedPacket(DataPacket *packet)
+{
+
+}
+
+

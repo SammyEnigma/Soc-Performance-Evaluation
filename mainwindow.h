@@ -13,6 +13,7 @@
 #include <QLabel>
 #include "shapebase.h"
 #include "globalvars.h"
+#include "flowcontrol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -46,5 +47,6 @@ private:
 private:
     Ui::MainWindow *ui;
     QString graphic_file_path;
+    FlowControl *flow_control;
 };
 #endif // MAINWINDOW_H
