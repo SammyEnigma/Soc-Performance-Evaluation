@@ -33,7 +33,12 @@ MainWindow::~MainWindow()
 void MainWindow::saveToFile(QString file_path)
 {
     log("保存至文件：" + file_path);
-    QString full_string = ui->scrollAreaWidgetContents_2->toString();
+    QString full_string;
+    full_string += StringUtil::makeXml(ui->scrollArea->horizontalScrollBar()->sliderPosition(), "SCROLL_HORIZONTAL");
+    full_string += "\n"+StringUtil::makeXml(ui->scrollArea->verticalScrollBar()->sliderPosition(), "SCROLL_VERTICAL");
+    full_string += "\n"+StringUtil::makeXml(ui->scrollAreaWidgetContents_2->width(), "GRAPHIC_WIDTH");
+    full_string += "\n"+StringUtil::makeXml(ui->scrollAreaWidgetContents_2->height(), "GRAPHIC_HEIGHT");
+    full_string += "\n"+ui->scrollAreaWidgetContents_2->toString();
     FileUtil::writeTextFile(file_path, full_string);
 }
 
@@ -56,7 +61,17 @@ void MainWindow::readFromFile(QString file_path)
     int graphic_width = StringUtil::getXmlInt(full_string, "GRAPHIC_WIDTH");
     int graphic_height = StringUtil::getXmlInt(full_string, "GRAPHIC_HEIGHT");
     if (graphic_width != 0 && graphic_height != 0)
-        ui->scrollAreaWidgetContents_2->setGeometry(graphic_left, graphic_top, graphic_width, graphic_height);
+        ui->scrollAreaWidgetContents_2->setFixedSize(graphic_width, graphic_height);
+
+    int scroll_h = StringUtil::getXmlInt(full_string, "SCROLL_HORIZONTAL");
+    int scroll_v = StringUtil::getXmlInt(full_string, "SCROLL_VERTICAL");
+    if (scroll_h != 0 || scroll_v != 0)
+    {
+        QTimer::singleShot(0, [=]{ // 不知道为什么必须要延迟才可以滚动，不如不生效（可能是上限没有改过来？）
+            ui->scrollArea->horizontalScrollBar()->setSliderPosition(scroll_h);
+            ui->scrollArea->verticalScrollBar()->setSliderPosition(scroll_v);
+        });
+    }
 
     QStringList shape_string_list = StringUtil::getXmls(full_string, "SHAPE");
     foreach (QString shape_string, shape_string_list)
@@ -100,7 +115,7 @@ void MainWindow::readFromFile(QString file_path)
             ui->scrollAreaWidgetContents_2->cable_lists.append(cable);
         }
     }
-    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
+//    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
 
 /**
