@@ -2,20 +2,20 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-10 09:17:24
+ * @LastEditTime: 2019-12-10 11:33:28
  * @Description: 流控制
  */
 #include "flowcontrol.h"
 
 FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
     : QObject(parent),
-      graphic(ga),
+      graphic(ga), current_clock(-1),
       master(nullptr), slave(nullptr)
 {
     run_timer = new QTimer(this);
     run_timer->setInterval(1000); // 一秒钟执行一次 clock
     run_timer->setSingleShot(false);
-    connect(run_timer, SIGNAL(timeout()), this,SLOT(passOneClock()));
+    connect(run_timer, SIGNAL(timeout()), this, SLOT(passOneClock()));
 }
 
 /**
@@ -25,7 +25,8 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
 void FlowControl::startRun()
 {
     if (!initModules())
-        return ;
+        return;
+    current_clock = -1;
     run_timer->start();
 }
 
@@ -42,6 +43,8 @@ void FlowControl::pauseRun()
  */
 void FlowControl::resumeRun()
 {
+	if (current_clock == -1) // 未初始化
+        return ;
     run_timer->start();
 }
 
@@ -50,6 +53,8 @@ void FlowControl::resumeRun()
  */
 void FlowControl::nextStep()
 {
+    if (current_clock == -1) // 未初始化
+        return;
     passOneClock();
 }
 
@@ -62,6 +67,8 @@ void FlowControl::passOneClock()
 
     master->passOneClock();
     slave->passOneClock();
+    
+    current_clock++;
 }
 
 /**
@@ -69,19 +76,43 @@ void FlowControl::passOneClock()
  */
 bool FlowControl::initModules()
 {
-    master = static_cast<MasterModule*>(graphic->findShapeByClass("Master"));
-    slave = static_cast<SlaveModule*>(graphic->findShapeByClass("Slave"));
-    
-    if (master == nullptr)
+    master = static_cast<MasterModule *>(graphic->findShapeByClass("Master"));
+    slave = static_cast<SlaveModule *>(graphic->findShapeByClass("Slave"));
+    ms_cable = static_cast<ModuleCable*>(getModuleCable(master, slave));
+    if (!master)
     {
         DEB << "无法找到 Master";
         return false;
     }
-    if (slave == nullptr)
+    if (!slave)
     {
         DEB << "无法找到 Slave";
         return false;
     }
+    if (!ms_cable)
+    {
+        DEB << "无法找到 Master 和 Slave 的连接";
+        return false;
+    }
     return true;
+}
 
+/**
+ * 获取两个形状之间的连线对象（至少是CableBase，理论上来说也是ModuleCable）
+ */
+CableBase *FlowControl::getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single)
+{
+	CableBase* module_cable = nullptr;
+    foreach (CableBase* cable, graphic->cable_lists)
+    {
+        if (cable->getFromShape() == shape1 && cable->getToShape() == shape2)
+            module_cable = cable;
+        else if (!single && cable->getFromShape() ==  shape2 && cable->getToShape() == shape1)
+            module_cable = cable;
+    }
+    if (!module_cable)
+        return nullptr;
+    if (module_cable->getClass() != "ModuleCable")
+        return nullptr;
+    return module_cable;
 }

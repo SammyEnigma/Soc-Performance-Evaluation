@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-10 09:17:11
+ * @LastEditTime: 2019-12-10 11:00:59
  * @Description: 流控制
  */
 #ifndef FLOWCONTROL_H
@@ -30,12 +30,14 @@ private slots:
 
 private:
     bool initModules();
+    CableBase* getModuleCable(ShapeBase* shape1, ShapeBase* shape2, bool single = false);
 
 signals:
 	
 private:
     GraphicArea* graphic;
     QTimer* run_timer;
+    int current_clock;
 
     MasterModule* master;
     SlaveModule* slave;

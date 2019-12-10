@@ -2,7 +2,7 @@
 
 ModuleCable::ModuleCable(QWidget *parent) : CableBase(parent), ModuleInterface(parent)
 {
-    _class = _text = "Module Cable";
+    _class = _text = "ModuleCable";
 }
 
 ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
