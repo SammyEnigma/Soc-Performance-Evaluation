@@ -2,15 +2,16 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-09 16:51:49
+ * @LastEditTime: 2019-12-10 09:17:11
  * @Description: 流控制
  */
 #ifndef FLOWCONTROL_H
 #define FLOWCONTROL_H
 
+#include "graphicarea.h"
 #include "mastermodule.h"
 #include "slavemodule.h"
-#include "graphicarea.h"
+#include "modulecable.h";
 
 class FlowControl : public QObject
 {
@@ -21,6 +22,7 @@ public:
 public slots:
     void startRun(); // 开始运行
     void pauseRun(); // 暂停运行
+    void resumeRun(); // 继续运行
     void nextStep(); // 运行下一步
 
 private slots:
@@ -37,6 +39,7 @@ private:
 
     MasterModule* master;
     SlaveModule* slave;
+    ModuleCable* ms_cable;
 };
 
 #endif // FLOWCONTROL_H

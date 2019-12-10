@@ -25,6 +25,7 @@
 #include "cablebase.h"
 #include "mastermodule.h"
 #include "slavemodule.h"
+#include "modulecable.h"
 
 #define MOVING_CURSOR_NAME tr("指针") // 选择控件的鼠标列表项的名字
 

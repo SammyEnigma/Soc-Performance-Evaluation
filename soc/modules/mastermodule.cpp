@@ -7,13 +7,14 @@
  */
 #include "mastermodule.h"
 
-MasterModule::MasterModule(QWidget *parent) : CircleShape(parent)
+MasterModule::MasterModule(QWidget *parent) : CircleShape(parent), ModuleInterface(parent)
 {
     _class = _text = "Master";
 }
 
 MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
 {
+    log("MasterModule::newInstanceBySelf");
     MasterModule *shape = new MasterModule(parent);
     shape->copyDataFrom(this);
     return shape;

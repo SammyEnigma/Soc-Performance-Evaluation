@@ -17,6 +17,11 @@ void ModuleInterface::sendPacket(DataPacket *packet)
 
 }
 
+void ModuleInterface::sentPacket(QList<DataPacket *> packet_list)
+{
+
+}
+
 void ModuleInterface::receivedPacket(DataPacket *packet)
 {
 

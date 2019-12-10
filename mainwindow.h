@@ -45,6 +45,8 @@ private slots:
 
     void on_actionStep_triggered();
 
+    void on_actionResume_S_triggered();
+
 private:
     void initSystem(); // 初始化系统（比如目录结构）
     void initView();   // 初始化布局

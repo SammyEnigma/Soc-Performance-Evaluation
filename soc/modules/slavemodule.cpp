@@ -7,13 +7,14 @@
  */
 #include "slavemodule.h"
 
-SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), buffer_size(0)
+SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), ModuleInterface(parent), buffer_size(0)
 {
     _class = _text = "Slave";
 }
 
 SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
 {
+    log("SlaveModule::newInstanceBySelf");
     SlaveModule *shape = new SlaveModule(parent);
     shape->copyDataFrom(this);
     return shape;

@@ -6,7 +6,7 @@ CableBase::CableBase(QWidget *parent)
       arrow_pos1(QPoint(-1,-1)), arrow_pos2(QPoint(-1,-1)),
       _line_type(DEFAULT_LINE_TYPE)
 {
-    _class = "Cable";
+    _class = "Cable Base";
     setMinimumSize(8,8);
 
     // 缩略图
@@ -102,6 +102,20 @@ PortBase *CableBase::getFromPort()
 PortBase *CableBase::getToPort()
 {
     return to_port;
+}
+
+ShapeBase *CableBase::getFromShape()
+{
+    if (from_port == nullptr)
+        return nullptr;
+    return static_cast<ShapeBase*>(from_port->getShape());
+}
+
+ShapeBase *CableBase::getToShape()
+{
+    if (to_port == nullptr)
+        return nullptr;
+    return static_cast<ShapeBase*>(to_port->getShape());
 }
 
 void CableBase::paintEvent(QPaintEvent *event)

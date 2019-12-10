@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>626</height>
+    <width>1245</width>
+    <height>778</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,8 +28,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>621</width>
-         <height>561</height>
+         <width>975</width>
+         <height>713</height>
         </rect>
        </property>
       </widget>
@@ -42,7 +42,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>803</width>
+     <width>1245</width>
      <height>23</height>
     </rect>
    </property>
@@ -140,8 +140,9 @@
      <string>Run (&amp;R)</string>
     </property>
     <addaction name="actionRun"/>
-    <addaction name="actionPause_P"/>
     <addaction name="actionDebug"/>
+    <addaction name="actionPause_P"/>
+    <addaction name="actionResume_S"/>
     <addaction name="actionRun_To_Break_B"/>
     <addaction name="separator"/>
     <addaction name="actionStep"/>
@@ -484,6 +485,11 @@
   <action name="actionPause_P">
    <property name="text">
     <string>Pause (&amp;P)</string>
+   </property>
+  </action>
+  <action name="actionResume_S">
+   <property name="text">
+    <string>Resume (&amp;S)</string>
    </property>
   </action>
  </widget>

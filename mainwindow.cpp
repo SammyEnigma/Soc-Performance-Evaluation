@@ -235,3 +235,8 @@ void MainWindow::on_actionStep_triggered()
 {
     flow_control->nextStep();
 }
+
+void MainWindow::on_actionResume_S_triggered()
+{
+
+}

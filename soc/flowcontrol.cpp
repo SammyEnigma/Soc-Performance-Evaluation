@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-09 16:47:48
+ * @LastEditTime: 2019-12-10 09:17:24
  * @Description: 流控制
  */
 #include "flowcontrol.h"
@@ -20,13 +20,13 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
 
 /**
  * 开始每隔一段时间的 clock 运行
+ * 等同于带初始化的 resume
  */
 void FlowControl::startRun()
 {
     if (!initModules())
         return ;
     run_timer->start();
-
 }
 
 /**
@@ -35,6 +35,14 @@ void FlowControl::startRun()
 void FlowControl::pauseRun()
 {
     run_timer->stop();
+}
+
+/**
+ * 恢复暂停之前的运行
+ */
+void FlowControl::resumeRun()
+{
+    run_timer->start();
 }
 
 /**
@@ -63,6 +71,7 @@ bool FlowControl::initModules()
 {
     master = static_cast<MasterModule*>(graphic->findShapeByClass("Master"));
     slave = static_cast<SlaveModule*>(graphic->findShapeByClass("Slave"));
+    
     if (master == nullptr)
     {
         DEB << "无法找到 Master";

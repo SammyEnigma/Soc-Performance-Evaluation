@@ -26,6 +26,8 @@ public:
 
     PortBase* getFromPort();
     PortBase* getToPort();
+    ShapeBase* getFromShape();
+    ShapeBase* getToShape();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
