@@ -45,7 +45,6 @@ void ModuleCable::paintEvent(QPaintEvent *event)
     }
     else // 两个都确定了
     {
-        int breadth = (LINE_COUNT - 1) * LINE_SPACE + _border_size; // 所有宽度外加线宽
         if (_line_type == 0) // 直线
         {
             /** 是下面这个形状的
@@ -54,7 +53,9 @@ void ModuleCable::paintEvent(QPaintEvent *event)
              * └┴┴┘
              * 根据倾斜程度画间隔相同的线
              */
-            if (arrow_pos1.x() == arrow_pos2.x() || arrow_pos1.y() == arrow_pos2.x() || (arrow_pos1.y() - arrow_pos2.y()) / (double)(arrow_pos1.x() - arrow_pos2.x())<0)
+            if (arrow_pos1.x() == arrow_pos2.x()
+                    || arrow_pos1.y() == arrow_pos2.x()
+                    || (arrow_pos1.y() - arrow_pos2.y()) / (double)(arrow_pos1.x() - arrow_pos2.x())<0) // 右上-左下 角度倾斜
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
@@ -62,7 +63,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                                      arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y);
                 }
             }
-            else // 计算斜率
+            else // 左上-右下 角度倾斜，δx和δy一致，需要特判
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
@@ -124,10 +125,20 @@ void ModuleCable::adjustGeometryByPorts()
     int delta_x = qAbs(cen1.x() - cen2.x());
     int delta_y = qAbs(cen1.y() - cen2.y());
     int gx2y2 = sqrt(delta_x * delta_x + delta_y * delta_y);
-    _breadth_x = breadth * delta_y / gx2y2;
-    _breadth_y = breadth * delta_x / gx2y2;
-    _space_x = LINE_SPACE * delta_y / gx2y2;
-    _space_y = LINE_SPACE * delta_x / gx2y2;
+    if (gx2y2 == 0) // 两个端口位置重叠
+    {
+        _breadth_x = 0;
+        _breadth_y = 0;
+        _space_x = 0;
+        _space_y = 0;
+    }
+    else
+    {
+        _breadth_x = breadth * delta_y / gx2y2;
+        _breadth_y = breadth * delta_x / gx2y2;
+        _space_x = LINE_SPACE * delta_y / gx2y2;
+        _space_y = LINE_SPACE * delta_x / gx2y2;
+    }
 
     left -= _breadth_x / 2;
     right += _breadth_x / 2;
