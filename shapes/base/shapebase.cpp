@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-06 10:34:42
+ * @LastEditTime: 2019-12-10 15:11:00
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
@@ -212,11 +212,9 @@ void ShapeBase::addPort(PortBase *port)
         emit signalPortPositionModified(port);
     });
     connect(port, &PortBase::signalDelete, this, [=] {
-        // 如果已经连接了，则先断开连接
-        // 目前没有线，所以暂时不需要动它
-
         // 从列表中删除、释放空间
         ports.removeOne(port);
+        // 如果已经连线了，则先断开连接
         emit signalPortDeleted(port);
         port->deleteLater();
     });

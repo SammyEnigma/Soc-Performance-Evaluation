@@ -146,7 +146,7 @@ void CableBase::paintEvent(QPaintEvent *event)
     }
     else // 两个都确定了
     {
-        if (_line_type == 0)
+        if (_line_type == 0) // 直线
         {
             painter.drawLine(arrow_pos1, arrow_pos2);
         }

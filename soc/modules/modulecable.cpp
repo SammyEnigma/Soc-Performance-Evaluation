@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-10 14:34:17
+ * @LastEditTime: 2019-12-10 15:04:55
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -10,6 +10,8 @@
 ModuleCable::ModuleCable(QWidget *parent) : CableBase(parent), ModuleInterface(parent)
 {
     _class = _text = "ModuleCable";
+
+    breadth_x = breadth_y = space_x = space_y = 0;
 }
 
 ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
@@ -26,10 +28,77 @@ void ModuleCable::passOneClock()
 
 void ModuleCable::paintEvent(QPaintEvent *event)
 {
-    QPainter painter(this);
-
     // 画四条线
-    CableBase::paintEvent(event);
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setPen(QPen(_border_color, _border_size));
+    if (from_port == nullptr) // 两个都没确定，预览
+    {
+        return CableBase::paintEvent(event);
+    }
+    else if (to_port == nullptr) // 已经确定了一个
+    {
+        return CableBase::paintEvent(event);
+    }
+    else // 两个都确定了
+    {
+        int breadth = (LINE_COUNT - 1) * LINE_SPACE + _border_size; // 所有宽度外加线宽
+        if (_line_type == 0) // 直线
+        {
+            /** 是下面这个形状的
+             * ┌┬┬┐
+             * ╎╎╎╎  矩形宽度就是 breadth（斜着也一样）
+             * └┴┴┘
+             * 根据倾斜程度画间隔相同的线
+             */
+            if (arrow_pos1.x() == arrow_pos2.x() || arrow_pos1.y() == arrow_pos2.x() || (arrow_pos1.y() - arrow_pos2.y()) / (double)(arrow_pos1.x() - arrow_pos2.x())<0)
+            {
+                for (int i = 0; i < LINE_COUNT; ++i)
+                {
+                    painter.drawLine(arrow_pos1.x() - breadth_x / 2 + i * space_x, arrow_pos1.y() - breadth_y / 2 + i * space_y,
+                                     arrow_pos2.x() - breadth_x / 2 + i * space_x, arrow_pos2.y() - breadth_y / 2 + i * space_y);
+                }
+            }
+            else // 计算斜率
+            {
+                for (int i = 0; i < LINE_COUNT; ++i)
+                {
+                    painter.drawLine(arrow_pos1.x() - breadth_x / 2 + i * space_x, arrow_pos1.y() + breadth_y / 2 - i * space_y,
+                                     arrow_pos2.x() - breadth_x / 2 + i * space_x, arrow_pos2.y() + breadth_y / 2 - i * space_y);
+                }
+            }
+        }
+        else if (_line_type == 1) // 横竖
+        {
+            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
+            {
+                // 左上角 - 右下角
+                painter.drawLine(0, 0, width(), 0);
+                painter.drawLine(width(), 0, width(), height());
+            }
+            else
+            {
+                // 右上角 - 左下角
+                painter.drawLine(0, 0, width(), 0);
+                painter.drawLine(0, 0, 0, height());
+            }
+        }
+        else if (_line_type == 2) // 竖横
+        {
+            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
+            {
+                // 左上角 - 右下角
+                painter.drawLine(0, 0, 0, height());
+                painter.drawLine(0, height(), width(), height());
+            }
+            else
+            {
+                // 右上角 - 左下角
+                painter.drawLine(width(), 0, width(), height());
+                painter.drawLine(width(), height(), 0, height());
+            }
+        }
+    }
 }
 
 void ModuleCable::adjustGeometryByPorts()
@@ -48,8 +117,19 @@ void ModuleCable::adjustGeometryByPorts()
     int right = qMax(cen1.x(), cen2.x());
     int bottom = qMax(cen1.y(), cen2.y());
 
-    left -= LINE_COUNT * LINE_SPACE / 2;
-    right += LINE_COUNT * LINE_SPACE / 2;
+    int breadth = (LINE_COUNT - 1) * LINE_SPACE + _border_size; // 所有宽度外加线宽
+    int delta_x = qAbs(cen1.x() - cen2.x());
+    int delta_y = qAbs(cen1.y() - cen2.y());
+    int gx2y2 = sqrt(delta_x * delta_x + delta_y * delta_y);
+    breadth_x = breadth * delta_y / gx2y2;
+    breadth_y = breadth * delta_x / gx2y2;
+    space_x = LINE_SPACE * delta_y / gx2y2;
+    space_y = LINE_SPACE * delta_x / gx2y2;
+
+    left -= breadth_x / 2;
+    right += breadth_x / 2;
+    top -= breadth_y / 2;
+    bottom += breadth_y / 2;
 
     // 设置坐标（千万不要用 setFixedSize ！否则无法调整大小）
     setGeometry(left, top, right - left, bottom - top);
