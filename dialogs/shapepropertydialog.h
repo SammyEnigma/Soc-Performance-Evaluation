@@ -26,7 +26,7 @@ class ShapePropertyDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ShapePropertyDialog(QList<ShapeBase*>shapes);
+    ShapePropertyDialog(ShapeList shapes);
     ~ShapePropertyDialog();
 
     friend class MainWindow;
@@ -63,7 +63,7 @@ private slots:
 private:
     Ui::ShapePropertyDialog *ui;
 	ShapeBase* shape;
-    QList<ShapeBase*>shapes;
+    ShapeList shapes;
 
     QList<Qt::Alignment> aligns = {Qt::AlignTop | Qt::AlignHCenter, Qt::AlignBottom | Qt::AlignHCenter, Qt::AlignLeft | Qt::AlignVCenter, Qt::AlignRight | Qt::AlignVCenter, Qt::AlignCenter,
                                     Qt::AlignTop | Qt::AlignLeft, Qt::AlignTop | Qt::AlignRight, Qt::AlignBottom | Qt::AlignLeft, Qt::AlignBottom | Qt::AlignRight};

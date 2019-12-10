@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-06 14:28:29
+ * @LastEditTime: 2019-12-10 14:41:49
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -33,6 +33,7 @@ class GraphicArea : public QWidget
 {
     Q_OBJECT
     friend class FlowControl;
+
 public:
     GraphicArea(QWidget *parent = nullptr);
 
@@ -52,20 +53,20 @@ public:
     QString toString();
 
     // 形状操作
-    void select(ShapeBase *shape, bool ctrl = false);                                               // 选中一个形状，或者取消选中
-    void select(QList<ShapeBase *> shapes, bool ctrl = false);                                      // 选中多个形状。select(shape_lists)为全选
-    void select(QRect rect, bool ctrl = false);                                                     // 选中一个区域内的所有形状
-    void unselect(ShapeBase *shape = nullptr, bool ctrl = false);                                   // 取消选择一个形状，或者全不选
-    void unselect(QList<ShapeBase *> shapes, bool ctrl = false);                                    // 取消选择多个形状
-    void expandViewPort(int delta_x, int delta_y);                                                  // 调整视图的位置
-    void moveShapesPos(int delta_x, int delta_y, QList<ShapeBase *> shapes = QList<ShapeBase *>()); // 调整所选控件的位置
-    void remove(ShapeBase *shape = nullptr);                                                        // 删除指定形状，或者删除所选形状
+    void select(ShapeBase *shape, bool ctrl = false);                                      // 选中一个形状，或者取消选中
+    void select(ShapeList shapes, bool ctrl = false);                                      // 选中多个形状。select(shape_lists)为全选
+    void select(QRect rect, bool ctrl = false);                                            // 选中一个区域内的所有形状
+    void unselect(ShapeBase *shape = nullptr, bool ctrl = false);                          // 取消选择一个形状，或者全不选
+    void unselect(ShapeList shapes, bool ctrl = false);                                    // 取消选择多个形状
+    void expandViewPort(int delta_x, int delta_y);                                         // 调整视图的位置
+    void moveShapesPos(int delta_x, int delta_y, ShapeList shapes = QList<ShapeBase *>()); // 调整所选控件的位置
+    void remove(ShapeBase *shape = nullptr);                                               // 删除指定形状，或者删除所选形状
 
     // 视口操作
     void zoomIn(double prop);
 
     // 流控操作
-    ShapeBase* findShapeByText(QString text);
+    ShapeBase *findShapeByText(QString text);
     ShapeBase *findShapeByClass(QString text);
 
 protected:
@@ -81,7 +82,7 @@ private:
     QRect getValidRect(QRect rect); // 负数矩形变成有效的正数矩形
     void connectShapeEvent(ShapeBase *shape);
     QString getRandomPortId();
-    void removePortCable(PortBase* port);
+    void removePortCable(PortBase *port);
 
 signals:
     void signalSave();     // 必须保存的
@@ -102,9 +103,9 @@ public slots:
     void actionDelete();
 
 public:
-    QList<ShapeBase *> shape_lists;     // 添加的形状对象
-    QList<ShapeBase *> selected_shapes; // 当前选中的形状
-    QList<CableBase *> cable_lists;     // 连接线对象（只用于简单遍历，并且同时包含在 shape_lists 中）
+    ShapeList shape_lists;               // 添加的形状对象
+    ShapeList selected_shapes;           // 当前选中的形状
+    QList<CableBase *> cable_lists;      // 连接线对象（只用于简单遍历，并且同时包含在 shape_lists 中）
     QMap<QString, PortBase *> ports_map; // 所有的可连接端口
 
 private:
@@ -115,7 +116,7 @@ private:
     ShapeBase *_drag_prev_shape;          // 拖拽生成形状的预览形状，press生成，release时删掉
     PortBase *_stick_from_port;           // 拖拽一开始贴靠的端口缓存
 
-    QList<ShapeBase *> clip_board;       // 剪贴板
+    ShapeList clip_board; // 剪贴板
 };
 
 #endif // GRAPHICAREA_H

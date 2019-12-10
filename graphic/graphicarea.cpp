@@ -98,7 +98,7 @@ void GraphicArea::select(ShapeBase *shape, bool ctrl)
  * @param shapes 要选中的形状集合
  * @param ctrl  是否按住ctrl多选
  */
-void GraphicArea::select(QList<ShapeBase *> shapes, bool ctrl)
+void GraphicArea::select(ShapeList shapes, bool ctrl)
 {
     if (!ctrl) // 只选中这一个，取消全部选择
         unselect();
@@ -120,7 +120,7 @@ void GraphicArea::select(QRect rect, bool ctrl)
         unselect();
 
     // 找到矩形区域内的形状
-    QList<ShapeBase *> in_shapes;
+    ShapeList in_shapes;
     foreach (ShapeBase *shape, shape_lists)
     {
         if (rect.contains(shape->geometry()))
@@ -190,7 +190,7 @@ void GraphicArea::unselect(ShapeBase *shape, bool ctrl)
  * @param shapes 要取消选中的形状集合
  * @param ctrl  是否按住ctrl多选
  */
-void GraphicArea::unselect(QList<ShapeBase *> shapes, bool ctrl)
+void GraphicArea::unselect(ShapeList shapes, bool ctrl)
 {
     if (!ctrl)
     {
@@ -243,7 +243,7 @@ void GraphicArea::expandViewPort(int delta_x, int delta_y)
  * @param delta_y 纵向移动
  * @param shapes  要移动的控件（如果没有，则移动全部）
  */
-void GraphicArea::moveShapesPos(int delta_x, int delta_y, QList<ShapeBase *> shapes)
+void GraphicArea::moveShapesPos(int delta_x, int delta_y, ShapeList shapes)
 {
     if (shapes.size() == 0) // 全选
         shapes = shape_lists;

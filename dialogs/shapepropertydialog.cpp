@@ -7,7 +7,7 @@
  */
 #include "shapepropertydialog.h"
 
-ShapePropertyDialog::ShapePropertyDialog(QList<ShapeBase *> shapes) : QDialog(shapes.first()), ui(new Ui::ShapePropertyDialog), shape(shapes.first()), shapes(shapes)
+ShapePropertyDialog::ShapePropertyDialog(ShapeList shapes) : QDialog(shapes.first()), ui(new Ui::ShapePropertyDialog), shape(shapes.first()), shapes(shapes)
 {
     ui->setupUi(this);
 

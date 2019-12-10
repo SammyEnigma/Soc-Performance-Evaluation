@@ -53,7 +53,7 @@ public slots:
     void slotItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
-    QList<ShapeBase *> shape_units; // 加载的形状单元（主窗口左边列表）
+    ShapeList shape_units; // 加载的形状单元（主窗口左边列表）
 
     QPoint _drag_start_pos;
     bool _has_draged;
