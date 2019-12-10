@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:09:05
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-09 14:34:23
+ * @LastEditTime: 2019-12-10 14:21:37
  * @Description: SlaveModule
  */
 #include "slavemodule.h"
@@ -27,8 +27,10 @@ void SlaveModule::setBufferSize(int size)
 
 void SlaveModule::sendPacket(DataPacket *packet)
 {
+	
 }
 
 void SlaveModule::receivedPacket(DataPacket *packet)
 {
+	data_queue.enqueue(packet);
 }

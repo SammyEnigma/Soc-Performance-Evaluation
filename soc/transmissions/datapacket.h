@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 11:32:31
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-09 11:42:52
+ * @LastEditTime: 2019-12-10 14:16:52
  * @Description: 数据包，request和response的基类
  */
 #ifndef DATAPACKET_H
@@ -11,6 +11,9 @@
 #include <QObject>
 
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
+
+class DataPacket; // typedef 之前需要预先声明变量
+typedef QList<DataPacket*> PacketList; // 常用的列表，直接重定义了
 
 class DataPacket : public QObject
 {

@@ -30,6 +30,7 @@ private slots:
 
 private:
     bool initModules();
+    void initData();
     CableBase* getModuleCable(ShapeBase* shape1, ShapeBase* shape2, bool single = false);
 
 signals:

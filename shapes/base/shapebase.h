@@ -35,6 +35,9 @@ enum LargeShapeType {
     CableType
 };
 
+class ShapeBase;
+typedef QList<ShapeBase*> ShapeList;
+
 class ShapeBase : public QWidget
 {
     friend class GraphicArea;

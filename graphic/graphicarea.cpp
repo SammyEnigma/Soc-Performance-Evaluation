@@ -326,7 +326,7 @@ void GraphicArea::zoomIn(double prop)
     // 调整连接线的位置
     foreach (CableBase* cable, cable_lists)
     {
-        cable->slotAdjustGeometryByPorts();
+        cable->adjustGeometryByPorts();
     }
 }
 
@@ -557,7 +557,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     if (nearest_port != nullptr)
                     {
                         cable->setPorts(_stick_from_port, nearest_port);
-                        cable->slotAdjustGeometryByPorts();
+                        cable->adjustGeometryByPorts();
                         _select_rect = cable->geometry();
                     }
                     else
@@ -808,7 +808,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         foreach (CableBase* cable, cable_lists)
         {
             if (cable->usedPort(shape_ports))
-                cable->slotAdjustGeometryByPorts();
+                cable->adjustGeometryByPorts();
         }
     });
 
@@ -818,7 +818,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         foreach (CableBase* cable, cable_lists)
         {
             if (cable->usedPort(shape_ports))
-                cable->slotAdjustGeometryByPorts();
+                cable->adjustGeometryByPorts();
         }
     });
 
@@ -853,7 +853,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         foreach (CableBase* cable, cable_lists)
         {
             if (cable->usedPort(port))
-                cable->slotAdjustGeometryByPorts();
+                cable->adjustGeometryByPorts();
         }
     });
     connect(shape, &ShapeBase::signalPortInserted, this, [=](PortBase *port) {

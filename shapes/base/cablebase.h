@@ -1,3 +1,10 @@
+/*
+ * @Author: MRXY001
+ * @Date: 2019-12-06 14:51:28
+ * @LastEditors: MRXY001
+ * @LastEditTime: 2019-12-10 14:28:56
+ * @Description: 连接线基类
+ */
 #ifndef CABLEBASE_H
 #define CABLEBASE_H
 
@@ -36,9 +43,9 @@ protected:
 signals:
 
 public slots:
-    void slotAdjustGeometryByPorts();
+    virtual void adjustGeometryByPorts();
 
-private:
+protected:
     PortBase* from_port; // 发送端口（其实两个端口暂时并没有什么区别，发送和接收是双向的，目前只是为了辨别）
     PortBase* to_port;   // 接收端口
 

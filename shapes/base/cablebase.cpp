@@ -3,11 +3,11 @@
 CableBase::CableBase(QWidget *parent)
     : ShapeBase(parent),
       from_port(nullptr), to_port(nullptr),
-      arrow_pos1(QPoint(-1,-1)), arrow_pos2(QPoint(-1,-1)),
+      arrow_pos1(QPoint(-1, -1)), arrow_pos2(QPoint(-1, -1)),
       _line_type(DEFAULT_LINE_TYPE)
 {
     _class = "Cable Base";
-    setMinimumSize(8,8);
+    setMinimumSize(8, 8);
 
     // 缩略图
     QPixmap pixmap(128, 128);
@@ -25,7 +25,7 @@ CableBase::CableBase(PortBase *p1, PortBase *p2, QWidget *parent) : ShapeBase(pa
 CableBase *CableBase::newInstanceBySelf(QWidget *parent)
 {
     log("CableBase::newInstanceBySelf");
-    CableBase* shape = new CableBase(parent);
+    CableBase *shape = new CableBase(parent);
     shape->copyDataFrom(this);
     return shape;
 }
@@ -36,10 +36,10 @@ void CableBase::copyDataFrom(ShapeBase *shape)
 
     // RTTI运行时类型判断
     // 是不是当前这个类，若是则执行转换
-//    if (typeid (shape) == typeid (this))
-    if (dynamic_cast<CableBase*>(shape) != nullptr)
+    //    if (typeid (shape) == typeid (this))
+    if (dynamic_cast<CableBase *>(shape) != nullptr)
     {
-        CableBase* cable = static_cast<CableBase*>(shape);
+        CableBase *cable = static_cast<CableBase *>(shape);
 
         this->from_port = cable->from_port;
         this->to_port = cable->to_port;
@@ -86,7 +86,7 @@ bool CableBase::usedPort(PortBase *port)
 
 bool CableBase::usedPort(QList<PortBase *> ports)
 {
-    foreach (PortBase* port, ports)
+    foreach (PortBase *port, ports)
     {
         if (usedPort(port))
             return true;
@@ -108,14 +108,14 @@ ShapeBase *CableBase::getFromShape()
 {
     if (from_port == nullptr)
         return nullptr;
-    return static_cast<ShapeBase*>(from_port->getShape());
+    return static_cast<ShapeBase *>(from_port->getShape());
 }
 
 ShapeBase *CableBase::getToShape()
 {
     if (to_port == nullptr)
         return nullptr;
-    return static_cast<ShapeBase*>(to_port->getShape());
+    return static_cast<ShapeBase *>(to_port->getShape());
 }
 
 void CableBase::paintEvent(QPaintEvent *event)
@@ -126,7 +126,7 @@ void CableBase::paintEvent(QPaintEvent *event)
     painter.setPen(QPen(_border_color, _border_size));
     if (from_port == nullptr) // 两个都没确定，预览
     {
-        painter.drawLine(width()/10, height()/10, width()*9/10, height()*9/10);
+        painter.drawLine(width() / 10, height() / 10, width() * 9 / 10, height() * 9 / 10);
     }
     else if (to_port == nullptr) // 已经确定了一个
     {
@@ -155,14 +155,14 @@ void CableBase::paintEvent(QPaintEvent *event)
             if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
             {
                 // 左上角 - 右下角
-                painter.drawLine(0,0, width(), 0);
+                painter.drawLine(0, 0, width(), 0);
                 painter.drawLine(width(), 0, width(), height());
             }
             else
             {
                 // 右上角 - 左下角
-                painter.drawLine(0,0,width(),0);
-                painter.drawLine(0,0,0,height());
+                painter.drawLine(0, 0, width(), 0);
+                painter.drawLine(0, 0, 0, height());
             }
         }
         else if (_line_type == 2) // 竖横
@@ -170,8 +170,8 @@ void CableBase::paintEvent(QPaintEvent *event)
             if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
             {
                 // 左上角 - 右下角
-                painter.drawLine(0,0,0,height());
-                painter.drawLine(0,height(),width(),height());
+                painter.drawLine(0, 0, 0, height());
+                painter.drawLine(0, height(), width(), height());
             }
             else
             {
@@ -181,7 +181,6 @@ void CableBase::paintEvent(QPaintEvent *event)
             }
         }
     }
-
 }
 
 void CableBase::drawShapePixmap(QPainter &painter, QRect draw_rect)
@@ -190,12 +189,17 @@ void CableBase::drawShapePixmap(QPainter &painter, QRect draw_rect)
     Q_UNUSED(draw_rect)
 }
 
-void CableBase::slotAdjustGeometryByPorts()
+/**
+ * 根据连接的两个端口自动调整自己的大小
+ * 注意：本身是没有设置两端的位置的
+ * 如果需要使用多条线，需要自己继承并且重写
+ */
+void CableBase::adjustGeometryByPorts()
 {
     if (from_port == nullptr || to_port == nullptr)
     {
         log("没有指定连接的 ports");
-        return ;
+        return;
     }
 
     QPoint cen1 = from_port->getGlobalPos();
@@ -206,13 +210,10 @@ void CableBase::slotAdjustGeometryByPorts()
     int right = qMax(cen1.x(), cen2.x());
     int bottom = qMax(cen1.y(), cen2.y());
 
-//    setFixedSize(right-left, bottom-top);
-    setGeometry(left, top, right-left, bottom-top);
-//    move(left, top);
+    // 设置坐标（千万不要用 setFixedSize ！否则无法调整大小）
+    setGeometry(left, top, right - left, bottom - top);
 
     // 计算相对位置，缓存两个 arrow_pos，提升性能
     arrow_pos1 = cen1 - geometry().topLeft();
     arrow_pos2 = cen2 - geometry().topLeft();
 }
-
-

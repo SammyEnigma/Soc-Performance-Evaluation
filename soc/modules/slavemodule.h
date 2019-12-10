@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:09:05
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-09 18:01:20
+ * @LastEditTime: 2019-12-10 14:19:49
  * @Description: SlaveModule
  */
 #ifndef SLAVEMODULE_H
@@ -28,7 +28,7 @@ signals:
 
 private:
     int buffer_size;
-    QQueue<DataPacket *> dataQueue;
+    QQueue<DataPacket *> data_queue;
 };
 
 #endif // SLAVEMODULE_H

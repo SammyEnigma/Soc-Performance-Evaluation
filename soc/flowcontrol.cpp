@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-10 11:33:28
+ * @LastEditTime: 2019-12-10 14:22:53
  * @Description: 流控制
  */
 #include "flowcontrol.h"
@@ -26,6 +26,7 @@ void FlowControl::startRun()
 {
     if (!initModules())
         return;
+    initData();
     current_clock = -1;
     run_timer->start();
 }
@@ -63,7 +64,7 @@ void FlowControl::nextStep()
  */
 void FlowControl::passOneClock()
 {
-    DEB << "模拟流逝1个clock";
+    DEB << "Clock:" << current_clock;
 
     master->passOneClock();
     slave->passOneClock();
@@ -95,6 +96,14 @@ bool FlowControl::initModules()
         return false;
     }
     return true;
+}
+
+/**
+ * 初始化所有的数据
+ */
+void FlowControl::initData()
+{
+    
 }
 
 /**
