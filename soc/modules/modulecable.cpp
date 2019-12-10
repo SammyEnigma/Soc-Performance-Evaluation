@@ -7,11 +7,14 @@
  */
 #include "modulecable.h"
 
-ModuleCable::ModuleCable(QWidget *parent) : CableBase(parent), ModuleInterface(parent)
+ModuleCable::ModuleCable(QWidget *parent)
+    : CableBase(parent), ModuleInterface(parent),
+      packet_lists(QList<PacketList>{PacketList(), PacketList(), PacketList(), PacketList()}), // 初始化四个
+      request_line(packet_lists[0]),request_data_line(packet_lists[1]),response_line(packet_lists[2]),response_data_line(packet_lists[3])
 {
     _class = _text = "ModuleCable";
 
-    breadth_x = breadth_y = space_x = space_y = 0;
+    _breadth_x = _breadth_y = _space_x = _space_y = 0;
 }
 
 ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
@@ -55,16 +58,16 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(arrow_pos1.x() - breadth_x / 2 + i * space_x, arrow_pos1.y() - breadth_y / 2 + i * space_y,
-                                     arrow_pos2.x() - breadth_x / 2 + i * space_x, arrow_pos2.y() - breadth_y / 2 + i * space_y);
+                    painter.drawLine(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y,
+                                     arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y);
                 }
             }
             else // 计算斜率
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(arrow_pos1.x() - breadth_x / 2 + i * space_x, arrow_pos1.y() + breadth_y / 2 - i * space_y,
-                                     arrow_pos2.x() - breadth_x / 2 + i * space_x, arrow_pos2.y() + breadth_y / 2 - i * space_y);
+                    painter.drawLine(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() + _breadth_y / 2 - i * _space_y,
+                                     arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y);
                 }
             }
         }
@@ -121,15 +124,15 @@ void ModuleCable::adjustGeometryByPorts()
     int delta_x = qAbs(cen1.x() - cen2.x());
     int delta_y = qAbs(cen1.y() - cen2.y());
     int gx2y2 = sqrt(delta_x * delta_x + delta_y * delta_y);
-    breadth_x = breadth * delta_y / gx2y2;
-    breadth_y = breadth * delta_x / gx2y2;
-    space_x = LINE_SPACE * delta_y / gx2y2;
-    space_y = LINE_SPACE * delta_x / gx2y2;
+    _breadth_x = breadth * delta_y / gx2y2;
+    _breadth_y = breadth * delta_x / gx2y2;
+    _space_x = LINE_SPACE * delta_y / gx2y2;
+    _space_y = LINE_SPACE * delta_x / gx2y2;
 
-    left -= breadth_x / 2;
-    right += breadth_x / 2;
-    top -= breadth_y / 2;
-    bottom += breadth_y / 2;
+    left -= _breadth_x / 2;
+    right += _breadth_x / 2;
+    top -= _breadth_y / 2;
+    bottom += _breadth_y / 2;
 
     // 设置坐标（千万不要用 setFixedSize ！否则无法调整大小）
     setGeometry(left, top, right - left, bottom - top);

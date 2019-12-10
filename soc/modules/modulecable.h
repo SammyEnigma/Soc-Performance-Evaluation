@@ -29,13 +29,17 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
     
-private:
-    PacketList request_line;
-    PacketList request_data_line;
-    PacketList response_line;
-    PacketList response_data_line;
+public:
+    // 来自 packet_lists 的元素别名（非真正的新成员变量）
+    PacketList& request_line;
+    PacketList& request_data_line;
+    PacketList& response_line;
+    PacketList& response_data_line;
 
-    int breadth_x, breadth_y, space_x, space_y;
+private:
+    QList<PacketList> packet_lists; // 所有的数据（二维），为扩展线数量做准备
+
+    int _breadth_x, _breadth_y, _space_x, _space_y;
 };
 
 #endif // MODULECABLE_H
