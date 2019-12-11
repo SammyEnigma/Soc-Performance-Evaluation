@@ -2,15 +2,14 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-10 14:22:53
- * @Description: 流控制
+ * @LastEditTime: 2019-12-11 16:59:11
+ * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #include "flowcontrol.h"
 
 FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
-    : QObject(parent),
-      graphic(ga), current_clock(-1),
-      master(nullptr), slave(nullptr)
+    : FlowControlCore(parent),
+      graphic(ga)
 {
     run_timer = new QTimer(this);
     run_timer->setInterval(1000); // 一秒钟执行一次 clock
@@ -27,7 +26,6 @@ void FlowControl::startRun()
     if (!initModules())
         return;
     initData();
-    current_clock = -1;
     run_timer->start();
 }
 
@@ -44,8 +42,8 @@ void FlowControl::pauseRun()
  */
 void FlowControl::resumeRun()
 {
-	if (current_clock == -1) // 未初始化
-        return ;
+    if (current_clock == -1) // 未初始化
+        return;
     run_timer->start();
 }
 
@@ -60,26 +58,13 @@ void FlowControl::nextStep()
 }
 
 /**
- * 模拟时钟流逝 1 个 clock
- */
-void FlowControl::passOneClock()
-{
-    DEB << "Clock:" << current_clock;
-
-    master->passOneClock();
-    slave->passOneClock();
-    
-    current_clock++;
-}
-
-/**
  * 初始化所有的 module
  */
 bool FlowControl::initModules()
 {
     master = static_cast<MasterModule *>(graphic->findShapeByClass("Master"));
     slave = static_cast<SlaveModule *>(graphic->findShapeByClass("Slave"));
-    ms_cable = static_cast<ModuleCable*>(getModuleCable(master, slave));
+    ms_cable = static_cast<ModuleCable *>(getModuleCable(master, slave));
     if (!master)
     {
         DEB << "无法找到 Master";
@@ -99,24 +84,16 @@ bool FlowControl::initModules()
 }
 
 /**
- * 初始化所有的数据
- */
-void FlowControl::initData()
-{
-    
-}
-
-/**
  * 获取两个形状之间的连线对象（至少是CableBase，理论上来说也是ModuleCable）
  */
 CableBase *FlowControl::getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single)
 {
-	CableBase* module_cable = nullptr;
-    foreach (CableBase* cable, graphic->cable_lists)
+    CableBase *module_cable = nullptr;
+    foreach (CableBase *cable, graphic->cable_lists)
     {
         if (cable->getFromShape() == shape1 && cable->getToShape() == shape2)
             module_cable = cable;
-        else if (!single && cable->getFromShape() ==  shape2 && cable->getToShape() == shape1)
+        else if (!single && cable->getFromShape() == shape2 && cable->getToShape() == shape1)
             module_cable = cable;
     }
     if (!module_cable)

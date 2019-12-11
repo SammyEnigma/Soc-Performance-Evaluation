@@ -3,46 +3,37 @@
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
  * @LastEditTime: 2019-12-10 11:00:59
- * @Description: 流控制
+ * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #ifndef FLOWCONTROL_H
 #define FLOWCONTROL_H
 
+#include "flowcontrolcore.h"
 #include "graphicarea.h"
-#include "mastermodule.h"
-#include "slavemodule.h"
-#include "modulecable.h";
 
-class FlowControl : public QObject
+class FlowControl : public FlowControlCore
 {
     Q_OBJECT
 public:
-    FlowControl(GraphicArea* ga, QObject *parent = nullptr);
+    FlowControl(GraphicArea *ga, QObject *parent = nullptr);
 
 public slots:
-    void startRun(); // 开始运行
-    void pauseRun(); // 暂停运行
+    void startRun();  // 开始运行
+    void pauseRun();  // 暂停运行
     void resumeRun(); // 继续运行
-    void nextStep(); // 运行下一步
+    void nextStep();  // 运行下一步
 
 private slots:
-    void passOneClock(); // 模拟时钟流逝 1 个 clock
 
 private:
     bool initModules();
-    void initData();
-    CableBase* getModuleCable(ShapeBase* shape1, ShapeBase* shape2, bool single = false);
+    CableBase *getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single = false);
 
 signals:
-	
-private:
-    GraphicArea* graphic;
-    QTimer* run_timer;
-    int current_clock;
 
-    MasterModule* master;
-    SlaveModule* slave;
-    ModuleCable* ms_cable;
+private:
+    GraphicArea *graphic;
+    QTimer *run_timer;
 };
 
 #endif // FLOWCONTROL_H
