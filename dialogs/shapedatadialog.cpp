@@ -28,7 +28,6 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
     if (shapes.size() == 1) // 只有一个选项，则不显示所有差异
     {
         ui->diffLabel->hide();
-        return;
     }
 
     // 设置表格
@@ -77,7 +76,8 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
         ui->diffLabel->setText(QString("Have %1 different name datas").arg(different_names.size()));
     ui->tableWidget->setRowCount(same_names.size());
 
-    connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SLOT(onTabelCelChanged(int,int)));
+//    connect(ui->tableWidget, SIGNAL(cellActivated(int,int)), this, SLOT(onTableCellActivated(int,int))); // 单元格可以编辑时不会触发这个信号
+    connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SLOT(onTableCellChanged(int,int)));
     _system_changing = false;
 }
 
@@ -88,10 +88,12 @@ ShapeDataDialog::~ShapeDataDialog()
 
 void ShapeDataDialog::on_insertBtn_clicked()
 {
+    _system_changing = true;
     int row = ui->tableWidget->rowCount();
     ui->tableWidget->setRowCount(row + 1);
 
-    QTableWidgetItem* item0 = new QTableWidgetItem("name");
+    QString name = createSuitableName();
+    QTableWidgetItem* item0 = new QTableWidgetItem(name);
     ui->tableWidget->setItem(row, CUSTOM_NAME_COL, item0);
 
     QTableWidgetItem* item1 = new QTableWidgetItem("bool");
@@ -104,7 +106,7 @@ void ShapeDataDialog::on_insertBtn_clicked()
     combo->insertItem(static_cast<int>(DT_DOUBLE), "double");
     combo->insertItem(static_cast<int>(DT_STRING), "string");
     combo->insertItem(static_cast<int>(DT_STRING_LIST), "string list");
-    combo->setCurrentIndex(CUSTOM_NAME_COL);
+    combo->setCurrentIndex(0);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onTypeComboChanged(int)));
     ui->tableWidget->setCellWidget(row, CUSTOM_TYPE_COL, combo);
 
@@ -114,7 +116,14 @@ void ShapeDataDialog::on_insertBtn_clicked()
     QTableWidgetItem* item3 = new QTableWidgetItem("0");
     ui->tableWidget->setItem(row, CUSTOM_VAL_COL, item3);
 
+    _activated_string = name;
     ui->tableWidget->edit(ui->tableWidget->model()->index(row, CUSTOM_NAME_COL));
+
+    foreach (CustomDataList* datas, data_lists)
+    {
+        datas->append(CustomDataType(name, 0, 0));
+    }
+    _system_changing = false;
 }
 
 void ShapeDataDialog::on_removeBtn_clicked()
@@ -152,12 +161,53 @@ void ShapeDataDialog::onTypeComboChanged(int index)
     }
 }
 
+/**
+ * 单元格内容改变事件
+ * 注意：item->setText 也会触发，所以需要使用 _system_changing 来控制 flag
+ */
 void ShapeDataDialog::onTableCellChanged(int row, int col)
 {
     if (_system_changing)
         return ;
 
-
+    _system_changing = true;
+    if (col == CUSTOM_NAME_COL) // 修改名字
+    {
+        QString& old_name = _activated_string;
+        QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
+        if (isNameExist(name))
+        {
+            QMessageBox::warning(this, "warning", "Name [" + name + "] already exists.");
+            ui->tableWidget->item(row, CUSTOM_NAME_COL)->setText(old_name);
+        }
+        else if (name.isEmpty())
+        {
+            ui->tableWidget->item(row, CUSTOM_NAME_COL)->setText(old_name);
+        }
+        else
+        {
+            foreach (CustomDataList* datas, data_lists)
+            {
+                for (int i = 0; i < (*datas).size(); i++)
+                {
+                    CustomDataType& data = (*datas)[i];
+                    if (data.getName() == old_name)
+                        data.setName(name);
+                }
+            }
+        }
+    }
+    else if (col == CUSTOM_DEF_COL) // 修改默认值
+    {
+        QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
+        adjustItemStringByType(row, shape->getDataType(name));
+    }
+    else if (col == CUSTOM_VAL_COL) // 修改数值
+    {
+        QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
+        adjustItemStringByType(row, shape->getDataType(name));
+    }
+    _system_changing = false;
 }
 
 /**
@@ -205,7 +255,7 @@ QString ShapeDataDialog::createSuitableName()
     if (!isNameExist(name))
         return name;
     while (++index && isNameExist(name+QString::number(index)));
-    return name;
+    return name+QString::number(index);
 }
 
 /**
@@ -217,10 +267,15 @@ bool ShapeDataDialog::isNameExist(QString name)
     {
         for (int i = 0; i < (*datas).size(); i++)
         {
-            CustomDataType& data = (*datas)[i];
+            CustomDataType data = (*datas).at(i);
             if (data.getName() == name)
                 return true;
         }
     }
     return false;
+}
+
+void ShapeDataDialog::on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int, int)
+{
+    _activated_string = ui->tableWidget->item(currentRow, currentColumn)->text();
 }

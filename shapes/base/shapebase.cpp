@@ -163,6 +163,26 @@ bool ShapeBase::containsData(QString name)
     return false;
 }
 
+QVariant ShapeBase::getDataValue(QString name)
+{
+    foreach (CustomDataType data, custom_data_list)
+    {
+        if (data.getName() == name)
+            return data.getValue();
+    }
+    return QVariant();
+}
+
+DataType ShapeBase::getDataType(QString name)
+{
+    foreach (CustomDataType data, custom_data_list)
+    {
+        if (data.getName() == name)
+            return data.getType();
+    }
+    return DT_UNKNOW;
+}
+
 const QString ShapeBase::getClass()
 {
     return _class;

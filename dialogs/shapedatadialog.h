@@ -10,6 +10,7 @@
 
 #include <QDialog>
 #include <QComboBox>
+#include <QMessageBox>
 #include "shapebase.h"
 
 namespace Ui {
@@ -37,6 +38,8 @@ private slots:
     void onTypeComboChanged(int index);
     void onTableCellChanged(int row, int col);
 
+    void on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int, int);
+
 private:
     void adjustItemStringByType(int row, DataType type);
     QString createSuitableName();
@@ -48,6 +51,7 @@ private:
     ShapeList shapes;
     QList<CustomDataList*> data_lists; // 选中形状的所有数据
 
+    QString _activated_string; // 激活时的字符串（用来响应双击事件）
     bool _system_changing; // 系统改变时不触发表格内容编辑事件
 };
 

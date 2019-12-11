@@ -88,6 +88,8 @@ public:
 
     // 数据
     bool containsData(QString name);
+    QVariant getDataValue(QString name);
+    DataType getDataType(QString name);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
