@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 09:32:16
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 09:48:20
+ * @LastEditTime: 2019-12-11 10:00:41
  * @Description: 用户自定义数据类型
  */
 #ifndef CUSTOMDATATYPE_H
@@ -11,7 +11,11 @@
 #include <QVariant>
 #include <QStringList>
 
-enum DataType {
+class CustomDataType;
+typedef QList<CustomDataType> CustomDataList;
+
+enum DataType
+{
     DT_UNKNOW,
     DT_BOOL,
     DT_INT,
@@ -27,7 +31,7 @@ public:
     CustomDataType(QString name, int val, int def = 0);
     CustomDataType(QString name, double val, double def = 0.0);
     CustomDataType(QString name, QString val, QString def = "");
-    CustomDataType(QString name, QStringList val, QStringList def=QStringList());
+    CustomDataType(QString name, QStringList val, QStringList def = QStringList());
 
     void setName(QString name);
 
@@ -36,7 +40,7 @@ public:
     void reset(double val, double def = 0.0);
     void reset(QString val, QString def = "");
     void reset(QStringList val, QStringList def = QStringList());
-    
+
     void setValue(bool val);
     void setValue(int val);
     void setValue(double val);
@@ -53,7 +57,7 @@ public:
     DataType getType();
     QVariant getValue();
     QVariant getDefault();
-    QVariant& value();
+    QVariant &value();
 
 private:
     QString name;

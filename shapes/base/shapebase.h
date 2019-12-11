@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-06 09:29:29
+ * @LastEditTime: 2019-12-11 10:03:53
  * @Description : 所有形状的基类，包含所有通用API
  */
 #ifndef SHAPEBASE_H
@@ -19,6 +19,7 @@
 #include "selectedge.h"
 #include "portbase.h"
 #include "portpositiondialog.h"
+#include "customdatatype.h";
 
 #define BORDER_SIZE 2 // 边缘padding，用来放调整大小的边界线
 #define ERR(x) qDebug() << log(x);
@@ -30,18 +31,17 @@ const QColor DEFAULT_PIXMAP_COLOR = Qt::transparent;
 const int DEFAULT_BORDER_SIZE = 3;
 const QColor DEFAULT_BORDER_COLOR = Qt::gray;
 
-enum LargeShapeType {
+enum LargeShapeType
+{
     ShapeType,
     CableType
 };
 
 class ShapeBase;
-typedef QList<ShapeBase*> ShapeList;
+typedef QList<ShapeBase *> ShapeList;
 
 class ShapeBase : public QWidget
 {
-    friend class GraphicArea;
-
     Q_OBJECT
 public:
     // 构造
@@ -49,9 +49,11 @@ public:
     ShapeBase(QString text, QWidget *parent = nullptr);
     ShapeBase(QString text, QPixmap pixmap, QWidget *parent = nullptr);
     ~ShapeBase() override;
-
-    friend class ShapePropertyDialog;
+    
     friend class MainWindow;
+    friend class GraphicArea;
+    friend class ShapePropertyDialog;
+    friend class ShapeDataDialog;
 
     virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr); // 根据形状类型创建对应的形状实例
     virtual void copyDataFrom(ShapeBase *shape);                     // 从形状实例中拷贝数据
@@ -72,7 +74,7 @@ public:
     void setLightEdgeShowed(bool show);
 
     virtual void addPort(PortBase *port);
-    QList<PortBase*> getPorts();
+    QList<PortBase *> getPorts();
 
     void setPressOperatorEffected();
     void simulatePress(QMouseEvent *event);
@@ -113,13 +115,14 @@ signals:
     void signalLeftButtonReleased();
     void signalMenuShowed();
 
-    void signalPortPositionModified(PortBase* port);
-    void signalPortInserted(PortBase* port);
-    void signalPortDeleted(PortBase* port);
+    void signalPortPositionModified(PortBase *port);
+    void signalPortInserted(PortBase *port);
+    void signalPortDeleted(PortBase *port);
 
 public slots:
 
 protected:
+	// 形状属性
     QString _class;            // 形状类名（默认设为前景文字）
     QString _text;             // 前景文字
     Qt::Alignment _text_align; // 文字对齐
@@ -131,10 +134,15 @@ protected:
     int _border_size;          // 边界粗细
     QColor _border_color;      // 边界颜色
 
+    // 用户数据
+    CustomDataList custom_data_list; // 用户自定义数据
+
+    // 相关区域与控件
     QRect _area;             // 有效的显示区域（非控件大小）
     SelectEdge *edge;        // 四周边界线
     QList<PortBase *> ports; // 连接线的端口
 
+    // 操作相关
     QPoint _press_pos_global; // 鼠标左键按下时鼠标的全局坐标
     QPoint _press_topLeft;    // 鼠标左键按下时控件的左上角坐标（用来移动）
     bool _pressing;           // 是否正在单击/拖拽本形状
@@ -143,7 +151,8 @@ protected:
     bool _hovering;           // 是否鼠标悬浮期间
     bool _show_light_edge;    // 是否显示淡淡的边界
 
-    QString _readed_text;     // 读取时的内容（即fromString的文本）
+    // 存储
+    QString _readed_text; // 读取时的内容（即fromString的文本）
 };
 
 #endif // SHAPEBASE_H

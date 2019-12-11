@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 09:32:16
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 09:56:52
+ * @LastEditTime: 2019-12-11 10:01:17
  * @Description: 用户自定义数据类型
  */
 #include "customdatatype.h"
@@ -119,7 +119,7 @@ void CustomDataType::setValue(QStringList val)
 
 void CustomDataType::setDefault(bool def)
 {
-	bool val_eq_def = (this->val == this->def);
+    bool val_eq_def = (this->val == this->def);
     this->def = def;
     if (val_eq_def)
         this->val = def;
@@ -127,7 +127,7 @@ void CustomDataType::setDefault(bool def)
 
 void CustomDataType::setDefault(int def)
 {
-	bool val_eq_def = (this->val == this->def);
+    bool val_eq_def = (this->val == this->def);
     this->def = def;
     if (val_eq_def)
         this->val = def;
@@ -135,7 +135,7 @@ void CustomDataType::setDefault(int def)
 
 void CustomDataType::setDefault(double def)
 {
-	bool val_eq_def = (this->val == this->def);
+    bool val_eq_def = (this->val == this->def);
     this->def = def;
     if (val_eq_def)
         this->val = def;
@@ -143,7 +143,7 @@ void CustomDataType::setDefault(double def)
 
 void CustomDataType::setDefault(QString def)
 {
-	bool val_eq_def = (this->val == this->def);
+    bool val_eq_def = (this->val == this->def);
     this->def = def;
     if (val_eq_def)
         this->val = def;
@@ -151,7 +151,7 @@ void CustomDataType::setDefault(QString def)
 
 void CustomDataType::setDefault(QStringList def)
 {
-	bool val_eq_def = (this->val == this->def);
+    bool val_eq_def = (this->val == this->def);
     this->def = def;
     if (val_eq_def)
         this->val = def;
