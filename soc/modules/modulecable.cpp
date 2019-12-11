@@ -29,6 +29,16 @@ void ModuleCable::passOneClock()
 {
 }
 
+void ModuleCable::setTransferDelay(int delay)
+{
+    this->IPTD = delay;
+}
+
+int ModuleCable::gtTransferDelay()
+{
+    return IPTD;
+}
+
 void ModuleCable::paintEvent(QPaintEvent *event)
 {
     // 画四条线
