@@ -36,9 +36,10 @@ private slots:
     void on_clearBtn_clicked();
 
     void onTypeComboChanged(int index);
-    void onTableCellChanged(int row, int col);
 
     void on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int, int);
+
+    void on_tableWidget_cellChanged(int row, int col);
 
 private:
     void setTableRow(int row, CustomDataType data);

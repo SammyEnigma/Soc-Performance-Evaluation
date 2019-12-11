@@ -15,6 +15,7 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
     ui->setupUi(this);
     _system_changing = true;
 
+    // 设置名字
     QSet<QString> class_names;
     foreach (ShapeBase *shape, shapes)
     {
@@ -48,7 +49,7 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
         data_lists.append(datas);
     }
     QStringList same_names, different_names;
-    for (int i = 0; i < data_lists.size(); i++)
+    for (int i = 0; i < data_lists.size(); i++) // 遍历每个形状的 custom_data_list
     {
         CustomDataList* datas = data_lists.at(i);
         for (int j = 0; j < datas->size(); j++)
@@ -58,7 +59,7 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
             if (same_names.contains(name) || different_names.contains(name))
                 continue;
             bool all_have = true;
-            for (int k = i+1; k < data_lists.size(); k++)
+            for (int k = 0; k < data_lists.size(); k++)
             {
                 if (!shapes.at(k)->containsData(name))
                 {
@@ -82,8 +83,6 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
         setTableRow(i, shape->getData(same_names.at(i)));
     }
 
-//    connect(ui->tableWidget, SIGNAL(cellActivated(int,int)), this, SLOT(onTableCellActivated(int,int))); // 无效：单元格可以编辑时不会触发这个信号
-    connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SLOT(onTableCellChanged(int,int)));
     _system_changing = false;
 }
 
@@ -178,80 +177,6 @@ void ShapeDataDialog::onTypeComboChanged(int index)
 }
 
 /**
- * 单元格内容改变事件
- * 注意：item->setText 也会触发，所以需要使用 _system_changing 来控制 flag
- */
-void ShapeDataDialog::onTableCellChanged(int row, int col)
-{
-    if (_system_changing)
-        return ;
-    QString text = ui->tableWidget->item(row, col)->text();
-    log("onTableCellChanged" + text);
-
-    _system_changing = true;
-    if (col == CUSTOM_NAME_COL) // 修改名字
-    {
-        QString& old_name = _activated_string;
-        QString& name = text;
-        if (isNameExist(name))
-        {
-            QMessageBox::warning(this, "warning", "Name [" + name + "] already exists.");
-            ui->tableWidget->item(row, CUSTOM_NAME_COL)->setText(old_name);
-        }
-        else if (name.isEmpty())
-        {
-            ui->tableWidget->item(row, CUSTOM_NAME_COL)->setText(old_name);
-        }
-        else
-        {
-            foreach (CustomDataList* datas, data_lists)
-            {
-                for (int i = 0; i < (*datas).size(); i++)
-                {
-                    CustomDataType& data = (*datas)[i];
-                    if (data.getName() == old_name)
-                        data.setName(name);
-                }
-            }
-        }
-    }
-    else if (col == CUSTOM_DEF_COL) // 修改默认值
-    {
-        QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
-        adjustItemStringByType(row, shape->getDataType(name));
-        foreach (CustomDataList* datas, data_lists)
-        {
-            for (int i = 0; i < (*datas).size(); i++)
-            {
-                CustomDataType& data = (*datas)[i];
-                if (data.getName() == name)
-                    data.setDefault(text);
-            }
-        }
-        // 如果修改之前值和默认值相同，则同步修改值
-        if (_activated_string == ui->tableWidget->item(row, CUSTOM_VAL_COL)->text())
-        {
-            ui->tableWidget->item(row, CUSTOM_VAL_COL)->setText(text);
-        }
-    }
-    else if (col == CUSTOM_VAL_COL) // 修改数值
-    {
-        QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
-        adjustItemStringByType(row, shape->getDataType(name));
-        foreach (CustomDataList* datas, data_lists)
-        {
-            for (int i = 0; i < (*datas).size(); i++)
-            {
-                CustomDataType& data = (*datas)[i];
-                if (data.getName() == name)
-                    data.setValue(text);
-            }
-        }
-    }
-    _system_changing = false;
-}
-
-/**
  * 更改类型或者内容之后，自适应修改类型对应的文本
  */
 void ShapeDataDialog::adjustItemStringByType(int row, DataType type)
@@ -322,4 +247,80 @@ void ShapeDataDialog::on_tableWidget_currentCellChanged(int currentRow, int curr
         return ;
     _activated_string = ui->tableWidget->item(currentRow, currentColumn)->text();
     log("on_tableWidget_currentCellChanged: " + _activated_string);
+}
+
+/**
+ * 单元格内容改变事件
+ * 注意：item->setText 也会触发，所以需要使用 _system_changing 来控制 flag
+ */
+void ShapeDataDialog::on_tableWidget_cellChanged(int row, int col)
+{
+    if (_system_changing)
+        return ;
+    QString text = ui->tableWidget->item(row, col)->text();
+    log("onTableCellChanged" + text);
+
+    _system_changing = true;
+    if (col == CUSTOM_NAME_COL) // 修改名字
+    {
+        QString& old_name = _activated_string;
+        QString& name = text;
+        if (isNameExist(name))
+        {
+            QMessageBox::warning(this, "warning", "Name [" + name + "] already exists.");
+            ui->tableWidget->item(row, CUSTOM_NAME_COL)->setText(old_name);
+        }
+        else if (name.isEmpty())
+        {
+            ui->tableWidget->item(row, CUSTOM_NAME_COL)->setText(old_name);
+        }
+        else
+        {
+            foreach (CustomDataList* datas, data_lists)
+            {
+                for (int i = 0; i < (*datas).size(); i++)
+                {
+                    CustomDataType& data = (*datas)[i];
+                    if (data.getName() == old_name)
+                        data.setName(name);
+                }
+            }
+        }
+    }
+    else if (col == CUSTOM_DEF_COL) // 修改默认值
+    {
+        QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
+        adjustItemStringByType(row, shape->getDataType(name));
+        text = ui->tableWidget->item(row, col)->text(); // 可能会有调整，需要重新获取
+        foreach (CustomDataList* datas, data_lists)
+        {
+            for (int i = 0; i < (*datas).size(); i++)
+            {
+                CustomDataType& data = (*datas)[i];
+                if (data.getName() == name)
+                    data.setDefault(text);
+            }
+        }
+        // 如果修改之前值和默认值相同，则同步修改值
+        if (_activated_string == ui->tableWidget->item(row, CUSTOM_VAL_COL)->text())
+        {
+            ui->tableWidget->item(row, CUSTOM_VAL_COL)->setText(text);
+        }
+    }
+    else if (col == CUSTOM_VAL_COL) // 修改数值
+    {
+        QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
+        adjustItemStringByType(row, shape->getDataType(name));
+        text = ui->tableWidget->item(row, col)->text(); // 可能会有调整，需要重新获取
+        foreach (CustomDataList* datas, data_lists)
+        {
+            for (int i = 0; i < (*datas).size(); i++)
+            {
+                CustomDataType& data = (*datas)[i];
+                if (data.getName() == name)
+                    data.setValue(text);
+            }
+        }
+    }
+    _system_changing = false;
 }
