@@ -109,7 +109,15 @@ void ShapePropertyDialog::on_pixmap_color_btn_clicked()
 
     // 确定选择颜色
     connect(cd, &QColorDialog::colorSelected, this, [=](QColor c){
-        setBtnColor(ui->pixmap_color_btn, c, true);
+        if (c.alpha() == 0)
+        {
+            if (shape->_pixmap_color.alpha() != 0)
+            {}
+            else if (c != Qt::transparent)
+                c.setAlpha(255);
+        }
+
+        setBtnColor(ui->pixmap_color_btn, c, false);
 
         foreach (ShapeBase* shape, shapes) {
             shape->_pixmap_color = c;
