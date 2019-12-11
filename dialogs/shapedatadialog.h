@@ -35,6 +35,7 @@ private slots:
     void on_clearBtn_clicked();
 
     void onTypeComboChanged(int index);
+    void onTableCellChanged(int row, int col);
 
 private:
     void adjustItemStringByType(int row, DataType type);
@@ -46,6 +47,8 @@ private:
     ShapeBase* shape;
     ShapeList shapes;
     QList<CustomDataList*> data_lists; // 选中形状的所有数据
+
+    bool _system_changing; // 系统改变时不触发表格内容编辑事件
 };
 
 #endif // SHAPEDATADIALOG_H

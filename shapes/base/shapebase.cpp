@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-10 15:11:00
+ * @LastEditTime: 2019-12-11 11:41:26
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
@@ -298,7 +298,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     // 一行文字的高度
     QFontMetrics fm(this->font());
     int spacing = fm.lineSpacing();
-    int text_height = spacing < height() ? spacing : spacing / 2; // 如果连一行文字的高度都不到，最多两个平分高度
+    int text_height = spacing < height() ? spacing : height() / 2; // 如果连一行文字的高度都不到，最多两个平分高度
 
     // 根据是否有文字判断是否要缩减图标区域
     QRect draw_rect(_area);

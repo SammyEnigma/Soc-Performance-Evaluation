@@ -13,6 +13,7 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
       shape(shapes.first()), shapes(shapes)
 {
     ui->setupUi(this);
+    _system_changing = true;
 
     QSet<QString> class_names;
     foreach (ShapeBase *shape, shapes)
@@ -75,6 +76,9 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
     if (different_names.size() > 0)
         ui->diffLabel->setText(QString("Have %1 different name datas").arg(different_names.size()));
     ui->tableWidget->setRowCount(same_names.size());
+
+    connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SLOT(onTabelCelChanged(int,int)));
+    _system_changing = false;
 }
 
 ShapeDataDialog::~ShapeDataDialog()
@@ -146,6 +150,14 @@ void ShapeDataDialog::onTypeComboChanged(int index)
                 data.setAll(type, def, val);
         }
     }
+}
+
+void ShapeDataDialog::onTableCellChanged(int row, int col)
+{
+    if (_system_changing)
+        return ;
+
+
 }
 
 /**
