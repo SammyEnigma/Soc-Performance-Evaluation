@@ -140,7 +140,27 @@ void ShapeDataDialog::on_insertBtn_clicked()
 
 void ShapeDataDialog::on_removeBtn_clicked()
 {
+    int row = ui->tableWidget->currentRow();
+    if (row == -1)
+        return ;
     log("删除行");
+    QString name = ui->tableWidget->item(row, CUSTOM_NAME_COL)->text();
+    foreach (CustomDataList* datas, data_lists)
+    {
+        for (int i = 0; i < datas->size(); i++)
+        {
+            CustomDataType data = datas->at(i);
+            if (data.getName() == name) // 删除所有叫这个名字的数据
+            {
+                datas->removeAt(i--);
+            }
+        }
+    }
+
+    // 释放空间
+    for (int i = 0; i < 4; i++)
+        ui->tableWidget->removeCellWidget(row, i);
+    ui->tableWidget->removeRow(row);
 }
 
 void ShapeDataDialog::on_clearBtn_clicked()
