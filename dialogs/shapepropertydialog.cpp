@@ -14,7 +14,10 @@ ShapePropertyDialog::ShapePropertyDialog(ShapeList shapes) : QDialog(shapes.firs
     QSet<QString>class_set;
     foreach (ShapeBase* shape, shapes)
     {
-        class_set.insert(shape->getClass());
+        if (shape->getText() == shape->getClass())
+            class_set.insert(shape->getText());
+        else
+            class_set.insert(QString("%1(%2)").arg(shape->getText()).arg(shape->getClass()));
     }
     ui->class_lineEdit->setText(class_set.toList().join(", "));
     ui->text_lineEdit->setText(shape->getText());

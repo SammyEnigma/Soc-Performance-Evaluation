@@ -38,6 +38,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     shapes/base/cablebase.cpp \
+    shapes/base/customdatatype.cpp \
     shapes/base/portbase.cpp \
     shapes/base/selectedge.cpp \
     shapes/base/shapebase.cpp \
@@ -60,6 +61,7 @@ HEADERS += \
     global/usettings.h \
     graphic/graphicarea.h \
     shapes/base/cablebase.h \
+    shapes/base/customdatatype.h \
     shapes/base/portbase.h \
     shapes/base/selectedge.h \
     shapes/base/shapelistwidget.h \

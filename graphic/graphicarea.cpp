@@ -941,6 +941,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     else if (selected_shapes.size() > 1)
     {
         property_action->setText(property_action->text() + " [multi]");
+        data_action->setText(data_action->text() + " [multi]");
         add_port_action->setText(add_port_action->text() + " [multi]");
         copy_action->setText(copy_action->text() + " [multi]");
         delete_action->setText(delete_action->text() + " [multi]");

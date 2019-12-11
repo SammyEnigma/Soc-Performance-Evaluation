@@ -11,30 +11,37 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Data List</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="nameLabel">
+     <property name="text">
+      <string>形状</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="insertBtn">
        <property name="text">
         <string>添加</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="removeBtn">
        <property name="text">
         <string>删除</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="clearBtn">
        <property name="text">
         <string>清除</string>
        </property>
@@ -57,6 +64,13 @@
    </item>
    <item>
     <widget class="QTableWidget" name="tableWidget"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="diffLabel">
+     <property name="text">
+      <string>不同数据</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

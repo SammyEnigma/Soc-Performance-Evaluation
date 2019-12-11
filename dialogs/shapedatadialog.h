@@ -16,6 +16,14 @@ public:
     ShapeDataDialog(ShapeList shapes);
     ~ShapeDataDialog();
 
+private slots:
+
+    void on_insertBtn_clicked();
+
+    void on_removeBtn_clicked();
+
+    void on_clearBtn_clicked();
+
 private:
     Ui::ShapeDataDialog *ui;
     ShapeBase* shape;
