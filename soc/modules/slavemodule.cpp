@@ -7,7 +7,7 @@
  */
 #include "slavemodule.h"
 
-SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), ModuleInterface(parent), buffer_size(0)
+SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), ModuleInterface(parent)
 {
     _class = _text = "Slave";
 }
@@ -18,19 +18,4 @@ SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
     SlaveModule *shape = new SlaveModule(parent);
     shape->copyDataFrom(this);
     return shape;
-}
-
-void SlaveModule::setBufferSize(int size)
-{
-    buffer_size = size;
-}
-
-void SlaveModule::sendPacket(DataPacket *packet)
-{
-	
-}
-
-void SlaveModule::receivedPacket(DataPacket *packet)
-{
-	data_queue.enqueue(packet);
 }

@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 17:18:25
+ * @LastEditTime: 2019-12-11 17:48:48
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -18,6 +18,7 @@ void FlowControlCore::initData()
 {
     current_clock = 0;
     
+    // 初始化属性
     master->setToken(16);
     master->setBandwidth(1);
     master->setLatency(0);
@@ -25,6 +26,14 @@ void FlowControlCore::initData()
     slave->setToken(16);
     slave->setBandwidth(1);
     slave->setLatency(6);
+    
+    ms_cable->setTransferDelay(5);
+    
+    // 初始化数据
+    for (int i = 0; i < master->getToken(); i++)
+    {
+        master->data_list.append(new DataPacket(this));
+    }
 }
 
 /**
