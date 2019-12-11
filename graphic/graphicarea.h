@@ -25,6 +25,7 @@
 #include "stringutil.h"
 #include "portpositiondialog.h"
 #include "shapepropertydialog.h"
+#include "shapedatadialog.h"
 #include "cablebase.h"
 
 #define DEB qDebug()
@@ -95,6 +96,7 @@ signals:
 public slots:
     void slotMenuShowed(const QPoint &p);
     void slotShapeProperty();
+    void slotShapeData();
     void actionInsertPort();
     void actionSelectAll();
     void actionUnselect();

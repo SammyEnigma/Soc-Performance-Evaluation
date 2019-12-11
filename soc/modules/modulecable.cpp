@@ -55,7 +55,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
              */
             if (arrow_pos1.x() == arrow_pos2.x()
                     || arrow_pos1.y() == arrow_pos2.x()
-                    || (arrow_pos1.y() - arrow_pos2.y()) / (double)(arrow_pos1.x() - arrow_pos2.x())<0) // 右上-左下 角度倾斜
+                    || (arrow_pos1.y() - arrow_pos2.y()) / static_cast<double>(arrow_pos1.x() - arrow_pos2.x())<0) // 右上-左下 角度倾斜
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
@@ -124,7 +124,7 @@ void ModuleCable::adjustGeometryByPorts()
     int breadth = (LINE_COUNT - 1) * LINE_SPACE + _border_size; // 所有宽度外加线宽
     int delta_x = qAbs(cen1.x() - cen2.x());
     int delta_y = qAbs(cen1.y() - cen2.y());
-    int gx2y2 = sqrt(delta_x * delta_x + delta_y * delta_y);
+    int gx2y2 = static_cast<int>(sqrt(delta_x * delta_x + delta_y * delta_y));
     if (gx2y2 == 0) // 两个端口位置重叠
     {
         _breadth_x = 0;

@@ -30,6 +30,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     dialogs/portpositiondialog.cpp \
+    dialogs/shapedatadialog.cpp \
     dialogs/shapepropertydialog.cpp \
     global/globalvars.cpp \
     global/usettings.cpp \
@@ -53,6 +54,7 @@ SOURCES += \
 
 HEADERS += \
     dialogs/portpositiondialog.h \
+    dialogs/shapedatadialog.h \
     dialogs/shapepropertydialog.h \
     global/settings.h \
     global/usettings.h \
@@ -80,6 +82,7 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
+    shapedatadialog.ui \
     shapepropertydialog.ui
 
 # Default rules for deployment.

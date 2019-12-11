@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-09 09:38:30
+ * @LastEditTime: 2019-12-11 09:06:35
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -911,13 +911,15 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
 
     log("自定义菜单");
     QMenu *menu = new QMenu("menu", this);
-    QAction *property_action = new QAction("Property", this);
+    QAction *property_action = new QAction("Appearance", this);
+    QAction *data_action = new QAction("Data List", this);
     QAction *add_port_action = new QAction("Add Port", this);
     QAction *select_all_action = new QAction("Select All", this);
     QAction *copy_action = new QAction("Copy", this);
     QAction *paste_action = new QAction("Paste", this);
     QAction *delete_action = new QAction("Delete", this);
     menu->addAction(property_action);
+    menu->addAction(data_action);
     menu->addSeparator();
     menu->addAction(add_port_action);
     menu->addSeparator();
@@ -959,6 +961,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
 
     // 形状属性
     connect(property_action, &QAction::triggered, this, &GraphicArea::slotShapeProperty);
+    connect(data_action, &QAction::triggered, this, &GraphicArea::slotShapeData);
 
     connect(select_all_action, &QAction::triggered, this, &GraphicArea::actionSelectAll);
     connect(copy_action, &QAction::triggered, this, &GraphicArea::actionCopy);
@@ -977,10 +980,18 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
 void GraphicArea::slotShapeProperty()
 {
     log("打开属性界面");
-    // 打开属性界面
     ShapePropertyDialog *spd = new ShapePropertyDialog(selected_shapes);
     spd->exec();
     spd->deleteLater();
+    autoSave();
+}
+
+void GraphicArea::slotShapeData()
+{
+    log("打开数据界面");
+    ShapeDataDialog *sdd = new ShapeDataDialog(selected_shapes);
+    sdd->exec();
+    sdd->deleteLater();
     autoSave();
 }
 
