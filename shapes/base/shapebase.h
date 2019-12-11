@@ -86,6 +86,9 @@ public:
     virtual QString toStringAppend();
     QString readedText();
 
+    // 数据
+    bool containsData(QString name);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;

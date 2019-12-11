@@ -153,6 +153,16 @@ QString ShapeBase::readedText()
     return _readed_text;
 }
 
+bool ShapeBase::containsData(QString name)
+{
+    foreach (CustomDataType data, custom_data_list)
+    {
+        if (data.getName() == name)
+            return true;
+    }
+    return false;
+}
+
 const QString ShapeBase::getClass()
 {
     return _class;

@@ -2,48 +2,48 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 09:32:16
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 10:01:17
+ * @LastEditTime: 2019-12-11 11:28:27
  * @Description: 用户自定义数据类型
  */
 #include "customdatatype.h"
 
-CustomDataType::CustomDataType(QString name, bool val, bool def)
+CustomDataType::CustomDataType(QString name, bool def, bool val)
 {
     this->name = name;
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_BOOL;
 }
 
-CustomDataType::CustomDataType(QString name, int val, int def)
+CustomDataType::CustomDataType(QString name, int def, int val)
 {
     this->name = name;
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_INT;
 }
 
-CustomDataType::CustomDataType(QString name, double val, double def)
+CustomDataType::CustomDataType(QString name, double def, double val)
 {
     this->name = name;
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_DOUBLE;
 }
 
-CustomDataType::CustomDataType(QString name, QString val, QString def)
+CustomDataType::CustomDataType(QString name, QString def, QString val)
 {
     this->name = name;
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_STRING;
 }
 
-CustomDataType::CustomDataType(QString name, QStringList val, QStringList def)
+CustomDataType::CustomDataType(QString name, QStringList def, QStringList val)
 {
     this->name = name;
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_BOOL;
 }
 
@@ -52,69 +52,68 @@ void CustomDataType::setName(QString name)
     this->name = name;
 }
 
-void CustomDataType::reset(bool val, bool def)
+void CustomDataType::setAll(bool def, bool val)
 {
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_BOOL;
 }
 
-void CustomDataType::reset(int val, int def)
+void CustomDataType::setAll(int def, int val)
 {
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_INT;
 }
 
-void CustomDataType::reset(double val, double def)
+void CustomDataType::setAll(double def, double val)
 {
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_DOUBLE;
 }
 
-void CustomDataType::reset(QString val, QString def)
+void CustomDataType::setAll(QString def, QString val)
 {
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_STRING;
 }
 
-void CustomDataType::reset(QStringList val, QStringList def)
+void CustomDataType::setAll(QStringList def, QStringList val)
 {
-    this->val = val;
     this->def = def;
+    this->val = val;
     this->type = DT_STRING_LIST;
 }
 
-void CustomDataType::setValue(bool val)
+void CustomDataType::setAll(DataType type, QString def, QString val)
 {
-    this->val = val;
-    this->type = DT_BOOL;
-}
-
-void CustomDataType::setValue(int val)
-{
-    this->val = val;
-    this->type = DT_INT;
-}
-
-void CustomDataType::setValue(double val)
-{
-    this->val = val;
-    this->type = DT_DOUBLE;
-}
-
-void CustomDataType::setValue(QString val)
-{
-    this->val = val;
-    this->type = DT_STRING;
-}
-
-void CustomDataType::setValue(QStringList val)
-{
-    this->val = val;
-    this->type = DT_BOOL;
+    this->type = type;
+    switch (type)
+    {
+    case DT_BOOL:
+        this->def = QRegExp("^(1|true)$", Qt::CaseInsensitive).exactMatch(def);
+        this->val = QRegExp("^(1|true)$", Qt::CaseInsensitive).exactMatch(val);
+        break;
+    case DT_UNKNOW:
+    case DT_INT:
+        this->def = def.toInt();
+        this->val = val.toInt();
+        break;
+    case DT_DOUBLE:
+        this->def = def.toDouble();
+        this->val = def.toDouble();
+        break;
+    case DT_STRING:
+        this->def = def;
+        this->val = val;
+        break;
+    case DT_STRING_LIST:
+        this->def = def.split(" ");
+        this->val = val.split(" ");
+        break;
+    }
 }
 
 void CustomDataType::setDefault(bool def)
@@ -155,6 +154,41 @@ void CustomDataType::setDefault(QStringList def)
     this->def = def;
     if (val_eq_def)
         this->val = def;
+}
+
+void CustomDataType::setValue(bool val)
+{
+    this->val = val;
+    this->type = DT_BOOL;
+}
+
+void CustomDataType::setValue(int val)
+{
+    this->val = val;
+    this->type = DT_INT;
+}
+
+void CustomDataType::setValue(double val)
+{
+    this->val = val;
+    this->type = DT_DOUBLE;
+}
+
+void CustomDataType::setValue(QString val)
+{
+    this->val = val;
+    this->type = DT_STRING;
+}
+
+void CustomDataType::setValue(QStringList val)
+{
+    this->val = val;
+    this->type = DT_BOOL;
+}
+
+void CustomDataType::reset()
+{
+    this->val = this->def;
 }
 
 QString CustomDataType::getName()
