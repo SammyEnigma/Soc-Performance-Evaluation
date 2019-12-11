@@ -34,6 +34,7 @@ private slots:
     void on_insertBtn_clicked();
     void on_removeBtn_clicked();
     void on_clearBtn_clicked();
+    void on_resetBtn_clicked();
 
     void onTypeComboChanged(int index);
 

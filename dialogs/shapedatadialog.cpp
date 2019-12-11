@@ -166,6 +166,32 @@ void ShapeDataDialog::on_removeBtn_clicked()
 void ShapeDataDialog::on_clearBtn_clicked()
 {
     log("清除数据");
+    int size = ui->tableWidget->rowCount();
+    while (size--) // 遍历调用 remove
+    {
+        ui->tableWidget->setCurrentCell(size, 0);
+        on_removeBtn_clicked();
+    }
+}
+
+void ShapeDataDialog::on_resetBtn_clicked()
+{
+    log("重设数值");
+    foreach (CustomDataList* datas, data_lists)
+    {
+        for (int i = 0; i < datas->size(); i++)
+        {
+            CustomDataType& data = (*datas)[i];
+            data.reset();
+        }
+    }
+    _system_changing = true;
+    for (int i = 0; i < ui->tableWidget->rowCount(); i++)
+    {
+        ui->tableWidget->item(i, CUSTOM_VAL_COL)->setText(ui->tableWidget->item(i, CUSTOM_DEF_COL)->text());
+    }
+
+    _system_changing = false;
 }
 
 void ShapeDataDialog::onTypeComboChanged(int index)
