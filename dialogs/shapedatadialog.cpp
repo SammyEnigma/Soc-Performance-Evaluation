@@ -76,7 +76,13 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
         ui->diffLabel->setText(QString("Have %1 different name datas").arg(different_names.size()));
     ui->tableWidget->setRowCount(same_names.size());
 
-//    connect(ui->tableWidget, SIGNAL(cellActivated(int,int)), this, SLOT(onTableCellActivated(int,int))); // 单元格可以编辑时不会触发这个信号
+    // 从表格中显示出来
+    for (int i = 0; i < same_names.size(); i++)
+    {
+        setTableRow(i, shape->getData(same_names.at(i)));
+    }
+
+//    connect(ui->tableWidget, SIGNAL(cellActivated(int,int)), this, SLOT(onTableCellActivated(int,int))); // 无效：单元格可以编辑时不会触发这个信号
     connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SLOT(onTableCellChanged(int,int)));
     _system_changing = false;
 }
@@ -86,17 +92,12 @@ ShapeDataDialog::~ShapeDataDialog()
     delete ui;
 }
 
-void ShapeDataDialog::on_insertBtn_clicked()
+void ShapeDataDialog::setTableRow(int row, CustomDataType data)
 {
-    _system_changing = true;
-    int row = ui->tableWidget->rowCount();
-    ui->tableWidget->setRowCount(row + 1);
-
-    QString name = createSuitableName();
-    QTableWidgetItem* item0 = new QTableWidgetItem(name);
+    QTableWidgetItem* item0 = new QTableWidgetItem(data.getName());
     ui->tableWidget->setItem(row, CUSTOM_NAME_COL, item0);
 
-    QTableWidgetItem* item1 = new QTableWidgetItem("bool");
+    QTableWidgetItem* item1 = new QTableWidgetItem("type");
     ui->tableWidget->setItem(row, CUSTOM_TYPE_COL, item1);
 
     QComboBox* combo = new QComboBox(this);
@@ -106,36 +107,51 @@ void ShapeDataDialog::on_insertBtn_clicked()
     combo->insertItem(static_cast<int>(DT_DOUBLE), "double");
     combo->insertItem(static_cast<int>(DT_STRING), "string");
     combo->insertItem(static_cast<int>(DT_STRING_LIST), "string list");
-    combo->setCurrentIndex(0);
+    combo->setCurrentIndex(static_cast<int>(data.getType()));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onTypeComboChanged(int)));
     ui->tableWidget->setCellWidget(row, CUSTOM_TYPE_COL, combo);
 
-    QTableWidgetItem* item2 = new QTableWidgetItem("0");
+    QTableWidgetItem* item2 = new QTableWidgetItem(data.getDefault().toString());
     ui->tableWidget->setItem(row, CUSTOM_DEF_COL, item2);
 
-    QTableWidgetItem* item3 = new QTableWidgetItem("0");
+    QTableWidgetItem* item3 = new QTableWidgetItem(data.getValue().toString());
     ui->tableWidget->setItem(row, CUSTOM_VAL_COL, item3);
+}
+
+void ShapeDataDialog::on_insertBtn_clicked()
+{
+    log("添加行");
+    _system_changing = true;
+    int row = ui->tableWidget->rowCount();
+    ui->tableWidget->setRowCount(row + 1);
+
+    QString name = createSuitableName();
+    CustomDataType data(name, 0, 0);
+    setTableRow(row, data);
 
     _activated_string = name;
     ui->tableWidget->edit(ui->tableWidget->model()->index(row, CUSTOM_NAME_COL));
 
     foreach (CustomDataList* datas, data_lists)
     {
-        datas->append(CustomDataType(name, 0, 0));
+        datas->append(data);
     }
     _system_changing = false;
 }
 
 void ShapeDataDialog::on_removeBtn_clicked()
 {
+    log("删除行");
 }
 
 void ShapeDataDialog::on_clearBtn_clicked()
 {
+    log("清除数据");
 }
 
 void ShapeDataDialog::onTypeComboChanged(int index)
 {
+    log("onTypeComboChanged");
     // 获取类型
     DataType type = static_cast<DataType>(index);
     if (type == DT_UNKNOW)
@@ -169,6 +185,7 @@ void ShapeDataDialog::onTableCellChanged(int row, int col)
 {
     if (_system_changing)
         return ;
+    log("onTableCellChanged");
 
     _system_changing = true;
     if (col == CUSTOM_NAME_COL) // 修改名字
@@ -235,7 +252,7 @@ void ShapeDataDialog::adjustItemStringByType(int row, DataType type)
         break;
     case DT_STRING:
     case DT_STRING_LIST:
-        re.setPattern("^.+$");
+        re.setPattern("^.*$");
         def = "";
         break;
     }
@@ -277,5 +294,8 @@ bool ShapeDataDialog::isNameExist(QString name)
 
 void ShapeDataDialog::on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int, int)
 {
+    if (ui->tableWidget->item(currentRow, currentColumn) == nullptr) // 没有设置的话会是 nullptr
+        return ;
     _activated_string = ui->tableWidget->item(currentRow, currentColumn)->text();
+    log("on_tableWidget_currentCellChanged: " + _activated_string);
 }

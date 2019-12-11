@@ -41,6 +41,7 @@ private slots:
     void on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int, int);
 
 private:
+    void setTableRow(int row, CustomDataType data);
     void adjustItemStringByType(int row, DataType type);
     QString createSuitableName();
     bool isNameExist(QString name);

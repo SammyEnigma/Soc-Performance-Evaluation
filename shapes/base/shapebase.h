@@ -87,6 +87,7 @@ public:
     QString readedText();
 
     // 数据
+    CustomDataType getData(QString name);
     bool containsData(QString name);
     QVariant getDataValue(QString name);
     DataType getDataType(QString name);

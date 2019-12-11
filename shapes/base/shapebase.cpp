@@ -150,7 +150,6 @@ QString ShapeBase::toString()
         shape_string += data.toString();
     }
     shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
-    qDebug() << "保存string结束";
     return shape_string;
 }
 
@@ -162,6 +161,16 @@ QString ShapeBase::toStringAppend()
 QString ShapeBase::readedText()
 {
     return _readed_text;
+}
+
+CustomDataType ShapeBase::getData(QString name)
+{
+    foreach (CustomDataType data, custom_data_list)
+    {
+        if (data.getName() == name)
+            return data;
+    }
+    return CustomDataType("",0,0);
 }
 
 bool ShapeBase::containsData(QString name)
