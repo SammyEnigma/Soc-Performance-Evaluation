@@ -47,6 +47,11 @@ CustomDataType::CustomDataType(QString name, QStringList def, QStringList val)
     this->type = DT_BOOL;
 }
 
+CustomDataType::CustomDataType(QString string)
+{
+    this->fromString(string);
+}
+
 void CustomDataType::setName(QString name)
 {
     this->name = name;
@@ -214,4 +219,24 @@ QVariant CustomDataType::getDefault()
 QVariant &CustomDataType::value()
 {
     return val;
+}
+
+QString CustomDataType::toString()
+{
+    QString full_string;
+    QString indent = "\n\t\t";
+    full_string += indent + StringUtil::makeXml(name, "NAME");
+    full_string += indent + StringUtil::makeXml(static_cast<int>(type), "TYPE");
+    full_string += indent + StringUtil::makeXml(def.toString(), "DEF");
+    full_string += indent + StringUtil::makeXml(val.toString(), "VAL");
+    full_string = "\n\t<CUSTOM_DATA>" + full_string + "\n\t</CUSTOM_DATA>";
+    return full_string;
+}
+
+void CustomDataType::fromString(QString s)
+{
+    this->name = StringUtil::getXml(s, "NAME");
+    this->type = static_cast<DataType>(StringUtil::getXmlInt(s, "TYPE"));
+    this->def = StringUtil::getXml(s, "DEF");
+    this->val = StringUtil::getXml(s, "VAL");
 }

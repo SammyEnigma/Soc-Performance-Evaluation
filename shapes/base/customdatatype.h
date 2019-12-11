@@ -10,6 +10,8 @@
 
 #include <QVariant>
 #include <QStringList>
+#include <QDebug>
+#include "stringutil.h"
 
 class CustomDataType;
 typedef QList<CustomDataType> CustomDataList;
@@ -32,6 +34,7 @@ public:
     CustomDataType(QString name, double def, double val = 0.0);
     CustomDataType(QString name, QString def, QString val = "");
     CustomDataType(QString name, QStringList def, QStringList val = QStringList());
+    CustomDataType(QString string);
 
     void setName(QString name);
 
@@ -61,6 +64,9 @@ public:
     QVariant getValue();
     QVariant getDefault();
     QVariant &value();
+
+    QString toString();
+    void fromString(QString s);
 
 private:
     QString name;

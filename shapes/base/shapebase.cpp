@@ -75,6 +75,7 @@ void ShapeBase::fromString(QString s)
     QString border_size = StringUtil::getXml(s, "BORDER_SIZE");
     QString border_color = StringUtil::getXml(s, "BORDER_COLOR");
     QStringList port_list = StringUtil::getXmls(s, "PORT");
+    QStringList data_list = StringUtil::getXmls(s, "CUSTOM_DATA");
 
     setGeometry(left, top, width, height);
     setText(text);
@@ -100,6 +101,11 @@ void ShapeBase::fromString(QString s)
         PortBase *port = new PortBase(this);
         port->fromString(port_string);
         addPort(port);
+    }
+    foreach (QString data_string, data_list)
+    {
+        CustomDataType data(data_string);
+        custom_data_list.append(data);
     }
 }
 
@@ -139,7 +145,12 @@ QString ShapeBase::toString()
     {
         shape_string += port->toString();
     }
+    foreach (CustomDataType data, custom_data_list)
+    {
+        shape_string += data.toString();
+    }
     shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
+    qDebug() << "保存string结束";
     return shape_string;
 }
 
