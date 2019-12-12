@@ -13,8 +13,8 @@
 #include "moduleinterface.h"
 #include "qmath.h"
 
-#define LINE_COUNT 4
-#define LINE_SPACE 20
+#define LINE_COUNT 10
+#define LINE_SPACE 6
 
 class ModuleCable : public CableBase, public ModuleInterface
 {

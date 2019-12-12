@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 18:20:23
+ * @LastEditTime: 2019-12-12 18:30:19
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -55,7 +55,7 @@ void FlowControlCore::passOneClock()
 
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
-    if (master->isSlaveFree() && master->data_list.size())
+    if (/* master->isSlaveFree() &&  */master->data_list.size())
     {
         DataPacket *packet = master->data_list.takeFirst();
         packet->resetDelay(ms_cable->getTransferDelay());
@@ -111,6 +111,8 @@ void FlowControlCore::passOneClock()
             slave->dequeue_list.removeAt(i--);
             slave->process_list.append(packet);
             packet->resetDelay(slave->getProcessDelay());
+            // Slave空出一个位置
+            master->slave_free++;
         }
         else
         {
@@ -126,7 +128,7 @@ void FlowControlCore::passOneClock()
         {
             slave->process_list.removeAt(i--);
             ms_cable->response_list.append(packet);
-            packet->resetDelay(slave->getProcessDelay());
+            packet->resetDelay(ms_cable->getTransferDelay());
         }
         else
         {
@@ -142,7 +144,8 @@ void FlowControlCore::passOneClock()
         {
             ms_cable->response_list.removeAt(i--);
             // TODO: Master接收到response
-            qDebug() << "Master接收到response";
+            qDebug() << "Master接收到response" << packet->toString();
+            master->data_list.append(packet);
         }
         else
         {
