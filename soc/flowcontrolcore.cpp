@@ -59,8 +59,8 @@ void FlowControlCore::passOneClock()
     {
         DataPacket *packet = master->data_list.takeFirst();
         packet->resetDelay(ms_cable->getTransferDelay());
+        ms_cable->request_list.append(packet);
         master->slave_free--;
-        qDebug() << "发送";
     }
 
     // 连接线延迟传输（5 clock）-->给Slave
