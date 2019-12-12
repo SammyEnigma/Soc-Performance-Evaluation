@@ -17,6 +17,9 @@ public:
     MasterModule(QWidget* parent = nullptr);
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     
+protected:
+	void paintEvent(QPaintEvent *event) override;
+    
 private:
 };
 
