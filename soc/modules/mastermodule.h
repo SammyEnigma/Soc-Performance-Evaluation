@@ -15,6 +15,9 @@ class MasterModule : public CircleShape, public ModuleInterface
 {
 public:
     MasterModule(QWidget* parent = nullptr);
+
+    friend class FlowControlCore;
+
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     
     void setSlaveFree(int f);

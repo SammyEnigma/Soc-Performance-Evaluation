@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-10 15:04:55
+ * @LastEditTime: 2019-12-12 17:16:15
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -10,7 +10,7 @@
 ModuleCable::ModuleCable(QWidget *parent)
     : CableBase(parent), ModuleInterface(parent),
       packet_lists(QList<PacketList>{PacketList(), PacketList(), PacketList(), PacketList()}), // 初始化四个
-      request_line(packet_lists[0]),request_data_line(packet_lists[1]),response_line(packet_lists[2]),response_data_line(packet_lists[3])
+      request_list(packet_lists[0]),request_data_list(packet_lists[1]),response_list(packet_lists[2]),response_data_list(packet_lists[3])
 {
     _class = _text = "ModuleCable";
 
@@ -34,7 +34,7 @@ void ModuleCable::setTransferDelay(int delay)
     this->IPTD = delay;
 }
 
-int ModuleCable::gtTransferDelay()
+int ModuleCable::getTransferDelay()
 {
     return IPTD;
 }

@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:08:47
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 09:03:41
+ * @LastEditTime: 2019-12-12 16:57:25
  * @Description: MasterModule
  */
 #include "mastermodule.h"
@@ -39,5 +39,5 @@ void MasterModule::paintEvent(QPaintEvent *event)
     // 画自己的数量
     QPainter painter(this);
     QFontMetrics fm(this->font());
-    painter.drawText( 0, fm.lineSpacing(), "Token: "+QString::number(token));
+    painter.drawText( 0, fm.lineSpacing(), QString("Token:%1/%2").arg(data_list.size()).arg(token));
 }

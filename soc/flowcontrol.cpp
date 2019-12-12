@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 16:59:11
+ * @LastEditTime: 2019-12-12 17:54:54
  * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #include "flowcontrol.h"
@@ -14,7 +14,7 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
     run_timer = new QTimer(this);
     run_timer->setInterval(1000); // 一秒钟执行一次 clock
     run_timer->setSingleShot(false);
-    connect(run_timer, SIGNAL(timeout()), this, SLOT(passOneClock()));
+    connect(run_timer, SIGNAL(timeout()), this, SLOT(nextStep()));
 }
 
 /**
@@ -26,6 +26,7 @@ void FlowControl::startRun()
     if (!initModules())
         return;
     initData();
+    refreshUI();
     run_timer->start();
 }
 
@@ -55,6 +56,7 @@ void FlowControl::nextStep()
     if (current_clock == -1) // 未初始化
         return;
     passOneClock();
+    refreshUI();
 }
 
 /**
@@ -101,4 +103,11 @@ CableBase *FlowControl::getModuleCable(ShapeBase *shape1, ShapeBase *shape2, boo
     if (module_cable->getClass() != "ModuleCable")
         return nullptr;
     return module_cable;
+}
+
+void FlowControl::refreshUI()
+{
+    master->update();
+    slave->update();
+    ms_cable->update();
 }

@@ -28,6 +28,7 @@ private slots:
 private:
     bool initModules();
     CableBase *getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single = false);
+    void refreshUI();
 
 signals:
 

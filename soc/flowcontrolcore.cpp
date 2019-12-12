@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 09:11:19
+ * @LastEditTime: 2019-12-12 17:52:23
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -22,7 +22,6 @@ void FlowControlCore::initData()
     master->setToken(16);
     master->setBandwidth(1);
     master->setLatency(0);
-
 
     slave->setToken(16);
     slave->setBandwidth(1);
@@ -53,19 +52,58 @@ void FlowControlCore::passOneClock()
     ms_cable->passOneClock();
 
     // ==== 发送数据 ====
-    // Slave有空位时，Master发送数据（1个clock）
+    // Slave有空位时，Master发送数据（1 clock）
     if (master->isSlaveFree() && master->data_list.size())
     {
-
+        DataPacket *packet = master->data_list.last();
+        packet->resetDelay(ms_cable->getTransferDelay());
+        master->data_list.removeLast();
     }
 
-    // 连接线延迟传输
+    // 连接线延迟传输（5 clock）
+    for (int i = 0; i < ms_cable->request_list.size(); i++)
+    {
+        DataPacket *packet = ms_cable->request_list.at(i);
+        if (packet->isDelayFinished()) // 传输结束，Slave收到Master的数据
+        {
+            ms_cable->request_list.removeAt(i--);
+            slave->enqueue_list.append(packet);
+            packet->resetDelay(slave->getEnqueueDelay());
+        }
+        else // 仍然在传输中
+        {
+            packet->delayToNext();
+        }
+    }
 
-    // Slave收到Master的数据（1个clock）
+    // Slave进队列（1 clock）
+    for (int i = 0; i < slave->enqueue_list.size(); i++)
+    {
+        DataPacket *packet = slave->enqueue_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            slave->enqueue_list.removeOne(packet);
+            slave->data_queue.enqueue(packet);
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
 
-    // Slave进出队列（各1个clock）
+    // Slave出队列（1 clock）
+    if (slave->data_queue.size())
+    {
+        DataPacket *packet = slave->data_queue.dequeue();
+        slave->dequeue_list.append(packet);
+        packet->resetDelay(slave->getDequeueDelay());
+    }
+
+    // Slave处理数据（3 clock）
+    
 
     // Slave处理完数据，返回给Master（1个clock）
 
+    // ==== 时钟结束后首尾 ====
     current_clock++;
 }
