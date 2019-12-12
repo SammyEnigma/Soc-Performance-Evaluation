@@ -45,6 +45,7 @@ void CableBase::copyDataFrom(ShapeBase *shape)
         this->to_port = cable->to_port;
         this->arrow_pos1 = cable->arrow_pos1;
         this->arrow_pos2 = cable->arrow_pos2;
+        this->_line_type = cable->_line_type;
     }
 }
 

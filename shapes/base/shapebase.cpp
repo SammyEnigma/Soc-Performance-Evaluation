@@ -2,7 +2,7 @@
  * @Author      : MRXY001
  * @Date        : 2019-11-28 11: 23: 54
  * @LastEditors : MRXY001
- * @LastEditTime: 2019-12-11 11:41:26
+ * @LastEditTime: 2019-12-12 16:52:17
  * @Description : 所有形状的基类，包含所有通用API
  */
 #include "shapebase.h"
@@ -107,6 +107,7 @@ void ShapeBase::fromString(QString s)
         CustomDataType data(data_string);
         custom_data_list.append(data);
     }
+    fromStringAppend(s);
 }
 
 void ShapeBase::fromStringAppend(QString s)
