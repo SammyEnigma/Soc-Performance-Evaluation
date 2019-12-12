@@ -2,16 +2,22 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 11:32:32
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 17:22:12
+ * @LastEditTime: 2019-12-12 18:12:29
  * @Description: 数据包，request和response的基类
  */
 #include "datapacket.h"
 
 DataPacket::DataPacket(QObject *parent)
     : QObject(parent),
-      valid(false), tag(0), data(0), par(0),
+      valid(false), data(0), par(0),
       delay_step(0), delay_max(0)
 {
+}
+
+DataPacket::DataPacket(QString tag, QObject *parent) : DataPacket(parent)
+{
+    this->valid = true;
+    this->tag = tag;
 }
 
 /**
@@ -30,8 +36,8 @@ void DataPacket::resetDelay(int max, bool ignore)
 void DataPacket::delayToNext()
 {
     delay_step++;
-   if (delay_max >= 0 && delay_step >= delay_max)
-       emit signalDelayFinished();
+    if (delay_max >= 0 && delay_step >= delay_max)
+        emit signalDelayFinished();
 }
 
 /**
@@ -40,4 +46,9 @@ void DataPacket::delayToNext()
 bool DataPacket::isDelayFinished()
 {
     return delay_step >= delay_max;
+}
+
+QString DataPacket::toString()
+{
+    return QString("%1: %2/%3").arg(tag).arg(delay_step).arg(delay_max);
 }

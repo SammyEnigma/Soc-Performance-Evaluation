@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 17:52:23
+ * @LastEditTime: 2019-12-12 18:20:23
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -35,7 +35,9 @@ void FlowControlCore::initData()
     // 初始化数据包
     for (int i = 0; i < master->getToken(); i++)
     {
-        master->data_list.append(new DataPacket(this));
+        DataPacket *packet = new DataPacket(QString("编号%1").arg(i+1), this);
+        master->data_list.append(packet);
+        all_packets.append(packet);
     }
 }
 
@@ -52,15 +54,16 @@ void FlowControlCore::passOneClock()
     ms_cable->passOneClock();
 
     // ==== 发送数据 ====
-    // Slave有空位时，Master发送数据（1 clock）
+    // Slave有空位时，Master发送数据（0 clock）
     if (master->isSlaveFree() && master->data_list.size())
     {
-        DataPacket *packet = master->data_list.last();
+        DataPacket *packet = master->data_list.takeFirst();
         packet->resetDelay(ms_cable->getTransferDelay());
-        master->data_list.removeLast();
+        master->slave_free--;
+        qDebug() << "发送";
     }
 
-    // 连接线延迟传输（5 clock）
+    // 连接线延迟传输（5 clock）-->给Slave
     for (int i = 0; i < ms_cable->request_list.size(); i++)
     {
         DataPacket *packet = ms_cable->request_list.at(i);
@@ -82,7 +85,7 @@ void FlowControlCore::passOneClock()
         DataPacket *packet = slave->enqueue_list.at(i);
         if (packet->isDelayFinished())
         {
-            slave->enqueue_list.removeOne(packet);
+            slave->enqueue_list.removeAt(i--);
             slave->data_queue.enqueue(packet);
         }
         else
@@ -91,7 +94,7 @@ void FlowControlCore::passOneClock()
         }
     }
 
-    // Slave出队列（1 clock）
+    // Slave队列中（0 clock）-->出队列（不耗时，只出1个）
     if (slave->data_queue.size())
     {
         DataPacket *packet = slave->data_queue.dequeue();
@@ -99,11 +102,64 @@ void FlowControlCore::passOneClock()
         packet->resetDelay(slave->getDequeueDelay());
     }
 
-    // Slave处理数据（3 clock）
-    
+    // Slave出队列（1 clock）-->处理数据
+    for (int i = 0; i < slave->dequeue_list.size(); i++)
+    {
+        DataPacket *packet = slave->dequeue_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            slave->dequeue_list.removeAt(i--);
+            slave->process_list.append(packet);
+            packet->resetDelay(slave->getProcessDelay());
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
 
-    // Slave处理完数据，返回给Master（1个clock）
+    // Slave处理数据（3 clock）-->返回给Master
+    for (int i = 0; i < slave->process_list.size(); i++)
+    {
+        DataPacket *packet = slave->process_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            slave->process_list.removeAt(i--);
+            ms_cable->response_list.append(packet);
+            packet->resetDelay(slave->getProcessDelay());
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
+
+    // Slave返回给Master（5 clock）-->Master接收
+    for (int i = 0; i < ms_cable->response_list.size(); i++)
+    {
+        DataPacket *packet = ms_cable->response_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            ms_cable->response_list.removeAt(i--);
+            // TODO: Master接收到response
+            qDebug() << "Master接收到response";
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
 
     // ==== 时钟结束后首尾 ====
     current_clock++;
+}
+
+void FlowControlCore::printfAllData()
+{
+	qDebug() << "=================================";
+    for (int i = 0; i < all_packets.size(); i++)
+    {
+        qDebug() << all_packets.at(i)->toString();
+    }
+	qDebug() << "=================================";
 }

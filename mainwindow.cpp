@@ -235,3 +235,8 @@ void MainWindow::on_actionResume_S_triggered()
 {
     flow_control->resumeRun();
 }
+
+void MainWindow::on_actionDebug_triggered()
+{
+    flow_control->printfAllData();
+}

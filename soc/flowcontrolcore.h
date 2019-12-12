@@ -22,6 +22,8 @@ class FlowControlCore : public QObject
 public:
     FlowControlCore(QObject *parent = nullptr);
 
+    void printfAllData();
+
 protected:
     void initData();
     void sendPacket(DataPacket* packet);
@@ -37,6 +39,8 @@ protected:
     ModuleCable *ms_cable; // Master - Slave 连接线
 
     int current_clock; // 当前时钟位置
+    
+    PacketList all_packets;
 };
 
 #endif // FLOWCONTROLCORE_H

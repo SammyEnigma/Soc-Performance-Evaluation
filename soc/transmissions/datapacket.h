@@ -12,18 +12,21 @@
 
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 
-class DataPacket; // typedef 之前需要预先声明变量
-typedef QList<DataPacket*> PacketList; // 常用的列表，直接重定义了
+class DataPacket;                       // typedef 之前需要预先声明变量
+typedef QList<DataPacket *> PacketList; // 常用的列表，直接重定义了
 
 class DataPacket : public QObject
 {
     Q_OBJECT
 public:
     DataPacket(QObject *parent = nullptr);
+    DataPacket(QString tag, QObject *parent = nullptr);
 
     void resetDelay(int max, bool ignore = false); // 重新设置延迟
-    void delayToNext();       // 延迟到下一个阶段
-    bool isDelayFinished();   // 延迟是否已经结束了
+    void delayToNext();                            // 延迟到下一个阶段
+    bool isDelayFinished();                        // 延迟是否已经结束了
+
+    QString toString();
 
 signals:
     void signalDelayFinished();
@@ -32,7 +35,7 @@ public slots:
 
 protected:
     bool valid;      // 是否有效
-    int tag;         // 编号ID
+    QString tag;     // 编号ID
     DataFormat data; // 数据（复杂格式）
     char par;        // 忘了是什么了
 
