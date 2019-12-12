@@ -53,11 +53,6 @@ void MainWindow::readFromFile(QString file_path)
     if (full_string.trimmed().isEmpty())
         return;
 
-    int widthest = ui->scrollAreaWidgetContents_2->width(),
-        heightest = ui->scrollAreaWidgetContents_2->height();
-
-    int graphic_left = StringUtil::getXmlInt(full_string, "GRAPHIC_LEFT");
-    int graphic_top = StringUtil::getXmlInt(full_string, "GRAPHIC_TOP");
     int graphic_width = StringUtil::getXmlInt(full_string, "GRAPHIC_WIDTH");
     int graphic_height = StringUtil::getXmlInt(full_string, "GRAPHIC_HEIGHT");
     if (graphic_width != 0 && graphic_height != 0)
@@ -203,8 +198,8 @@ void MainWindow::on_actionZoom_In_I_triggered()
     ui->scrollAreaWidgetContents_2->zoomIn(prop);
 
     // 调整滚动条的位置
-    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + geo.width() * (prop-1) / 2);
-    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + geo.height() * (prop-1) / 2);
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + static_cast<int>(geo.width() * (prop-1) / 2));
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + static_cast<int>(geo.height() * (prop-1) / 2));
 }
 
 /**
@@ -217,8 +212,8 @@ void MainWindow::on_actionZoom_Out_O_triggered()
     ui->scrollAreaWidgetContents_2->zoomIn(prop);
 
     // 调整滚动条的位置
-    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + geo.width() * (prop-1) / 2);
-    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + geo.height() * (prop-1) / 2);
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + static_cast<int>(geo.width() * (prop-1) / 2));
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + static_cast<int>(geo.height() * (prop-1) / 2));
 }
 
 void MainWindow::on_actionRun_triggered()
@@ -238,5 +233,5 @@ void MainWindow::on_actionStep_triggered()
 
 void MainWindow::on_actionResume_S_triggered()
 {
-
+    flow_control->resumeRun();
 }

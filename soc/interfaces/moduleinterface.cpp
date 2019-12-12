@@ -2,12 +2,13 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:01:52
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 17:17:13
+ * @LastEditTime: 2019-12-12 09:04:34
  * @Description: 模块接口，包含发送等功能
  */
 #include "moduleinterface.h"
 
-ModuleInterface::ModuleInterface(QObject *parent) : QObject(parent)
+ModuleInterface::ModuleInterface(QObject *parent)
+    : QObject(parent), token(0), bandwidth(0), latency(0)
 {
 }
 

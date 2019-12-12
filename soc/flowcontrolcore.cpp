@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 17:48:48
+ * @LastEditTime: 2019-12-12 08:57:24
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -46,6 +46,16 @@ void FlowControlCore::passOneClock()
     master->passOneClock();
     slave->passOneClock();
     ms_cable->passOneClock();
+    
+    // Slave有空位时，Master发送数据（1个clock）
+    
+    // 连接线延迟传输
+    
+    // Slave收到Master的数据（1个clock）
+    
+    // Slave进出队列（各1个clock）
+    
+    // Slave处理完数据，返回给Master（1个clock）
 
     current_clock++;
 }
