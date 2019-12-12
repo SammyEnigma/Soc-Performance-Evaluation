@@ -84,32 +84,40 @@ void ModuleCable::paintEvent(QPaintEvent *event)
         }
         else if (_line_type == 1) // 横竖
         {
-            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
+            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y()) // 左上角 - 右下角
             {
-                // 左上角 - 右下角
-                painter.drawLine(0, 0, width(), 0);
-                painter.drawLine(width(), 0, width(), height());
+                for (int i = 0; i < LINE_COUNT; ++i)
+                {
+                    painter.drawLine(0, i*LINE_SPACE, width()-i*LINE_SPACE-_border_size, i*LINE_SPACE);
+                    painter.drawLine(width()-i*LINE_SPACE-_border_size, i*LINE_SPACE, width()-i*LINE_SPACE-_border_size, height());
+                }
             }
-            else
+            else // 右上角 - 左下角
             {
-                // 右上角 - 左下角
-                painter.drawLine(0, 0, width(), 0);
-                painter.drawLine(0, 0, 0, height());
+                for (int i = 0; i < LINE_COUNT; ++i)
+                {
+                    painter.drawLine(width()-_border_size, i*LINE_SPACE, i*LINE_SPACE, i*LINE_SPACE);
+                    painter.drawLine(i*LINE_SPACE, i*LINE_SPACE, i*LINE_SPACE, height());
+                }
             }
         }
         else if (_line_type == 2) // 竖横
         {
-            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y())
+            if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y()) // 左上角 - 右下角
             {
-                // 左上角 - 右下角
-                painter.drawLine(0, 0, 0, height());
-                painter.drawLine(0, height(), width(), height());
+                for (int i = 0; i < LINE_COUNT; ++i)
+                {
+                    painter.drawLine(i*LINE_SPACE, 0, i*LINE_SPACE,height()-i*LINE_SPACE-_border_size);
+                    painter.drawLine(i*LINE_SPACE-_border_size, height()-i*LINE_SPACE-_border_size, width(), height()-i*LINE_SPACE-_border_size);
+                }
             }
-            else
+            else // 右上角 - 左下角
             {
-                // 右上角 - 左下角
-                painter.drawLine(width(), 0, width(), height());
-                painter.drawLine(width(), height(), 0, height());
+                for (int i = 0; i < LINE_COUNT; ++i)
+                {
+                    painter.drawLine(width()-i*LINE_SPACE-_border_size, 0, width()-i*LINE_SPACE-_border_size, height()-i*LINE_SPACE-_border_size);
+                    painter.drawLine(width()-i*LINE_SPACE-_border_size, height()-i*LINE_SPACE-_border_size, 0, height()-i*LINE_SPACE-_border_size);
+                }
             }
         }
     }
@@ -142,18 +150,40 @@ void ModuleCable::adjustGeometryByPorts()
         _space_x = 0;
         _space_y = 0;
     }
-    else
+    else if (_line_type == 0) // 直线，按照斜计算
     {
         _breadth_x = breadth * delta_y / gx2y2;
         _breadth_y = breadth * delta_x / gx2y2;
         _space_x = LINE_SPACE * delta_y / gx2y2;
         _space_y = LINE_SPACE * delta_x / gx2y2;
-    }
 
-    left -= _breadth_x / 2;
-    right += _breadth_x / 2;
-    top -= _breadth_y / 2;
-    bottom += _breadth_y / 2;
+        left -= _breadth_x / 2;
+        right += _breadth_x / 2;
+        top -= _breadth_y / 2;
+        bottom += _breadth_y / 2;
+    }
+    else // 二折线
+    {
+        _breadth_x = _breadth_y = breadth;
+        _space_x = _space_y = LINE_SPACE;
+
+        if (_line_type == 1) // 横竖
+        {
+            top -= _breadth_y / 2;
+            if (cen1.x() < cen2.x() && cen1.y() < cen2.y()) // 左上 - 右下
+                right += _breadth_x / 2;
+            else // 右上 - 左下
+                left -= _breadth_x / 2;
+        }
+        else if (_line_type == 2) // 竖横
+        {
+            bottom +=_breadth_y / 2;
+            if (cen1.x() < cen2.x() && cen1.y() < cen2.y()) // 左上 - 右下
+                left -= _breadth_x / 2;
+            else // 右上 - 左下
+                right += _breadth_x / 2;
+        }
+    }
 
     // 设置坐标（千万不要用 setFixedSize ！否则无法调整大小）
     setGeometry(left, top, right - left, bottom - top);

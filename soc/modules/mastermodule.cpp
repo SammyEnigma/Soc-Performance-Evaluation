@@ -7,7 +7,9 @@
  */
 #include "mastermodule.h"
 
-MasterModule::MasterModule(QWidget *parent) : CircleShape(parent), ModuleInterface(parent)
+MasterModule::MasterModule(QWidget *parent) 
+	: CircleShape(parent), ModuleInterface(parent), 
+    slave_free(0)
 {
     _class = _text = "Master";
 }
@@ -18,6 +20,16 @@ MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
     MasterModule *shape = new MasterModule(parent);
     shape->copyDataFrom(this);
     return shape;
+}
+
+void MasterModule::setSlaveFree(int f)
+{
+    this->slave_free = f;
+}
+
+bool MasterModule::isSlaveFree()
+{
+    return slave_free > 0;
 }
 
 void MasterModule::paintEvent(QPaintEvent *event)

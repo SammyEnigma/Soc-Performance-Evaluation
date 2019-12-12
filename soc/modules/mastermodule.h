@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:08:47
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 17:09:53
+ * @LastEditTime: 2019-12-12 09:36:19
  * @Description: MasterModule
  */
 #ifndef MASTERMODULE_H
@@ -17,10 +17,14 @@ public:
     MasterModule(QWidget* parent = nullptr);
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     
+    void setSlaveFree(int f);
+    bool isSlaveFree();
+    
 protected:
 	void paintEvent(QPaintEvent *event) override;
     
 private:
+    int slave_free;
 };
 
 #endif // MASTERMODULE_H

@@ -201,7 +201,7 @@ void ShapePropertyDialog::on_radioButton_clicked()
         {
             CableBase* cable = static_cast<CableBase*>(shape);
             cable->_line_type = 0;
-            cable->update();
+            cable->adjustGeometryByPorts();
         }
     }
 }
@@ -213,7 +213,7 @@ void ShapePropertyDialog::on_radioButton_2_clicked()
         {
             CableBase* cable = static_cast<CableBase*>(shape);
             cable->_line_type = 1;
-            cable->update();
+            cable->adjustGeometryByPorts();
         }
     }
 }
@@ -225,7 +225,7 @@ void ShapePropertyDialog::on_radioButton_3_clicked()
         {
             CableBase* cable = static_cast<CableBase*>(shape);
             cable->_line_type = 2;
-            cable->update();
+            cable->adjustGeometryByPorts();
         }
     }
 }
