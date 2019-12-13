@@ -9,7 +9,7 @@
 
 ModuleInterface::ModuleInterface(QObject *parent)
     : QObject(parent), token(nullptr), bandwidth(nullptr), latency(nullptr),
-      slave_free(0)
+      another_can_recive(0)
 {
 }
 
@@ -42,48 +42,48 @@ void ModuleInterface::setLatency(int latency)
 int ModuleInterface::getToken()
 {
     if (this->token == nullptr)
-        return -1;
+        return 0;
     return token->i();
 }
 
 int ModuleInterface::getBandwidth()
 {
     if (this->bandwidth == nullptr)
-        return -1;
+        return 0;
     return bandwidth->i();
 }
 
 int ModuleInterface::getLatency()
 {
     if (this->latency == nullptr)
-        return -1;
+        return 0;
     return latency->i();
 }
 
 int ModuleInterface::getDefaultToken()
 {
     if (this->token == nullptr)
-        return -1;
+        return 0;
     return token->getDefault().toInt();
 }
 
 int ModuleInterface::getDefaultBandwidth()
 {
     if (this->bandwidth == nullptr)
-        return -1;
+        return 0;
     return bandwidth->getDefault().toInt();
 }
 
 int ModuleInterface::getDefaultLatency()
 {
     if (this->latency == nullptr)
-        return -1;
+        return 0;
     return latency->getDefault().toInt();
 }
 
-int ModuleInterface::getFree()
+int ModuleInterface::anotherCanRecive()
 {
-    return getToken();
+    return another_can_recive;
 }
 
 void ModuleInterface::passOneClock()

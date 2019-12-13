@@ -26,7 +26,7 @@ void MasterModule::initData()
     this->token = getData("token");
     this->bandwidth = getData("bandwidth");
     this->latency = getData("latency");
-    this->slave_free = token->i();
+    this->another_can_recive = token->i();
 }
 
 void MasterModule::updatePacketPos()
@@ -47,5 +47,5 @@ void MasterModule::paintEvent(QPaintEvent *event)
     // 画自己的数量
     QPainter painter(this);
     QFontMetrics fm(this->font());
-    painter.drawText( 0, fm.lineSpacing(), QString("Token:%1/%2").arg(getDefaultToken() - data_list.size()).arg(getDefaultToken()));
+    painter.drawText( 0, fm.lineSpacing(), QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getDefaultToken()));
 }

@@ -25,7 +25,7 @@ void SlaveModule::initData()
     this->token = getData("token");
     this->bandwidth = getData("bandwidth");
     this->latency = getData("latency");
-    this->slave_free = token->i();
+    this->another_can_recive = token->i();
 }
 
 void SlaveModule::updatePacketPos()
@@ -33,19 +33,19 @@ void SlaveModule::updatePacketPos()
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
 
-    QPoint pos = this->pos() + QPoint(4, height + 4);
+    QPoint pos = this->pos() + QPoint(4, height*3 + 4);
     foreach (DataPacket *packet, enqueue_list)
     {
         packet->setDrawPos(pos);
     }
 
-    pos = this->pos() + QPoint(width() / 2, height + 4);
+    pos = this->pos() + QPoint(width() / 2, height*3 + 4);
     foreach (DataPacket *packet, dequeue_list)
     {
         packet->setDrawPos(pos);
     }
 
-    int h = height+4;
+    int h = height*3+4;
     foreach (DataPacket *packet, process_list)
     {
         pos = this->pos() + QPoint(width() - 4, h);
@@ -62,15 +62,18 @@ void SlaveModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
-    painter.drawText(0, height, QString("Enq:%1").arg(enqueue_list.size()));
+
+    painter.drawText(0, height*2, QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getToken()));
+
+    painter.drawText(0, height*3, QString("Enq:%1").arg(enqueue_list.size()));
 
     QString dequ_s = QString("Deq:%1").arg(dequeue_list.size());
     int w = fm.horizontalAdvance(dequ_s);
-    painter.drawText(width() / 2 - w / 2, height, dequ_s);
+    painter.drawText(width() / 2 - w / 2, height*3, dequ_s);
 
     QString prcs_s = QString("Proc:%1").arg(process_list.size());
     w = fm.horizontalAdvance(prcs_s);
-    painter.drawText(width() - w, height, prcs_s);
+    painter.drawText(width() - w, height*3, prcs_s);
 }
 
 int SlaveModule::getEnqueueDelay()

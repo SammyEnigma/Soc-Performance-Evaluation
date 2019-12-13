@@ -32,7 +32,7 @@ public:
     int getDefaultBandwidth();
     int getDefaultLatency();
 
-    int getFree();
+    int anotherCanRecive();
 
 signals:
 
@@ -47,7 +47,7 @@ protected:
     CustomDataType* token;
     CustomDataType* bandwidth;
     CustomDataType* latency;
-    int slave_free;
+    int another_can_recive;
 };
 
 #endif // MODULEINTERFACE_H

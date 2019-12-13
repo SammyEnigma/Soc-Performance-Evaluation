@@ -45,8 +45,6 @@ protected:
 
     int current_clock; // 当前时钟位置
     PacketList all_packets; // 所有数据包（指针）的列表
-    
-    int slave_free;
 };
 
 #endif // FLOWCONTROLCORE_H

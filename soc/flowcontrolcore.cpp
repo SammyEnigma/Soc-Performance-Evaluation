@@ -24,7 +24,8 @@ void FlowControlCore::initData()
     ms_cable->initData();
 
     // 设置运行数据
-    slave_free = slave->getFree();
+    master->another_can_recive = slave->getToken();
+    slave->another_can_recive = master->getToken();
 
     // 初始化数据包
     for (int i = 0; i < master->getToken(); i++)
@@ -55,22 +56,6 @@ void FlowControlCore::clearData()
     all_packets.clear();
 }
 
-DataPacket *FlowControlCore::createToken()
-{
-    static int token_id = 0;
-    DataPacket *packet = new DataPacket("编号"+QString::number(++token_id), this);
-    all_packets.append(packet);
-    emit signalTokenCreated(packet);
-    return packet;
-}
-
-void FlowControlCore::deleteToken(DataPacket *packet)
-{
-    all_packets.removeOne(packet);
-    emit signalTokenDeleted(packet);
-    delete packet;
-}
-
 /**
  * 模拟时钟流逝 1 个 clock
  */
@@ -80,13 +65,13 @@ void FlowControlCore::passOneClock()
 
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
-    if ( slave->getFree() &&  master->data_list.size())
+    if ( master->anotherCanRecive() &&  master->data_list.size())
     {
         DataPacket *packet = createToken()/*master->data_list.takeFirst()*/;
         packet->setDrawPos(master->geometry().center());
         packet->resetDelay(ms_cable->getTransferDelay());
         ms_cable->request_list.append(packet);
-        slave_free--; // 计算得到的slave token--
+        master->another_can_recive--; // 计算得到的slave token--
     }
 
     // 连接线延迟传输（5 clock）-->给Slave
@@ -150,12 +135,13 @@ void FlowControlCore::passOneClock()
         DataPacket *packet = slave->process_list.at(i);
         if (packet->isDelayFinished()) // 处理完毕，开始发送
         {
-            if (master->getFree()) // 如果master没有token空位，则堵住
+            if (slave->anotherCanRecive()) // 如果master没有token空位，则堵住
             {
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);
                 packet->resetDelay(ms_cable->getTransferDelay());
-                slave->slave_free++; // 返回给master的slave的token++
+                master->another_can_recive++; // 返回给master的slave的token++
+                slave->another_can_recive--;
             }
         }
         else
@@ -168,9 +154,10 @@ void FlowControlCore::passOneClock()
     for (int i = 0; i < ms_cable->response_list.size(); i++)
     {
         DataPacket *packet = ms_cable->response_list.at(i);
-        if (packet->isDelayFinished())
+        if (packet->isDelayFinished()) // Master收到
         {
             ms_cable->response_list.removeAt(i--);
+            slave->another_can_recive++;
 //            master->data_list.append(packet);
 //            packet->resetDelay(0);
             qDebug() << "Master接收到response" << packet->toString();
@@ -191,12 +178,28 @@ void FlowControlCore::passOneClock()
     ms_cable->passOneClock();
 }
 
+DataPacket *FlowControlCore::createToken()
+{
+    static int token_id = 0;
+    DataPacket *packet = new DataPacket("编号"+QString::number(++token_id), this);
+    all_packets.append(packet);
+    emit signalTokenCreated(packet);
+    return packet;
+}
+
+void FlowControlCore::deleteToken(DataPacket *packet)
+{
+    all_packets.removeOne(packet);
+    emit signalTokenDeleted(packet);
+    delete packet;
+}
+
 void FlowControlCore::printfAllData()
 {
-	qDebug() << "=================================";
+    qDebug() << "=================================";
     for (int i = 0; i < all_packets.size(); i++)
     {
         qDebug() << all_packets.at(i)->toString();
     }
-	qDebug() << "=================================";
+    qDebug() << "=================================";
 }
