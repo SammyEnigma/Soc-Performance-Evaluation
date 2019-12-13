@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 17:31:42
+ * @LastEditTime: 2019-12-13 09:13:05
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #ifndef MODULECABLE_H
@@ -13,7 +13,7 @@
 #include "moduleinterface.h"
 #include "qmath.h"
 
-#define LINE_COUNT 10
+#define LINE_COUNT 4
 #define LINE_SPACE 6
 
 class ModuleCable : public CableBase, public ModuleInterface

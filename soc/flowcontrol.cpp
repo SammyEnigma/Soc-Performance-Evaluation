@@ -59,6 +59,17 @@ void FlowControl::nextStep()
     refreshUI();
 }
 
+void FlowControl::initData()
+{
+    FlowControlCore::initData();
+
+    foreach (DataPacket* packet, all_packets)
+    {
+        DataPacketView* view = new DataPacketView(packet, graphic);
+        all_packet_view.append(view);
+    }
+}
+
 /**
  * 初始化所有的 module
  */

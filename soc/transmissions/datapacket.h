@@ -2,13 +2,14 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 11:32:31
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-10 14:16:52
+ * @LastEditTime: 2019-12-13 09:09:27
  * @Description: 数据包，request和response的基类
  */
 #ifndef DATAPACKET_H
 #define DATAPACKET_H
 
 #include <QObject>
+#include <QPoint>
 
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 
@@ -27,9 +28,13 @@ public:
     bool isDelayFinished();                        // 延迟是否已经结束了
 
     QString toString();
+    
+    QPoint getDrawPos();
+    void setDrawPos(QPoint pos);
 
 signals:
     void signalDelayFinished();
+    void signalPosChanged(QPoint old_pos, QPoint new_pos);
 
 public slots:
 
@@ -42,6 +47,8 @@ protected:
 private:
     int delay_step; // 数据包传送有延迟，查看延迟的位置
     int delay_max;  // 最大的延迟数量
+    
+    QPoint draw_pos; // 本次/上次绘制的位置（产生动画）
 };
 
 #endif // DATAPACKET_H

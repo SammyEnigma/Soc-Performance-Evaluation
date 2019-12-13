@@ -52,7 +52,8 @@ SOURCES += \
     soc/modules/mastermodule.cpp \
     soc/modules/modulecable.cpp \
     soc/modules/slavemodule.cpp \
-    soc/transmissions/datapacket.cpp
+    soc/transmissions/datapacket.cpp \
+    soc/transmissions/datapacketview.cpp
 
 HEADERS += \
     dialogs/portpositiondialog.h \
@@ -76,6 +77,7 @@ HEADERS += \
     soc/modules/modulecable.h \
     soc/modules/slavemodule.h \
     soc/transmissions/datapacket.h \
+    soc/transmissions/datapacketview.h \
     utils/bytearrayutil.h \
     utils/fileutil.h \
     global/globalvars.h \

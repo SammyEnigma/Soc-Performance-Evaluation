@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 11:32:32
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 18:12:29
+ * @LastEditTime: 2019-12-13 09:16:12
  * @Description: 数据包，request和response的基类
  */
 #include "datapacket.h"
@@ -51,4 +51,15 @@ bool DataPacket::isDelayFinished()
 QString DataPacket::toString()
 {
     return QString("%1: %2/%3").arg(tag).arg(delay_step).arg(delay_max);
+}
+
+QPoint DataPacket::getDrawPos()
+{
+    return draw_pos;
+}
+
+void DataPacket::setDrawPos(QPoint pos)
+{
+    emit signalPosChanged(this->draw_pos, pos);
+    this->draw_pos = pos;
 }

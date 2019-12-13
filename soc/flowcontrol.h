@@ -23,6 +23,9 @@ public slots:
     void resumeRun(); // 继续运行
     void nextStep();  // 运行下一步
 
+protected:
+    void initData();
+
 private slots:
 
 private:
@@ -35,6 +38,7 @@ signals:
 private:
     GraphicArea *graphic;
     QTimer *run_timer;
+    QList<DataPacketView*>all_packet_view;
 };
 
 #endif // FLOWCONTROL_H

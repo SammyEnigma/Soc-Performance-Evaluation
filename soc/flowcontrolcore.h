@@ -11,6 +11,7 @@
 #include "mastermodule.h"
 #include "slavemodule.h"
 #include "modulecable.h"
+#include "datapacketview.h"
 
 #define FCDEB \
     if (1)    \

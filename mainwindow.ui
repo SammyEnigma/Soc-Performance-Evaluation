@@ -140,9 +140,9 @@
      <string>Run (&amp;R)</string>
     </property>
     <addaction name="actionRun"/>
-    <addaction name="actionDebug"/>
     <addaction name="actionPause_P"/>
     <addaction name="actionResume_S"/>
+    <addaction name="actionDebug"/>
     <addaction name="actionRun_To_Break_B"/>
     <addaction name="separator"/>
     <addaction name="actionStep"/>

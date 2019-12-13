@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 18:30:19
+ * @LastEditTime: 2019-12-13 09:12:00
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -143,9 +143,9 @@ void FlowControlCore::passOneClock()
         if (packet->isDelayFinished())
         {
             ms_cable->response_list.removeAt(i--);
-            // TODO: Master接收到response
-            qDebug() << "Master接收到response" << packet->toString();
             master->data_list.append(packet);
+            packet->resetDelay(0);
+            qDebug() << "Master接收到response" << packet->toString();
         }
         else
         {
