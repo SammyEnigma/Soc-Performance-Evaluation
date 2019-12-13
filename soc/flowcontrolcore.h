@@ -27,6 +27,7 @@ public:
 
 protected:
     void initData();
+    void clearData();
     void sendPacket(DataPacket* packet);
 
 signals:

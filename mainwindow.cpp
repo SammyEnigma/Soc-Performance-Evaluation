@@ -240,3 +240,8 @@ void MainWindow::on_actionDebug_triggered()
 {
     flow_control->printfAllData();
 }
+
+void MainWindow::on_actionStop_triggered()
+{
+
+}

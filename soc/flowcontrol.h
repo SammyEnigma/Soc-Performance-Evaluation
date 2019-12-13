@@ -19,6 +19,7 @@ public:
 
 public slots:
     void startRun();  // 开始运行
+    void stopRun();   // 中止运行
     void pauseRun();  // 暂停运行
     void resumeRun(); // 继续运行
     void nextStep();  // 运行下一步
@@ -38,7 +39,7 @@ signals:
 private:
     GraphicArea *graphic;
     QTimer *run_timer;
-    QList<DataPacketView*>all_packet_view;
+    QList<DataPacketView *> all_packet_view;
 };
 
 #endif // FLOWCONTROL_H

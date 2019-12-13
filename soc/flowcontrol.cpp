@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 10:06:37
+ * @LastEditTime: 2019-12-13 10:27:43
  * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #include "flowcontrol.h"
@@ -28,6 +28,22 @@ void FlowControl::startRun()
     initData();
     refreshUI();
     run_timer->start();
+    rt->running = true;
+}
+
+/**
+ * 中止运行，所有数据删除
+ */
+void FlowControl::stopRun()
+{
+    current_clock = -1;
+    foreach (DataPacketView* view, all_packet_view)
+    {
+        view->deleteLater();
+    }
+    clearData();
+    run_timer->stop();
+    rt->running = false;
 }
 
 /**
@@ -64,9 +80,9 @@ void FlowControl::initData()
     FlowControlCore::initData();
 
     // 数据包的可视化控件
-    foreach (DataPacket* packet, all_packets)
+    foreach (DataPacket *packet, all_packets)
     {
-        DataPacketView* view = new DataPacketView(packet, graphic);
+        DataPacketView *view = new DataPacketView(packet, graphic);
         all_packet_view.append(view);
 
         view->move(-PACKET_SIZE, -PACKET_SIZE);
@@ -126,4 +142,9 @@ void FlowControl::refreshUI()
     master->update();
     slave->update();
     ms_cable->update();
+    
+    foreach (DataPacketView *view, all_packet_view)
+    {
+        view->raise(); // 显示在最上层（点击形状会置顶，这时候会覆盖此控件）
+    }
 }

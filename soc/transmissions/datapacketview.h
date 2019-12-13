@@ -28,7 +28,7 @@ private slots:
     void updatePosition(QPoint old_pos, QPoint new_pos);
 
 private:
-    DataPacket* packet;
+    const DataPacket* packet;
 };
 
 #endif // DATAPACKETVIEW_H

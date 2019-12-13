@@ -41,6 +41,23 @@ void FlowControlCore::initData()
     }
 }
 
+void FlowControlCore::clearData()
+{
+    master->data_list.clear();
+    slave->enqueue_list.clear();
+    slave->data_queue.clear();
+    slave->dequeue_list.clear();
+    slave->process_list.clear();
+    ms_cable->request_list.clear();
+    ms_cable->request_data_list.clear();
+    ms_cable->response_list.clear();
+    ms_cable->response_data_list.clear();
+    foreach (DataPacket* packet, all_packets)
+    {
+        packet->deleteLater();
+    }
+}
+
 /**
  * 模拟时钟流逝 1 个 clock
  */
