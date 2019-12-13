@@ -80,13 +80,13 @@ void FlowControlCore::passOneClock()
 
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
-    if (/* master->isSlaveFree() &&  */master->data_list.size())
+    if ( slave->getFree() &&  master->data_list.size())
     {
         DataPacket *packet = createToken()/*master->data_list.takeFirst()*/;
         packet->setDrawPos(master->geometry().center());
         packet->resetDelay(ms_cable->getTransferDelay());
         ms_cable->request_list.append(packet);
-        slave_free--;
+        slave_free--; // 计算得到的slave token--
     }
 
     // 连接线延迟传输（5 clock）-->给Slave
@@ -148,11 +148,15 @@ void FlowControlCore::passOneClock()
     for (int i = 0; i < slave->process_list.size(); i++)
     {
         DataPacket *packet = slave->process_list.at(i);
-        if (packet->isDelayFinished())
+        if (packet->isDelayFinished()) // 处理完毕，开始发送
         {
-            slave->process_list.removeAt(i--);
-            ms_cable->response_list.append(packet);
-            packet->resetDelay(ms_cable->getTransferDelay());
+            if (master->getFree()) // 如果master没有token空位，则堵住
+            {
+                slave->process_list.removeAt(i--);
+                ms_cable->response_list.append(packet);
+                packet->resetDelay(ms_cable->getTransferDelay());
+                slave->slave_free++; // 返回给master的slave的token++
+            }
         }
         else
         {
