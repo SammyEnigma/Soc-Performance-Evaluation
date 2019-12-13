@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:08:47
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:44:51
+ * @LastEditTime: 2019-12-13 10:13:05
  * @Description: MasterModule
  */
 #include "mastermodule.h"
@@ -26,7 +26,7 @@ void MasterModule::updatePacketPos()
 {
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
-	QPoint pos = this->pos() + QPoint(4, height+4);
+	QPoint pos = this->pos() + QPoint(width()/2-PACKET_SIZE/2, height+4);
     foreach (DataPacket* packet, data_list)
     {
         packet->setDrawPos(pos);
