@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 09:06:35
+ * @LastEditTime: 2019-12-13 10:26:07
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -262,6 +262,12 @@ void GraphicArea::moveShapesPos(int delta_x, int delta_y, ShapeList shapes)
  */
 void GraphicArea::remove(ShapeBase *shape)
 {
+    if (rt->running)
+    {
+        QMessageBox::critical(this, "错误", "运行期间不可删除控件");
+        return ;
+    }
+	
     if (shape == nullptr) // 删除所选形状
     {
         foreach (ShapeBase *shape, selected_shapes)
@@ -958,6 +964,12 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     else
     {
         paste_action->setText(paste_action->text() + " (" + QString::number(clip_board.count()) + ")");
+    }
+    
+    // 如果正在运行
+    if (rt->running)
+    {
+        delete_action->setEnabled(false);
     }
 
     // 形状属性
