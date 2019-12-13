@@ -158,7 +158,7 @@ void ModuleCable::setTransferDelay(int delay)
 
 int ModuleCable::getTransferDelay()
 {
-    return IPTD->value().toInt();
+    return IPTD->i;
 }
 
 void ModuleCable::paintEvent(QPaintEvent *event)

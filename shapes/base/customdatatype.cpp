@@ -61,6 +61,38 @@ CustomDataType *CustomDataType::newInstanceBySelf()
     return data;
 }
 
+int CustomDataType::operator++()
+{
+    if (type != DT_INT)
+        return 0;
+    val = val.toInt() + 1;
+    return val.toInt();
+}
+
+int CustomDataType::operator++(int)
+{
+    if (type != DT_INT)
+        return 0;
+    val = val.toInt() + 1;
+    return val.toInt()-1;
+}
+
+int CustomDataType::operator--()
+{
+    if (type != DT_INT)
+        return 0;
+    val = val.toInt() - 1;
+    return val.toInt();
+}
+
+int CustomDataType::operator--(int)
+{
+    if (type != DT_INT)
+        return 0;
+    val = val.toInt() - 1;
+    return val.toInt()+1;
+}
+
 void CustomDataType::setName(QString name)
 {
     this->name = name;
@@ -228,6 +260,13 @@ QVariant CustomDataType::getDefault()
 QVariant &CustomDataType::value()
 {
     return val;
+}
+
+int CustomDataType::i()
+{
+    if (type != DT_INT && type != DT_BOOL)
+        return 0;
+    return val.toInt();
 }
 
 QString CustomDataType::toString()

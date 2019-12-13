@@ -38,6 +38,11 @@ public:
 
     CustomDataType* newInstanceBySelf();
 
+    int operator++(); // 前置
+    int operator++(int); // 后置
+    int operator--(); // 前置
+    int operator--(int); // 后置
+
     void setName(QString name);
 
     void setAll(bool def, bool val = false);
@@ -66,6 +71,7 @@ public:
     QVariant getValue();
     QVariant getDefault();
     QVariant &value();
+    int i();
 
     QString toString();
     void fromString(QString s);

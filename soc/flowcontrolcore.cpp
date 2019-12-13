@@ -24,6 +24,7 @@ void FlowControlCore::initData()
     ms_cable->initData();
 
     // 设置运行数据
+    slave_free = slave->getFree();
 
     // 初始化数据包
     for (int i = 0; i < master->getToken(); i++)
@@ -85,6 +86,7 @@ void FlowControlCore::passOneClock()
         packet->setDrawPos(master->geometry().center());
         packet->resetDelay(ms_cable->getTransferDelay());
         ms_cable->request_list.append(packet);
+        slave_free--;
     }
 
     // 连接线延迟传输（5 clock）-->给Slave

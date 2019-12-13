@@ -8,7 +8,8 @@
 #include "moduleinterface.h"
 
 ModuleInterface::ModuleInterface(QObject *parent)
-    : QObject(parent), token(nullptr), bandwidth(nullptr), latency(nullptr)
+    : QObject(parent), token(nullptr), bandwidth(nullptr), latency(nullptr),
+      slave_free(0)
 {
 }
 
@@ -42,21 +43,21 @@ int ModuleInterface::getToken()
 {
     if (this->token == nullptr)
         return -1;
-    return token->value().toInt();
+    return token->i();
 }
 
 int ModuleInterface::getBandwidth()
 {
     if (this->bandwidth == nullptr)
         return -1;
-    return bandwidth->value().toInt();
+    return bandwidth->i();
 }
 
 int ModuleInterface::getLatency()
 {
     if (this->latency == nullptr)
         return -1;
-    return latency->value().toInt();
+    return latency->i();
 }
 
 int ModuleInterface::getDefaultToken()
@@ -82,7 +83,7 @@ int ModuleInterface::getDefaultLatency()
 
 int ModuleInterface::getFree()
 {
-
+    return getToken();
 }
 
 void ModuleInterface::passOneClock()

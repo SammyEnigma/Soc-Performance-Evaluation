@@ -44,8 +44,9 @@ protected:
     ModuleCable *ms_cable; // Master - Slave 连接线
 
     int current_clock; // 当前时钟位置
+    PacketList all_packets; // 所有数据包（指针）的列表
     
-    PacketList all_packets;
+    int slave_free;
 };
 
 #endif // FLOWCONTROLCORE_H

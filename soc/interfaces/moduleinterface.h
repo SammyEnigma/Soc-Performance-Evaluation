@@ -47,6 +47,7 @@ protected:
     CustomDataType* token;
     CustomDataType* bandwidth;
     CustomDataType* latency;
+    int slave_free;
 };
 
 #endif // MODULEINTERFACE_H

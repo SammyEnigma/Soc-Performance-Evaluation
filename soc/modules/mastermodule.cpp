@@ -26,6 +26,7 @@ void MasterModule::initData()
     this->token = getData("token");
     this->bandwidth = getData("bandwidth");
     this->latency = getData("latency");
+    this->slave_free = token->i();
 }
 
 void MasterModule::updatePacketPos()
