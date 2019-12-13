@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:13:05
+ * @LastEditTime: 2019-12-13 11:21:55
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #ifndef MODULECABLE_H
@@ -14,7 +14,7 @@
 #include "qmath.h"
 
 #define LINE_COUNT 4
-#define LINE_SPACE 6
+#define LINE_SPACE 16
 
 class ModuleCable : public CableBase, public ModuleInterface
 {
@@ -22,12 +22,20 @@ public:
     ModuleCable(QWidget* parent = nullptr);
 
     friend class FlowControlCore;
+    
+    enum LINE_TYPE {
+        REQUEST_LINE, 
+        REQUEST_DATA_LINE, 
+        RESPONSE_LINE, 
+        RESPONSE_DATA_LINE
+    };
 
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual void adjustGeometryByPorts() override;
 
     virtual void updatePacketPos() override;
-    
+    QPoint getPropPosByLineType(double prop, LINE_TYPE line);
+
     void setTransferDelay(int delay);
     int getTransferDelay();
 

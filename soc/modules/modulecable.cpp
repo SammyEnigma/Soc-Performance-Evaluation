@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:58:24
+ * @LastEditTime: 2019-12-13 11:32:24
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -10,7 +10,8 @@
 ModuleCable::ModuleCable(QWidget *parent)
     : CableBase(parent), ModuleInterface(parent),
       packet_lists(QList<PacketList>{PacketList(), PacketList(), PacketList(), PacketList()}), // 初始化四个
-      request_list(packet_lists[0]), request_data_list(packet_lists[1]), response_list(packet_lists[2]), response_data_list(packet_lists[3])
+      request_list(packet_lists[REQUEST_LINE]), request_data_list(packet_lists[REQUEST_DATA_LINE]),
+      response_list(packet_lists[RESPONSE_LINE]), response_data_list(packet_lists[RESPONSE_DATA_LINE])
 {
     _class = _text = "ModuleCable";
 
@@ -27,7 +28,7 @@ ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
 
 void ModuleCable::updatePacketPos()
 {
-    foreach (DataPacket *packet, request_list)
+    /* foreach (DataPacket *packet, request_list)
     {
         QPoint pos = this->pos() + QPoint(PACKET_SIZE/2, height() * packet->currentProp());
         packet->setDrawPos(pos);
@@ -37,7 +38,90 @@ void ModuleCable::updatePacketPos()
     {
         QPoint pos = this->pos() + QPoint(width()-PACKET_SIZE/2, height() * (1 - packet->currentProp()));
         packet->setDrawPos(pos);
+    } */
+    
+    foreach (DataPacket *packet, request_list)
+    {
+        packet->setDrawPos(getPropPosByLineType(packet->currentProp(), REQUEST_LINE));
     }
+
+    foreach (DataPacket *packet, response_list)
+    {
+        packet->setDrawPos(getPropPosByLineType((1-packet->currentProp()), RESPONSE_LINE));
+    }
+}
+
+/**
+ * 根据比例，获取某条线上某个点的坐标
+ * 方向：from --> to,  0 --> 1
+ */
+QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
+{
+	int x1 = arrow_pos1.x(), y1 = arrow_pos1.y();
+    int x2 = arrow_pos2.x(), y2 = arrow_pos2.y();
+    int x = -1, y = -1;
+    if (_line_type == 0) // 直线
+    {
+        /**
+          * 注意：不管是 左上、右上、左下、右下，都是左边的线下标为0，即最左边是REQUEST
+          * 上下旋转时，线的相对下标会变，但是不影响使用（MVC分离）
+          */
+        if (arrow_pos1.x() == arrow_pos2.x() || arrow_pos1.y() == arrow_pos2.x() || (arrow_pos1.y() - arrow_pos2.y()) / static_cast<double>(arrow_pos1.x() - arrow_pos2.x()) < 0) // 右上-左下 角度倾斜
+        {
+            x = x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line;
+            y = y1 + (y2 - y1) * prop - _breadth_y / 2 + _space_y * line;
+        }
+        else // 左上-右下 角度倾斜，δx和δy一致，需要特判
+        {
+            x = x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line;
+            y = y1 + (y2 - y1) * prop + _breadth_y / 2 - _space_y * line;
+        }
+    }
+    else if (_line_type == 1) // 横竖
+    {
+        if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y()) // 左上角 - 右下角
+        {
+            int offset = LINE_SPACE * (LINE_COUNT - line - 1);
+            int w = width() - offset;
+            int h = height() - offset;
+            int total = w + h;
+            x = total * prop;
+            if (x > w)
+            {
+                y = x - w;
+                x = w;
+            }
+            x += offset;
+            y += offset;
+        }
+        else // 右上角 - 左下角
+        {
+            int offset = LINE_SPACE * line;
+            int w = width() - offset;
+            int h = height() - offset;
+            int total = w + h;
+            x = total * prop;
+            if (x > w)
+            {
+                y = x - w;
+                x = w;
+            }
+            x = offset + (w - x);
+            y = offset + y;
+        }
+    }
+    else if (_line_type == 2) // 竖横
+    {
+        if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y()) // 左上角 - 右下角
+        {
+            
+        }
+        else // 右上角 - 左下角
+        {
+            
+        }
+    }
+    return QPoint(x, y) + this->pos();
 }
 
 void ModuleCable::setTransferDelay(int delay)

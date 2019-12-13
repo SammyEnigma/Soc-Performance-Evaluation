@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:01:52
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:52:40
+ * @LastEditTime: 2019-12-13 10:55:34
  * @Description: 模块接口，包含发送等功能
  */
 #include "moduleinterface.h"
@@ -47,6 +47,10 @@ void ModuleInterface::passOneClock()
 	updatePacketPos();
 }
 
+/**
+ * 更新拥有的数据包的坐标信息
+ * 如果数据包已经有坐标了，则显示动画
+ */
 void ModuleInterface::updatePacketPos()
 {
     
