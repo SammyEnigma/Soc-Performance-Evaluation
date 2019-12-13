@@ -25,7 +25,6 @@ public slots:
     void nextStep();  // 运行下一步
 
 protected:
-    void initData();
 
 private slots:
 

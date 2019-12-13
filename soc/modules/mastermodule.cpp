@@ -8,8 +8,7 @@
 #include "mastermodule.h"
 
 MasterModule::MasterModule(QWidget *parent) 
-	: CircleShape(parent), ModuleInterface(parent), 
-    slave_free(0)
+    : CircleShape(parent), ModuleInterface(parent)
 {
     _class = _text = "Master";
 }
@@ -20,6 +19,13 @@ MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
     MasterModule *shape = new MasterModule(parent);
     shape->copyDataFrom(this);
     return shape;
+}
+
+void MasterModule::initData()
+{
+    this->token = getData("token");
+    this->bandwidth = getData("bandwidth");
+    this->latency = getData("latency");
 }
 
 void MasterModule::updatePacketPos()
@@ -33,16 +39,6 @@ void MasterModule::updatePacketPos()
     }
 }
 
-void MasterModule::setSlaveFree(int f)
-{
-    this->slave_free = f;
-}
-
-bool MasterModule::isSlaveFree()
-{
-    return slave_free > 0;
-}
-
 void MasterModule::paintEvent(QPaintEvent *event)
 {
     CircleShape::paintEvent(event);
@@ -50,5 +46,5 @@ void MasterModule::paintEvent(QPaintEvent *event)
     // 画自己的数量
     QPainter painter(this);
     QFontMetrics fm(this->font());
-    painter.drawText( 0, fm.lineSpacing(), QString("Token:%1/%2").arg(data_list.size()).arg(token));
+    painter.drawText( 0, fm.lineSpacing(), QString("Token:%1/%2").arg(getDefaultToken() - data_list.size()).arg(getDefaultToken()));
 }

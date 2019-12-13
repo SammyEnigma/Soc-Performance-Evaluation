@@ -31,6 +31,7 @@ public:
     };
 
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
+    void initData() override;
     virtual void adjustGeometryByPorts() override;
 
     virtual void updatePacketPos() override;
@@ -44,7 +45,7 @@ protected:
 
 protected:
     QList<PacketList> packet_lists; // 所有的数据（二维），为扩展线数量做准备
-	int IPTD; // 包传输延迟 IPPacketTransferDelay 
+    CustomDataType* IPTD; // 包传输延迟 IPPacketTransferDelay
 
 public:
     // 来自 packet_lists 的元素别名（非真正的新成员变量）

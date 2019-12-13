@@ -26,6 +26,11 @@ ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
+void ModuleCable::initData()
+{
+    this->IPTD = getData("delay");
+}
+
 void ModuleCable::updatePacketPos()
 {
     /* foreach (DataPacket *packet, request_list)
@@ -148,12 +153,12 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
 
 void ModuleCable::setTransferDelay(int delay)
 {
-    this->IPTD = delay;
+    this->IPTD->setValue(delay);
 }
 
 int ModuleCable::getTransferDelay()
 {
-    return IPTD;
+    return IPTD->value().toInt();
 }
 
 void ModuleCable::paintEvent(QPaintEvent *event)

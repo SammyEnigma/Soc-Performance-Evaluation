@@ -19,17 +19,14 @@ public:
     friend class FlowControlCore;
 
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
+    void initData() override;
     
     void updatePacketPos() override;
-    
-    void setSlaveFree(int f);
-    bool isSlaveFree();
     
 protected:
 	void paintEvent(QPaintEvent *event) override;
     
 private:
-    int slave_free;
 };
 
 #endif // MASTERMODULE_H

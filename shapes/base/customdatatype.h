@@ -14,7 +14,7 @@
 #include "stringutil.h"
 
 class CustomDataType;
-typedef QList<CustomDataType> CustomDataList;
+typedef QList<CustomDataType*> CustomDataList;
 
 enum DataType
 {
@@ -35,6 +35,8 @@ public:
     CustomDataType(QString name, QString def, QString val = "");
     CustomDataType(QString name, QStringList def, QStringList val = QStringList());
     CustomDataType(QString string);
+
+    CustomDataType* newInstanceBySelf();
 
     void setName(QString name);
 

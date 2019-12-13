@@ -10,12 +10,15 @@
 
 #include <QList>
 #include "datapacket.h"
+#include "customdatatype.h"
 
 class ModuleInterface : public QObject
 {
     Q_OBJECT
 public:
     ModuleInterface(QObject *parent = nullptr);
+
+    virtual void initData();
 
     void setToken(int token);
     void setBandwidth(int bandwidth);
@@ -24,6 +27,10 @@ public:
     int getToken();
     int getBandwidth();
     int getLatency();
+
+    int getDefaultToken();
+    int getDefaultBandwidth();
+    int getDefaultLatency();
 
 signals:
 
@@ -35,9 +42,9 @@ public:
     QList<DataPacket *> data_list;
     
 protected:
-    int token;
-    int bandwidth;
-    int latency;
+    CustomDataType* token;
+    CustomDataType* bandwidth;
+    CustomDataType* latency;
 };
 
 #endif // MODULEINTERFACE_H

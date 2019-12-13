@@ -19,18 +19,11 @@ void FlowControlCore::initData()
     current_clock = 0;
 
     // 初始化属性
-    master->setToken(master->getDataValue("token", 16).toInt());
-    master->setBandwidth(master->getDataValue("bandwidth", 1).toInt());
-    master->setLatency(master->getDataValue("latency", 0).toInt());
-
-    slave->setToken(slave->getDataValue("token", 16).toInt());
-    slave->setBandwidth(slave->getDataValue("bandwidth", 1).toInt());
-    slave->setLatency(slave->getDataValue("latency", 6).toInt());
-
-    ms_cable->setTransferDelay(ms_cable->getDataValue("delay", 5).toInt());
+    master->initData();
+    slave->initData();
+    ms_cable->initData();
 
     // 设置运行数据
-    master->setSlaveFree(slave->getToken());
 
     // 初始化数据包
     for (int i = 0; i < master->getToken(); i++)
@@ -61,6 +54,15 @@ void FlowControlCore::clearData()
     all_packets.clear();
 }
 
+DataPacket *FlowControlCore::createToken()
+{
+    static int token_id = 0;
+    DataPacket *packet = new DataPacket("编号"+QString::number(++token_id), this);
+    all_packets.append(packet);
+    emit signalTokenCreated(packet);
+    return packet;
+}
+
 /**
  * 模拟时钟流逝 1 个 clock
  */
@@ -75,7 +77,6 @@ void FlowControlCore::passOneClock()
         DataPacket *packet = master->data_list.takeFirst();
         packet->resetDelay(ms_cable->getTransferDelay());
         ms_cable->request_list.append(packet);
-        master->slave_free--;
     }
 
     // 连接线延迟传输（5 clock）-->给Slave
@@ -126,8 +127,6 @@ void FlowControlCore::passOneClock()
             slave->dequeue_list.removeAt(i--);
             slave->process_list.append(packet);
             packet->resetDelay(slave->getProcessDelay());
-            // Slave空出一个位置
-            master->slave_free++;
         }
         else
         {

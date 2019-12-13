@@ -15,6 +15,14 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
     run_timer->setInterval(500); // 一秒钟执行一次 clock
     run_timer->setSingleShot(false);
     connect(run_timer, SIGNAL(timeout()), this, SLOT(nextStep()));
+
+    connect(this, &FlowControlCore::signalTokenCreated, this, [=](DataPacket* packet){
+        DataPacketView *view = new DataPacketView(packet, graphic);
+        all_packet_view.append(view);
+
+        view->move(-PACKET_SIZE, -PACKET_SIZE);
+        view->show();
+    });
 }
 
 /**
@@ -76,22 +84,6 @@ void FlowControl::nextStep()
         return;
     passOneClock();
     refreshUI();
-}
-
-void FlowControl::initData()
-{
-    FlowControlCore::initData();
-
-    // 数据包的可视化控件
-    foreach (DataPacket *packet, all_packets)
-    {
-        DataPacketView *view = new DataPacketView(packet, graphic);
-        all_packet_view.append(view);
-
-        view->move(-PACKET_SIZE, -PACKET_SIZE);
-        view->show();
-    }
-    master->updatePacketPos();
 }
 
 /**

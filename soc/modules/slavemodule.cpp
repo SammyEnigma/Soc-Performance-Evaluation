@@ -20,6 +20,13 @@ SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
+void SlaveModule::initData()
+{
+    this->token = getData("token");
+    this->bandwidth = getData("bandwidth");
+    this->latency = getData("latency");
+}
+
 void SlaveModule::updatePacketPos()
 {
     QFontMetrics fm(this->font());

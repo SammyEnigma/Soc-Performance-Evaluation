@@ -8,38 +8,76 @@
 #include "moduleinterface.h"
 
 ModuleInterface::ModuleInterface(QObject *parent)
-    : QObject(parent), token(0), bandwidth(0), latency(0)
+    : QObject(parent), token(nullptr), bandwidth(nullptr), latency(nullptr)
 {
+}
+
+void ModuleInterface::initData()
+{
+
 }
 
 void ModuleInterface::setToken(int token)
 {
-    this->token = token;
+    if (this->token == nullptr)
+        return ;
+    this->token->setValue(token);
 }
 
 void ModuleInterface::setBandwidth(int bandwidth)
 {
-    this->bandwidth = bandwidth;
+    if (this->bandwidth == nullptr)
+        return ;
+    this->bandwidth->setValue(bandwidth);
 }
 
 void ModuleInterface::setLatency(int latency)
 {
-    this->latency = latency;
+    if (this->latency == nullptr)
+        return ;
+    this->latency->setValue(latency);
 }
 
 int ModuleInterface::getToken()
 {
-    return token;
+    if (this->token == nullptr)
+        return -1;
+    return token->value().toInt();
 }
 
 int ModuleInterface::getBandwidth()
 {
-    return bandwidth;
+    if (this->bandwidth == nullptr)
+        return -1;
+    return bandwidth->value().toInt();
 }
 
 int ModuleInterface::getLatency()
 {
-    return latency;
+    if (this->latency == nullptr)
+        return -1;
+    return latency->value().toInt();
+}
+
+int ModuleInterface::getDefaultToken()
+{
+    if (this->token == nullptr)
+        return -1;
+    return token->getDefault().toInt();
+}
+
+int ModuleInterface::getDefaultBandwidth()
+{
+    if (this->bandwidth == nullptr)
+        return -1;
+    return bandwidth->getDefault().toInt();
+}
+
+int ModuleInterface::getDefaultLatency()
+{
+    if (this->latency == nullptr)
+        return -1;
+    return latency->getDefault().toInt();
 }
 
 void ModuleInterface::passOneClock()

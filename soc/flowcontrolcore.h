@@ -28,9 +28,10 @@ public:
 protected:
     void initData();
     void clearData();
-    void sendPacket(DataPacket* packet);
+    DataPacket* createToken();
 
 signals:
+    void signalTokenCreated(DataPacket* packet);
 
 public slots:
     void passOneClock(); // 模拟时钟流逝 1 个 clock

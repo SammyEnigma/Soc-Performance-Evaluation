@@ -52,6 +52,15 @@ CustomDataType::CustomDataType(QString string)
     this->fromString(string);
 }
 
+CustomDataType *CustomDataType::newInstanceBySelf()
+{
+    CustomDataType* data = new CustomDataType(this->name);
+    data->type = this->type;
+    data->def = this->def;
+    data->val = this->val;
+    return data;
+}
+
 void CustomDataType::setName(QString name)
 {
     this->name = name;

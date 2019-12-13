@@ -105,7 +105,7 @@ void ShapeBase::fromString(QString s)
     }
     foreach (QString data_string, data_list)
     {
-        CustomDataType data(data_string);
+        CustomDataType* data = new CustomDataType(data_string);
         custom_data_list.append(data);
     }
     fromStringAppend(s);
@@ -147,9 +147,9 @@ QString ShapeBase::toString()
     {
         shape_string += port->toString();
     }
-    foreach (CustomDataType data, custom_data_list)
+    foreach (CustomDataType* data, custom_data_list)
     {
-        shape_string += data.toString();
+        shape_string += data->toString();
     }
     shape_string = "<SHAPE>" + shape_string + "\n</SHAPE>\n\n";
     return shape_string;
@@ -165,21 +165,21 @@ QString ShapeBase::readedText()
     return _readed_text;
 }
 
-CustomDataType ShapeBase::getData(QString name)
+CustomDataType *ShapeBase::getData(QString name)
 {
-    foreach (CustomDataType data, custom_data_list)
+    foreach (CustomDataType* data, custom_data_list)
     {
-        if (data.getName() == name)
+        if (data->getName() == name)
             return data;
     }
-    return CustomDataType("",0,0);
+    return new CustomDataType("",0,0);
 }
 
 bool ShapeBase::containsData(QString name)
 {
-    foreach (CustomDataType data, custom_data_list)
+    foreach (CustomDataType* data, custom_data_list)
     {
-        if (data.getName() == name)
+        if (data->getName() == name)
             return true;
     }
     return false;
@@ -187,20 +187,20 @@ bool ShapeBase::containsData(QString name)
 
 QVariant ShapeBase::getDataValue(QString name, QVariant def)
 {
-    foreach (CustomDataType data, custom_data_list)
+    foreach (CustomDataType* data, custom_data_list)
     {
-        if (data.getName() == name)
-            return data.getValue();
+        if (data->getName() == name)
+            return data->getValue();
     }
     return def;
 }
 
 DataType ShapeBase::getDataType(QString name)
 {
-    foreach (CustomDataType data, custom_data_list)
+    foreach (CustomDataType* data, custom_data_list)
     {
-        if (data.getName() == name)
-            return data.getType();
+        if (data->getName() == name)
+            return data->getType();
     }
     return DT_UNKNOW;
 }

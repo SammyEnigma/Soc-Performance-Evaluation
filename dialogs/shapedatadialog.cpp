@@ -54,8 +54,8 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
         CustomDataList* datas = data_lists.at(i);
         for (int j = 0; j < datas->size(); j++)
         {
-            CustomDataType data = (*datas).at(j);
-            QString name = data.getName();
+            CustomDataType* data = (*datas).at(j);
+            QString name = data->getName();
             if (same_names.contains(name) || different_names.contains(name))
                 continue;
             bool all_have = true;
@@ -80,7 +80,7 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
     // 从表格中显示出来
     for (int i = 0; i < same_names.size(); i++)
     {
-        setTableRow(i, shape->getData(same_names.at(i)));
+        setTableRow(i, *shape->getData(same_names.at(i)));
     }
 
     _system_changing = false;
@@ -125,16 +125,17 @@ void ShapeDataDialog::on_insertBtn_clicked()
     ui->tableWidget->setRowCount(row + 1);
 
     QString name = createSuitableName();
-    CustomDataType data(name, 0, 0);
-    setTableRow(row, data);
+    CustomDataType* data = new CustomDataType(name, 0, 0);
+    setTableRow(row, *data);
 
     _activated_string = name;
     ui->tableWidget->edit(ui->tableWidget->model()->index(row, CUSTOM_NAME_COL));
 
     foreach (CustomDataList* datas, data_lists)
     {
-        datas->append(data);
+        datas->append(data->newInstanceBySelf());
     }
+    delete data;
     _system_changing = false;
 }
 
@@ -149,9 +150,10 @@ void ShapeDataDialog::on_removeBtn_clicked()
     {
         for (int i = 0; i < datas->size(); i++)
         {
-            CustomDataType data = datas->at(i);
-            if (data.getName() == name) // 删除所有叫这个名字的数据
+            CustomDataType* data = datas->at(i);
+            if (data->getName() == name) // 删除所有叫这个名字的数据
             {
+                delete datas->at(i);
                 datas->removeAt(i--);
             }
         }
@@ -181,8 +183,8 @@ void ShapeDataDialog::on_resetBtn_clicked()
     {
         for (int i = 0; i < datas->size(); i++)
         {
-            CustomDataType& data = (*datas)[i];
-            data.reset();
+            CustomDataType*& data = (*datas)[i];
+            data->reset();
         }
     }
     _system_changing = true;
@@ -215,9 +217,9 @@ void ShapeDataDialog::onTypeComboChanged(int index)
     {
         for (int i = 0; i < (*datas).size(); i++)
         {
-            CustomDataType& data = (*datas)[i];
-            if (data.getName() == name)
-                data.setAll(type, def, val);
+            CustomDataType*& data = (*datas)[i];
+            if (data->getName() == name)
+                data->setAll(type, def, val);
         }
     }
 }
@@ -279,8 +281,8 @@ bool ShapeDataDialog::isNameExist(QString name)
     {
         for (int i = 0; i < (*datas).size(); i++)
         {
-            CustomDataType data = (*datas).at(i);
-            if (data.getName() == name)
+            CustomDataType* data = (*datas).at(i);
+            if (data->getName() == name)
                 return true;
         }
     }
@@ -326,9 +328,9 @@ void ShapeDataDialog::on_tableWidget_cellChanged(int row, int col)
             {
                 for (int i = 0; i < (*datas).size(); i++)
                 {
-                    CustomDataType& data = (*datas)[i];
-                    if (data.getName() == old_name)
-                        data.setName(name);
+                    CustomDataType*& data = (*datas)[i];
+                    if (data->getName() == old_name)
+                        data->setName(name);
                 }
             }
         }
@@ -342,9 +344,9 @@ void ShapeDataDialog::on_tableWidget_cellChanged(int row, int col)
         {
             for (int i = 0; i < (*datas).size(); i++)
             {
-                CustomDataType& data = (*datas)[i];
-                if (data.getName() == name)
-                    data.setDefault(text);
+                CustomDataType*& data = (*datas)[i];
+                if (data->getName() == name)
+                    data->setDefault(text);
             }
         }
         // 如果修改之前值和默认值相同，则同步修改值
@@ -362,9 +364,9 @@ void ShapeDataDialog::on_tableWidget_cellChanged(int row, int col)
         {
             for (int i = 0; i < (*datas).size(); i++)
             {
-                CustomDataType& data = (*datas)[i];
-                if (data.getName() == name)
-                    data.setValue(text);
+                CustomDataType*& data = (*datas)[i];
+                if (data->getName() == name)
+                    data->setValue(text);
             }
         }
     }

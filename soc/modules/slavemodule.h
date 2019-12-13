@@ -20,6 +20,7 @@ public:
     friend class FlowControlCore;
     
     virtual SlaveModule *newInstanceBySelf(QWidget *parent = nullptr) override;
+    void initData() override;
     
     void updatePacketPos() override;
     
