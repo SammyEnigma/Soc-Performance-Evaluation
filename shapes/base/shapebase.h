@@ -117,6 +117,7 @@ signals:
     void signalClickReleased();
     void signalCtrlClicked();
     void signalCtrlClickReleased();
+    void signalDoubleClicked();
     void signalMoved(int dx, int dy);
     void signalLeftButtonReleased();
     void signalMenuShowed();
@@ -156,6 +157,8 @@ protected:
     bool _press_effected;     // 按下时特殊操作是否已经生效
     bool _hovering;           // 是否鼠标悬浮期间
     bool _show_light_edge;    // 是否显示淡淡的边界
+    qint64 _prev_rls_timest;  // 上次鼠标松开的时间戳（用来判断双击）
+    qint64 _curr_rls_timest;  // 本次鼠标松开的时间戳（用来传递给上次）
 
     // 存储
     QString _readed_text; // 读取时的内容（即fromString的文本）

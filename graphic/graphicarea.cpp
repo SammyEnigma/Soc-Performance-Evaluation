@@ -832,6 +832,13 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         autoSave();
     });
 
+    connect(shape, &ShapeBase::signalDoubleClicked, this, [=]{
+        if (selected_shapes.isEmpty())
+            select(shape);
+        slotShapeData();
+        autoSave();
+    });
+
     connect(shape, &ShapeBase::signalTransparentForMousePressEvents, this, [=](QMouseEvent *event) {
         QPoint pos = event->pos() + shape->geometry().topLeft(); // 转换为相对绘图区域的坐标
         for (int i = shape_lists.size() - 1; i >= 0; --i)        // 逆序遍历，找到能够传递点击事件的控件

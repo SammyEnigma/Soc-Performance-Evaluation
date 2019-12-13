@@ -12,7 +12,8 @@ ShapeBase::ShapeBase(QWidget *parent)
       _text_align(DEFAULT_TEXT_ALIGN), _text_color(DEFAULT_TEXT_COLOR),
       _pixmap_scale(DEFAULT_PIXMAP_SCALE), _pixmap_color(DEFAULT_PIXMAP_COLOR),
       _border_size(DEFAULT_BORDER_SIZE), _border_color(DEFAULT_BORDER_COLOR),
-      edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false)
+      edge(new SelectEdge(this)), _press_pos_global(-1, -1), _pressing(false), _show_light_edge(false),
+      _prev_rls_timest(0), _curr_rls_timest(0)
 {
     setMinimumSize(32, 32);
     setObjectName("shape");                                       // 使用ID来设置stylesheet，可以不影响子控件（否则背景透明时菜单背景会变成黑色的）
@@ -491,6 +492,9 @@ void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
     // 松开还原
     if (event->button() == Qt::LeftButton && (rt->current_choosed_shape == nullptr || isEdgeShowed()) && _pressing)
     {
+        _prev_rls_timest = _curr_rls_timest;
+        _curr_rls_timest = getTimestamp();
+
         _press_pos_global = QPoint(-1, -1);
         _press_topLeft = geometry().topLeft();
         _pressing = false;
@@ -505,6 +509,10 @@ void ShapeBase::mouseReleaseEvent(QMouseEvent *event)
         _press_effected = false;
         event->accept();
         emit signalLeftButtonReleased();
+        if (!_press_effected && _prev_rls_timest + 300 >= _curr_rls_timest)
+        {
+            emit signalDoubleClicked();
+        }
         return;
     }
 
