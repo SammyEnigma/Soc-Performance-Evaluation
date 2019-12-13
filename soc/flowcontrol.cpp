@@ -23,6 +23,17 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
         view->move(-PACKET_SIZE, -PACKET_SIZE);
         view->show();
     });
+
+    connect(this, &FlowControlCore::signalTokenDeleted, this, [=](DataPacket* packet){
+        for (int i = 0; i < all_packet_view.size(); i++)
+        {
+            if (all_packet_view.at(i)->getPacket() == packet)
+            {
+                delete all_packet_view.takeAt(i);
+                break;
+            }
+        }
+    });
 }
 
 /**

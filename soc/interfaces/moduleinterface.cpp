@@ -80,6 +80,11 @@ int ModuleInterface::getDefaultLatency()
     return latency->getDefault().toInt();
 }
 
+int ModuleInterface::getFree()
+{
+
+}
+
 void ModuleInterface::passOneClock()
 {
 	updatePacketPos();

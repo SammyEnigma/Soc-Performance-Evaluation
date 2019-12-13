@@ -32,6 +32,8 @@ public:
     int getDefaultBandwidth();
     int getDefaultLatency();
 
+    int getFree();
+
 signals:
 
 public slots:

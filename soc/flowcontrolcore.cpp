@@ -63,6 +63,13 @@ DataPacket *FlowControlCore::createToken()
     return packet;
 }
 
+void FlowControlCore::deleteToken(DataPacket *packet)
+{
+    all_packets.removeOne(packet);
+    emit signalTokenDeleted(packet);
+    delete packet;
+}
+
 /**
  * 模拟时钟流逝 1 个 clock
  */
@@ -74,7 +81,8 @@ void FlowControlCore::passOneClock()
     // Slave有空位时，Master发送数据（0 clock）
     if (/* master->isSlaveFree() &&  */master->data_list.size())
     {
-        DataPacket *packet = master->data_list.takeFirst();
+        DataPacket *packet = createToken()/*master->data_list.takeFirst()*/;
+        packet->setDrawPos(master->geometry().center());
         packet->resetDelay(ms_cable->getTransferDelay());
         ms_cable->request_list.append(packet);
     }
@@ -157,9 +165,10 @@ void FlowControlCore::passOneClock()
         if (packet->isDelayFinished())
         {
             ms_cable->response_list.removeAt(i--);
-            master->data_list.append(packet);
-            packet->resetDelay(0);
+//            master->data_list.append(packet);
+//            packet->resetDelay(0);
             qDebug() << "Master接收到response" << packet->toString();
+            deleteToken(packet);
         }
         else
         {

@@ -21,6 +21,8 @@ class DataPacketView : public QWidget
 public:
     DataPacketView(DataPacket* packet, QWidget* parent = nullptr);
 
+    DataPacket* getPacket();
+
 protected:
     void paintEvent(QPaintEvent *) override;
 
@@ -28,7 +30,7 @@ private slots:
     void updatePosition(QPoint old_pos, QPoint new_pos);
 
 private:
-    const DataPacket* packet;
+    DataPacket* packet;
 };
 
 #endif // DATAPACKETVIEW_H

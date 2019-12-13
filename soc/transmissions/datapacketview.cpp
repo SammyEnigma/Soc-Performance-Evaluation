@@ -15,6 +15,11 @@ DataPacketView::DataPacketView(DataPacket *packet, QWidget *parent) : QWidget(pa
     setFixedSize(PACKET_SIZE, PACKET_SIZE);
 }
 
+DataPacket *DataPacketView::getPacket()
+{
+    return packet;
+}
+
 void DataPacketView::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
