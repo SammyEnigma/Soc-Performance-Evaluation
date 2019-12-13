@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 11:32:24
+ * @LastEditTime: 2019-12-13 14:12:17
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -91,7 +91,6 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
                 y = x - w;
                 x = w;
             }
-            x += offset;
             y += offset;
         }
         else // 右上角 - 左下角
@@ -114,11 +113,33 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
     {
         if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y()) // 左上角 - 右下角
         {
-            
+            int offset = LINE_SPACE * line;
+            int w = width() - offset;
+            int h = height() - offset;
+            int total = w + h;
+            y = total * prop;
+            if (y > h)
+            {
+                x = y - h;
+                y = h;
+            }
+            x += offset;
+            y -= _border_size;
         }
         else // 右上角 - 左下角
         {
-            
+            int offset = LINE_SPACE * (LINE_COUNT - line - 1);
+            int w = width() - offset;
+            int h = height() - offset;
+            int total = w + h;
+            y = total * prop;
+            if (y > h)
+            {
+                x = y - h;
+                y = h;
+            }
+            x = w - x - _border_size;
+            y -= _border_size;
         }
     }
     return QPoint(x, y) + this->pos();
