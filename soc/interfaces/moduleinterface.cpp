@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:01:52
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 09:04:34
+ * @LastEditTime: 2019-12-13 09:52:40
  * @Description: 模块接口，包含发送等功能
  */
 #include "moduleinterface.h"
@@ -44,4 +44,10 @@ int ModuleInterface::getLatency()
 
 void ModuleInterface::passOneClock()
 {
+	updatePacketPos();
+}
+
+void ModuleInterface::updatePacketPos()
+{
+    
 }

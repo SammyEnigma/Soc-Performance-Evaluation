@@ -26,7 +26,7 @@ public:
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual void adjustGeometryByPorts() override;
 
-    virtual void passOneClock() override;
+    virtual void updatePacketPos() override;
     
     void setTransferDelay(int delay);
     int getTransferDelay();

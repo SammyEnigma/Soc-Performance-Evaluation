@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:01:52
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 17:23:23
+ * @LastEditTime: 2019-12-13 09:52:10
  * @Description: 模块接口，包含发送等功能
  */
 #ifndef MODULEINTERFACE_H
@@ -29,6 +29,7 @@ signals:
 
 public slots:
     virtual void passOneClock(); // 模拟时钟流逝1个clock
+    virtual void updatePacketPos();
 
 public:
     QList<DataPacket *> data_list;

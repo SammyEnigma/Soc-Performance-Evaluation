@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 17:54:54
+ * @LastEditTime: 2019-12-13 09:43:47
  * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #include "flowcontrol.h"
@@ -67,6 +67,9 @@ void FlowControl::initData()
     {
         DataPacketView* view = new DataPacketView(packet, graphic);
         all_packet_view.append(view);
+
+        view->move(-PACKET_SIZE, -PACKET_SIZE);
+        view->show();
     }
 }
 

@@ -20,6 +20,8 @@ public:
 
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     
+    void updatePacketPos() override;
+    
     void setSlaveFree(int f);
     bool isSlaveFree();
     

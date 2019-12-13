@@ -48,6 +48,15 @@ bool DataPacket::isDelayFinished()
     return delay_step >= delay_max;
 }
 
+/**
+ * 当前延迟的比例
+ * step / max
+ */
+double DataPacket::currentProp()
+{
+    return static_cast<double>(delay_step) / delay_max;
+}
+
 QString DataPacket::toString()
 {
     return QString("%1: %2/%3").arg(tag).arg(delay_step).arg(delay_max);

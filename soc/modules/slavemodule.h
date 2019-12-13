@@ -21,6 +21,8 @@ public:
     
     virtual SlaveModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     
+    void updatePacketPos() override;
+    
     int getEnqueueDelay();
     int getDequeueDelay();
     int getProcessDelay();

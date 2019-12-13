@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:08:47
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 16:57:25
+ * @LastEditTime: 2019-12-13 09:44:51
  * @Description: MasterModule
  */
 #include "mastermodule.h"
@@ -20,6 +20,17 @@ MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
     MasterModule *shape = new MasterModule(parent);
     shape->copyDataFrom(this);
     return shape;
+}
+
+void MasterModule::updatePacketPos()
+{
+    QFontMetrics fm(this->font());
+    int height = fm.lineSpacing();
+	QPoint pos = this->pos() + QPoint(4, height+4);
+    foreach (DataPacket* packet, data_list)
+    {
+        packet->setDrawPos(pos);
+    }
 }
 
 void MasterModule::setSlaveFree(int f)

@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:12:00
+ * @LastEditTime: 2019-12-13 09:36:50
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -47,11 +47,6 @@ void FlowControlCore::initData()
 void FlowControlCore::passOneClock()
 {
     FCDEB "Clock:" << current_clock << " >>";
-
-    // ==== 内部模拟时钟流逝 ====
-    master->passOneClock();
-    slave->passOneClock();
-    ms_cable->passOneClock();
 
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
@@ -155,6 +150,11 @@ void FlowControlCore::passOneClock()
 
     // ==== 时钟结束后首尾 ====
     current_clock++;
+
+    // 内部模拟时钟流逝，设置数据包位置等
+    master->passOneClock();
+    slave->passOneClock();
+    ms_cable->passOneClock();
 }
 
 void FlowControlCore::printfAllData()

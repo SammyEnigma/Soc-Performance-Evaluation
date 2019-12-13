@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-12 17:16:15
+ * @LastEditTime: 2019-12-13 09:58:24
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -10,7 +10,7 @@
 ModuleCable::ModuleCable(QWidget *parent)
     : CableBase(parent), ModuleInterface(parent),
       packet_lists(QList<PacketList>{PacketList(), PacketList(), PacketList(), PacketList()}), // 初始化四个
-      request_list(packet_lists[0]),request_data_list(packet_lists[1]),response_list(packet_lists[2]),response_data_list(packet_lists[3])
+      request_list(packet_lists[0]), request_data_list(packet_lists[1]), response_list(packet_lists[2]), response_data_list(packet_lists[3])
 {
     _class = _text = "ModuleCable";
 
@@ -25,8 +25,19 @@ ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
-void ModuleCable::passOneClock()
+void ModuleCable::updatePacketPos()
 {
+    foreach (DataPacket *packet, request_list)
+    {
+        QPoint pos = this->pos() + QPoint(PACKET_SIZE/2, height() * packet->currentProp());
+        packet->setDrawPos(pos);
+    }
+
+    foreach (DataPacket *packet, response_list)
+    {
+        QPoint pos = this->pos() + QPoint(width()-PACKET_SIZE/2, height() * (1 - packet->currentProp()));
+        packet->setDrawPos(pos);
+    }
 }
 
 void ModuleCable::setTransferDelay(int delay)
@@ -63,9 +74,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
              * └┴┴┘
              * 根据倾斜程度画间隔相同的线
              */
-            if (arrow_pos1.x() == arrow_pos2.x()
-                    || arrow_pos1.y() == arrow_pos2.x()
-                    || (arrow_pos1.y() - arrow_pos2.y()) / static_cast<double>(arrow_pos1.x() - arrow_pos2.x())<0) // 右上-左下 角度倾斜
+            if (arrow_pos1.x() == arrow_pos2.x() || arrow_pos1.y() == arrow_pos2.x() || (arrow_pos1.y() - arrow_pos2.y()) / static_cast<double>(arrow_pos1.x() - arrow_pos2.x()) < 0) // 右上-左下 角度倾斜
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
@@ -88,16 +97,16 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(0, i*LINE_SPACE, width()-i*LINE_SPACE-_border_size, i*LINE_SPACE);
-                    painter.drawLine(width()-i*LINE_SPACE-_border_size, i*LINE_SPACE, width()-i*LINE_SPACE-_border_size, height());
+                    painter.drawLine(0, i * LINE_SPACE, width() - i * LINE_SPACE - _border_size, i * LINE_SPACE);
+                    painter.drawLine(width() - i * LINE_SPACE - _border_size, i * LINE_SPACE, width() - i * LINE_SPACE - _border_size, height());
                 }
             }
             else // 右上角 - 左下角
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(width()-_border_size, i*LINE_SPACE, i*LINE_SPACE, i*LINE_SPACE);
-                    painter.drawLine(i*LINE_SPACE, i*LINE_SPACE, i*LINE_SPACE, height());
+                    painter.drawLine(width() - _border_size, i * LINE_SPACE, i * LINE_SPACE, i * LINE_SPACE);
+                    painter.drawLine(i * LINE_SPACE, i * LINE_SPACE, i * LINE_SPACE, height());
                 }
             }
         }
@@ -107,16 +116,16 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(i*LINE_SPACE, 0, i*LINE_SPACE,height()-i*LINE_SPACE-_border_size);
-                    painter.drawLine(i*LINE_SPACE-_border_size, height()-i*LINE_SPACE-_border_size, width(), height()-i*LINE_SPACE-_border_size);
+                    painter.drawLine(i * LINE_SPACE, 0, i * LINE_SPACE, height() - i * LINE_SPACE - _border_size);
+                    painter.drawLine(i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size, width(), height() - i * LINE_SPACE - _border_size);
                 }
             }
             else // 右上角 - 左下角
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(width()-i*LINE_SPACE-_border_size, 0, width()-i*LINE_SPACE-_border_size, height()-i*LINE_SPACE-_border_size);
-                    painter.drawLine(width()-i*LINE_SPACE-_border_size, height()-i*LINE_SPACE-_border_size, 0, height()-i*LINE_SPACE-_border_size);
+                    painter.drawLine(width() - i * LINE_SPACE - _border_size, 0, width() - i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size);
+                    painter.drawLine(width() - i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size, 0, height() - i * LINE_SPACE - _border_size);
                 }
             }
         }
@@ -177,7 +186,7 @@ void ModuleCable::adjustGeometryByPorts()
         }
         else if (_line_type == 2) // 竖横
         {
-            bottom +=_breadth_y / 2;
+            bottom += _breadth_y / 2;
             if (cen1.x() < cen2.x() && cen1.y() < cen2.y()) // 左上 - 右下
                 left -= _breadth_x / 2;
             else // 右上 - 左下

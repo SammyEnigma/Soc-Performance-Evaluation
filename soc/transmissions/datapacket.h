@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 11:32:31
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:09:27
+ * @LastEditTime: 2019-12-13 09:43:11
  * @Description: 数据包，request和response的基类
  */
 #ifndef DATAPACKET_H
@@ -10,6 +10,8 @@
 
 #include <QObject>
 #include <QPoint>
+
+#define PACKET_SIZE 8
 
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 
@@ -26,6 +28,7 @@ public:
     void resetDelay(int max, bool ignore = false); // 重新设置延迟
     void delayToNext();                            // 延迟到下一个阶段
     bool isDelayFinished();                        // 延迟是否已经结束了
+    double currentProp();
 
     QString toString();
     
