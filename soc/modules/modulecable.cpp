@@ -57,6 +57,7 @@ void ModuleCable::updatePacketPos()
  */
 QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
 {
+    prop = prop * 0.9 + 0.05; // 限制范围，排除和shape重合的两端（避免有歧义）
 	int x1 = arrow_pos1.x(), y1 = arrow_pos1.y();
     int x2 = arrow_pos2.x(), y2 = arrow_pos2.y();
     int x = -1, y = -1;

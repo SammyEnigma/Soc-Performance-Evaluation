@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:36:50
+ * @LastEditTime: 2019-12-13 16:31:51
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -19,15 +19,15 @@ void FlowControlCore::initData()
     current_clock = 0;
 
     // 初始化属性
-    master->setToken(16);
-    master->setBandwidth(1);
-    master->setLatency(0);
+    master->setToken(master->getDataValue("token", 16).toInt());
+    master->setBandwidth(master->getDataValue("bandwidth", 1).toInt());
+    master->setLatency(master->getDataValue("latency", 0).toInt());
 
-    slave->setToken(16);
-    slave->setBandwidth(1);
-    slave->setLatency(6);
+    slave->setToken(slave->getDataValue("token", 16).toInt());
+    slave->setBandwidth(slave->getDataValue("bandwidth", 1).toInt());
+    slave->setLatency(slave->getDataValue("latency", 6).toInt());
 
-    ms_cable->setTransferDelay(5);
+    ms_cable->setTransferDelay(ms_cable->getDataValue("delay", 5).toInt());
 
     // 设置运行数据
     master->setSlaveFree(slave->getToken());
@@ -43,6 +43,8 @@ void FlowControlCore::initData()
 
 void FlowControlCore::clearData()
 {
+    if (!rt->running || current_clock == -1)
+        return ;
     master->data_list.clear();
     slave->enqueue_list.clear();
     slave->data_queue.clear();

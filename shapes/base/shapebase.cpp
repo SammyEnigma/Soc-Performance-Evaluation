@@ -184,14 +184,14 @@ bool ShapeBase::containsData(QString name)
     return false;
 }
 
-QVariant ShapeBase::getDataValue(QString name)
+QVariant ShapeBase::getDataValue(QString name, QVariant def)
 {
     foreach (CustomDataType data, custom_data_list)
     {
         if (data.getName() == name)
             return data.getValue();
     }
-    return QVariant();
+    return def;
 }
 
 DataType ShapeBase::getDataType(QString name)
