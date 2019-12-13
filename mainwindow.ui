@@ -490,12 +490,12 @@
   </action>
   <action name="actionResume_S">
    <property name="text">
-    <string>Resume (&amp;S)</string>
+    <string>Resume (&amp;U)</string>
    </property>
   </action>
   <action name="actionStop">
    <property name="text">
-    <string>Stop</string>
+    <string>Stop (&amp;S)</string>
    </property>
   </action>
  </widget>

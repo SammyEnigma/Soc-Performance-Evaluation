@@ -56,6 +56,7 @@ void FlowControlCore::clearData()
     {
         packet->deleteLater();
     }
+    all_packets.clear();
 }
 
 /**

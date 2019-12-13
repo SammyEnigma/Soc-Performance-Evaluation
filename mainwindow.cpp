@@ -243,5 +243,5 @@ void MainWindow::on_actionDebug_triggered()
 
 void MainWindow::on_actionStop_triggered()
 {
-
+    flow_control->stopRun();
 }
