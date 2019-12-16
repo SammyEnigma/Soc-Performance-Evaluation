@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-16 17:39:29
+ * @LastEditTime: 2019-12-16 17:45:15
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -26,8 +26,6 @@ void FlowControlCore::initData()
     // 设置运行数据
     master->another_can_recive = slave->getToken();
     slave->another_can_recive = master->getToken();
-
-    // 初始化数据包
 }
 
 /**
@@ -120,6 +118,7 @@ void FlowControlCore::passOneClock()
             slave->dequeue_list.removeAt(i--);
             slave->process_list.append(packet);
             packet->resetDelay(slave->getProcessDelay());
+            master->another_can_recive++; // 告诉Master自己可以接收的buffer++
         }
         else
         {
@@ -138,7 +137,6 @@ void FlowControlCore::passOneClock()
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);
                 packet->resetDelay(ms_cable->getTransferDelay());
-                master->another_can_recive++; // 返回给master的slave的token++
                 slave->another_can_recive--;
             }
         }

@@ -7,7 +7,7 @@ Master有多个发送端口，每个端口有不同的bandwith，每bandwidth个
 
 request经过线的delay个clock到达Slave
 
-Slave有多个接收端口，收到request后1个clock进入端口的queue，再1个（可改）clock出来1个
+Slave有多个接收端口，收到request后1个clock进入端口的queue，再1个clock出来1个
 
 出queue后通过SubChannel向Master发送一个信号，表示空出了一个buffer（不用画线）
 （1个clock最多只发送一个，要是1clock出来多个，则分多个clock发送回去）

@@ -48,5 +48,5 @@ void MasterModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QFontMetrics fm(this->font());
     // painter.drawText( 0, fm.lineSpacing(), QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getDefaultToken()));
-    painter.drawText(0, fm.lineSpacing(), QString("buffer: another=%1, this=%2").arg(anotherCanRecive()).arg(getToken()));
+    painter.drawText(0, fm.lineSpacing(), QString("buffer: 对方=%1, 自己=%2").arg(anotherCanRecive()).arg(getToken()));
 }
