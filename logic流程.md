@@ -1,0 +1,17 @@
+Master ↔ Slave
+
+开始Slave向Master发送自己的token（即buffer）表示自己总共能接收几个
+
+Master有多个发送端口，每个端口有不同的bandwith，每bandwidth个clock发送一个request
+（bandwidth=2表示2个clock发送1个request，bandwidth=1/2表示1个clock发送2个request）
+
+request经过线的delay个clock到达Slave
+
+Slave有多个接收端口，收到request后1个clock进入端口的queue，再1个（可改）clock出来1个
+
+出queue后通过SubChannel向Master发送一个信号，表示空出了一个buffer（不用画线）
+（1个clock最多只发送一个，要是1clock出来多个，则分多个clock发送回去）
+
+进入处理的延迟，结束后发送给其他Module。目前为返回至之前的Master
+
+Master的接收与Slave一样，有自己的queue和处理
