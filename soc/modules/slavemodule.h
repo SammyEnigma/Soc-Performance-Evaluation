@@ -11,6 +11,7 @@
 #include "ellipseshape.h"
 #include "moduleinterface.h"
 #include "qqueue.h"
+#include "moduleport.h"
 
 class SlaveModule : public EllipseShape, public ModuleInterface
 {
@@ -20,6 +21,7 @@ public:
     friend class FlowControlCore;
     
     virtual SlaveModule *newInstanceBySelf(QWidget *parent = nullptr) override;
+    virtual PortBase* createPort() override;
     void initData() override;
     
     void updatePacketPos() override;

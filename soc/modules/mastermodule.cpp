@@ -21,6 +21,11 @@ MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
+PortBase *MasterModule::createPort()
+{
+    return new ModulePort(this);
+}
+
 void MasterModule::initData()
 {
     this->token = getData("token");

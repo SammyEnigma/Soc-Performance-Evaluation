@@ -10,6 +10,7 @@
 
 #include "circleshape.h"
 #include "moduleinterface.h"
+#include "moduleport.h"
 
 class MasterModule : public CircleShape, public ModuleInterface
 {
@@ -19,6 +20,7 @@ public:
     friend class FlowControlCore;
 
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
+    virtual PortBase* createPort() override;
     void initData() override;
     
     void updatePacketPos() override;

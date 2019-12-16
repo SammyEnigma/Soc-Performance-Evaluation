@@ -20,6 +20,11 @@ SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
+PortBase *SlaveModule::createPort()
+{
+    return new ModulePort(this);
+}
+
 void SlaveModule::initData()
 {
     this->token = getData("token");

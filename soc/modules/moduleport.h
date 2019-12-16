@@ -5,14 +5,14 @@
 
 class ModulePort : public PortBase
 {
-    friend class PortDataDialog;
+    Q_OBJECT
 public:
     ModulePort(QWidget* parent = nullptr);
+    friend class PortDataDialog;
 
 protected:
     virtual void fromStringAddin(QString s) override;
     virtual QString toStringAddin() override;
-
 
 signals:
     void signalDataList();

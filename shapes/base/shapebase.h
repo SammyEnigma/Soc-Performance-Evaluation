@@ -19,7 +19,6 @@
 #include "selectedge.h"
 #include "portpositiondialog.h"
 #include "customdatatype.h"
-#include "portfactory.h"
 
 #define BORDER_SIZE 2 // 边缘padding，用来放调整大小的边界线
 #define ERR(x) qDebug() << log(x);
