@@ -155,5 +155,5 @@ void PortBase::slotMenuShowed(const QPoint &)
 
 void PortBase::slotDataList()
 {
-    
+
 }

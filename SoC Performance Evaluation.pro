@@ -29,6 +29,7 @@ INCLUDEPATH += \
     soc/interfaces \
 
 SOURCES += \
+    dialogs/portdatadialog.cpp \
     dialogs/portpositiondialog.cpp \
     dialogs/shapedatadialog.cpp \
     dialogs/shapepropertydialog.cpp \
@@ -51,11 +52,13 @@ SOURCES += \
     soc/interfaces/moduleinterface.cpp \
     soc/modules/mastermodule.cpp \
     soc/modules/modulecable.cpp \
+    soc/modules/moduleport.cpp \
     soc/modules/slavemodule.cpp \
     soc/transmissions/datapacket.cpp \
     soc/transmissions/datapacketview.cpp
 
 HEADERS += \
+    dialogs/portdatadialog.h \
     dialogs/portpositiondialog.h \
     dialogs/shapedatadialog.h \
     dialogs/shapepropertydialog.h \
@@ -75,6 +78,7 @@ HEADERS += \
     soc/interfaces/moduleinterface.h \
     soc/modules/mastermodule.h \
     soc/modules/modulecable.h \
+    soc/modules/moduleport.h \
     soc/modules/slavemodule.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \
@@ -87,6 +91,7 @@ HEADERS += \
     utils/stringutil.h
 
 FORMS += \
+    dialogs/portdatadialog.ui \
     mainwindow.ui \
     shapedatadialog.ui \
     shapepropertydialog.ui

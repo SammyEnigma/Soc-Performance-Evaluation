@@ -50,9 +50,9 @@ signals:
 
 public slots:
     void slotMenuShowed(const QPoint&);
-    void slotDataList();
+    virtual void slotDataList();
 	
-private:
+protected:
     QWidget* widget;
 	QString _text;
     QString _port_id;
