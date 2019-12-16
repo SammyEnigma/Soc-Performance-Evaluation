@@ -39,6 +39,8 @@ public:
 
     void fromString(QString s);
     QString toString();
+    virtual void fromStringAddin(QString s);
+    virtual QString toStringAddin();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

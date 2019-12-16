@@ -9,6 +9,11 @@ class ModulePort : public PortBase
 public:
     ModulePort(QWidget* parent = nullptr);
 
+protected:
+    virtual void fromStringAddin(QString s) override;
+    virtual QString toStringAddin() override;
+
+
 signals:
     void signalDataList();
 

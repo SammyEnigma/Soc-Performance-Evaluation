@@ -80,6 +80,7 @@ void PortBase::fromString(QString s)
     double y = StringUtil::getXml(s, "PROP_POS_Y").toDouble();
     _prop_pos = QPointF(x, y);
     _port_id = StringUtil::getXml(s, "PORT_ID");
+    fromStringAddin(s);
     setText(text);
 }
 
@@ -92,8 +93,19 @@ QString PortBase::toString()
         port_string += indent + StringUtil::makeXml(_text, "TEXT");
     port_string += indent + StringUtil::makeXml(QString::number(_prop_pos.x()), "PROP_POS_X");
     port_string += indent + StringUtil::makeXml(QString::number(_prop_pos.y()), "PROP_POS_Y");
+    port_string += toStringAddin();
     port_string = "\n\t<PORT>" + port_string + "\n\t</PORT>";
     return port_string;
+}
+
+void PortBase::fromStringAddin(QString s)
+{
+
+}
+
+QString PortBase::toStringAddin()
+{
+
 }
 
 void PortBase::paintEvent(QPaintEvent *event)

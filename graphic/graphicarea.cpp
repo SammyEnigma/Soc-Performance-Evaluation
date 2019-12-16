@@ -994,7 +994,7 @@ void GraphicArea::actionInsertPort()
         return;
 
     // 获取新端口的信息以及其他信息
-    PortBase *port = new PortBase(shape);
+    PortBase *port = shape->createPort();
     if (!PortPositionDialog::getPortPosition(shape, port)) // 取消添加
     {
         delete port;

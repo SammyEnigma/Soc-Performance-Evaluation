@@ -41,6 +41,7 @@ SOURCES += \
     shapes/base/cablebase.cpp \
     shapes/base/customdatatype.cpp \
     shapes/base/portbase.cpp \
+    shapes/base/portfactory.cpp \
     shapes/base/selectedge.cpp \
     shapes/base/shapebase.cpp \
     shapes/base/shapelistwidget.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     shapes/base/cablebase.h \
     shapes/base/customdatatype.h \
     shapes/base/portbase.h \
+    shapes/base/portfactory.h \
     shapes/base/selectedge.h \
     shapes/base/shapelistwidget.h \
     shapes/circleshape.h \

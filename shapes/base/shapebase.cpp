@@ -99,7 +99,7 @@ void ShapeBase::fromString(QString s)
         _border_color = qvariant_cast<QColor>(border_color);
     foreach (QString port_string, port_list)
     {
-        PortBase *port = new PortBase(this);
+        PortBase *port = PortFactory::createPort(StringUtil::getXml(port_string, "PORT_CLASS"), this);
         port->fromString(port_string);
         addPort(port);
     }
@@ -247,6 +247,11 @@ void ShapeBase::setLightEdgeShowed(bool show)
         _show_light_edge = show;
         update();
     }
+}
+
+PortBase *ShapeBase::createPort()
+{
+    return new PortBase(this);
 }
 
 void ShapeBase::addPort(PortBase *port)
