@@ -245,3 +245,18 @@ void MainWindow::on_actionStop_triggered()
 {
     flow_control->stopRun();
 }
+
+void MainWindow::on_actionSelect_All_triggered()
+{
+    ui->scrollAreaWidgetContents_2->actionSelectAll();
+}
+
+void MainWindow::on_actionCopy_triggered()
+{
+    ui->scrollAreaWidgetContents_2->actionCopy();
+}
+
+void MainWindow::on_actionPaste_triggered()
+{
+    ui->scrollAreaWidgetContents_2->actionPaste();
+}

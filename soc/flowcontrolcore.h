@@ -32,8 +32,8 @@ protected:
     void deleteToken(DataPacket* packet);
 
 signals:
-    void signalTokenCreated(DataPacket* packet);
-    void signalTokenDeleted(DataPacket* packet);
+    void signalTokenCreated(DataPacket* packet); // 发送给流控View，同步创建可视化控件
+    void signalTokenDeleted(DataPacket* packet); // 发送给流控View，同步删除可视化控件
 
 public slots:
     void passOneClock(); // 模拟时钟流逝 1 个 clock

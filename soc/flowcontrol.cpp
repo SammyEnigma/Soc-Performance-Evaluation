@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 10:42:51
+ * @LastEditTime: 2019-12-16 09:42:57
  * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #include "flowcontrol.h"
@@ -42,6 +42,8 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
  */
 void FlowControl::startRun()
 {
+	if (current_clock != -1)
+    	stopRun(); // 如果是重新运行，先停止Run
     if (!initModules())
         return;
     initData();

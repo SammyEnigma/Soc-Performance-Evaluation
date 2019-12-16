@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 16:31:51
+ * @LastEditTime: 2019-12-16 09:46:56
  * @Description: 流控的核心数据部分
  */
 #include "flowcontrolcore.h"
@@ -36,6 +36,10 @@ void FlowControlCore::initData()
     }
 }
 
+/**
+ * 清除数据，释放空间
+ * 也用于重新运行的初始化之前的清理操作
+ */
 void FlowControlCore::clearData()
 {
     if (!rt->running || current_clock == -1)
@@ -178,6 +182,9 @@ void FlowControlCore::passOneClock()
     ms_cable->passOneClock();
 }
 
+/**
+ * 创建一个顺序编号的token的工厂方法
+ */
 DataPacket *FlowControlCore::createToken()
 {
     static int token_id = 0;
@@ -187,6 +194,10 @@ DataPacket *FlowControlCore::createToken()
     return packet;
 }
 
+/**
+ * 收到某一个response
+ * 本应去模拟处理的，现在直接删掉
+ */
 void FlowControlCore::deleteToken(DataPacket *packet)
 {
     all_packets.removeOne(packet);
@@ -194,6 +205,10 @@ void FlowControlCore::deleteToken(DataPacket *packet)
     delete packet;
 }
 
+/**
+ * 输出某个数据
+ * 按需修改
+ */
 void FlowControlCore::printfAllData()
 {
     qDebug() << "=================================";

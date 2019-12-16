@@ -2,6 +2,12 @@
     <qresource prefix="/icons">
         <file alias="cursor">resources/icons/cursor.png</file>
         <file alias="locate">resources/icons/locate.png</file>
+        <file alias="pause">resources/icons/pause.png</file>
+        <file alias="resume">resources/icons/resume.png</file>
+        <file alias="run">resources/icons/run.png</file>
+        <file alias="stop">resources/icons/stop.png</file>
+        <file alias="save">resources/icons/save.png</file>
+        <file alias="one_step">resources/icons/one_step.png</file>
     </qresource>
     <qresource prefix="/thumbs"/>
 </RCC>

@@ -665,38 +665,10 @@ void GraphicArea::keyPressEvent(QKeyEvent *event)
 
     switch (key)
     {
-    case Qt::Key_A:
-        if (ctrl && !shift && !alt)
-        {
-            actionSelectAll();
-            return;
-        }
-        break;
-    case Qt::Key_C:
-        if (ctrl && !shift && !alt)
-        {
-            actionCopy();
-            return;
-        }
-        break;
-    case Qt::Key_V:
-        if (ctrl && !shift && !alt)
-        {
-            actionPaste();
-            return;
-        }
-        break;
     case Qt::Key_D:
         if (ctrl && !shift && !alt)
         {
             actionUnselect();
-            return;
-        }
-        break;
-    case Qt::Key_S:
-        if (ctrl && !shift && !alt)
-        {
-            save();
             return;
         }
         break;

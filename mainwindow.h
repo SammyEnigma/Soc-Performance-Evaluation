@@ -51,6 +51,12 @@ private slots:
 
     void on_actionStop_triggered();
 
+    void on_actionSelect_All_triggered();
+
+    void on_actionCopy_triggered();
+
+    void on_actionPaste_triggered();
+
 private:
     void initSystem(); // 初始化系统（比如目录结构）
     void initView();   // 初始化布局
