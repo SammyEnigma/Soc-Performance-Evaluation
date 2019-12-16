@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:01:12
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-05 14:23:36
+ * @LastEditTime: 2019-12-16 18:03:33
  * @Description: Shape的端口，可用来外接其他Shape
  * 位置是按照比例来存的，所以只保存相对比例而不保存绝对位置
  * 两个Port连接，中间就是一条线（可能是弯曲的线）
@@ -18,6 +18,8 @@ PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent)
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotMenuShowed(const QPoint &)));
 
     _prop_pos = QPointF(0.5, 0.5);
+    
+    _press_timestamp = 0;
 }
 
 PortBase *PortBase::newInstanceBySelf(QWidget *parent)
@@ -106,6 +108,22 @@ void PortBase::paintEvent(QPaintEvent *event)
     painter.drawPath(path);
 }
 
+void PortBase::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        if (_press_timestamp+400 >= getTimestamp()) // 双击
+        {
+            slotDataList();
+        }
+        _press_timestamp = getTimestamp();
+        event->accept();
+        return;
+    }
+    
+    return QWidget::mousePressEvent(event);
+}
+
 void PortBase::slotMenuShowed(const QPoint &)
 {
     QMenu* menu = new QMenu(this);
@@ -119,8 +137,9 @@ void PortBase::slotMenuShowed(const QPoint &)
     menu->addAction(position_action);
     menu->addAction(delete_action);
     
-    data_action->setEnabled(false);
     link_action->setEnabled(false);
+    
+    connect(data_action, SIGNAL(triggered()), this, SLOT(slotDataList()));
 
     connect(position_action, &QAction::triggered, [=]{
         emit signalModifyPosition();
@@ -132,4 +151,9 @@ void PortBase::slotMenuShowed(const QPoint &)
 
     menu->exec(QCursor::pos());
     delete menu;
+}
+
+void PortBase::slotDataList()
+{
+    
 }

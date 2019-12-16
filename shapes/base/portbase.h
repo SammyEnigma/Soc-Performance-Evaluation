@@ -17,7 +17,9 @@
 #include <QMenu>
 #include <QAction>
 #include <QDebug>
+#include <QMouseEvent>
 #include "stringutil.h"
+#include "globalvars.h"
 
 class PortBase : public QWidget
 {
@@ -40,6 +42,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 signals:
     void signalModifyPosition();
@@ -47,12 +50,15 @@ signals:
 
 public slots:
     void slotMenuShowed(const QPoint&);
+    void slotDataList();
 	
 private:
     QWidget* widget;
 	QString _text;
     QString _port_id;
     QPointF _prop_pos; // 相对于形状的比例（x比例、y比例）
+    
+    qint64 _press_timestamp;
 };
 
 #endif // PORTBASE_H
