@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:09:05
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-16 09:40:37
+ * @LastEditTime: 2019-12-16 17:32:28
  * @Description: SlaveModule
  */
 #include "slavemodule.h"
@@ -63,7 +63,8 @@ void SlaveModule::paintEvent(QPaintEvent *event)
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
 
-    painter.drawText(0, height*2, QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getToken()));
+    // painter.drawText(0, height*2, QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getToken()));
+    painter.drawText(0, height * 2, QString("buffer: another=%1, this=%2").arg(anotherCanRecive()).arg(getToken()));
 
     painter.drawText(0, height*3, QString("Enqueu:%1").arg(enqueue_list.size()));
 

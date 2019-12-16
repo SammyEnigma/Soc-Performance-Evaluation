@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:08:47
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 10:13:05
+ * @LastEditTime: 2019-12-16 17:32:02
  * @Description: MasterModule
  */
 #include "mastermodule.h"
@@ -47,5 +47,6 @@ void MasterModule::paintEvent(QPaintEvent *event)
     // 画自己的数量
     QPainter painter(this);
     QFontMetrics fm(this->font());
-    painter.drawText( 0, fm.lineSpacing(), QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getDefaultToken()));
+    // painter.drawText( 0, fm.lineSpacing(), QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getDefaultToken()));
+    painter.drawText(0, fm.lineSpacing(), QString("buffer: another=%1, this=%2").arg(anotherCanRecive()).arg(getToken()));
 }
