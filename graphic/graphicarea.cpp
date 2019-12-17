@@ -1119,10 +1119,6 @@ void GraphicArea::actionPaste()
         {
             ports_map.insert(port->getPortId(), port);
         }
-
-        // TODO: 复制用户自定义数据
-
-
     }
 
     // TODO: 复制连线情况

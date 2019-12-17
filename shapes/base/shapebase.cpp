@@ -48,6 +48,7 @@ ShapeBase *ShapeBase::newInstanceBySelf(QWidget *parent)
 
 void ShapeBase::copyDataFrom(ShapeBase *shape)
 {
+    // 形状自带属性
     this->_class = shape->_class;
     this->_text = shape->_text;
     this->_text_align = shape->_text_align;
@@ -58,10 +59,17 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
     this->_border_size = shape->_border_size;
     this->_border_color = shape->_border_color;
 
+    // 复制端口
     foreach (PortBase* port, shape->ports)
     {
         PortBase* p = port->newInstanceBySelf(this);
         ports.append(p);
+    }
+
+    // 复制用户自定义数据
+    foreach (CustomDataType* data, shape->custom_data_list)
+    {
+        this->custom_data_list.append(data->newInstanceBySelf());
     }
 }
 
