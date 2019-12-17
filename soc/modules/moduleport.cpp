@@ -1,8 +1,14 @@
+/*
+ * @Author: MRXY001
+ * @Date: 2019-12-16 18:12:32
+ * @LastEditors: MRXY001
+ * @LastEditTime: 2019-12-17 09:34:35
+ * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
+ */
 #include "moduleport.h"
 
 ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1)
 {
-
 }
 
 QString ModulePort::getClass()
@@ -31,4 +37,14 @@ void ModulePort::slotDataList()
     pdd->exec();
     pdd->deleteLater();*/
     emit signalDataList();
+}
+
+int ModulePort::getEnqueueDelay()
+{
+    return 1;
+}
+
+int ModulePort::getDequeueDelay()
+{
+    return 1;
 }

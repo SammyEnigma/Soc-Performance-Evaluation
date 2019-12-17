@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-16 09:42:57
+ * @LastEditTime: 2019-12-17 09:37:17
  * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #include "flowcontrol.h"
@@ -107,6 +107,9 @@ bool FlowControl::initModules()
     master = static_cast<MasterModule *>(graphic->findShapeByClass("Master"));
     slave = static_cast<SlaveModule *>(graphic->findShapeByClass("Slave"));
     ms_cable = static_cast<ModuleCable *>(getModuleCable(master, slave));
+    master_port = static_cast<ModulePort *>(ms_cable->getFromPort());
+    slave_port = static_cast<ModulePort *>(ms_cable->getToPort());
+    
     if (!master)
     {
         DEB << "无法找到 Master";

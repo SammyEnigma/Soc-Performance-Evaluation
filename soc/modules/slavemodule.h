@@ -26,8 +26,6 @@ public:
     
     void updatePacketPos() override;
     
-    int getEnqueueDelay();
-    int getDequeueDelay();
     int getProcessDelay();
 
 protected:
@@ -36,9 +34,6 @@ protected:
 signals:
 
 protected:
-	PacketList enqueue_list;
-    QQueue<DataPacket *> data_queue;
-    PacketList dequeue_list;
     PacketList process_list;
 };
 

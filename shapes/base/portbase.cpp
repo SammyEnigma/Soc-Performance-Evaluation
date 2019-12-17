@@ -105,12 +105,12 @@ QString PortBase::toString()
 
 void PortBase::fromStringAddin(QString s)
 {
-
+    Q_UNUSED(s)
 }
 
 QString PortBase::toStringAddin()
 {
-
+    return QString();
 }
 
 void PortBase::paintEvent(QPaintEvent *event)

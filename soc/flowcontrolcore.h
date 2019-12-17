@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-11 16:47:58
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-11 16:58:06
+ * @LastEditTime: 2019-12-17 09:34:23
  * @Description: 流控的核心数据部分
  */
 #ifndef FLOWCONTROLCORE_H
@@ -28,22 +28,24 @@ public:
 protected:
     void initData();
     void clearData();
-    DataPacket* createToken();
-    void deleteToken(DataPacket* packet);
+    DataPacket *createToken();
+    void deleteToken(DataPacket *packet);
 
 signals:
-    void signalTokenCreated(DataPacket* packet); // 发送给流控View，同步创建可视化控件
-    void signalTokenDeleted(DataPacket* packet); // 发送给流控View，同步删除可视化控件
+    void signalTokenCreated(DataPacket *packet); // 发送给流控View，同步创建可视化控件
+    void signalTokenDeleted(DataPacket *packet); // 发送给流控View，同步删除可视化控件
 
 public slots:
     void passOneClock(); // 模拟时钟流逝 1 个 clock
 
 protected:
-    MasterModule *master;  // Master
-    SlaveModule *slave;    // Slave
-    ModuleCable *ms_cable; // Master - Slave 连接线
+    MasterModule *master;    // Master
+    SlaveModule *slave;      // Slave
+    ModuleCable *ms_cable;   // Master - Slave 连接线
+    ModulePort *master_port; // Master传输到Slave的端口
+    ModulePort *slave_port;  // Slave传输到Master的端口
 
-    int current_clock; // 当前时钟位置
+    int current_clock;      // 当前时钟位置
     PacketList all_packets; // 所有数据包（指针）的列表
 };
 
