@@ -145,6 +145,7 @@ void FlowControlCore::passOneClock()
     }
 
     // Slave出队列（1 clock）-->处理数据
+    bool slave_dequeue_signal_sended = false; // 1个clock只发送一次的flag
     for (int i = 0; i < slave_port->dequeue_list.size(); i++)
     {
         DataPacket *packet = slave_port->dequeue_list.at(i);
@@ -154,6 +155,13 @@ void FlowControlCore::passOneClock()
             slave->process_list.append(packet);
             packet->resetDelay(slave->getProcessDelay());
             slave->dequeue_signal_buffer++; // 告诉Master自己可以接收的buffer++
+
+            if (slave->dequeue_signal_buffer > 0 && !slave_dequeue_signal_sended)
+            {
+                // Slave出队列时立即给Master一个信号，但是这个信号1clock最多只发送一个，多余的需要进入buffer等待下一个时钟
+                // TODO: 发送一个Slave出队列的信号（暂时什么都不做）
+                slave_dequeue_signal_sended = true;
+            }
         }
         else
         {
@@ -183,7 +191,6 @@ void FlowControlCore::passOneClock()
     }
 
     // Slave返回给Master（5 clock）-->Master接收
-    bool slave_dequeue_signal_sended = false; // 1个clock只发送一次的flag
     for (int i = 0; i < ms_cable->response_list.size(); i++)
     {
         DataPacket *packet = ms_cable->response_list.at(i);
@@ -194,14 +201,8 @@ void FlowControlCore::passOneClock()
             qDebug() << "Master接收到response" << packet->toString();
             deleteToken(packet);
 
-            if (slave->dequeue_signal_buffer > 0 && !slave_dequeue_signal_sended)
-            {
-                // TODO: 为了显示需要，移到这个位置
-                // Slave出队列时立即给Master一个信号，但是这个信号1clock最多只发送一个，多余的需要进入buffer等待下一个时钟
-                master->another_can_recive++;
-                slave->dequeue_signal_buffer--;
-                slave_dequeue_signal_sended = true;
-            }
+            // Master接收，其可发送+1
+            master->another_can_recive++;
         }
         else
         {
