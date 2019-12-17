@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QLabel>
+#include <QDesktopServices>
 #include "shapebase.h"
 #include "globalvars.h"
 #include "flowcontrol.h"
@@ -56,6 +57,10 @@ private slots:
     void on_actionCopy_triggered();
 
     void on_actionPaste_triggered();
+
+    void on_actionAbout_triggered();
+
+    void on_actionGithub_G_triggered();
 
 private:
     void initSystem(); // 初始化系统（比如目录结构）

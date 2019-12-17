@@ -244,46 +244,73 @@
    </property>
   </action>
   <action name="actionNew">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>New (&amp;N)</string>
    </property>
   </action>
   <action name="actionOpen">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Open (&amp;O)</string>
    </property>
   </action>
   <action name="actionOpen_Recent">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Open Recent (&amp;R)</string>
    </property>
   </action>
   <action name="actionSave_As">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save As (&amp;A)</string>
    </property>
   </action>
   <action name="actionRename">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Rename (&amp;M)</string>
    </property>
   </action>
   <action name="actionClose">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Close (&amp;C)</string>
    </property>
   </action>
   <action name="actionPrint">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Print (&amp;P)</string>
    </property>
   </action>
   <action name="actionExit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Exit (&amp;E)</string>
    </property>
   </action>
   <action name="actionUndo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Undo (&amp;U)</string>
    </property>
@@ -292,6 +319,9 @@
    </property>
   </action>
   <action name="actionRedo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Redo (&amp;R)</string>
    </property>
@@ -337,136 +367,217 @@
    </property>
   </action>
   <action name="actionBegin_End_Select">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Begin/End Select (&amp;B)</string>
    </property>
   </action>
   <action name="actionSet_Read_Only">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Set Read-Only (&amp;O)</string>
    </property>
   </action>
   <action name="actionFind">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Find (&amp;F)</string>
    </property>
   </action>
   <action name="actionFind_Next">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Find Next (&amp;N)</string>
    </property>
   </action>
   <action name="actionFind_Previous">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Find Previous (&amp;P)</string>
    </property>
   </action>
   <action name="actionReplace">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Replace (&amp;R)</string>
    </property>
   </action>
   <action name="actionPreference">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Preference</string>
    </property>
   </action>
   <action name="actionStyle_Configurator">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Style Configurator</string>
    </property>
   </action>
   <action name="actionShortcut_Mapper">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Shortcut Mapper</string>
    </property>
   </action>
   <action name="actionMark">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Mark (&amp;M)</string>
    </property>
   </action>
   <action name="actionMark_All">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Mark All (&amp;A)</string>
    </property>
   </action>
   <action name="actionUnmark_All">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Unmark All (&amp;U)</string>
    </property>
   </action>
   <action name="actionJump_Up">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Jump Up (&amp;J)</string>
    </property>
   </action>
   <action name="actionJump_Down">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Jump Down (&amp;D)</string>
    </property>
   </action>
   <action name="actionAuto_Resize">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Auto Resize (&amp;R)</string>
    </property>
   </action>
   <action name="actionAlign_Top">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Align Top (&amp;T)</string>
    </property>
   </action>
   <action name="actionAlign_Left">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Align Left (&amp;L)</string>
    </property>
   </action>
   <action name="actionAlign_Right">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Align Right (&amp;R)</string>
    </property>
   </action>
   <action name="actionAlign_Bottom">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Align Bottom (&amp;B)</string>
    </property>
   </action>
   <action name="actionAlign_Center">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Align Center (&amp;C)</string>
    </property>
   </action>
   <action name="actionAlign_HCenter">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Align HCenter (&amp;H)</string>
    </property>
   </action>
   <action name="actionAlign_VCenter">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Align VCenter (&amp;V)</string>
    </property>
   </action>
   <action name="actionShape_Base">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Shape Base (&amp;B)</string>
    </property>
   </action>
   <action name="actionText">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Text (&amp;T)</string>
    </property>
   </action>
   <action name="actionImage">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Image (&amp;I)</string>
    </property>
   </action>
   <action name="actionAuto_Connect">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Auto Connect (&amp;C)</string>
    </property>
   </action>
   <action name="actionAuto_Layout">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Auto Layout (&amp;L)</string>
    </property>
@@ -484,6 +595,9 @@
    </property>
   </action>
   <action name="actionDebug">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Debug (&amp;D)</string>
    </property>
@@ -494,6 +608,9 @@
    </property>
   </action>
   <action name="actionStep">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icons/one_step</normaloff>:/icons/one_step</iconset>
@@ -502,15 +619,21 @@
     <string>One Step (&amp;O)</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionShapes_Directory">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Shapes Directory (&amp;S)</string>
    </property>
   </action>
   <action name="actionApplication_Directory_A">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Application Directory (&amp;A)</string>
    </property>
@@ -521,51 +644,84 @@
    </property>
   </action>
   <action name="actionTen_Step_T">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Ten Step (&amp;T)</string>
    </property>
   </action>
   <action name="actionOne_Clock_C">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>One Clock (C)</string>
    </property>
   </action>
   <action name="actionTen_Clock_E">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Ten Clock (E)</string>
    </property>
   </action>
   <action name="actionFull_Screen_F">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Full Screen (&amp;F)</string>
    </property>
   </action>
   <action name="actionRun_To_Break_B">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Run To Break (&amp;B)</string>
    </property>
   </action>
   <action name="actionRefresh_Shapes_R">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Refresh Shapes (&amp;S)</string>
    </property>
   </action>
   <action name="actionRegresh_Graphics_G">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Refresh Graphics (&amp;G)</string>
    </property>
   </action>
   <action name="actionZoom_In_I">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Zoom In (&amp;I)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+=</string>
    </property>
   </action>
   <action name="actionZoom_Out_O">
    <property name="text">
     <string>Zoom Out (&amp;O)</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
   </action>
   <action name="actionPause_P">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icons/pause</normaloff>:/icons/pause</iconset>
@@ -577,7 +733,7 @@
     <string>Ctrl+P</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionResume_S">

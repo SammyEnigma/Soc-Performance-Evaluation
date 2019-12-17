@@ -221,9 +221,11 @@ void MainWindow::on_actionRun_triggered()
     flow_control->startRun();
     ui->actionRun->setVisible(false);
     ui->actionStop->setVisible(true);
+    ui->actionStop->setEnabled(true);
     ui->actionPause_P->setVisible(true);
+    ui->actionPause_P->setEnabled(true);
     ui->actionResume_S->setVisible(false);
-    ui->actionStep->setVisible(true);
+    ui->actionStep->setEnabled(true);
 }
 
 void MainWindow::on_actionPause_P_triggered()
@@ -255,9 +257,10 @@ void MainWindow::on_actionStop_triggered()
     flow_control->stopRun();
     ui->actionRun->setVisible(true);
     ui->actionStop->setVisible(false);
-    ui->actionPause_P->setVisible(false);
+    ui->actionPause_P->setVisible(true);
+    ui->actionPause_P->setEnabled(false);
     ui->actionResume_S->setVisible(false);
-    ui->actionStep->setVisible(false);
+    ui->actionStep->setEnabled(false);
 }
 
 void MainWindow::on_actionSelect_All_triggered()
@@ -273,4 +276,14 @@ void MainWindow::on_actionCopy_triggered()
 void MainWindow::on_actionPaste_triggered()
 {
     ui->scrollAreaWidgetContents_2->actionPaste();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::information(this, tr("芯片开发图形化"), tr("开发人员：王鑫益 蓝兴业\n\nGithub：https://github.com/Graphical-SoC-Performance/Soc-Performance-Evaluation"));
+}
+
+void MainWindow::on_actionGithub_G_triggered()
+{
+    QDesktopServices::openUrl(QUrl(QLatin1String("https://github.com/Graphical-SoC-Performance/Soc-Performance-Evaluation")));
 }
