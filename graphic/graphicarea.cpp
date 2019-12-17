@@ -1106,12 +1106,11 @@ void GraphicArea::actionPaste()
     ShapeList paste_board; // 复制后的新列表，一一对应 clip_board
     foreach (ShapeBase *shape, clip_board)
     {
-        ShapeBase *copied_shape = insertShapeByType(shape);
-        copied_shape->copyDataFrom(shape);
-//        connectShapeEvent(copied_shape);
+        ShapeBase *copied_shape = insertShapeByType(shape); // 创建+复制数据+连接信号槽
         QRect geo = shape->geometry();
         geo.moveTo(geo.topLeft() + offset);
         copied_shape->setGeometry(geo);
+
         paste_board.append(copied_shape);
         select(copied_shape, true);
 
@@ -1123,7 +1122,7 @@ void GraphicArea::actionPaste()
         }
     }
 
-    // TODO: 复制连线情况
+    // TODO: 复制连线情况。因为一一对应的，根据下标复制对应的端口
 
 
     autoSave();

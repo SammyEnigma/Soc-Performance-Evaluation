@@ -62,8 +62,7 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
     // 复制端口
     foreach (PortBase* port, shape->ports)
     {
-        PortBase* p = port->newInstanceBySelf(this);
-        addPort(p);
+        addPort(port->newInstanceBySelf(this));
     }
 
     // 复制用户自定义数据
