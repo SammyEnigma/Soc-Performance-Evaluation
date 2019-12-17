@@ -25,6 +25,9 @@ public:
     int getEnqueueDelay(); 
     int getDequeueDelay();
 
+    bool nextBandwidthBuffer();
+    void resetBandwidthBuffer();
+
 protected:
     virtual void fromStringAddin(QString s) override;
     virtual QString toStringAddin() override;
@@ -40,7 +43,8 @@ public:
     PacketList dequeue_list;
 
 private:
-    int bandwidth;
+    int bandwidth;        // 带宽，多少个clock发送1个token（越大越慢）
+    int bandwidth_buffer; // 发送的clock缓存，超过bandwidth才能发送
 };
 
 #endif // MODULEPORT_H

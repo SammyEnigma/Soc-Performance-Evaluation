@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 16:25:38
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 09:37:17
+ * @LastEditTime: 2019-12-17 11:16:22
  * @Description: 流控的用户界面（从形状转数据、步骤控制部分）
  */
 #include "flowcontrol.h"
@@ -123,6 +123,11 @@ bool FlowControl::initModules()
     if (!ms_cable)
     {
         DEB << "无法找到 Master 和 Slave 的连接";
+        return false;
+    }
+    if (!master_port || !slave_port)
+    {
+        DEB << "无法找到对应的连接端口";
         return false;
     }
     return true;

@@ -7,7 +7,7 @@
  */
 #include "moduleport.h"
 
-ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1)
+ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1), bandwidth_buffer(0)
 {
 }
 
@@ -47,4 +47,14 @@ int ModulePort::getEnqueueDelay()
 int ModulePort::getDequeueDelay()
 {
     return 1;
+}
+
+bool ModulePort::nextBandwidthBuffer()
+{
+    return ++bandwidth_buffer >= bandwidth;
+}
+
+void ModulePort::resetBandwidthBuffer()
+{
+    bandwidth_buffer = 0;
 }

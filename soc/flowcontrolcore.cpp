@@ -61,13 +61,14 @@ void FlowControlCore::passOneClock()
 
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
-    if (master->anotherCanRecive())
+    if (master->anotherCanRecive() && master_port->nextBandwidthBuffer())
     {
         DataPacket *packet = createToken();
         packet->setDrawPos(master->geometry().center());
         packet->resetDelay(ms_cable->getTransferDelay());
         ms_cable->request_list.append(packet);
         master->another_can_recive--; // 计算得到的slave token--
+        master_port->resetBandwidthBuffer();
     }
 
     // 连接线延迟传输（5 clock）-->给Slave
