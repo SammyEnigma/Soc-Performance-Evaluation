@@ -22,10 +22,13 @@ public:
 
     virtual QString getClass() override;
 
+    void passOneClock();
+
     int getEnqueueDelay(); 
     int getDequeueDelay();
 
     bool nextBandwidthBuffer();
+    bool isBandwidthBufferFilled();
     void resetBandwidthBuffer();
 
 protected:

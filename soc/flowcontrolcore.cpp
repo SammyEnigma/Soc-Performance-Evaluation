@@ -59,9 +59,15 @@ void FlowControlCore::passOneClock()
 {
     FCDEB "Clock:" << current_clock << " >>";
 
+    // 内部模拟时钟流逝，设置数据包位置等
+    master->passOneClock();
+    slave->passOneClock();
+    ms_cable->passOneClock();
+
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
-    if (master->anotherCanRecive() && master_port->nextBandwidthBuffer())
+    master_port->nextBandwidthBuffer();
+    if (master->anotherCanRecive())
     {
         DataPacket *packet = createToken();
         packet->setDrawPos(master->geometry().center());
@@ -133,12 +139,14 @@ void FlowControlCore::passOneClock()
         DataPacket *packet = slave->process_list.at(i);
         if (packet->isDelayFinished()) // 处理完毕，开始发送
         {
-            if (slave->anotherCanRecive()) // 如果master没有token空位，则堵住
+            qDebug() << slave_port->bandwidth_buffer << slave_port->bandwidth;
+            if (slave->anotherCanRecive() && slave_port->nextBandwidthBuffer()) // 如果master没有token空位，则堵住
             {
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);
                 packet->resetDelay(ms_cable->getTransferDelay());
                 slave->another_can_recive--;
+                slave_port->resetBandwidthBuffer();
             }
         }
         else
@@ -166,11 +174,6 @@ void FlowControlCore::passOneClock()
 
     // ==== 时钟结束后首尾 ====
     current_clock++;
-
-    // 内部模拟时钟流逝，设置数据包位置等
-    master->passOneClock();
-    slave->passOneClock();
-    ms_cable->passOneClock();
 }
 
 /**

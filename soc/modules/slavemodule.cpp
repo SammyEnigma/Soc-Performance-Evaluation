@@ -33,6 +33,15 @@ void SlaveModule::initData()
     this->another_can_recive = token->i();
 }
 
+void SlaveModule::passOneClock()
+{
+    foreach (PortBase* port, ports)
+    {
+        ModulePort* mp = static_cast<ModulePort*>(port);
+        mp->passOneClock();
+    }
+}
+
 void SlaveModule::updatePacketPos()
 {
     QFontMetrics fm(this->font());

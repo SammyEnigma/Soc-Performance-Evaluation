@@ -16,6 +16,11 @@ QString ModulePort::getClass()
     return "ModulePort";
 }
 
+void ModulePort::passOneClock()
+{
+    nextBandwidthBuffer();
+}
+
 void ModulePort::fromStringAddin(QString s)
 {
     QString bandwidth = StringUtil::getXml(s, "BANDWIDTH");
@@ -52,6 +57,11 @@ int ModulePort::getDequeueDelay()
 bool ModulePort::nextBandwidthBuffer()
 {
     return ++bandwidth_buffer >= bandwidth;
+}
+
+bool ModulePort::isBandwidthBufferFilled()
+{
+    return bandwidth_buffer >= bandwidth;
 }
 
 void ModulePort::resetBandwidthBuffer()

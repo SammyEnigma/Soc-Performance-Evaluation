@@ -24,6 +24,7 @@ public:
     virtual PortBase* createPort() override;
     void initData() override;
     
+    virtual void passOneClock() override;
     void updatePacketPos() override;
     
     int getProcessDelay();

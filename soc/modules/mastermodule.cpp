@@ -34,6 +34,15 @@ void MasterModule::initData()
     this->another_can_recive = token->i();
 }
 
+void MasterModule::passOneClock()
+{
+    foreach (PortBase* port, ports)
+    {
+        ModulePort* mp = static_cast<ModulePort*>(port);
+        mp->passOneClock();
+    }
+}
+
 void MasterModule::updatePacketPos()
 {
     QFontMetrics fm(this->font());
