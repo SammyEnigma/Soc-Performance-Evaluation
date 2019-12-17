@@ -75,6 +75,7 @@ public:
     virtual PortBase* createPort();
     virtual void addPort(PortBase *port);
     QList<PortBase *> getPorts();
+    PortBase *getPortByOpposite(ShapeBase* shape);
 
     void setPressOperatorEffected();
     void simulatePress(QMouseEvent *event);

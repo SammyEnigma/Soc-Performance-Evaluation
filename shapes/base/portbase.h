@@ -21,6 +21,8 @@
 #include "stringutil.h"
 #include "globalvars.h"
 
+class CableBase;
+
 class PortBase : public QWidget
 {
     Q_OBJECT
@@ -35,6 +37,9 @@ public:
     void setOppositePort(PortBase* port);
     PortBase *getOppositePort();
     QWidget *getOppositeShape();
+    void setCable(CableBase* cable);
+    CableBase* getCable();
+    void clearCable();
 
     void setText(QString text);
     void setPortPosition(double x, double y);
@@ -67,6 +72,7 @@ protected:
     QPointF _prop_pos; // 相对于形状的比例（x比例、y比例）
     
     PortBase* opposite; // 连接对面的端口。可通过端口获取形状
+    CableBase* cable;
 
     qint64 _press_timestamp;
 };

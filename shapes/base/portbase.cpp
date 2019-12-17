@@ -9,7 +9,7 @@
  */
 #include "portbase.h"
 
-PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent), opposite(nullptr)
+PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent), opposite(nullptr), cable(nullptr)
 {
     setMinimumSize(5, 5);
     setFixedSize(10, 10);
@@ -65,7 +65,26 @@ QWidget *PortBase::getOppositeShape()
     if (opposite == nullptr)
         return nullptr;
     return opposite->getShape();
-//    return reinterpret_cast<ShapeBase*>(opposite->getShape()); // 强转
+    //    return reinterpret_cast<ShapeBase*>(opposite->getShape()); // 强转
+}
+
+void PortBase::setCable(CableBase *cable)
+{
+    this->cable = cable;
+}
+
+CableBase *PortBase::getCable()
+{
+    return cable;
+}
+
+/**
+ * 删除线或者另一个端口时，删除剩下的端口信息
+ */
+void PortBase::clearCable()
+{
+    opposite = nullptr;
+    cable = nullptr;
 }
 
 void PortBase::setText(QString text)

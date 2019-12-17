@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 10:29:48
+ * @LastEditTime: 2019-12-17 10:48:15
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -281,6 +281,7 @@ void GraphicArea::remove(ShapeBase *shape)
     selected_shapes.removeOne(shape);
     shape_lists.removeOne(shape);
     clip_board.removeOne(shape);
+    
     // 删除形状的端口
     if (shape->getLargeType() != CableType) // 本身不是连接线
     {
@@ -304,6 +305,14 @@ void GraphicArea::remove(ShapeBase *shape)
                 ++it;
             }
         }
+    }
+    else // 连接线，删除端口信息
+    {
+        CableBase* cable = static_cast<CableBase*>(shape);
+        if (cable->getFromPort() != nullptr)
+            cable->getFromPort()->clearCable();
+        if (cable->getToPort() != nullptr)
+            cable->getToPort()->clearCable();
     }
     shape->deleteLater();
 }
@@ -914,6 +923,12 @@ void GraphicArea::removePortCable(PortBase *port)
         if (cable_lists.at(i)->usedPort(port))
         {
             CableBase* cable = cable_lists.at(i);
+            // 删除连接关系
+            if (cable->getFromPort() != nullptr && cable->getFromPort() != port)
+                cable->getFromPort()->clearCable();
+            if (cable->getToPort() != nullptr && cable->getToPort() != port)
+                cable->getToPort()->clearCable();
+            // 删除线控件
             remove(cable);
             cable_lists.removeAt(i--);
         }

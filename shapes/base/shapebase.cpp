@@ -285,6 +285,19 @@ QList<PortBase *> ShapeBase::getPorts()
 }
 
 /**
+ * 给定目标形状，获取连接到这个形状某个端口的本地端口
+ */
+PortBase *ShapeBase::getPortByOpposite(ShapeBase *shape)
+{
+    foreach (PortBase* port, ports)
+    {
+        if (port->getOppositeShape() == shape)
+            return port;
+    }
+    return nullptr;
+}
+
+/**
  * 获取合适的尺寸（根据图标和文字生成的默认尺寸）
  * 宽度取最宽的一个
  * 高度取所有数据累加结果（因为是竖着排列的）
