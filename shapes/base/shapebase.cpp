@@ -57,6 +57,12 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
     this->_pixmap_color = shape->_pixmap_color;
     this->_border_size = shape->_border_size;
     this->_border_color = shape->_border_color;
+
+    foreach (PortBase* port, shape->ports)
+    {
+        PortBase* p = port->newInstanceBySelf(this);
+        ports.append(p);
+    }
 }
 
 void ShapeBase::fromString(QString s)

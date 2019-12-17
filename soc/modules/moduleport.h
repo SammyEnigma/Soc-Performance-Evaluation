@@ -19,7 +19,7 @@ public:
     ModulePort(QWidget *parent = nullptr);
     friend class PortDataDialog;
     friend class FlowControlCore;
-
+    virtual ModulePort* newInstanceBySelf(QWidget* parent = nullptr) override;
     virtual QString getClass() override;
 
     void passOneClock();

@@ -28,7 +28,7 @@ class PortBase : public QWidget
     Q_OBJECT
 public:
     PortBase(QWidget *parent = nullptr);
-    PortBase* newInstanceBySelf(QWidget* parent = nullptr);
+    virtual PortBase* newInstanceBySelf(QWidget* parent = nullptr);
     virtual QString getClass();
 
     void setPortId(QString id);

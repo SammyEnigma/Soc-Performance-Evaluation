@@ -1103,6 +1103,7 @@ void GraphicArea::actionPaste()
 
     // 开始粘贴
     unselect(); // 取消全选，后续选中粘贴的
+    ShapeList paste_board; // 复制后的新列表，一一对应 clip_board
     foreach (ShapeBase *shape, clip_board)
     {
         ShapeBase *copied_shape = insertShapeByType(shape);
@@ -1110,8 +1111,22 @@ void GraphicArea::actionPaste()
         QRect geo = shape->geometry();
         geo.moveTo(geo.topLeft() + offset);
         copied_shape->setGeometry(geo);
+        paste_board.append(copied_shape);
         select(copied_shape, true);
+
+        // 添加全局的端口
+        foreach (PortBase* port, copied_shape->getPorts())
+        {
+            ports_map.insert(port->getPortId(), port);
+        }
+
+        // TODO: 复制用户自定义数据
+
+
     }
+
+    // TODO: 复制连线情况
+
 
     autoSave();
 }

@@ -11,6 +11,14 @@ ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1), bandwi
 {
 }
 
+ModulePort *ModulePort::newInstanceBySelf(QWidget *parent)
+{
+    ModulePort* port = new ModulePort(parent);
+    port->_text = this->_text;
+    port->_prop_pos = this->_prop_pos;
+    return port;
+}
+
 QString ModulePort::getClass()
 {
     return "ModulePort";
