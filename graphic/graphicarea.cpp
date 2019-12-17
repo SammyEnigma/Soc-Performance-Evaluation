@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 10:23:05
+ * @LastEditTime: 2019-12-17 10:29:48
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -549,7 +549,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     CableBase* cable = static_cast<CableBase*>(_drag_prev_shape);
                     foreach (PortBase* port, ports_map)
                     {
-                        if (port == _stick_from_port)
+                        if (port == _stick_from_port) // 是和from同一个的端口，取消创建
                             continue;
                         QPoint port_pos = port->getGlobalPos();
                         int dis = (port_pos-mouse_pos).manhattanLength();
@@ -562,19 +562,37 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     // 判断连接点
                     if (nearest_port != nullptr) // 两个端口连接上
                     {
-                        cable->setPorts(_stick_from_port, nearest_port);
-                        cable->adjustGeometryByPorts();
-                        _select_rect = cable->geometry();
+                        // 判断是否已经有已存在的
+                        bool had = false;
+                        foreach (CableBase* cable, cable_lists)
+                        {
+                            if ((cable->getFromPort() == _stick_from_port && cable->getToPort() == nearest_port)
+                                || (cable->getFromPort() == nearest_port && cable->getToPort() == _stick_from_port))
+                            {
+                                had = true;
+                            }
+                        }
+                        if (!had)
+                        {
+                            cable->setPorts(_stick_from_port, nearest_port);
+                            cable->adjustGeometryByPorts();
+                            _select_rect = cable->geometry();
+                            ShapeBase *c = insertShapeByRect(_drag_prev_shape, cable->geometry());
+                            cable_lists.append(static_cast<CableBase *>(c));
+                        }
+                        else
+                        {
+                            _stick_from_port = nullptr;
+                            DEB << log("连接线重复了");
+                        }
                     }
                     else
                     {
                         _stick_from_port = nullptr;
                         DEB << log("连接线没有找到合适的端口2");
                     }
-                    ShapeBase* c = insertShapeByRect(_drag_prev_shape, cable->geometry());
-                    cable_lists.append(static_cast<CableBase*>(c));
                 }
-                else
+                else // 没有端口停靠，普通形状
                 {
                     // 创建形状
                     insertShapeByRect(rt->current_choosed_shape, _select_rect);
