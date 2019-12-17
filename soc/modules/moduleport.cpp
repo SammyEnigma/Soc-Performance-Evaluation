@@ -31,5 +31,4 @@ void ModulePort::slotDataList()
     pdd->exec();
     pdd->deleteLater();*/
     emit signalDataList();
-    qDebug() << "void ModulePort::slotDataList()";
 }

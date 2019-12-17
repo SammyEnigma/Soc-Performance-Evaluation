@@ -15,3 +15,8 @@ PortDataDialog::~PortDataDialog()
 {
     delete ui;
 }
+
+void PortDataDialog::on_spinBox_valueChanged(int)
+{
+    port->bandwidth = ui->spinBox->value();
+}

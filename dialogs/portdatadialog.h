@@ -15,6 +15,9 @@ public:
     PortDataDialog(ModulePort *port = nullptr);
     ~PortDataDialog();
 
+private slots:
+    void on_spinBox_valueChanged(int);
+
 private:
     Ui::PortDataDialog *ui;
     ModulePort* port;
