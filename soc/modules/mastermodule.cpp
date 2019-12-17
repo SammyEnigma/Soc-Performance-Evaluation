@@ -7,8 +7,7 @@
  */
 #include "mastermodule.h"
 
-MasterModule::MasterModule(QWidget *parent) 
-    : CircleShape(parent), ModuleInterface(parent)
+MasterModule::MasterModule(QWidget *parent) : CircleShape(parent), ModuleInterface(ShapeBase::ports, parent)
 {
     _class = _text = "Master";
 }
@@ -32,15 +31,6 @@ void MasterModule::initData()
     this->bandwidth = getData("bandwidth");
     this->latency = getData("latency");
     this->another_can_recive = token->i();
-}
-
-void MasterModule::passOneClock()
-{
-    foreach (PortBase* port, ports)
-    {
-        ModulePort* mp = static_cast<ModulePort*>(port);
-        mp->passOneClock();
-    }
 }
 
 void MasterModule::updatePacketPos()

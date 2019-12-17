@@ -8,7 +8,7 @@
 #include "modulecable.h"
 
 ModuleCable::ModuleCable(QWidget *parent)
-    : CableBase(parent), ModuleInterface(parent),
+    : CableBase(parent), ModuleInterface(ShapeBase::ports, parent),
       packet_lists(QList<PacketList>{PacketList(), PacketList(), PacketList(), PacketList()}), // 初始化四个
       request_list(packet_lists[REQUEST_LINE]), request_data_list(packet_lists[REQUEST_DATA_LINE]),
       response_list(packet_lists[RESPONSE_LINE]), response_data_list(packet_lists[RESPONSE_DATA_LINE])

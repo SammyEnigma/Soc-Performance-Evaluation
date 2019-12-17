@@ -7,9 +7,9 @@
  */
 #include "moduleinterface.h"
 
-ModuleInterface::ModuleInterface(QObject *parent)
+ModuleInterface::ModuleInterface(QList<PortBase *>& ports, QObject *parent)
     : QObject(parent), token(nullptr), bandwidth(nullptr), latency(nullptr),
-      another_can_recive(0)
+      another_can_recive(0), ports(ports)
 {
 }
 
@@ -89,6 +89,12 @@ int ModuleInterface::anotherCanRecive()
 void ModuleInterface::passOneClock()
 {
 	updatePacketPos();
+
+    foreach (PortBase* port, ports)
+    {
+        ModulePort* mp = static_cast<ModulePort*>(port);
+        mp->passOneClock();
+    }
 }
 
 /**

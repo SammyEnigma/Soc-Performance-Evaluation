@@ -7,7 +7,7 @@
  */
 #include "slavemodule.h"
 
-SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), ModuleInterface(parent)
+SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), ModuleInterface(ShapeBase::ports, parent)
 {
     _class = _text = "Slave";
 }
@@ -31,15 +31,6 @@ void SlaveModule::initData()
     this->bandwidth = getData("bandwidth");
     this->latency = getData("latency");
     this->another_can_recive = token->i();
-}
-
-void SlaveModule::passOneClock()
-{
-    foreach (PortBase* port, ports)
-    {
-        ModulePort* mp = static_cast<ModulePort*>(port);
-        mp->passOneClock();
-    }
 }
 
 void SlaveModule::updatePacketPos()

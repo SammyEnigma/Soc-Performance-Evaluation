@@ -22,8 +22,7 @@ public:
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual PortBase* createPort() override;
     void initData() override;
-    
-    virtual void passOneClock() override;
+
     void updatePacketPos() override;
     
 protected:

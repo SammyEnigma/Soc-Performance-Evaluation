@@ -23,8 +23,7 @@ public:
     virtual SlaveModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual PortBase* createPort() override;
     void initData() override;
-    
-    virtual void passOneClock() override;
+
     void updatePacketPos() override;
     
     int getProcessDelay();

@@ -66,8 +66,7 @@ void FlowControlCore::passOneClock()
 
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
-    master_port->nextBandwidthBuffer();
-    if (master->anotherCanRecive())
+    if (master->anotherCanRecive() && master_port->isBandwidthBufferFilled())
     {
         DataPacket *packet = createToken();
         packet->setDrawPos(master->geometry().center());
@@ -125,7 +124,7 @@ void FlowControlCore::passOneClock()
             slave_port->dequeue_list.removeAt(i--);
             slave->process_list.append(packet);
             packet->resetDelay(slave->getProcessDelay());
-            master->another_can_recive++; // 告诉Master自己可以接收的buffer++
+            // master->another_can_recive++; // 告诉Master自己可以接收的buffer++
         }
         else
         {
@@ -139,8 +138,7 @@ void FlowControlCore::passOneClock()
         DataPacket *packet = slave->process_list.at(i);
         if (packet->isDelayFinished()) // 处理完毕，开始发送
         {
-            qDebug() << slave_port->bandwidth_buffer << slave_port->bandwidth;
-            if (slave->anotherCanRecive() && slave_port->nextBandwidthBuffer()) // 如果master没有token空位，则堵住
+            if (slave->anotherCanRecive() && slave_port->isBandwidthBufferFilled()) // 如果master没有token空位，则堵住
             {
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);
@@ -163,6 +161,7 @@ void FlowControlCore::passOneClock()
         {
             ms_cable->response_list.removeAt(i--);
             slave->another_can_recive++;
+            master->another_can_recive++; // TODO: 为了显示需要，移到这个位置
             qDebug() << "Master接收到response" << packet->toString();
             deleteToken(packet);
         }

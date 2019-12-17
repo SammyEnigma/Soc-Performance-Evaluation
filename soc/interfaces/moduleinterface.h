@@ -11,12 +11,13 @@
 #include <QList>
 #include "datapacket.h"
 #include "customdatatype.h"
+#include "moduleport.h"
 
 class ModuleInterface : public QObject
 {
     Q_OBJECT
 public:
-    ModuleInterface(QObject *parent = nullptr);
+    ModuleInterface(QList<PortBase *> &ports, QObject *parent = nullptr);
 
     virtual void initData();
 
@@ -48,6 +49,8 @@ protected:
     CustomDataType* bandwidth;
     CustomDataType* latency;
     int another_can_recive;
+
+    QList<PortBase*>& ports;
 };
 
 #endif // MODULEINTERFACE_H
