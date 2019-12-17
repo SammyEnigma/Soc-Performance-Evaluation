@@ -10,6 +10,7 @@
 SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), ModuleInterface(ShapeBase::ports, parent)
 {
     _class = _text = "Slave";
+    dequeue_signal_buffer = 0;
 }
 
 SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)

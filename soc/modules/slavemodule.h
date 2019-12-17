@@ -35,6 +35,7 @@ signals:
 
 protected:
     PacketList process_list;
+    int dequeue_signal_buffer; // Slave出队列时立即给Master一个信号，但是这个信号1clock最多只发送一个，多余的需要进入buffer
 };
 
 #endif // SLAVEMODULE_H

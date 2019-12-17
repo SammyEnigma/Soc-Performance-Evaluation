@@ -59,11 +59,6 @@ void FlowControlCore::passOneClock()
 {
     FCDEB "Clock:" << current_clock << " >>";
 
-    // 内部模拟时钟流逝，设置数据包位置等
-    master->passOneClock();
-    slave->passOneClock();
-    ms_cable->passOneClock();
-
     // ==== 发送数据 ====
     // Slave有空位时，Master发送数据（0 clock）
     if (master->anotherCanRecive() && master_port->isBandwidthBufferFilled())
@@ -124,7 +119,7 @@ void FlowControlCore::passOneClock()
             slave_port->dequeue_list.removeAt(i--);
             slave->process_list.append(packet);
             packet->resetDelay(slave->getProcessDelay());
-            // master->another_can_recive++; // 告诉Master自己可以接收的buffer++
+            slave->dequeue_signal_buffer++; // 告诉Master自己可以接收的buffer++
         }
         else
         {
@@ -154,6 +149,7 @@ void FlowControlCore::passOneClock()
     }
 
     // Slave返回给Master（5 clock）-->Master接收
+    bool slave_dequeue_signal_sended = false; // 1个clock只发送一次的flag
     for (int i = 0; i < ms_cable->response_list.size(); i++)
     {
         DataPacket *packet = ms_cable->response_list.at(i);
@@ -161,9 +157,17 @@ void FlowControlCore::passOneClock()
         {
             ms_cable->response_list.removeAt(i--);
             slave->another_can_recive++;
-            master->another_can_recive++; // TODO: 为了显示需要，移到这个位置
             qDebug() << "Master接收到response" << packet->toString();
             deleteToken(packet);
+
+            if (slave->dequeue_signal_buffer > 0 && !slave_dequeue_signal_sended)
+            {
+                // TODO: 为了显示需要，移到这个位置
+                // Slave出队列时立即给Master一个信号，但是这个信号1clock最多只发送一个，多余的需要进入buffer等待下一个时钟
+                master->another_can_recive++;
+                slave->dequeue_signal_buffer--;
+                slave_dequeue_signal_sended = true;
+            }
         }
         else
         {
@@ -173,6 +177,11 @@ void FlowControlCore::passOneClock()
 
     // ==== 时钟结束后首尾 ====
     current_clock++;
+
+    // 内部模拟时钟流逝，设置数据包位置等
+    master->passOneClock();
+    slave->passOneClock();
+    ms_cable->passOneClock();
 }
 
 /**

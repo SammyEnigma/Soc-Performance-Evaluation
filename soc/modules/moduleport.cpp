@@ -7,7 +7,7 @@
  */
 #include "moduleport.h"
 
-ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1), bandwidth_buffer(0)
+ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1), bandwidth_buffer(1)
 {
 }
 
