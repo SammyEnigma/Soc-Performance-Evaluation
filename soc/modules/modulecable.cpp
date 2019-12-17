@@ -74,13 +74,13 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
           */
         if (arrow_pos1.x() == arrow_pos2.x() || arrow_pos1.y() == arrow_pos2.x() || (arrow_pos1.y() - arrow_pos2.y()) / static_cast<double>(arrow_pos1.x() - arrow_pos2.x()) < 0) // 右上-左下 角度倾斜
         {
-            x = x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line;
-            y = y1 + (y2 - y1) * prop - _breadth_y / 2 + _space_y * line;
+            x = static_cast<int>(x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line);
+            y = static_cast<int>(y1 + (y2 - y1) * prop - _breadth_y / 2 + _space_y * line);
         }
         else // 左上-右下 角度倾斜，δx和δy一致，需要特判
         {
-            x = x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line;
-            y = y1 + (y2 - y1) * prop + _breadth_y / 2 - _space_y * line;
+            x = static_cast<int>(x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line);
+            y = static_cast<int>(y1 + (y2 - y1) * prop + _breadth_y / 2 - _space_y * line);
         }
     }
     else if (_line_type == 1) // 横竖
@@ -91,7 +91,7 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
             int w = width() - offset;
             int h = height() - offset;
             int total = w + h;
-            x = total * prop;
+            x = static_cast<int>(total * prop);
             if (x > w)
             {
                 y = x - w;
@@ -105,7 +105,7 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
             int w = width() - offset;
             int h = height() - offset;
             int total = w + h;
-            x = total * prop;
+            x = static_cast<int>(total * prop);
             if (x > w)
             {
                 y = x - w;
@@ -123,7 +123,7 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
             int w = width() - offset;
             int h = height() - offset;
             int total = w + h;
-            y = total * prop;
+            y = static_cast<int>(total * prop);
             if (y > h)
             {
                 x = y - h;
@@ -138,7 +138,7 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
             int w = width() - offset;
             int h = height() - offset;
             int total = w + h;
-            y = total * prop;
+            y = static_cast<int>(total * prop);
             if (y > h)
             {
                 x = y - h;
