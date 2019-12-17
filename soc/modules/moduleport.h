@@ -10,12 +10,13 @@ public:
     ModulePort(QWidget* parent = nullptr);
     friend class PortDataDialog;
 
+    virtual QString getClass() override;
+
 protected:
     virtual void fromStringAddin(QString s) override;
     virtual QString toStringAddin() override;
 
 signals:
-    void signalDataList();
 
 public slots:
     void slotDataList() override;

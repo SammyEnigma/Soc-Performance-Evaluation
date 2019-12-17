@@ -847,6 +847,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             port->setPortId(getRandomPortId());
         }
         ports_map.insert(port->getPortId(), port);
+        connectPortEvent(port);
     });
 
     connect(shape, &ShapeBase::signalPortDeleted, this, [=](PortBase *port) {
@@ -856,6 +857,20 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         // 端口列表中删除端口
         ports_map.remove(port->getPortId());
     });
+}
+
+void GraphicArea::connectPortEvent(PortBase *port)
+{
+    if (port->getClass() == "ModulePort") // 模块的端口才有带宽
+    {
+        ModulePort* mp = static_cast<ModulePort*>(port);
+        connect(mp, &PortBase::signalDataList, this, [=]{
+            PortDataDialog* pdd = new PortDataDialog(mp);
+            pdd->exec();
+            pdd->deleteLater();
+            autoSave();
+        });
+    }
 }
 
 QString GraphicArea::getRandomPortId()
@@ -1004,7 +1019,9 @@ void GraphicArea::actionInsertPort()
     // 添加port，支持批量添加，所以放到了外面
     foreach (ShapeBase *shape, selected_shapes)
     {
-        shape->addPort(port->newInstanceBySelf(shape));
+        PortBase* p = port->newInstanceBySelf(shape);
+        shape->addPort(p);
+        connectPortEvent(p);
     }
     delete port;
 

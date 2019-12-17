@@ -27,6 +27,7 @@ class PortBase : public QWidget
 public:
     PortBase(QWidget *parent = nullptr);
     PortBase* newInstanceBySelf(QWidget* parent = nullptr);
+    virtual QString getClass();
 
     void setPortId(QString id);
     QString getPortId();
@@ -49,6 +50,7 @@ protected:
 signals:
     void signalModifyPosition();
     void signalDelete();
+    void signalDataList();
 
 public slots:
     void slotMenuShowed(const QPoint&);

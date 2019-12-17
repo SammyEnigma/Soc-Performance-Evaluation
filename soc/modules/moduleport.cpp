@@ -5,6 +5,11 @@ ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1)
 
 }
 
+QString ModulePort::getClass()
+{
+    return "ModulePort";
+}
+
 void ModulePort::fromStringAddin(QString s)
 {
     QString bandwidth = StringUtil::getXml(s, "BANDWIDTH");

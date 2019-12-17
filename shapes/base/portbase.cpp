@@ -30,6 +30,11 @@ PortBase *PortBase::newInstanceBySelf(QWidget *parent)
     return port;
 }
 
+QString PortBase::getClass()
+{
+    return "PortBase";
+}
+
 void PortBase::setPortId(QString id)
 {
     _port_id = id;

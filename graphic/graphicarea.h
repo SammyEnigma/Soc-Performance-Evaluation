@@ -26,6 +26,7 @@
 #include "portpositiondialog.h"
 #include "shapepropertydialog.h"
 #include "shapedatadialog.h"
+#include "portdatadialog.h"
 #include "cablebase.h"
 
 #define DEB qDebug()
@@ -82,6 +83,7 @@ protected:
 private:
     QRect getValidRect(QRect rect); // 负数矩形变成有效的正数矩形
     void connectShapeEvent(ShapeBase *shape);
+    void connectPortEvent(PortBase *port);
     QString getRandomPortId();
     void removePortCable(PortBase *port);
 
