@@ -10,8 +10,8 @@
 ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       bandwidth(1), bandwidth_buffer(1),
-      send_delay(0), send_delay_buffer(0),
-      return_delay(0), return_delay_buffer(0)
+      send_delay(0),
+      return_delay(0)
 {
 }
 
@@ -34,6 +34,11 @@ QString ModulePort::getClass()
 void ModulePort::passOneClock()
 {
     nextBandwidthBuffer();
+}
+
+int ModulePort::getSendDelay()
+{
+    return send_delay;
 }
 
 void ModulePort::fromStringAddin(QString s)
@@ -69,12 +74,22 @@ int ModulePort::getDequeueDelay()
     return 1;
 }
 
+int ModulePort::getReturnDelay()
+{
+    return return_delay;
+}
+
+void ModulePort::initBandwidthBufer()
+{
+    bandwidth_buffer = bandwidth;
+}
+
 bool ModulePort::nextBandwidthBuffer()
 {
     return ++bandwidth_buffer >= bandwidth;
 }
 
-bool ModulePort::isBandwidthBufferFilled()
+bool ModulePort::isBandwidthBufferFinished()
 {
     return bandwidth_buffer >= bandwidth;
 }
@@ -82,34 +97,4 @@ bool ModulePort::isBandwidthBufferFilled()
 void ModulePort::resetBandwidthBuffer()
 {
     bandwidth_buffer = 0;
-}
-
-bool ModulePort::nextSendDelayBuffer()
-{
-    return ++send_delay_buffer >= send_delay;
-}
-
-bool ModulePort::isSendDelayBufferFinished()
-{
-    return send_delay_buffer >= send_delay;
-}
-
-void ModulePort::resetSendDelayBuffer()
-{
-    send_delay = 0;
-}
-
-bool ModulePort::nextReturnDelayBuffer()
-{
-    return ++return_delay_buffer >= return_delay;
-}
-
-bool ModulePort::isReturnDelayBufferFinished()
-{
-    return return_delay_buffer >= return_delay;
-}
-
-void ModulePort::resetReturnDelayBuffer()
-{
-    return_delay = 0;
 }

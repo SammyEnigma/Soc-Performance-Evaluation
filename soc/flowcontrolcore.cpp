@@ -26,6 +26,7 @@ void FlowControlCore::initData()
     // 设置运行数据
     master->another_can_recive = slave->getToken();
     slave->another_can_recive = master->getToken();
+    master_port->initBandwidthBufer();
 }
 
 /**
@@ -37,10 +38,12 @@ void FlowControlCore::clearData()
     if (!rt->running || current_clock == -1)
         return;
     master->data_list.clear();
+    master_port->send_delay_list.clear();
     slave_port->enqueue_list.clear();
     slave_port->data_queue.clear();
     slave_port->dequeue_list.clear();
     slave->process_list.clear();
+    slave_port->return_delay_list.clear();
     ms_cable->request_list.clear();
     ms_cable->request_data_list.clear();
     ms_cable->response_list.clear();
@@ -60,7 +63,7 @@ void FlowControlCore::passOneClock()
     FCDEB "Clock:" << current_clock << " >>";
 
     // ==== 发送数据 ====
-    // Slave有空位时，Master发送数据（0 clock）
+    /*// Slave有空位时，Master发送数据（0 clock）
     if (master->anotherCanRecive() && master_port->isBandwidthBufferFilled())
     {
         DataPacket *packet = createToken();
@@ -69,6 +72,37 @@ void FlowControlCore::passOneClock()
         ms_cable->request_list.append(packet);
         master->another_can_recive--; // 计算得到的slave token--
         master_port->resetBandwidthBuffer();
+    }*/
+
+    // Slave有可接受的buffer时，Master开始延迟（0clock）
+    if (master->anotherCanRecive())
+    {
+        DataPacket *packet = createToken();
+        packet->setDrawPos(master->geometry().center());
+        packet->resetDelay(master_port->getSendDelay());
+        master_port->send_delay_list.append(packet);
+        master->another_can_recive--;
+    }
+
+    // Master发送延迟结束，开始准备发送
+    // 如果带宽不足，继续等待
+    for (int i = 0; i < master_port->send_delay_list.size(); i++)
+    {
+        DataPacket* packet = master_port->send_delay_list.at(i);
+        if (packet->isDelayFinished()) // 延迟结束
+        {
+            if (master_port->isBandwidthBufferFinished()) // 需要足够的发送带宽
+            {
+                master_port->send_delay_list.removeAt(i--);
+                ms_cable->request_list.append(packet);
+                packet->resetDelay(ms_cable->getTransferDelay());
+                master_port->resetBandwidthBuffer();
+            }
+        }
+        else
+        {
+            packet->delayToNext();
+        }
     }
 
     // 连接线延迟传输（5 clock）-->给Slave
@@ -133,7 +167,7 @@ void FlowControlCore::passOneClock()
         DataPacket *packet = slave->process_list.at(i);
         if (packet->isDelayFinished()) // 处理完毕，开始发送
         {
-            if (slave->anotherCanRecive() && slave_port->isBandwidthBufferFilled()) // 如果master没有token空位，则堵住
+            if (slave->anotherCanRecive() && slave_port->isBandwidthBufferFinished()) // 如果master没有token空位，则堵住
             {
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);

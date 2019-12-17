@@ -24,20 +24,15 @@ public:
 
     void passOneClock();
 
+    int getSendDelay();
     int getEnqueueDelay();
     int getDequeueDelay();
+    int getReturnDelay();
 
+    void initBandwidthBufer();
     bool nextBandwidthBuffer();
-    bool isBandwidthBufferFilled();
+    bool isBandwidthBufferFinished();
     void resetBandwidthBuffer();
-    
-    bool nextSendDelayBuffer();
-    bool isSendDelayBufferFinished();
-    void resetSendDelayBuffer();
-
-    bool nextReturnDelayBuffer();
-    bool isReturnDelayBufferFinished();
-    void resetReturnDelayBuffer();
 
 protected:
     virtual void fromStringAddin(QString s) override;
@@ -49,17 +44,17 @@ public slots:
     void slotDataList() override;
 
 public:
+    PacketList send_delay_list;
     PacketList enqueue_list;
     QQueue<DataPacket *> data_queue;
     PacketList dequeue_list;
+    PacketList return_delay_list;
 
 private:
     int bandwidth;        // 带宽，多少个clock发送1个token（越大越慢）
     int bandwidth_buffer; // 发送的clock缓存，超过bandwidth才能发送
     int send_delay;       // the delay of the sending the request/response
-    int send_delay_buffer;
     int return_delay; // the delay on the return of the Token
-    int return_delay_buffer;
 };
 
 #endif // MODULEPORT_H
