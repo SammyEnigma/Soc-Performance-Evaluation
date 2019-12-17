@@ -1108,6 +1108,7 @@ void GraphicArea::actionPaste()
     {
         ShapeBase *copied_shape = insertShapeByType(shape);
         copied_shape->copyDataFrom(shape);
+//        connectShapeEvent(copied_shape);
         QRect geo = shape->geometry();
         geo.moveTo(geo.topLeft() + offset);
         copied_shape->setGeometry(geo);
@@ -1117,6 +1118,7 @@ void GraphicArea::actionPaste()
         // 添加全局的端口
         foreach (PortBase* port, copied_shape->getPorts())
         {
+            connectPortEvent(port);
             ports_map.insert(port->getPortId(), port);
         }
     }

@@ -63,7 +63,7 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
     foreach (PortBase* port, shape->ports)
     {
         PortBase* p = port->newInstanceBySelf(this);
-        ports.append(p);
+        addPort(p);
     }
 
     // 复制用户自定义数据
