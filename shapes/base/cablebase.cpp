@@ -37,7 +37,7 @@ void CableBase::copyDataFrom(ShapeBase *shape)
     // RTTI运行时类型判断
     // 是不是当前这个类，若是则执行转换
     //    if (typeid (shape) == typeid (this))
-    if (dynamic_cast<CableBase *>(shape) != nullptr)
+    if (shape->getLargeType() == CableType)
     {
         CableBase *cable = static_cast<CableBase *>(shape);
 

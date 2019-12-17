@@ -16,6 +16,7 @@ ModulePort *ModulePort::newInstanceBySelf(QWidget *parent)
     ModulePort* port = new ModulePort(parent);
     port->_text = this->_text;
     port->_prop_pos = this->_prop_pos;
+    port->bandwidth = this->bandwidth;
     return port;
 }
 

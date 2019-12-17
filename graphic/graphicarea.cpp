@@ -37,7 +37,7 @@ ShapeBase *GraphicArea::insertShapeByType(ShapeBase *type, QPoint point)
         point = mapFromGlobal(QCursor::pos());
     shape->setGeometry(shape->getSuitableRect(point));
     shape->show();
-    connectShapeEvent(shape);
+    connectShapeEvent(shape); // 如果在这之前创建端口，则不会设置随机ID（因为还没有连接创建端口的信号和槽）
     return shape;
 }
 
@@ -1117,13 +1117,46 @@ void GraphicArea::actionPaste()
         // 添加全局的端口
         foreach (PortBase* port, copied_shape->getPorts())
         {
+            port->setPortId(getRandomPortId());
             connectPortEvent(port);
             ports_map.insert(port->getPortId(), port);
         }
     }
 
-    // TODO: 复制连线情况。因为一一对应的，根据下标复制对应的端口
+    // TODO: 复制连线情况。因为一一对应的，根据索引复制对应的端口
+    for (int i = 0; i < clip_board.size(); i++) // 遍历每一个形状
+    {
+        // 旧的形状
+        ShapeBase* shape = clip_board.at(i);
+        if (shape->getLargeType() != CableType)
+            continue;
+        CableBase* cable = static_cast<CableBase*>(shape);
+        CableBase* new_cable = static_cast<CableBase*>(paste_board.at(i));
+        cable_lists.append(new_cable); // 添加到全局连接线
 
+        // 线连接的两个端口
+        PortBase* old_from = cable->getFromPort();
+        PortBase* old_to = cable->getToPort();
+        if (old_from == nullptr || old_to == nullptr)
+            continue;
+
+        // 线连接的两头形状，获取形状所在的索引、两个端口的索引
+        ShapeBase* old_from_shape = static_cast<ShapeBase*>(old_from->getShape());
+        ShapeBase* old_to_shape = static_cast<ShapeBase*>(old_to->getShape());
+        int from_index = clip_board.indexOf(old_from_shape);
+        int to_index = clip_board.indexOf(old_to_shape);
+        if (from_index == -1 || to_index == -1)
+            continue;
+        int from_port_index = old_from_shape->getPorts().indexOf(old_from);
+        int to_port_index = old_to_shape->getPorts().indexOf(old_to);
+        if (from_port_index == -1 || to_port_index == -1)
+            continue;
+
+        // 根据两个二级索引，获取对应的端口，并设置到新的连接线上
+        PortBase* new_from = paste_board.at(from_index)->getPorts().at(from_port_index);
+        PortBase* new_to = paste_board.at(to_index)->getPorts().at(to_port_index);
+        new_cable->setPorts(new_from, new_to);
+    }
 
     autoSave();
 }

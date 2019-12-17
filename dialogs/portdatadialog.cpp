@@ -9,6 +9,8 @@ PortDataDialog::PortDataDialog(ModulePort *port) :
     ui->setupUi(this);
 
     ui->spinBox->setValue(port->bandwidth);
+    this->setWindowTitle(port->getClass());
+    ui->lineEdit->setText(port->getPortId());
 }
 
 PortDataDialog::~PortDataDialog()
