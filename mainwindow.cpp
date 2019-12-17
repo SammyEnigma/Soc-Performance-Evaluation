@@ -219,11 +219,18 @@ void MainWindow::on_actionZoom_Out_O_triggered()
 void MainWindow::on_actionRun_triggered()
 {
     flow_control->startRun();
+    ui->actionRun->setVisible(false);
+    ui->actionStop->setVisible(true);
+    ui->actionPause_P->setVisible(true);
+    ui->actionResume_S->setVisible(false);
+    ui->actionStep->setVisible(true);
 }
 
 void MainWindow::on_actionPause_P_triggered()
 {
     flow_control->pauseRun();
+    ui->actionPause_P->setVisible(false);
+    ui->actionResume_S->setVisible(true);
 }
 
 void MainWindow::on_actionStep_triggered()
@@ -234,6 +241,8 @@ void MainWindow::on_actionStep_triggered()
 void MainWindow::on_actionResume_S_triggered()
 {
     flow_control->resumeRun();
+    ui->actionResume_S->setVisible(false);
+    ui->actionPause_P->setVisible(true);
 }
 
 void MainWindow::on_actionDebug_triggered()
@@ -244,6 +253,11 @@ void MainWindow::on_actionDebug_triggered()
 void MainWindow::on_actionStop_triggered()
 {
     flow_control->stopRun();
+    ui->actionRun->setVisible(true);
+    ui->actionStop->setVisible(false);
+    ui->actionPause_P->setVisible(false);
+    ui->actionResume_S->setVisible(false);
+    ui->actionStep->setVisible(false);
 }
 
 void MainWindow::on_actionSelect_All_triggered()

@@ -44,7 +44,7 @@
          <x>0</x>
          <y>0</y>
          <width>820</width>
-         <height>545</height>
+         <height>543</height>
         </rect>
        </property>
       </widget>
@@ -501,6 +501,9 @@
    <property name="text">
     <string>One Step (&amp;O)</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionShapes_Directory">
    <property name="text">
@@ -573,6 +576,9 @@
    <property name="shortcut">
     <string>Ctrl+P</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionResume_S">
    <property name="icon">
@@ -582,6 +588,9 @@
    <property name="text">
     <string>Resume (&amp;U)</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionStop">
    <property name="icon">
@@ -590,6 +599,9 @@
    </property>
    <property name="text">
     <string>Stop (&amp;S)</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

@@ -85,6 +85,7 @@ void FlowControl::resumeRun()
 {
     if (current_clock == -1) // 未初始化
         return;
+    nextStep(); // 立即运行一下，而不必等时钟
     run_timer->start();
 }
 
