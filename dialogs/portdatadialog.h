@@ -18,6 +18,10 @@ public:
 private slots:
     void on_spinBox_valueChanged(int);
 
+    void on_spinBox_2_valueChanged(int);
+
+    void on_spinBox_3_valueChanged(int);
+
 private:
     Ui::PortDataDialog *ui;
     ModulePort* port;

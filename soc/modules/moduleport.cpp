@@ -2,21 +2,27 @@
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 09:34:35
+ * @LastEditTime: 2019-12-17 17:15:12
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #include "moduleport.h"
 
-ModulePort::ModulePort(QWidget *parent) : PortBase(parent), bandwidth(1), bandwidth_buffer(1)
+ModulePort::ModulePort(QWidget *parent)
+    : PortBase(parent),
+      bandwidth(1), bandwidth_buffer(1),
+      send_delay(0), send_delay_buffer(0),
+      return_delay(0), return_delay_buffer(0)
 {
 }
 
 ModulePort *ModulePort::newInstanceBySelf(QWidget *parent)
 {
-    ModulePort* port = new ModulePort(parent);
+    ModulePort *port = new ModulePort(parent);
     port->_text = this->_text;
     port->_prop_pos = this->_prop_pos;
     port->bandwidth = this->bandwidth;
+    port->send_delay = this->send_delay;
+    port->return_delay = this->return_delay;
     return port;
 }
 
@@ -76,4 +82,34 @@ bool ModulePort::isBandwidthBufferFilled()
 void ModulePort::resetBandwidthBuffer()
 {
     bandwidth_buffer = 0;
+}
+
+bool ModulePort::nextSendDelayBuffer()
+{
+    return ++send_delay_buffer >= send_delay;
+}
+
+bool ModulePort::isSendDelayBufferFinished()
+{
+    return send_delay_buffer >= send_delay;
+}
+
+void ModulePort::resetSendDelayBuffer()
+{
+    send_delay = 0;
+}
+
+bool ModulePort::nextReturnDelayBuffer()
+{
+    return ++return_delay_buffer >= return_delay;
+}
+
+bool ModulePort::isReturnDelayBufferFinished()
+{
+    return return_delay_buffer >= return_delay;
+}
+
+void ModulePort::resetReturnDelayBuffer()
+{
+    return_delay = 0;
 }
