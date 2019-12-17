@@ -1090,7 +1090,6 @@ void GraphicArea::actionPaste()
     QPoint mouse_pos = _press_pos;
     if (mouse_pos == QPoint(-1, -1))
         mouse_pos = mapFromGlobal(QCursor::pos());
-
     // 确定最左上角的位置
     QPoint copied_topLeft = clip_board.first()->geometry().topLeft();
     foreach (ShapeBase *shape, clip_board)

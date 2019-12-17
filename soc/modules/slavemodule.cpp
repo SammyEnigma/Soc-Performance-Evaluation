@@ -71,15 +71,18 @@ void SlaveModule::paintEvent(QPaintEvent *event)
     // painter.drawText(0, height*2, QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getToken()));
     painter.drawText(0, height * 2, QString("buffer: 对方=%1, 自己=%2").arg(anotherCanRecive()).arg(getToken()));
 
-    painter.drawText(0, height*3, QString("进队列中:%1").arg(static_cast<ModulePort*>(getPorts().first())->enqueue_list.size()));
+    if (getPorts().size() > 0)
+    {
+        painter.drawText(0, height*3, QString("进队列中:%1").arg(static_cast<ModulePort*>(getPorts().first())->enqueue_list.size()));
 
-    QString dequ_s = QString("出队列中:%1").arg(static_cast<ModulePort *>(getPorts().first())->dequeue_list.size());
-    int w = fm.horizontalAdvance(dequ_s);
-    painter.drawText(width() / 2 - w / 2, height*3, dequ_s);
+        QString dequ_s = QString("出队列中:%1").arg(static_cast<ModulePort *>(getPorts().first())->dequeue_list.size());
+        int w = fm.horizontalAdvance(dequ_s);
+        painter.drawText(width() / 2 - w / 2, height*3, dequ_s);
 
-    QString prcs_s = QString("处理中:%1").arg(process_list.size());
-    w = fm.horizontalAdvance(prcs_s);
-    painter.drawText(width() - w, height*3, prcs_s);
+        QString prcs_s = QString("处理中:%1").arg(process_list.size());
+        w = fm.horizontalAdvance(prcs_s);
+        painter.drawText(width() - w, height*3, prcs_s);
+    }
 }
 
 int SlaveModule::getProcessDelay()

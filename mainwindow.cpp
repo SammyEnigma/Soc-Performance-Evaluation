@@ -280,7 +280,7 @@ void MainWindow::on_actionPaste_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::information(this, tr("芯片开发图形化"), tr("开发人员：王鑫益 蓝兴业\n\nGithub：https://github.com/Graphical-SoC-Performance/Soc-Performance-Evaluation"));
+    QMessageBox::information(this, tr("芯片开发图形化"), tr("开发人员：王鑫益 蓝兴业\n指导老师：郑奇 张霞\n\nGithub：https://github.com/Graphical-SoC-Performance/Soc-Performance-Evaluation"));
 }
 
 void MainWindow::on_actionGithub_G_triggered()
