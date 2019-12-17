@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:01:12
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 09:32:50
+ * @LastEditTime: 2019-12-17 10:04:07
  * @Description: Shape的端口，可用来外接其他Shape
  * 位置是按照比例来存的，所以只保存相对比例而不保存绝对位置
  * 两个Port连接，中间就是一条线（可能是弯曲的线）
@@ -32,6 +32,10 @@ public:
     void setPortId(QString id);
     QString getPortId();
     QWidget* getShape();
+    void setOppositePort(PortBase* port);
+    PortBase *getOppositePort();
+    QWidget *getOppositeShape();
+
     void setText(QString text);
     void setPortPosition(double x, double y);
     QPointF getPosition();
@@ -57,11 +61,13 @@ public slots:
     virtual void slotDataList();
 	
 protected:
-    QWidget* widget;
+    QWidget* widget;   // 自己所在的形状。因为类嵌套关系，无法直接使用ShapeBase，因此使用基类QWidget
 	QString _text;
     QString _port_id;
     QPointF _prop_pos; // 相对于形状的比例（x比例、y比例）
     
+    PortBase* opposite; // 连接对面的端口。可通过端口获取形状
+
     qint64 _press_timestamp;
 };
 

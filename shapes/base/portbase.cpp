@@ -9,7 +9,7 @@
  */
 #include "portbase.h"
 
-PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent)
+PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent), opposite(nullptr)
 {
     setMinimumSize(5, 5);
     setFixedSize(10, 10);
@@ -48,6 +48,24 @@ QString PortBase::getPortId()
 QWidget *PortBase::getShape()
 {
     return widget;
+}
+
+void PortBase::setOppositePort(PortBase *port)
+{
+    this->opposite = port;
+}
+
+PortBase *PortBase::getOppositePort()
+{
+    return opposite;
+}
+
+QWidget *PortBase::getOppositeShape()
+{
+    if (opposite == nullptr)
+        return nullptr;
+    return opposite->getShape();
+//    return reinterpret_cast<ShapeBase*>(opposite->getShape()); // 强转
 }
 
 void PortBase::setText(QString text)

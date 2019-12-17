@@ -3,7 +3,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
  * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 10:26:07
+ * @LastEditTime: 2019-12-17 10:23:05
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -559,8 +559,8 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                             nearest_port = port;
                         }
                     }
-                    // 暂存连接点
-                    if (nearest_port != nullptr)
+                    // 判断连接点
+                    if (nearest_port != nullptr) // 两个端口连接上
                     {
                         cable->setPorts(_stick_from_port, nearest_port);
                         cable->adjustGeometryByPorts();

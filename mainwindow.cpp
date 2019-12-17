@@ -86,7 +86,7 @@ void MainWindow::readFromFile(QString file_path)
         if (StringUtil::getXmlInt(shape_string, "SELECTED") != 0)
             ui->scrollAreaWidgetContents_2->select(shape, true);
     }
-    // 遍历线连接（需要等port全部加载完成后）
+    // 遍历线连接（因为需要等port全部加载完成后）
     QMap<QString, PortBase*>ports = ui->scrollAreaWidgetContents_2->ports_map;
     foreach (ShapeBase* shape, ui->scrollAreaWidgetContents_2->shape_lists)
     {

@@ -78,6 +78,11 @@ void CableBase::setPorts(PortBase *p1, PortBase *p2)
 {
     from_port = p1;
     to_port = p2;
+    if (p1 != nullptr && p2 != nullptr)
+    {
+        p1->setOppositePort(to_port);
+        p2->setOppositePort(from_port);
+    }
 }
 
 bool CableBase::usedPort(PortBase *port)
