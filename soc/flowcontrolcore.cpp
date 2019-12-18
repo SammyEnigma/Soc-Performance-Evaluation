@@ -27,6 +27,7 @@ void FlowControlCore::initData()
     master->another_can_recive = slave->getToken();
     slave->another_can_recive = master->getToken();
     master_port->initBandwidthBufer();
+    slave_port->initBandwidthBufer();
 }
 
 /**

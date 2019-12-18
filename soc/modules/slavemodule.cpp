@@ -88,5 +88,5 @@ void SlaveModule::paintEvent(QPaintEvent *event)
 
 int SlaveModule::getProcessDelay()
 {
-    return 3;
+    return getData("process delay")->i();
 }
