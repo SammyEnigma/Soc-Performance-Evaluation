@@ -15,6 +15,8 @@
 #include <QPainter>
 #include "datapacket.h"
 
+#define PACKET_ANIMATION_INTERVAL 300
+
 class DataPacketView : public QWidget
 {
     Q_OBJECT

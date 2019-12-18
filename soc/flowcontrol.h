@@ -11,6 +11,8 @@
 #include "flowcontrolcore.h"
 #include "graphicarea.h"
 
+#define ONE_CLOCK_INTERVAL 500
+
 class FlowControl : public FlowControlCore
 {
     Q_OBJECT

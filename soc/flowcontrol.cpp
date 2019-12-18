@@ -12,7 +12,7 @@ FlowControl::FlowControl(GraphicArea *ga, QObject *parent)
       graphic(ga)
 {
     run_timer = new QTimer(this);
-    run_timer->setInterval(500); // 一秒钟执行一次 clock
+    run_timer->setInterval(ONE_CLOCK_INTERVAL); // 定时执行一次 clock
     run_timer->setSingleShot(false);
     connect(run_timer, SIGNAL(timeout()), this, SLOT(nextStep()));
 
