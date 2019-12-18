@@ -26,6 +26,8 @@
 #include "mastermodule.h"
 #include "slavemodule.h"
 #include "modulecable.h"
+#include "squareshape.h"
+#include "rectangleshape.h"
 
 #define MOVING_CURSOR_NAME tr("指针") // 选择控件的鼠标列表项的名字
 
