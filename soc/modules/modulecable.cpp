@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 14:12:17
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-18 16:57:21
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"

@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 11:21:55
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-18 16:56:40
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #ifndef MODULECABLE_H
@@ -13,7 +13,7 @@
 #include "moduleinterface.h"
 #include "qmath.h"
 
-#define LINE_COUNT 4
+#define LINE_COUNT 2
 #define LINE_SPACE 16
 
 class ModuleCable : public CableBase, public ModuleInterface
@@ -25,8 +25,8 @@ public:
     
     enum LINE_TYPE {
         REQUEST_LINE, 
-        REQUEST_DATA_LINE, 
         RESPONSE_LINE, 
+        REQUEST_DATA_LINE, 
         RESPONSE_DATA_LINE
     };
 
