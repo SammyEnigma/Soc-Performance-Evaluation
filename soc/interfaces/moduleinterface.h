@@ -42,7 +42,6 @@ public slots:
     virtual void updatePacketPos();
 
 public:
-    QList<DataPacket *> data_list;
     
 protected:
     CustomDataType* token;

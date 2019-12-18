@@ -35,13 +35,6 @@ void MasterModule::initData()
 
 void MasterModule::updatePacketPos()
 {
-    QFontMetrics fm(this->font());
-    int height = fm.lineSpacing();
-	QPoint pos = this->pos() + QPoint(width()/2-PACKET_SIZE/2, height+4);
-    foreach (DataPacket* packet, data_list)
-    {
-        packet->setDrawPos(pos);
-    }
 }
 
 void MasterModule::paintEvent(QPaintEvent *event)

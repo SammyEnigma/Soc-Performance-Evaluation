@@ -37,7 +37,6 @@ void FlowControlCore::clearData()
 {
     if (!rt->running || current_clock == -1)
         return;
-    master->data_list.clear();
     master_port->send_delay_list.clear();
     slave_port->enqueue_list.clear();
     slave_port->data_queue.clear();

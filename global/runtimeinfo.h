@@ -9,6 +9,7 @@
 #define RUNTIMEINFO_H
 
 #include <QApplication>
+#include <QStandardPaths>
 #include <QString>
 
 class ShapeBase;
@@ -19,7 +20,11 @@ class RuntimeInfo
 public:
     RuntimeInfo()
     {
+#ifdef Q_OS_WIN
         DATA_PATH = QApplication::applicationDirPath() + "/data/";
+#else
+        DATA_PATH = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+#endif
         SHAPE_PATH = DATA_PATH + "shapes/";
 
         current_choosed_shape = nullptr;
