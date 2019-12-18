@@ -120,7 +120,7 @@ void SelectEdge::paintEvent(QPaintEvent *event)
 
     // 直接绘制，不管选择框有没有出现（Hidden时应该不会绘制吧？）
     QPainter painter(this);
-    painter.fillPath(getEdgePath(), QColor(36, 171, 242));
+    painter.fillPath(getEdgePath(), QColor(36, 171, 242, 192));
 }
 
 void SelectEdge::enterEvent(QEvent *event)

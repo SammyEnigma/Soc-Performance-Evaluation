@@ -68,13 +68,14 @@ void SlaveModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
+    int margin = 5;
 
     // painter.drawText(0, height*2, QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getToken()));
-    painter.drawText(0, height * 2, QString("buffer: 对方=%1, 自己=%2").arg(anotherCanRecive()).arg(getToken()));
+    painter.drawText(margin, height * 2, QString("buffer: 对方=%1, 自己=%2").arg(anotherCanRecive()).arg(getToken()));
 
     if (getPorts().size() > 0)
     {
-        painter.drawText(0, height*3, QString("进队列:%1").arg(static_cast<ModulePort*>(getPorts().first())->enqueue_list.size()));
+        painter.drawText(margin, height*3, QString("进队列:%1").arg(static_cast<ModulePort*>(getPorts().first())->enqueue_list.size()));
 
         QString dequ_s = QString("出队列:%1").arg(static_cast<ModulePort *>(getPorts().first())->dequeue_list.size());
         int w = fm.horizontalAdvance(dequ_s);
@@ -82,7 +83,7 @@ void SlaveModule::paintEvent(QPaintEvent *event)
 
         QString prcs_s = QString("处理:%1").arg(process_list.size());
         w = fm.horizontalAdvance(prcs_s);
-        painter.drawText(width() - w, height*3, prcs_s);
+        painter.drawText(width() - w-margin, height*3, prcs_s);
     }
 }
 

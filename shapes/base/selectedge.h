@@ -15,7 +15,7 @@
 #include <QPainterPath>
 #include <QDebug>
 
-#define EDGE_LINE_SIZE 4 // 边缘线的宽度
+#define EDGE_LINE_SIZE 2 // 边缘线的宽度
 
 class SelectEdge : public QWidget
 {
