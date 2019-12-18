@@ -168,7 +168,11 @@ void PortBase::mousePressEvent(QMouseEvent *event)
     {
         if (_press_timestamp+400 >= getTimestamp()) // 双击
         {
+#ifdef Q_OS_ANDROID
+            slotMenuShowed(event->pos());
+#else
             slotDataList();
+#endif
         }
         _press_timestamp = getTimestamp();
         event->accept();

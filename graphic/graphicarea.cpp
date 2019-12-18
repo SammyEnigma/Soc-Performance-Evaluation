@@ -834,7 +834,11 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     connect(shape, &ShapeBase::signalDoubleClicked, this, [=]{
         if (selected_shapes.isEmpty())
             select(shape);
+#ifdef Q_OS_ANDROID
+        slotMenuShowed(mapFromGlobal(QCursor::pos()));
+#else
         slotShapeData();
+#endif
         autoSave();
     });
 
