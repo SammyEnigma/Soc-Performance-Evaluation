@@ -18,7 +18,7 @@ PortDataDialog::PortDataDialog(ModulePort *port) :
     this->setWindowTitle(port->getClass());
     ui->lineEdit->setText(port->getPortId());
     ui->spinBox->setValue(port->bandwidth);
-    ui->spinBox_2->setValue(port->send_delay);
+    ui->spinBox_2->setValue(port->latency);
     ui->spinBox_3->setValue(port->return_delay);
 }
 
@@ -34,7 +34,7 @@ void PortDataDialog::on_spinBox_valueChanged(int)
 
 void PortDataDialog::on_spinBox_2_valueChanged(int)
 {
-    port->send_delay = ui->spinBox_2->value();
+    port->latency = ui->spinBox_2->value();
 }
 
 void PortDataDialog::on_spinBox_3_valueChanged(int)

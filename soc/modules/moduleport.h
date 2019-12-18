@@ -24,9 +24,8 @@ public:
 
     void passOneClock();
 
-    int getSendDelay();
-    int getEnqueueDelay();
-    int getDequeueDelay();
+    int getLatency();
+    int getBandwidth();
     int getReturnDelay();
 
     void initBandwidthBufer();
@@ -53,8 +52,8 @@ public:
 private:
     int bandwidth;        // 带宽，多少个clock发送1个token（越大越慢）
     int bandwidth_buffer; // 发送的clock缓存，超过bandwidth才能发送
-    int send_delay;       // the delay of the sending the request/response
-    int return_delay; // the delay on the return of the Token
+    int latency;          // the delay of the sending the request/response
+    int return_delay;     // the delay on the return of the Token
 };
 
 #endif // MODULEPORT_H

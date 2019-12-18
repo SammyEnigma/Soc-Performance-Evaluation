@@ -10,8 +10,7 @@
 ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       bandwidth(1), bandwidth_buffer(1),
-      send_delay(0),
-      return_delay(0)
+      latency(1), return_delay(0)
 {
 }
 
@@ -21,7 +20,7 @@ ModulePort *ModulePort::newInstanceBySelf(QWidget *parent)
     port->_text = this->_text;
     port->_prop_pos = this->_prop_pos;
     port->bandwidth = this->bandwidth;
-    port->send_delay = this->send_delay;
+    port->latency = this->latency;
     port->return_delay = this->return_delay;
     return port;
 }
@@ -36,16 +35,14 @@ void ModulePort::passOneClock()
     nextBandwidthBuffer();
 }
 
-int ModulePort::getSendDelay()
-{
-    return send_delay;
-}
-
 void ModulePort::fromStringAddin(QString s)
 {
     QString bandwidth = StringUtil::getXml(s, "BANDWIDTH");
-    if (!s.isEmpty())
+    QString latency = StringUtil::getXml(s, "LATENCY");
+    if (!bandwidth.isEmpty())
         this->bandwidth = bandwidth.toInt();
+    if (!latency.isEmpty())
+        this->latency = latency.toInt();
 }
 
 QString ModulePort::toStringAddin()
@@ -53,6 +50,7 @@ QString ModulePort::toStringAddin()
     QString full;
     QString indent = "\n\t\t";
     full += indent + StringUtil::makeXml(bandwidth, "BANDWIDTH");
+    full += indent + StringUtil::makeXml(latency, "LATENCY");
     return full;
 }
 
@@ -64,14 +62,14 @@ void ModulePort::slotDataList()
     emit signalDataList();
 }
 
-int ModulePort::getEnqueueDelay()
+int ModulePort::getLatency()
 {
-    return 1;
+    return latency;
 }
 
-int ModulePort::getDequeueDelay()
+int ModulePort::getBandwidth()
 {
-    return 1;
+    return bandwidth;
 }
 
 int ModulePort::getReturnDelay()

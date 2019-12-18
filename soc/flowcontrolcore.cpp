@@ -71,7 +71,7 @@ void FlowControlCore::passOneClock()
         {
             DataPacket *packet = createToken(); // 来自Master内部request队列，此处直接创建
             packet->setDrawPos(master->geometry().center());
-            packet->resetDelay(master_port->getSendDelay());
+            packet->resetDelay(master_port->getLatency());
             master_port->send_delay_list.append(packet);
             master->another_can_recive--;
             master_port->resetBandwidthBuffer();
@@ -96,7 +96,7 @@ void FlowControlCore::passOneClock()
         }
     }
 
-    // 连接线延迟传输（5 clock）-->给Slave
+    // 连接线延迟传输（5 clock）-->给Slave进队列
     for (int i = 0; i < ms_cable->request_list.size(); i++)
     {
         DataPacket *packet = ms_cable->request_list.at(i);
@@ -104,7 +104,7 @@ void FlowControlCore::passOneClock()
         {
             ms_cable->request_list.removeAt(i--);
             slave_port->enqueue_list.append(packet);
-            packet->resetDelay(slave_port->getEnqueueDelay());
+            packet->resetDelay(slave_port->getLatency());
         }
         else // 仍然在传输中
         {
@@ -114,14 +114,15 @@ void FlowControlCore::passOneClock()
 
     // ==== Slave queue ====
 
-    // Slave进队列（1 clock）
+    // Slave进队列（latency=1 clock）
     for (int i = 0; i < slave_port->enqueue_list.size(); i++)
     {
         DataPacket *packet = slave_port->enqueue_list.at(i);
         if (packet->isDelayFinished())
         {
             slave_port->enqueue_list.removeAt(i--);
-            slave_port->data_queue.enqueue(packet);
+            slave_port->dequeue_list.append(packet);
+            packet->resetDelay(slave_port->getBandwidth());
         }
         else
         {
@@ -129,32 +130,27 @@ void FlowControlCore::passOneClock()
         }
     }
 
-    // Slave队列中（0 clock）-->出队列（不耗时，只出1个）
-    if (slave_port->data_queue.size())
-    {
-        DataPacket *packet = slave_port->data_queue.dequeue();
-        slave_port->dequeue_list.append(packet);
-        packet->resetDelay(slave_port->getDequeueDelay());
-    }
-
-    // Slave出队列（1 clock）-->处理数据
-    bool slave_dequeue_signal_sended = false; // 1个clock只发送一次的flag
+    // Slave出队列（bandwidth clock）-->处理数据
     for (int i = 0; i < slave_port->dequeue_list.size(); i++)
     {
         DataPacket *packet = slave_port->dequeue_list.at(i);
         if (packet->isDelayFinished())
         {
-            slave_port->dequeue_list.removeAt(i--);
-            slave->process_list.append(packet);
-            packet->resetDelay(slave->getProcessDelay());
-            slave->dequeue_signal_buffer++; // 告诉Master自己可以接收的buffer++
-
-            if (slave->dequeue_signal_buffer > 0 && !slave_dequeue_signal_sended)
+            if (slave_port->isBandwidthBufferFinished()) // 控制bandwidth发送1个request
             {
-                // Slave出队列时立即给Master一个信号，但是这个信号1clock最多只发送一个，多余的需要进入buffer等待下一个时钟
-                // TODO: 发送一个Slave出队列的信号（暂时什么都不做）
-                slave_dequeue_signal_sended = true;
+                slave_port->dequeue_list.removeAt(i--);
+                slave->process_list.append(packet);
+                packet->resetDelay(slave->getProcessDelay());
+                slave->dequeue_signal_buffer++; // 告诉Master自己可以接收的buffer++
+                slave_port->resetBandwidthBuffer();
+
+                if (slave->dequeue_signal_buffer > 0)
+                {
+                    // Slave出队列时立即给Master一个信号，但是这个信号1clock最多只发送一个，多余的需要进入buffer等待下一个时钟
+                    // TODO: 发送一个Slave出队列的信号（暂时什么都不做）
+                }
             }
+
         }
         else
         {
@@ -168,14 +164,13 @@ void FlowControlCore::passOneClock()
         DataPacket *packet = slave->process_list.at(i);
         if (packet->isDelayFinished()) // 处理完毕，开始发送
         {
-            if (slave->anotherCanRecive() && slave_port->isBandwidthBufferFinished()) // 如果master没有token空位，则堵住
+            if (slave->anotherCanRecive()) // 如果master没有token空位，则堵住
             {
                 // TODO: return delay 后再发送
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);
                 packet->resetDelay(ms_cable->getTransferDelay());
                 slave->another_can_recive--;
-                slave_port->resetBandwidthBuffer();
             }
         }
         else
