@@ -45,13 +45,15 @@ void SlaveModule::updatePacketPos()
         packet->setDrawPos(pos);
     }
 
-    pos = this->pos() + QPoint(width() / 2, height*3 + 4);
+    int h = height*3+4;
     foreach (DataPacket *packet, static_cast<ModulePort *>(getPorts().first())->dequeue_list)
     {
+        pos = this->pos() + QPoint(width() / 2, h);
+        h += 4 + PACKET_SIZE;
         packet->setDrawPos(pos);
     }
 
-    int h = height*3+4;
+    h = height*3+4;
     foreach (DataPacket *packet, process_list)
     {
         pos = this->pos() + QPoint(width() - 4, h);
