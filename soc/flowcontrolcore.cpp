@@ -141,16 +141,30 @@ void FlowControlCore::passOneClock()
                 slave_port->dequeue_list.removeAt(i--);
                 slave->process_list.append(packet);
                 packet->resetDelay(slave->getProcessDelay());
-                slave->dequeue_signal_buffer++; // 告诉Master自己可以接收的buffer++
                 slave_port->resetBandwidthBuffer();
 
-                if (slave->dequeue_signal_buffer > 0)
-                {
-                    // Slave出队列时立即给Master一个信号，但是这个信号1clock最多只发送一个，多余的需要进入buffer等待下一个时钟
-                    // TODO: 发送一个Slave出队列的信号（暂时什么都不做）
-                }
+                // the delay on the return of the Token
+                DataPacket* rToken = createToken();
+                slave_port->return_delay_list.append(rToken);
+                rToken->resetDelay(slave_port->return_delay);
             }
 
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
+
+    // Slave pick queue时return token 给Master
+    for (int i = 0; i < slave_port->return_delay_list.size(); i++)
+    {
+        DataPacket* packet = slave_port->return_delay_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            master->another_can_recive++;
+            slave_port->return_delay_list.removeAt(i--);
+            qDebug() << "Master 接收到 return token";
         }
         else
         {
@@ -166,7 +180,6 @@ void FlowControlCore::passOneClock()
         {
             if (slave->anotherCanRecive()) // 如果master没有token空位，则堵住
             {
-                // TODO: return delay 后再发送
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);
                 packet->resetDelay(ms_cable->getTransferDelay());
@@ -189,11 +202,11 @@ void FlowControlCore::passOneClock()
         {
             ms_cable->response_list.removeAt(i--);
             slave->another_can_recive++;
-            qDebug() << "Master接收到response" << packet->toString();
+            qDebug() << "Master 接收到 response" << packet->toString();
             deleteToken(packet);
 
             // Master接收，其可发送+1
-            master->another_can_recive++;
+//            master->another_can_recive++;
         }
         else
         {

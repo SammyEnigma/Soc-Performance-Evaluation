@@ -11,7 +11,7 @@ request经过线的delay个clock到达Slave的接收端口
 Slave有也多个端口，收到request后1个clock（latency固定=1）进入端口的queue，再bandwidth个clock从queue中pick出来
 （这里的bandwidth是pick的，但相当于return的bandwidth）
 
-出queue后通过SubChannel向Master发送一个信号，表示空出了一个buffer（不用画线）
+出queue后通过SubChannel（再可调delay）return给Master信号，表示空出了一个buffer（不用画线）
 （1个clock最多只发送一个，要是一下子出来多个，则分多个clock发送回去）
 
 进入处理的延迟，结束后发送给其他Module。目前为返回至之前的Master。（处理发送的bandwidth=queue.pick的bandwidth）
