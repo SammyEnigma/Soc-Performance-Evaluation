@@ -132,7 +132,7 @@ void ModulePort::slotDataList()
     emit signalDataList();
 }
 
-void ModulePort::slotDataReceived(CableBase* cable, DataPacket *packet)
+void ModulePort::slotDataReceived(CableBase *cable, DataPacket *packet)
 {
     enqueue_list.append(packet);
     packet->resetDelay(getLatency());

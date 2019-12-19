@@ -47,8 +47,8 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 signals:
-	void signalRequestDelayFinished(ModuleCable* cable, DataPacket *packet);
-    void signalResponseDelayFinished(ModuleCable* cable, DataPacket *packet);
+    void signalRequestDelayFinished(CableBase* cable, DataPacket *packet);
+    void signalResponseDelayFinished(CableBase* cable, DataPacket *packet);
 
 protected:
     QList<PacketList> packet_lists; // 所有的数据（二维），为扩展线数量做准备
