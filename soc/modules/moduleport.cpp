@@ -30,75 +30,80 @@ QString ModulePort::getClass()
     return "ModulePort";
 }
 
-void ModulePort::passOneClock()
+void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
 {
-    nextBandwidthBuffer();
-    
-    // ==== 发送部分（Master） ====
-    // 发送延迟结束，开始准备发送
-    for (int i = 0; i < send_delay_list.size(); i++)
+	if (flag == PASS_SEND || flag ==  PASS_BOTH)
     {
-        DataPacket *packet = send_delay_list.at(i);
-        if (packet->isDelayFinished())
+        // ==== 发送部分（Master） ====
+        // 发送延迟结束，开始准备发送
+        for (int i = 0; i < send_delay_list.size(); i++)
         {
-            send_delay_list.removeAt(i--);
-            emit signalSendDelayFinished(this, packet);
-        }
-    }
-
-    // ==== 接收部分（Slave） ====
-    // Slave进队列（latency=1 clock）
-    for (int i = 0; i < enqueue_list.size(); i++)
-    {
-        DataPacket *packet = enqueue_list.at(i);
-        if (packet->isDelayFinished())
-        {
-            enqueue_list.removeAt(i--);
-            dequeue_list.append(packet);
-            packet->resetDelay(getBandwidth());
-        }
-        else
-        {
-            packet->delayToNext();
-        }
-    }
-
-    // Slave出队列（bandwidth clock）-->处理数据
-    for (int i = 0; i < dequeue_list.size(); i++)
-    {
-        DataPacket *packet = dequeue_list.at(i);
-        if (packet->isDelayFinished())
-        {
-            if (isBandwidthBufferFinished())
+            DataPacket *packet = send_delay_list.at(i);
+            if (packet->isDelayFinished())
             {
-                dequeue_list.removeAt(i--);
-                emit signalReceivedDataDequeueReaded(packet);
-                resetBandwidthBuffer();
-                
-                // the delay on the return of the Token
-                DataPacket *ret = new DataPacket(this->parentWidget());
-                return_delay_list.append(ret);
-                ret->resetDelay(return_delay);
+                send_delay_list.removeAt(i--);
+                emit signalSendDelayFinished(this, packet);
             }
         }
-        else
-        {
-            packet->delayToNext();
-        }
     }
-
-    // Slave pick queue时return token 给Master
-    for (int i = 0; i < return_delay_list.size(); i++)
+    
+    if (flag == PASS_RECEIVE || flag == PASS_BOTH)
     {
-        DataPacket *packet = return_delay_list.at(i);
-        if (packet->isDelayFinished())
+        // ==== 接收部分（Slave） ====
+        // Slave进队列（latency=1 clock）
+        for (int i = 0; i < enqueue_list.size(); i++)
         {
-            emit signalDequeueTokenDelayFinished();
-            packet->deleteLater();
+            DataPacket *packet = enqueue_list.at(i);
+            if (packet->isDelayFinished())
+            {
+                enqueue_list.removeAt(i--);
+                dequeue_list.append(packet);
+                packet->resetDelay(getBandwidth());
+            }
+            else
+            {
+                packet->delayToNext();
+            }
         }
-        else
+
+        // Slave出队列（bandwidth clock）-->处理数据
+        for (int i = 0; i < dequeue_list.size(); i++)
         {
-            packet->delayToNext();
+            DataPacket *packet = dequeue_list.at(i);
+            if (packet->isDelayFinished())
+            {
+                if (isBandwidthBufferFinished())
+                {
+                    dequeue_list.removeAt(i--);
+                    emit signalReceivedDataDequeueReaded(packet);
+                    resetBandwidthBuffer();
+
+                    // the delay on the return of the Token
+                    DataPacket *ret = new DataPacket(this->parentWidget());
+                    return_delay_list.append(ret);
+                    ret->resetDelay(return_delay);
+                }
+            }
+            else
+            {
+                packet->delayToNext();
+            }
+        }
+        nextBandwidthBuffer(); // 出队列的
+
+        // Slave pick queue时return token 给Master
+        for (int i = 0; i < return_delay_list.size(); i++)
+        {
+            DataPacket *packet = return_delay_list.at(i);
+            if (packet->isDelayFinished())
+            {
+                emit signalDequeueTokenDelayFinished();
+                packet->deleteLater();
+            }
+            else
+            {
+                packet->delayToNext();
+            }
         }
     }
 }

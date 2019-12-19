@@ -12,6 +12,13 @@
 #include "portbase.h"
 #include "datapacket.h"
 
+enum PASS_ONE_CLOCK_FLAG_PORT {
+    PASS_NONE, 
+    PASS_SEND, 
+    PASS_RECEIVE, 
+    PASS_BOTH
+};
+
 class ModulePort : public PortBase
 {
     Q_OBJECT
@@ -23,7 +30,7 @@ public:
     virtual ModulePort *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual QString getClass() override;
 
-    void passOneClock();
+    void passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag = PASS_BOTH);
 
     int getLatency();
     int getBandwidth();
