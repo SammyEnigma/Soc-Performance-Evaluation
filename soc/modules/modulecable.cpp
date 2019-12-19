@@ -29,7 +29,7 @@ ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
 void ModuleCable::initData()
 {
     this->IPTD = getData("delay");
-    
+
     // 注意：需要先初始化两个port的data
     if (from_port != nullptr && to_port != nullptr)
     {
@@ -40,7 +40,7 @@ void ModuleCable::initData()
         ModuleInterface* to_shape = reinterpret_cast<ModuleInterface*>(to->getShape());
         from->another_can_receive = from_shape->getToken();
         to->another_can_receive = to_shape->getToken();
-        
+
         // 初始化途中互相调整token
         disconnect(from, SIGNAL(signalDequeueTokenDelayFinished()));
         connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=]{
@@ -82,7 +82,7 @@ void ModuleCable::passOneClock()
             packet->delayToNext();
         }
     }
-    
+
     for (int i = 0; i < response_list.size(); i++)
     {
         DataPacket *packet = response_list.at(i);
@@ -100,18 +100,6 @@ void ModuleCable::passOneClock()
 
 void ModuleCable::updatePacketPos()
 {
-    /* foreach (DataPacket *packet, request_list)
-    {
-        QPoint pos = this->pos() + QPoint(PACKET_SIZE/2, height() * packet->currentProp());
-        packet->setDrawPos(pos);
-    }
-
-    foreach (DataPacket *packet, response_list)
-    {
-        QPoint pos = this->pos() + QPoint(width()-PACKET_SIZE/2, height() * (1 - packet->currentProp()));
-        packet->setDrawPos(pos);
-    } */
-    
     foreach (DataPacket *packet, request_list)
     {
         packet->setDrawPos(getPropPosByLineType(packet->currentProp(), REQUEST_LINE));
@@ -130,7 +118,7 @@ void ModuleCable::updatePacketPos()
 QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
 {
     prop = prop * 0.9 + 0.05; // 限制范围，排除和shape重合的两端（避免有歧义）
-	int x1 = arrow_pos1.x(), y1 = arrow_pos1.y();
+    int x1 = arrow_pos1.x(), y1 = arrow_pos1.y();
     int x2 = arrow_pos2.x(), y2 = arrow_pos2.y();
     int x = -1, y = -1;
     if (_line_type == 0) // 直线

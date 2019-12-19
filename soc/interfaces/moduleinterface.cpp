@@ -8,7 +8,7 @@
 #include "moduleinterface.h"
 
 ModuleInterface::ModuleInterface(QList<PortBase *> &ports, QObject *parent)
-    : QObject(parent), token(nullptr), process_delay(nullptr), ports(ports)
+    : token(nullptr), process_delay(nullptr), ports(ports)
 {
 }
 

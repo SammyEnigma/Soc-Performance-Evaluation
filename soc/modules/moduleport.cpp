@@ -32,7 +32,7 @@ QString ModulePort::getClass()
 
 void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
 {
-	if (flag == PASS_SEND || flag ==  PASS_BOTH)
+    if (flag == PASS_SEND || flag ==  PASS_BOTH)
     {
         // ==== 发送部分（Master） ====
         // 发送延迟结束，开始准备发送
@@ -129,16 +129,11 @@ QString ModulePort::toStringAddin()
 
 void ModulePort::slotDataList()
 {
-    /*PortDataDialog* pdd = new PortDataDialog(this);
-    pdd->exec();
-    pdd->deleteLater();*/
     emit signalDataList();
 }
 
 void ModulePort::slotDataReceived(CableBase* cable, DataPacket *packet)
 {
-    // if (packet->getTargetPort() != this) // 传输是有方向的，首先要确保方向是自己
-        // return ;
     enqueue_list.append(packet);
     packet->resetDelay(getLatency());
 }

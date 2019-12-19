@@ -266,13 +266,10 @@ void FlowControl_Master1_Slave1::passOneClock()
     // Cable
     ms_cable->passOneClock();
 
-    // Slave接收
-
     // Slave
+    slave->passOneClock();
 
     // Slave返回
-
-    // Master接收
 
     // ==== 时钟结束后首尾 ====
     current_clock++;
