@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-09 11:32:31
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:43:11
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 15:49:19
  * @Description: 数据包，request和response的基类
  */
 #ifndef DATAPACKET_H
@@ -15,6 +15,7 @@
 
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 
+class PortBase;
 class DataPacket;                       // typedef 之前需要预先声明变量
 typedef QList<DataPacket *> PacketList; // 常用的列表，直接重定义了
 
@@ -34,6 +35,9 @@ public:
     
     QPoint getDrawPos();
     void setDrawPos(QPoint pos);
+    
+    PortBase* getTargetPort();
+    void setTargetPort(PortBase *port);
 
 signals:
     void signalDelayFinished();
@@ -46,6 +50,8 @@ protected:
     QString tag;     // 编号ID
     DataFormat data; // 数据（复杂格式）
     char par;        // 忘了是什么了
+    
+    PortBase* target_port; // 要发送的端口方向
 
 private:
     int delay_step; // 数据包传送有延迟，查看延迟的位置

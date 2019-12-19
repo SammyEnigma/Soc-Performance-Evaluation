@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-09 11:32:32
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:16:12
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 15:50:41
  * @Description: 数据包，request和response的基类
  */
 #include "datapacket.h"
@@ -71,4 +71,14 @@ void DataPacket::setDrawPos(QPoint pos)
 {
     emit signalPosChanged(this->draw_pos, pos);
     this->draw_pos = pos;
+}
+
+PortBase* DataPacket::getTargetPort()
+{
+    return target_port;
+}
+
+void DataPacket::setTargetPort(PortBase* port)
+{
+    target_port = port;
 }

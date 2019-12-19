@@ -47,7 +47,7 @@ bool FlowControl_Master1_Slave1::initModules()
 void FlowControl_Master1_Slave1::initData()
 {
     FlowControlBase::initData();
-	
+
     // 初始化属性
     master->initData();
     slave->initData();
@@ -58,12 +58,18 @@ void FlowControl_Master1_Slave1::initData()
     slave_port->another_can_receive = master->getToken();
     master_port->initBandwidthBufer();
     slave_port->initBandwidthBufer();
+
+    // 连接信号槽
+    disconnect(ms_cable, SIGNAL(signalRequestDelayFinished(ModuleCable *, DataPacket *)));
+    connect(ms_cable, SIGNAL(signalRequestDelayFinished(ModuleCable *, DataPacket *)), slave_port, SLOT(slotDataReceived(ModuleCable *, DataPacket *)));
+    disconnect(ms_cable, SIGNAL(signalResponseDelayFinished(ModuleCable *, DataPacket *)));
+    connect(ms_cable, SIGNAL(signalResponseDelayFinished(ModuleCable *, DataPacket *)), master_port, SLOT(slotDataReceived(ModuleCable *, DataPacket *)));
 }
 
 void FlowControl_Master1_Slave1::clearData()
 {
     FlowControlBase::clearData();
-	
+
     master_port->send_delay_list.clear();
     slave_port->enqueue_list.clear();
     slave_port->data_queue.clear();
@@ -87,7 +93,7 @@ void FlowControl_Master1_Slave1::clearData()
  * 简单、直观、易控制
  * 但是封装性差，难以复用
  */
-void FlowControl_Master1_Slave1::passOneClock()
+void FlowControl_Master1_Slave1::passOneClock0()
 {
     FlowControlBase::passOneClock();
 
@@ -107,7 +113,6 @@ void FlowControl_Master1_Slave1::passOneClock()
     }
 
     // Master发送延迟结束，开始准备发送
-    // 如果带宽不足，继续等待
     for (int i = 0; i < master_port->send_delay_list.size(); i++)
     {
         DataPacket *packet = master_port->send_delay_list.at(i);
@@ -249,30 +254,24 @@ void FlowControl_Master1_Slave1::passOneClock()
     ms_cable->passOneClock();
 }
 
-
-void FlowControl_Master1_Slave1::passOneClock0()
+void FlowControl_Master1_Slave1::passOneClock()
 {
     // 创建token，保证Master可传输数据的来源
     while (master->data_list.size() < 5)
-    {
-        DataPacket *packet = createToken();
-        packet->setDrawPos(QPoint(-1, -1));
-        packet->resetDelay(0);
-        master->data_list.append(packet);
-    }
-    
+        master->data_list.append(createToken());
+
     // Master
     master->passOneClock();
-    
-    // Master发送
-    
+
+    // Cable
+    ms_cable->passOneClock();
+
     // Slave接收
-    
+
     // Slave
-    
-    
+
     // Slave返回
-    
+
     // Master接收
 
     // ==== 时钟结束后首尾 ====

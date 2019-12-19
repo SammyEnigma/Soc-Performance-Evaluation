@@ -8,7 +8,7 @@
 #include "modulecable.h"
 
 ModuleCable::ModuleCable(QWidget *parent)
-    : CableBase(parent), ModuleInterface(ShapeBase::ports, parent),
+    : CableBase(parent),
       packet_lists(QList<PacketList>{PacketList(), PacketList(), PacketList(), PacketList()}), // 初始化四个
       request_list(packet_lists[REQUEST_LINE]), request_data_list(packet_lists[REQUEST_DATA_LINE]),
       response_list(packet_lists[RESPONSE_LINE]), response_data_list(packet_lists[RESPONSE_DATA_LINE])
@@ -29,6 +29,73 @@ ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
 void ModuleCable::initData()
 {
     this->IPTD = getData("delay");
+    
+    // 注意：需要先初始化两个port的data
+    if (from_port != nullptr && to_port != nullptr)
+    {
+        // 初始化双方token
+        ModulePort* from = static_cast<ModulePort*>(from_port);
+        ModulePort* to = static_cast<ModulePort*>(to_port);
+        ModuleInterface* from_shape = reinterpret_cast<ModuleInterface*>(from->getShape());
+        ModuleInterface* to_shape = reinterpret_cast<ModuleInterface*>(to->getShape());
+        from->another_can_receive = from_shape->getToken();
+        to->another_can_receive = to_shape->getToken();
+        
+        // 初始化途中互相调整token
+        disconnect(from, SIGNAL(signalDequeueTokenDelayFinished()));
+        connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=]{
+            to->another_can_receive++;
+        });
+        disconnect(to, SIGNAL(signalDequeueTokenDelayFinished()));
+        connect(to, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {
+            from->another_can_receive++;
+        });
+
+        disconnect(from, SIGNAL(signalResponseSended(DataPacket *)));
+        connect(from, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
+            response_list.append(packet);
+            packet->setTargetPort(to);
+            packet->resetDelay(getTransferDelay());
+        });
+        disconnect(to, SIGNAL(signalResponseSended(DataPacket *)));
+        connect(to, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
+            response_list.append(packet);
+            packet->setTargetPort(from);
+            packet->resetDelay(getTransferDelay());
+        });
+    }
+}
+
+void ModuleCable::passOneClock()
+{
+    // 连接线传输延迟
+    for (int i = 0; i < request_list.size(); i++)
+    {
+        DataPacket *packet = request_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            request_list.removeAt(i--);
+            emit signalRequestDelayFinished(this, packet);
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
+    
+    for (int i = 0; i < response_list.size(); i++)
+    {
+        DataPacket *packet = response_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            response_list.removeAt(i--);
+            emit signalResponseDelayFinished(this, packet);
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
 }
 
 void ModuleCable::updatePacketPos()

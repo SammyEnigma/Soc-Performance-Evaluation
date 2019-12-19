@@ -14,6 +14,7 @@
 
 class MasterModule : public CircleShape, public ModuleInterface
 {
+    Q_OBJECT
 public:
     MasterModule(QWidget* parent = nullptr);
 
@@ -25,7 +26,7 @@ public:
     void initData() override;
 
     void passOneClock() override;
-    
+
 protected:
 	void paintEvent(QPaintEvent *event) override;
     

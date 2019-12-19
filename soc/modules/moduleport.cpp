@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 17:15:12
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 15:15:22
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #include "moduleport.h"
@@ -33,6 +33,74 @@ QString ModulePort::getClass()
 void ModulePort::passOneClock()
 {
     nextBandwidthBuffer();
+    
+    // ==== 发送部分（Master） ====
+    // 发送延迟结束，开始准备发送
+    for (int i = 0; i < send_delay_list.size(); i++)
+    {
+        DataPacket *packet = send_delay_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            send_delay_list.removeAt(i--);
+            emit signalSendDelayFinished(this, packet);
+        }
+    }
+
+    // ==== 接收部分（Slave） ====
+    // Slave进队列（latency=1 clock）
+    for (int i = 0; i < enqueue_list.size(); i++)
+    {
+        DataPacket *packet = enqueue_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            enqueue_list.removeAt(i--);
+            dequeue_list.append(packet);
+            packet->resetDelay(getBandwidth());
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
+
+    // Slave出队列（bandwidth clock）-->处理数据
+    for (int i = 0; i < dequeue_list.size(); i++)
+    {
+        DataPacket *packet = dequeue_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            if (isBandwidthBufferFinished())
+            {
+                dequeue_list.removeAt(i--);
+                emit signalReceivedDataDequeueReaded(packet);
+                resetBandwidthBuffer();
+                
+                // the delay on the return of the Token
+                DataPacket *ret = new DataPacket(this->parentWidget());
+                return_delay_list.append(ret);
+                ret->resetDelay(return_delay);
+            }
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
+
+    // Slave pick queue时return token 给Master
+    for (int i = 0; i < return_delay_list.size(); i++)
+    {
+        DataPacket *packet = return_delay_list.at(i);
+        if (packet->isDelayFinished())
+        {
+            emit signalDequeueTokenDelayFinished();
+            packet->deleteLater();
+        }
+        else
+        {
+            packet->delayToNext();
+        }
+    }
 }
 
 void ModulePort::fromStringAddin(QString s)
@@ -60,6 +128,19 @@ void ModulePort::slotDataList()
     pdd->exec();
     pdd->deleteLater();*/
     emit signalDataList();
+}
+
+void ModulePort::slotDataReceived(CableBase* cable, DataPacket *packet)
+{
+    // if (packet->getTargetPort() != this) // 传输是有方向的，首先要确保方向是自己
+        // return ;
+    enqueue_list.append(packet);
+    packet->resetDelay(getLatency());
+}
+
+void ModulePort::slotResponseReceived(DataPacket* packet)
+{
+    qDebug() << "收到 response";
 }
 
 int ModulePort::getLatency()

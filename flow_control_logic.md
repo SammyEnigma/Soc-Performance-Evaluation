@@ -8,7 +8,7 @@ Master有自己的发送队列、多个端口。每个发送端口有不同的ba
 
 request经过线的delay个clock到达Slave的接收端口
 
-Slave有也多个端口，收到request后1个clock（latency固定=1）进入端口的queue，再bandwidth个clock从queue中pick出来
+Slave有也多个端口，收到request后1个clock（latency固定=1）进入端口的queue，再bandwidth个clock从queue中pick出来（读取数据延迟）
 （这里的bandwidth是pick的，但相当于return的bandwidth）
 
 出queue后通过SubChannel（再可调delay）return给Master信号，表示空出了一个buffer（不用画线）

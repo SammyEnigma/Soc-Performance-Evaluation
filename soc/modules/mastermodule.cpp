@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-09 14:08:47
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-16 17:32:02
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 15:02:06
  * @Description: MasterModule
  */
 #include "mastermodule.h"
@@ -27,17 +27,34 @@ PortBase *MasterModule::createPort()
 
 void MasterModule::initData()
 {
+    ModuleInterface::initData();
+
     this->token = getData("token");
 }
 
 void MasterModule::passOneClock()
 {
-    ModuleInterface::passOneClock();
-
 	// Slave有可接收的buffer时，Master开始发送
-    if (!data_list.isEmpty())
+    foreach (PortBase* p, ShapeBase::ports)
     {
-
+        ModulePort* port = static_cast<ModulePort*>(p);
+        ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
+        if (oppo != nullptr && oppo->getClass() == "Slave")
+        {
+            // 确定是这个连接Slave的端口，开始判断发送事件
+            if (!data_list.isEmpty() && port->isBandwidthBufferFinished()) // 需要足够的发送带宽
+            {
+                DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
+                packet->setDrawPos(geometry().center());
+                packet->resetDelay(port->getLatency());
+                port->send_delay_list.append(packet);
+                port->another_can_receive--;
+                port->resetBandwidthBuffer();
+            }
+            
+            // port 内部数据传输流
+            port->passOneClock();
+        }
     }
 }
 

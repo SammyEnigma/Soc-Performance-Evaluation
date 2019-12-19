@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-09 14:09:05
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 09:54:48
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 16:23:35
  * @Description: SlaveModule
  */
 #include "slavemodule.h"
@@ -29,6 +29,9 @@ PortBase *SlaveModule::createPort()
 void SlaveModule::initData()
 {
     this->token = getData("token");
+    this->process_delay = getData("process_delay");
+    
+    ModuleInterface::initData();
 }
 
 void SlaveModule::updatePacketPos()
@@ -88,9 +91,4 @@ void SlaveModule::paintEvent(QPaintEvent *event)
         w = fm.horizontalAdvance(prcs_s);
         painter.drawText(width() - w-margin, height*3, prcs_s);
     }
-}
-
-int SlaveModule::getProcessDelay()
-{
-    return getData("process delay")->i();
 }

@@ -12,6 +12,7 @@
 #include "datapacket.h"
 #include "customdatatype.h"
 #include "moduleport.h"
+#include "modulecable.h"
 
 class ModuleInterface : public QObject
 {
@@ -26,12 +27,9 @@ public:
     void setLatency(int latency);
 
     int getToken();
-    int getBandwidth();
-    int getLatency();
-
     int getDefaultToken();
-    int getDefaultBandwidth();
-    int getDefaultLatency();
+
+    int getProcessDelay();
 
 signals:
 
@@ -41,9 +39,11 @@ public slots:
 
 public:
     PacketList data_list;
+    PacketList process_list;
     
 protected:
     CustomDataType* token;
+    CustomDataType* process_delay;
 
 private:
     QList<PortBase*>& ports; // Shape那边来的ports，为了方便，隐藏起来，Module可直接用Shape的

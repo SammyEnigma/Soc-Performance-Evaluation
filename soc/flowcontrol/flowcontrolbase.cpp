@@ -147,6 +147,8 @@ DataPacket *FlowControlBase::createToken()
 {
     static int token_id = 0;
     DataPacket *packet = new DataPacket("编号" + QString::number(++token_id), this);
+    packet->setDrawPos(QPoint(-1, -1));
+    packet->resetDelay(0);
     all_packets.append(packet);
     emit signalTokenCreated(packet);
     return packet;

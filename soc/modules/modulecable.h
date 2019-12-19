@@ -16,8 +16,9 @@
 #define LINE_COUNT 2
 #define LINE_SPACE 16
 
-class ModuleCable : public CableBase, public ModuleInterface
+class ModuleCable : public CableBase
 {
+	Q_OBJECT
 public:
     ModuleCable(QWidget* parent = nullptr);
 
@@ -32,10 +33,11 @@ public:
     };
 
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
-    void initData() override;
+    void initData();
     virtual void adjustGeometryByPorts() override;
+    virtual void passOneClock();
 
-    virtual void updatePacketPos() override;
+    virtual void updatePacketPos();
     QPoint getPropPosByLineType(double prop, LINE_TYPE line);
 
     void setTransferDelay(int delay);
@@ -43,6 +45,10 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+
+signals:
+	void signalRequestDelayFinished(ModuleCable* cable, DataPacket *packet);
+    void signalResponseDelayFinished(ModuleCable* cable, DataPacket *packet);
 
 protected:
     QList<PacketList> packet_lists; // 所有的数据（二维），为扩展线数量做准备
