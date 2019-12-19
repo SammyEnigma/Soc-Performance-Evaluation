@@ -13,8 +13,8 @@ FlowControl_Master1_Slave1::FlowControl_Master1_Slave1(GraphicArea *ga, QObject 
 
 bool FlowControl_Master1_Slave1::initModules()
 {
-	FlowControlBase::initModules();
-    qDebug() << "FlowControl_Master1_Slave1::initModules";
+    FlowControlBase::initModules();
+
     master = static_cast<MasterModule *>(graphic->findShapeByClass("Master"));
     slave = static_cast<SlaveModule *>(graphic->findShapeByClass("Slave"));
     ms_cable = static_cast<ModuleCable *>(getModuleCable(master, slave));
@@ -54,8 +54,8 @@ void FlowControl_Master1_Slave1::initData()
     ms_cable->initData();
 
     // 设置运行数据
-    master->another_can_recive = slave->getToken();
-    slave->another_can_recive = master->getToken();
+    master_port->another_can_receive = slave->getToken();
+    slave_port->another_can_receive = master->getToken();
     master_port->initBandwidthBufer();
     slave_port->initBandwidthBufer();
 }
@@ -81,14 +81,19 @@ void FlowControl_Master1_Slave1::clearData()
     all_packets.clear();
 }
 
+/**
+ * （旧版）
+ * 单步控制所有模块的数据传输流程
+ * 简单、直观、易控制
+ * 但是封装性差，难以复用
+ */
 void FlowControl_Master1_Slave1::passOneClock()
 {
     FlowControlBase::passOneClock();
 
     // ==== Master request ====
-
-    // Slave有可接受的buffer时，Master开始延迟（0clock）
-    if (master->anotherCanRecive())
+    // Slave有可接收的buffer时，Master开始延迟（0clock）
+    if (master_port->anotherCanRecive())
     {
         if (master_port->isBandwidthBufferFinished()) // 需要足够的发送带宽
         {
@@ -96,7 +101,7 @@ void FlowControl_Master1_Slave1::passOneClock()
             packet->setDrawPos(master->geometry().center());
             packet->resetDelay(master_port->getLatency());
             master_port->send_delay_list.append(packet);
-            master->another_can_recive--;
+            master_port->another_can_receive--;
             master_port->resetBandwidthBuffer();
         }
     }
@@ -183,7 +188,7 @@ void FlowControl_Master1_Slave1::passOneClock()
         DataPacket *packet = slave_port->return_delay_list.at(i);
         if (packet->isDelayFinished())
         {
-            master->another_can_recive++;
+            master_port->another_can_receive++;
             slave_port->return_delay_list.removeAt(i--);
             qDebug() << "Master 接收到 return token";
         }
@@ -199,12 +204,12 @@ void FlowControl_Master1_Slave1::passOneClock()
         DataPacket *packet = slave->process_list.at(i);
         if (packet->isDelayFinished()) // 处理完毕，开始发送
         {
-            if (slave->anotherCanRecive()) // 如果master没有token空位，则堵住
+            if (slave_port->anotherCanRecive()) // 如果master没有token空位，则堵住
             {
                 slave->process_list.removeAt(i--);
                 ms_cable->response_list.append(packet);
                 packet->resetDelay(ms_cable->getTransferDelay());
-                slave->another_can_recive--;
+                slave_port->another_can_receive--;
             }
         }
         else
@@ -222,12 +227,12 @@ void FlowControl_Master1_Slave1::passOneClock()
         if (packet->isDelayFinished()) // Master收到
         {
             ms_cable->response_list.removeAt(i--);
-            slave->another_can_recive++;
+            slave_port->another_can_receive++;
             qDebug() << "Master 接收到 response" << packet->toString();
             deleteToken(packet);
 
             // Master接收，其可发送+1
-            //            master->another_can_recive++;
+            // master->another_can_recive++;
         }
         else
         {
@@ -244,8 +249,40 @@ void FlowControl_Master1_Slave1::passOneClock()
     ms_cable->passOneClock();
 }
 
+
+void FlowControl_Master1_Slave1::passOneClock0()
+{
+    // 创建token，保证Master可传输数据的来源
+    while (master->data_list.size() < 5)
+    {
+        DataPacket *packet = createToken();
+        packet->setDrawPos(QPoint(-1, -1));
+        packet->resetDelay(0);
+        master->data_list.append(packet);
+    }
+    
+    // Master
+    master->passOneClock();
+    
+    // Master发送
+    
+    // Slave接收
+    
+    // Slave
+    
+    
+    // Slave返回
+    
+    // Master接收
+
+    // ==== 时钟结束后首尾 ====
+    current_clock++;
+}
+
 void FlowControl_Master1_Slave1::refreshUI()
 {
+    FlowControlBase::refreshUI();
+
     master->update();
     slave->update();
     ms_cable->update();

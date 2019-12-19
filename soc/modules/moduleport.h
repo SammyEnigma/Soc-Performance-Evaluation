@@ -34,6 +34,8 @@ public:
     bool isBandwidthBufferFinished();
     void resetBandwidthBuffer();
 
+    int anotherCanRecive();
+
 protected:
     virtual void fromStringAddin(QString s) override;
     virtual QString toStringAddin() override;
@@ -55,6 +57,7 @@ private:
     int bandwidth_buffer; // 发送的clock缓存，超过bandwidth才能发送
     int latency;          // the delay of the sending the request/response
     int return_delay;     // the delay on the return of the Token
+    int another_can_receive; // 端口对面模块的剩余buffer（token）
 };
 
 #endif // MODULEPORT_H

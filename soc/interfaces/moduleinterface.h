@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-09 14:01:52
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 09:52:10
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 11:18:51
  * @Description: 模块接口，包含发送等功能
  */
 #ifndef MODULEINTERFACE_H
@@ -33,8 +33,6 @@ public:
     int getDefaultBandwidth();
     int getDefaultLatency();
 
-    int anotherCanRecive();
-
 signals:
 
 public slots:
@@ -42,14 +40,13 @@ public slots:
     virtual void updatePacketPos();
 
 public:
+    PacketList data_list;
     
 protected:
     CustomDataType* token;
-    CustomDataType* bandwidth;
-    CustomDataType* latency;
-    int another_can_recive;
 
-    QList<PortBase*>& ports;
+private:
+    QList<PortBase*>& ports; // Shape那边来的ports，为了方便，隐藏起来，Module可直接用Shape的
 };
 
 #endif // MODULEINTERFACE_H

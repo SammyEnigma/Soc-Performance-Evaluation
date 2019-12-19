@@ -94,7 +94,6 @@ void FlowControlBase::nextStep()
  */
 bool FlowControlBase::initModules()
 {
-    qDebug() << "FlowControlBase::initModules";
     return false;
 }
 

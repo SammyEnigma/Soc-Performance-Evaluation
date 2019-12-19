@@ -29,9 +29,6 @@ PortBase *SlaveModule::createPort()
 void SlaveModule::initData()
 {
     this->token = getData("token");
-    this->bandwidth = getData("bandwidth");
-    this->latency = getData("latency");
-    this->another_can_recive = token->i();
 }
 
 void SlaveModule::updatePacketPos()
@@ -73,7 +70,11 @@ void SlaveModule::paintEvent(QPaintEvent *event)
     int margin = 5;
 
     // painter.drawText(0, height*2, QString("Can send:%1, Token:%2").arg(anotherCanRecive()).arg(getToken()));
-    painter.drawText(margin, height * 2, QString("buffer: 对方=%1, 自己=%2").arg(anotherCanRecive()).arg(getToken()));
+    if (ShapeBase::ports.size() > 0)
+    {
+        ModulePort* slave_port = static_cast<ModulePort*>(ShapeBase::ports.first());
+        painter.drawText(margin, height * 2, QString("buffer: 对方=%1, 自己=%2").arg(slave_port->anotherCanRecive()).arg(getToken()));
+    }
 
     if (getPorts().size() > 0)
     {

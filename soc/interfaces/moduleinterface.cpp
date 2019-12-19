@@ -8,8 +8,7 @@
 #include "moduleinterface.h"
 
 ModuleInterface::ModuleInterface(QList<PortBase *>& ports, QObject *parent)
-    : QObject(parent), token(nullptr), bandwidth(nullptr), latency(nullptr),
-      another_can_recive(0), ports(ports)
+    : QObject(parent), token(nullptr), ports(ports)
 {
 }
 
@@ -25,20 +24,6 @@ void ModuleInterface::setToken(int token)
     this->token->setValue(token);
 }
 
-void ModuleInterface::setBandwidth(int bandwidth)
-{
-    if (this->bandwidth == nullptr)
-        return ;
-    this->bandwidth->setValue(bandwidth);
-}
-
-void ModuleInterface::setLatency(int latency)
-{
-    if (this->latency == nullptr)
-        return ;
-    this->latency->setValue(latency);
-}
-
 int ModuleInterface::getToken()
 {
     if (this->token == nullptr)
@@ -46,44 +31,11 @@ int ModuleInterface::getToken()
     return token->i();
 }
 
-int ModuleInterface::getBandwidth()
-{
-    if (this->bandwidth == nullptr)
-        return 0;
-    return bandwidth->i();
-}
-
-int ModuleInterface::getLatency()
-{
-    if (this->latency == nullptr)
-        return 0;
-    return latency->i();
-}
-
 int ModuleInterface::getDefaultToken()
 {
     if (this->token == nullptr)
         return 0;
     return token->getDefault().toInt();
-}
-
-int ModuleInterface::getDefaultBandwidth()
-{
-    if (this->bandwidth == nullptr)
-        return 0;
-    return bandwidth->getDefault().toInt();
-}
-
-int ModuleInterface::getDefaultLatency()
-{
-    if (this->latency == nullptr)
-        return 0;
-    return latency->getDefault().toInt();
-}
-
-int ModuleInterface::anotherCanRecive()
-{
-    return another_can_recive;
 }
 
 void ModuleInterface::passOneClock()

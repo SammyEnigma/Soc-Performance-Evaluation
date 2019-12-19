@@ -19,6 +19,7 @@ protected:
 	bool initModules() override;
     void initData() override;
     void clearData() override;
+    void passOneClock0();
     void passOneClock() override;
     void refreshUI() override;
 

@@ -24,12 +24,11 @@ public:
     virtual PortBase* createPort() override;
     void initData() override;
 
-    void updatePacketPos() override;
+    void passOneClock() override;
     
 protected:
 	void paintEvent(QPaintEvent *event) override;
     
-private:
 };
 
 #endif // MASTERMODULE_H

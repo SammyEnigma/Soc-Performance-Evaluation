@@ -10,7 +10,7 @@
 ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       bandwidth(1), bandwidth_buffer(1),
-      latency(1), return_delay(0)
+      latency(1), return_delay(0), another_can_receive(0)
 {
 }
 
@@ -95,4 +95,9 @@ bool ModulePort::isBandwidthBufferFinished()
 void ModulePort::resetBandwidthBuffer()
 {
     bandwidth_buffer = 0;
+}
+
+int ModulePort::anotherCanRecive()
+{
+    return another_can_receive;
 }
