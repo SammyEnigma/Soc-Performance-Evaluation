@@ -16,7 +16,8 @@ class SwitchModule : public HexagonShape, public ModuleInterface
 public:
     SwitchModule(QWidget* parent = nullptr);
 
-    friend class FlowControlCore;
+    friend class FlowControlBase;
+    friend class FlowControl_Master1_Slave1;
 
     virtual SwitchModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual PortBase* createPort() override;

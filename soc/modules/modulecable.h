@@ -21,8 +21,9 @@ class ModuleCable : public CableBase, public ModuleInterface
 public:
     ModuleCable(QWidget* parent = nullptr);
 
-    friend class FlowControlCore;
-    
+    friend class FlowControlBase;
+    friend class FlowControl_Master1_Slave1;
+
     enum LINE_TYPE {
         REQUEST_LINE, 
         RESPONSE_LINE, 

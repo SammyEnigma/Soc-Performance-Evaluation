@@ -17,9 +17,10 @@ class SlaveModule : public EllipseShape, public ModuleInterface
 {
 public:
     SlaveModule(QWidget *parent = nullptr);
-    
-    friend class FlowControlCore;
-    
+
+    friend class FlowControlBase;
+    friend class FlowControl_Master1_Slave1;
+
     virtual SlaveModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual PortBase* createPort() override;
     void initData() override;

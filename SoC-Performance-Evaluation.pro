@@ -27,6 +27,7 @@ INCLUDEPATH += \
     soc/transmissions \
     soc/modules \
     soc/interfaces \
+    soc/flowcontrol \
 
 SOURCES += \
     dialogs/portdatadialog.cpp \
@@ -49,8 +50,8 @@ SOURCES += \
     shapes/hexagonshape.cpp \
     shapes/rectangleshape.cpp \
     shapes/squareshape.cpp \
-    soc/flowcontrol.cpp \
-    soc/flowcontrolcore.cpp \
+    soc/flowcontrol/flowcontrol_master1_slave1.cpp \
+    soc/flowcontrol/flowcontrolbase.cpp \
     soc/interfaces/moduleinterface.cpp \
     soc/modules/mastermodule.cpp \
     soc/modules/modulecable.cpp \
@@ -78,8 +79,8 @@ HEADERS += \
     shapes/hexagonshape.h \
     shapes/rectangleshape.h \
     shapes/squareshape.h \
-    soc/flowcontrol.h \
-    soc/flowcontrolcore.h \
+    soc/flowcontrol/flowcontrolbase.h \
+    soc/flowcontrol/flowcontrol_master1_slave1.h \
     soc/interfaces/moduleinterface.h \
     soc/modules/mastermodule.h \
     soc/modules/modulecable.h \

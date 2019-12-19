@@ -18,7 +18,8 @@ class ModulePort : public PortBase
 public:
     ModulePort(QWidget *parent = nullptr);
     friend class PortDataDialog;
-    friend class FlowControlCore;
+    friend class FlowControlBase;
+    friend class FlowControl_Master1_Slave1;
     virtual ModulePort *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual QString getClass() override;
 

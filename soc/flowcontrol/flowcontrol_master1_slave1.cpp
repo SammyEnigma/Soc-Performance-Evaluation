@@ -1,23 +1,53 @@
 /*
  * @Author: MRXY001
- * @Date: 2019-12-11 16:47:58
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 09:52:08
- * @Description: 流控的核心数据部分
+ * @Date: 2019-12-19 09:49:09
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 09:52:30
+ * @Description: 1Master ↔ 1Slave
  */
-#include "flowcontrolcore.h"
+#include "flowcontrol_master1_slave1.h"
 
-FlowControlCore::FlowControlCore(QObject *parent) : QObject(parent), master(nullptr), slave(nullptr), current_clock(-1)
+FlowControl_Master1_Slave1::FlowControl_Master1_Slave1(GraphicArea *ga, QObject *parent) : FlowControlBase(ga, parent)
 {
 }
 
-/**
- * 初始化所有的数据
- */
-void FlowControlCore::initData()
+bool FlowControl_Master1_Slave1::initModules()
 {
-    current_clock = 0;
+	FlowControlBase::initModules();
+    qDebug() << "FlowControl_Master1_Slave1::initModules";
+    master = static_cast<MasterModule *>(graphic->findShapeByClass("Master"));
+    slave = static_cast<SlaveModule *>(graphic->findShapeByClass("Slave"));
+    ms_cable = static_cast<ModuleCable *>(getModuleCable(master, slave));
+    master_port = static_cast<ModulePort *>(ms_cable->getFromPort());
+    slave_port = static_cast<ModulePort *>(ms_cable->getToPort());
 
+    if (!master)
+    {
+        DEB << "无法找到 Master";
+        return false;
+    }
+    if (!slave)
+    {
+        DEB << "无法找到 Slave";
+        return false;
+    }
+    if (!ms_cable)
+    {
+        DEB << "无法找到 Master 和 Slave 的连接";
+        return false;
+    }
+    if (!master_port || !slave_port)
+    {
+        DEB << "无法找到对应的连接端口";
+        return false;
+    }
+    return true;
+}
+
+void FlowControl_Master1_Slave1::initData()
+{
+    FlowControlBase::initData();
+	
     // 初始化属性
     master->initData();
     slave->initData();
@@ -30,14 +60,10 @@ void FlowControlCore::initData()
     slave_port->initBandwidthBufer();
 }
 
-/**
- * 清除数据，释放空间
- * 也用于重新运行的初始化之前的清理操作
- */
-void FlowControlCore::clearData()
+void FlowControl_Master1_Slave1::clearData()
 {
-    if (!rt->running || current_clock == -1)
-        return;
+    FlowControlBase::clearData();
+	
     master_port->send_delay_list.clear();
     slave_port->enqueue_list.clear();
     slave_port->data_queue.clear();
@@ -55,12 +81,9 @@ void FlowControlCore::clearData()
     all_packets.clear();
 }
 
-/**
- * 模拟时钟流逝 1 个 clock
- */
-void FlowControlCore::passOneClock()
+void FlowControl_Master1_Slave1::passOneClock()
 {
-    FCDEB "Clock:" << current_clock << " >>";
+    FlowControlBase::passOneClock();
 
     // ==== Master request ====
 
@@ -76,14 +99,13 @@ void FlowControlCore::passOneClock()
             master->another_can_recive--;
             master_port->resetBandwidthBuffer();
         }
-
     }
 
     // Master发送延迟结束，开始准备发送
     // 如果带宽不足，继续等待
     for (int i = 0; i < master_port->send_delay_list.size(); i++)
     {
-        DataPacket* packet = master_port->send_delay_list.at(i);
+        DataPacket *packet = master_port->send_delay_list.at(i);
         if (packet->isDelayFinished()) // 延迟结束，直接发送
         {
             master_port->send_delay_list.removeAt(i--);
@@ -144,11 +166,10 @@ void FlowControlCore::passOneClock()
                 slave_port->resetBandwidthBuffer();
 
                 // the delay on the return of the Token
-                DataPacket* rToken = createToken();
+                DataPacket *rToken = createToken();
                 slave_port->return_delay_list.append(rToken);
                 rToken->resetDelay(slave_port->return_delay);
             }
-
         }
         else
         {
@@ -159,7 +180,7 @@ void FlowControlCore::passOneClock()
     // Slave pick queue时return token 给Master
     for (int i = 0; i < slave_port->return_delay_list.size(); i++)
     {
-        DataPacket* packet = slave_port->return_delay_list.at(i);
+        DataPacket *packet = slave_port->return_delay_list.at(i);
         if (packet->isDelayFinished())
         {
             master->another_can_recive++;
@@ -206,7 +227,7 @@ void FlowControlCore::passOneClock()
             deleteToken(packet);
 
             // Master接收，其可发送+1
-//            master->another_can_recive++;
+            //            master->another_can_recive++;
         }
         else
         {
@@ -223,39 +244,9 @@ void FlowControlCore::passOneClock()
     ms_cable->passOneClock();
 }
 
-/**
- * 创建一个顺序编号的token的工厂方法
- */
-DataPacket *FlowControlCore::createToken()
+void FlowControl_Master1_Slave1::refreshUI()
 {
-    static int token_id = 0;
-    DataPacket *packet = new DataPacket("编号" + QString::number(++token_id), this);
-    all_packets.append(packet);
-    emit signalTokenCreated(packet);
-    return packet;
-}
-
-/**
- * 收到某一个response
- * 本应去模拟处理的，现在直接删掉
- */
-void FlowControlCore::deleteToken(DataPacket *packet)
-{
-    all_packets.removeOne(packet);
-    emit signalTokenDeleted(packet);
-    delete packet;
-}
-
-/**
- * 输出某个数据
- * 按需修改
- */
-void FlowControlCore::printfAllData()
-{
-    qDebug() << "=================================";
-    for (int i = 0; i < all_packets.size(); i++)
-    {
-        qDebug() << all_packets.at(i)->toString();
-    }
-    qDebug() << "=================================";
+    master->update();
+    slave->update();
+    ms_cable->update();
 }

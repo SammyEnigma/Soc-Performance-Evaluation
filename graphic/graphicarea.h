@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-13 14:27:28
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 10:04:09
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -34,7 +34,8 @@
 class GraphicArea : public QWidget
 {
     Q_OBJECT
-    friend class FlowControl;
+    friend class FlowControlBase;
+    friend class FlowControl_Master1_Slave1;
 
 public:
     GraphicArea(QWidget *parent = nullptr);

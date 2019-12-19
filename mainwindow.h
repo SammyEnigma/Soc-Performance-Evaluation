@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-11-27 18:00:02
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-11-29 17:28:50
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 10:08:03
  * @Description: 主窗口
  */
 #ifndef MAINWINDOW_H
@@ -14,7 +14,7 @@
 #include <QDesktopServices>
 #include "shapebase.h"
 #include "globalvars.h"
-#include "flowcontrol.h"
+#include "flowcontrol_master1_slave1.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -70,6 +70,6 @@ private:
 private:
     Ui::MainWindow *ui;
     QString graphic_file_path;
-    FlowControl *flow_control;
+    FlowControlBase *flow_control;
 };
 #endif // MAINWINDOW_H
