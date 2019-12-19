@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-11-29 15:53:37
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-09 14:30:18
+ * @LastEditors  : MRXY001
+ * @LastEditTime : 2019-12-19 09:29:16
  * @Description: 左边的新装单元列表框
  */
 #ifndef SHAPELISTWIDGET_H
@@ -28,6 +28,7 @@
 #include "modulecable.h"
 #include "squareshape.h"
 #include "rectangleshape.h"
+#include "switchmodule.h"
 
 #define MOVING_CURSOR_NAME tr("指针") // 选择控件的鼠标列表项的名字
 

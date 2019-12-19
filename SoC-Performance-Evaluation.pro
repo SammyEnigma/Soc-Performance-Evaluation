@@ -43,7 +43,7 @@ SOURCES += \
     shapes/base/portbase.cpp \
     shapes/base/selectedge.cpp \
     shapes/base/shapebase.cpp \
-    shapes/base/shapelistwidget.cpp \
+    graphic/shapelistwidget.cpp \
     shapes/circleshape.cpp \
     shapes/ellipseshape.cpp \
     shapes/hexagonshape.cpp \
@@ -56,6 +56,7 @@ SOURCES += \
     soc/modules/modulecable.cpp \
     soc/modules/moduleport.cpp \
     soc/modules/slavemodule.cpp \
+    soc/modules/switchmodule.cpp \
     soc/transmissions/datapacket.cpp \
     soc/transmissions/datapacketview.cpp
 
@@ -71,7 +72,7 @@ HEADERS += \
     shapes/base/customdatatype.h \
     shapes/base/portbase.h \
     shapes/base/selectedge.h \
-    shapes/base/shapelistwidget.h \
+    graphic/shapelistwidget.h \
     shapes/circleshape.h \
     shapes/ellipseshape.h \
     shapes/hexagonshape.h \
@@ -84,6 +85,7 @@ HEADERS += \
     soc/modules/modulecable.h \
     soc/modules/moduleport.h \
     soc/modules/slavemodule.h \
+    soc/modules/switchmodule.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \
     utils/bytearrayutil.h \
