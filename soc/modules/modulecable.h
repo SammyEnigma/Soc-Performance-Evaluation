@@ -16,6 +16,11 @@
 #define LINE_COUNT 2
 #define LINE_SPACE 16
 
+enum PASS_ONE_CLOCK_FLAG {
+    PASS_REQUEST,
+    PASS_RESPONSE
+};
+
 class ModuleCable : public CableBase
 {
 	Q_OBJECT
@@ -35,7 +40,7 @@ public:
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
     void initData();
     virtual void adjustGeometryByPorts() override;
-    virtual void passOneClock();
+    virtual void passOneClock(PASS_ONE_CLOCK_FLAG flag);
 
     virtual void updatePacketPos();
     QPoint getPropPosByLineType(double prop, LINE_TYPE line);

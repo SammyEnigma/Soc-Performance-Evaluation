@@ -45,10 +45,12 @@ void ModuleCable::initData()
         disconnect(from, SIGNAL(signalDequeueTokenDelayFinished()));
         connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=]{
             to->another_can_receive++;
+            rt->runningOut("接收到 return token, 对方能接收：" + QString::number(to->anotherCanRecive()));
         });
         disconnect(to, SIGNAL(signalDequeueTokenDelayFinished()));
         connect(to, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {
             from->another_can_receive++;
+            rt->runningOut("接收到 return token, 对方能接收：" + QString::number(from->anotherCanRecive()));
         });
 
         disconnect(from, SIGNAL(signalResponseSended(DataPacket *)));
@@ -66,36 +68,45 @@ void ModuleCable::initData()
     }
 }
 
-void ModuleCable::passOneClock()
+void ModuleCable::passOneClock(PASS_ONE_CLOCK_FLAG flag)
 {
     // 连接线传输延迟
-    for (int i = 0; i < request_list.size(); i++)
+    if (flag == PASS_REQUEST)
     {
-        DataPacket *packet = request_list.at(i);
-        if (packet->isDelayFinished())
+        for (int i = 0; i < request_list.size(); i++)
         {
-            request_list.removeAt(i--);
-            emit signalRequestDelayFinished(this, packet);
+            DataPacket *packet = request_list.at(i);
+            if (packet->isDelayFinished())
+            {
+                request_list.removeAt(i--);
+                rt->runningOut("    cable 结束：" + packet->toString() + " >> 下一步");
+                emit signalRequestDelayFinished(this, packet);
+            }
+            else
+            {
+                packet->delayToNext();
+                rt->runningOut("    cable 延迟：" + packet->toString());
+            }
         }
-        else
+    }
+    else if (flag == PASS_RESPONSE)
+    {
+        for (int i = 0; i < response_list.size(); i++)
         {
-            packet->delayToNext();
+            DataPacket *packet = response_list.at(i);
+            if (packet->isDelayFinished())
+            {
+                response_list.removeAt(i--);
+                emit signalResponseDelayFinished(this, packet);
+            }
+            else
+            {
+                packet->delayToNext();
+            }
         }
     }
 
-    for (int i = 0; i < response_list.size(); i++)
-    {
-        DataPacket *packet = response_list.at(i);
-        if (packet->isDelayFinished())
-        {
-            response_list.removeAt(i--);
-            emit signalResponseDelayFinished(this, packet);
-        }
-        else
-        {
-            packet->delayToNext();
-        }
-    }
+    updatePacketPos();
 }
 
 void ModuleCable::updatePacketPos()

@@ -249,13 +249,16 @@ void FlowControl_Master1_Slave1::passOneClock0()
     current_clock++;
 
     // 内部模拟时钟流逝，设置数据包位置等
-    master->passOneClock();
-    slave->passOneClock();
-    ms_cable->passOneClock();
+    // 现在内部逻辑已经更改，不可使用
+//    master->passOneClock();
+//    slave->passOneClock();
+//    ms_cable->passOneClock();
 }
 
 void FlowControl_Master1_Slave1::passOneClock()
 {
+     FlowControlBase::passOneClock();
+
     // 创建token，保证Master可传输数据的来源
     while (master->data_list.size() < 5)
         master->data_list.append(createToken());
@@ -263,13 +266,14 @@ void FlowControl_Master1_Slave1::passOneClock()
     // Master
     master->passOneClock();
 
-    // Cable
-    ms_cable->passOneClock();
+    // Master >> Slave
+    ms_cable->passOneClock(PASS_REQUEST);
 
     // Slave
     slave->passOneClock();
 
-    // Slave返回
+    // Master << Slave
+    ms_cable->passOneClock(PASS_RESPONSE);
 
     // ==== 时钟结束后首尾 ====
     current_clock++;

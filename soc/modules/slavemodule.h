@@ -25,6 +25,7 @@ public:
     virtual PortBase* createPort() override;
     void initData() override;
 
+    void passOneClock() override;
     void updatePacketPos() override;
 
 protected:

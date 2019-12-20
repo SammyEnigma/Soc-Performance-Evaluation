@@ -24,7 +24,7 @@ void ModuleInterface::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            port->another_can_receive--;
+            rt->runningOut("port发送槽" + QString::number(port->another_can_receive));
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
@@ -35,6 +35,7 @@ void ModuleInterface::initData()
         connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
             process_list.append(packet);
             packet->resetDelay(getProcessDelay());
+            rt->runningOut("Slave接收，进入处理环节："+packet->toString());
         });
     }
 }
@@ -69,14 +70,7 @@ int ModuleInterface::getProcessDelay()
 
 void ModuleInterface::passOneClock()
 {
-    updatePacketPos();
-
-    foreach (PortBase *port, ports)
-    {
-        ModulePort *mp = static_cast<ModulePort *>(port);
-        mp->passOneClock();
-    }
-
+    // 模块内处理
     for (int i = 0; i < process_list.size(); i++)
     {
         DataPacket *packet = process_list.at(i);
@@ -95,9 +89,17 @@ void ModuleInterface::passOneClock()
             {
                 process_list.removeAt(i--);
                 emit mp->signalResponseSended(packet);
+                rt->runningOut("    处理结束，开始response：" + packet->toString());
             }
         }
+        else
+        {
+            packet->delayToNext();
+            rt->runningOut("    正在处理：" + packet->toString());
+        }
     }
+
+    updatePacketPos();
 }
 
 /**

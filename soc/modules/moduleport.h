@@ -13,9 +13,9 @@
 #include "datapacket.h"
 
 enum PASS_ONE_CLOCK_FLAG_PORT {
-    PASS_NONE, 
-    PASS_SEND, 
-    PASS_RECEIVE, 
+    PASS_NONE,
+    PASS_SEND,
+    PASS_RECEIVE,
     PASS_BOTH
 };
 

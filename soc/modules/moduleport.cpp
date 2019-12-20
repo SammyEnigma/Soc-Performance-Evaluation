@@ -44,6 +44,10 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
                 send_delay_list.removeAt(i--);
                 emit signalSendDelayFinished(this, packet);
             }
+            else
+            {
+                packet->delayToNext();
+            }
         }
     }
     
@@ -89,15 +93,15 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
                 packet->delayToNext();
             }
         }
-        nextBandwidthBuffer(); // 出队列的
-
         // Slave pick queue时return token 给Master
         for (int i = 0; i < return_delay_list.size(); i++)
         {
             DataPacket *packet = return_delay_list.at(i);
             if (packet->isDelayFinished())
             {
+                return_delay_list.removeAt(i--);
                 emit signalDequeueTokenDelayFinished();
+                rt->runningOut("return 延迟结束");
                 packet->deleteLater();
             }
             else
@@ -106,6 +110,8 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
             }
         }
     }
+
+    nextBandwidthBuffer(); // Master发送、Slave出队列
 }
 
 void ModulePort::fromStringAddin(QString s)

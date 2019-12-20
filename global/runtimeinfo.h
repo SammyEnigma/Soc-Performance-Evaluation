@@ -11,6 +11,7 @@
 #include <QApplication>
 #include <QStandardPaths>
 #include <QString>
+#include <QDebug>
 
 class ShapeBase;
 class PortBase;
@@ -32,6 +33,12 @@ public:
         running = false;
     }
 
+    void runningOut(QString s)
+    {
+        running_out.append(s);
+        qDebug().noquote() << s;
+    }
+
     QString DATA_PATH;
     QString SHAPE_PATH;
 
@@ -39,6 +46,7 @@ public:
     bool auto_stick_ports;
     
     bool running;
+    QStringList running_out;
 };
 
 #endif // RUNTIMEINFO_H

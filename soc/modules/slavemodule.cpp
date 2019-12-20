@@ -34,6 +34,17 @@ void SlaveModule::initData()
     ModuleInterface::initData();
 }
 
+void SlaveModule::passOneClock()
+{
+    foreach (PortBase *port, ShapeBase::ports)
+    {
+        ModulePort *mp = static_cast<ModulePort *>(port);
+        mp->passOneClock(PASS_RECEIVE);
+    }
+
+    ModuleInterface::passOneClock(); // 模块内处理
+}
+
 void SlaveModule::updatePacketPos()
 {
     QFontMetrics fm(this->font());

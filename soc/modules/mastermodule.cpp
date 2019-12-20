@@ -44,6 +44,7 @@ void MasterModule::passOneClock()
             // 确定是这个连接Slave的端口，开始判断发送事件
             if (!data_list.isEmpty() && port->isBandwidthBufferFinished()) // 需要足够的发送带宽
             {
+                rt->runningOut("Master创建token, 对方能接收："+QString::number(port->another_can_receive-1));
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
                 packet->setDrawPos(geometry().center());
                 packet->resetDelay(port->getLatency());
@@ -53,9 +54,11 @@ void MasterModule::passOneClock()
             }
             
             // port 内部数据传输流
-            port->passOneClock();
+            port->passOneClock(PASS_SEND);
         }
     }
+
+    updatePacketPos();
 }
 
 void MasterModule::paintEvent(QPaintEvent *event)
