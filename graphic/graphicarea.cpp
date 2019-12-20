@@ -313,6 +313,7 @@ void GraphicArea::remove(ShapeBase *shape)
             cable->getFromPort()->clearCable();
         if (cable->getToPort() != nullptr)
             cable->getToPort()->clearCable();
+        cable_lists.removeOne(cable);
     }
     shape->deleteLater();
 }
