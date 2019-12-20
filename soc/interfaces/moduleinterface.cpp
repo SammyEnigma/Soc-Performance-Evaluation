@@ -19,7 +19,7 @@ void ModuleInterface::initData()
         ModulePort *port = static_cast<ModulePort *>(p);
 
         // ==== 发送部分（Master） ====
-        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)));
+        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
         connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
@@ -31,7 +31,7 @@ void ModuleInterface::initData()
         });
 
         // ==== 接收部分（Slave） ====
-        disconnect(port, SIGNAL(signalReceivedDataDequeueReaded(DataPacket *)));
+        disconnect(port, SIGNAL(signalReceivedDataDequeueReaded(DataPacket *)), nullptr, nullptr);
         connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
             process_list.append(packet);
             packet->resetDelay(getProcessDelay());

@@ -60,9 +60,9 @@ void FlowControl_Master1_Slave1::initData()
     slave_port->initBandwidthBufer();
 
     // 连接信号槽
-    disconnect(ms_cable, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)));
+    disconnect(ms_cable, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
     connect(ms_cable, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), slave_port, SLOT(slotDataReceived(CableBase *, DataPacket *)));
-    disconnect(ms_cable, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)));
+    disconnect(ms_cable, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
     connect(ms_cable, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), master_port, SLOT(slotDataReceived(CableBase *, DataPacket *)));
 }
 
@@ -70,6 +70,7 @@ void FlowControl_Master1_Slave1::clearData()
 {
     FlowControlBase::clearData();
 
+    master->data_list.clear();
     master_port->send_delay_list.clear();
     slave_port->enqueue_list.clear();
     slave_port->data_queue.clear();
