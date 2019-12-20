@@ -42,7 +42,7 @@ void MasterModule::passOneClock()
         if (oppo != nullptr && oppo->getClass() == "Slave")
         {
             // 确定是这个连接Slave的端口，开始判断发送事件
-            if (!data_list.isEmpty() && port->isBandwidthBufferFinished()) // 需要足够的发送带宽
+            if (!data_list.isEmpty() && port->isBandwidthBufferFinished() && port->anotherCanRecive()) // 有数据、有带宽、对方能接收
             {
                 rt->runningOut("Master创建token, 对方能接收："+QString::number(port->another_can_receive-1));
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
