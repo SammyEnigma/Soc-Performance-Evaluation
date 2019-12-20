@@ -24,7 +24,7 @@ public:
 #ifdef Q_OS_WIN
         DATA_PATH = QApplication::applicationDirPath() + "/data/";
 #else
-        DATA_PATH = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+        DATA_PATH = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/data/";
 #endif
         SHAPE_PATH = DATA_PATH + "shapes/";
 

@@ -80,10 +80,10 @@ void ShapeListWidget::mouseMoveEvent(QMouseEvent *event)
     if (distance < QApplication::startDragDistance()) // 距离太小，不算移动
         return QListWidget::mouseMoveEvent(event);
 
-    log("开始形状列表拖拽事件" + QString::number((int)rt->current_choosed_shape));
+    log("开始形状列表拖拽事件" + QString::number(reinterpret_cast<qint64>(rt->current_choosed_shape)));
     QMimeData *mime_data = new QMimeData;
-    // 将指针设置成十六进制
-    mime_data->setData(CHOOSED_SHAPE_MIME_TYPE, ByteArrayUtil::intToByte((int)rt->current_choosed_shape));
+    // 将指针设置成QByteArray
+    mime_data->setData(CHOOSED_SHAPE_MIME_TYPE, ByteArrayUtil::int64ToByte(reinterpret_cast<qint64>(rt->current_choosed_shape)));
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mime_data);
     drag->setPixmap(rt->current_choosed_shape->getPixmap());

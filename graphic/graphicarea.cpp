@@ -1197,7 +1197,8 @@ void GraphicArea::dropEvent(QDropEvent *event)
     QByteArray ba = mime->data(CHOOSED_SHAPE_MIME_TYPE);
     if (ba.size() > 0) // 表示有形状（其实是int类型的）
     {
-        int value = ByteArrayUtil::bytesToInt(ba);
+        qint64 value = ByteArrayUtil::bytesToInt64(ba);
+        log("恢复指针：" + QString::number(value));
         ShapeBase *shape = (ShapeBase *)value;
         log("拖放：" + shape->getClass());
         shape = insertShapeByType(shape);
