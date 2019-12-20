@@ -118,10 +118,13 @@ void ModulePort::fromStringAddin(QString s)
 {
     QString bandwidth = StringUtil::getXml(s, "BANDWIDTH");
     QString latency = StringUtil::getXml(s, "LATENCY");
+    QString return_delay = StringUtil::getXml(s, "RETURN_DELAY");
     if (!bandwidth.isEmpty())
         this->bandwidth = bandwidth.toInt();
     if (!latency.isEmpty())
         this->latency = latency.toInt();
+    if (!return_delay.isEmpty())
+        this->return_delay = return_delay.toInt();
 }
 
 QString ModulePort::toStringAddin()
@@ -130,6 +133,7 @@ QString ModulePort::toStringAddin()
     QString indent = "\n\t\t";
     full += indent + StringUtil::makeXml(bandwidth, "BANDWIDTH");
     full += indent + StringUtil::makeXml(latency, "LATENCY");
+    full += indent + StringUtil::makeXml(return_delay, "RETURN_DELAY");
     return full;
 }
 
