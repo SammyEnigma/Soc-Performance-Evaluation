@@ -77,6 +77,28 @@ void FlowControl_Master2_Switch_Slave2::initData()
 
 void FlowControl_Master2_Switch_Slave2::clearData()
 {
+    hub->clearData();
+    master1->clearData();
+    slave1->clearData();
+    slave2->clearData();
+    master1_cable->clearData();
+    master2_cable->clearData();
+    slave1_cable->clearData();
+    slave2_cable->clearData();
+    master1_port->clearData();
+    master2_port->clearData();
+    slave1_port->clearData();
+    slave2_port->clearData();
+    hm1_port->clearData();
+    hm2_port->clearData();
+    hs1_port->clearData();
+    hs2_port->clearData();
+
+    foreach (DataPacket *packet, all_packets)
+    {
+        packet->deleteLater();
+    }
+    all_packets.clear();
 }
 
 void FlowControl_Master2_Switch_Slave2::passOneClock()

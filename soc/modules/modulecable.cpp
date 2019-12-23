@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 09:33:22
+ * @LastEditTime : 2019-12-23 09:58:51
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -65,6 +65,10 @@ void ModuleCable::initData()
             packet->setTargetPort(from);
             packet->resetDelay(getTransferDelay());
         });
+        
+        // 初始化request和response发送完毕事件
+        connect(this, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), to, SLOT(slotDataReceived(CableBase *, DataPacket *)));
+        connect(this, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), from, SLOT(slotDataReceived(CableBase *, DataPacket *)));
     }
 }
 
@@ -82,6 +86,10 @@ void ModuleCable::clearData()
 
         disconnect(from, SIGNAL(signalResponseSended(DataPacket *)), nullptr, nullptr);
         disconnect(to, SIGNAL(signalResponseSended(DataPacket *)), nullptr, nullptr);
+
+        // 初始化request和response发送完毕事件
+        disconnect(this, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
+        disconnect(this, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
     }
     
     request_list.clear();

@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-27 18:00:02
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 09:49:28
+ * @LastEditTime : 2019-12-23 10:00:17
  * @Description: 主窗口
  */
 #include "mainwindow.h"
