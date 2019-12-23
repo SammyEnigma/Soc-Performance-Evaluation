@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-27 18:00:02
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-19 10:08:03
+ * @LastEditTime : 2019-12-23 09:47:06
  * @Description: 主窗口
  */
 #ifndef MAINWINDOW_H
@@ -15,6 +15,7 @@
 #include "shapebase.h"
 #include "globalvars.h"
 #include "flowcontrol_master1_slave1.h"
+#include "flowcontrol_master2_switch_slave2.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

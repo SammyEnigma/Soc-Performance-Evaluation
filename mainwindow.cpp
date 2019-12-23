@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-11-27 18:00:02
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-19 10:09:21
+ * @LastEditTime : 2019-12-23 09:49:28
  * @Description: 主窗口
  */
 #include "mainwindow.h"
@@ -178,9 +178,6 @@ void MainWindow::initData()
 {
     graphic_file_path = rt->DATA_PATH + "graphic.xml";
     readFromFile(graphic_file_path);
-    
-    // 将流控的对象设置为绘图区域的形状
-    flow_control = new FlowControl_Master1_Slave1(ui->scrollAreaWidgetContents_2, this);
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -218,6 +215,12 @@ void MainWindow::on_actionZoom_Out_O_triggered()
 
 void MainWindow::on_actionRun_triggered()
 {
+    if (flow_control != nullptr)
+        flow_control->deleteLater();
+    
+    // flow_control = new FlowControl_Master1_Slave1(ui->scrollAreaWidgetContents_2, this);
+    flow_control = new FlowControl_Master2_Switch_Slave2(ui->scrollAreaWidgetContents_2, this);
+
     flow_control->startRun();
     ui->actionRun->setVisible(false);
     ui->actionStop->setVisible(true);
@@ -261,6 +264,9 @@ void MainWindow::on_actionStop_triggered()
     ui->actionPause_P->setEnabled(false);
     ui->actionResume_S->setVisible(false);
     ui->actionStep->setEnabled(false);
+    
+    flow_control->deleteLater();
+    flow_control = nullptr;
 }
 
 void MainWindow::on_actionSelect_All_triggered()
