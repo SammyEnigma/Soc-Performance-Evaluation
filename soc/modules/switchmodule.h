@@ -33,12 +33,15 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
     
+private:
+    PortBase* getToPort(PortBase* from_port);
+
 public slots:
 	void slotDataReceived(ModulePort* port, DataPacket *packet);
     
 private:
-    PacketList request_queue;
-	PacketList response_queue;
+    QQueue<DataPacket*> request_queue;
+    QQueue<DataPacket*> response_queue;
     int token;
 };
 

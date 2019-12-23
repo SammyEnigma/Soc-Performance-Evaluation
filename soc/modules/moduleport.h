@@ -20,6 +20,13 @@ enum PASS_ONE_CLOCK_FLAG_PORT
     PASS_BOTH
 };
 
+enum DATA_TYPE
+{
+    DATA_REQUEST,
+    DATA_RESPONSE,
+    DATA_TOKEN,    // 1bit的数据
+};
+
 class ModulePort : public PortBase
 {
     Q_OBJECT
@@ -52,16 +59,16 @@ protected:
     virtual QString toStringAddin() override;
 
 signals:
-    void signalSendDelayFinished(ModulePort *port, DataPacket *packet); // 发送延迟结束
+    void signalSendDelayFinished(ModulePort *port, DataPacket *packet); // 发送延迟结束（发送request）
     void signalReceivedDataDequeueReaded(DataPacket *packet);           // 出queue时，进入处理队列
-    void signalDequeueTokenDelayFinished();                             // 出queue后延迟返回给Master的token延迟结束
-    void signalResponseSended(DataPacket *packet);                      // 处理结束后返回给某个端口
-    void signalDataReceived(ModulePort *port, DataPacket *packet);
+    void signalDequeueTokenDelayFinished();                             // 出queue后延迟返回给Master的token延迟结束（发送token）
+    void signalResponseSended(DataPacket *packet);                      // 处理结束后返回给某个端口（发送response）
+    void signalDataReceived(ModulePort *port, DataPacket *packet);      // 收到信号的槽函数触发的接收信号，发送给父控件
 
 public slots:
-    void slotDataList() override; // 请求编辑数据列表
-    void slotDataReceived(CableBase *cable, DataPacket *packet);
-    void slotResponseReceived(DataPacket *packet);
+    void slotDataList() override;                                // 请求编辑数据列表
+    void sendData(DataPacket* packet, DATA_TYPE type);           // 发送特定数据
+    void slotDataReceived(DataPacket *packet); // 接收到数据（包括request和response）
 
 public:
     PacketList send_delay_list;

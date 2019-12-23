@@ -63,8 +63,8 @@ void ModuleCable::initData()
         });
         
         // 初始化request和response发送完毕事件
-        connect(this, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), to, SLOT(slotDataReceived(CableBase *, DataPacket *)));
-        connect(this, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), from, SLOT(slotDataReceived(CableBase *, DataPacket *)));
+        connect(this, SIGNAL(signalRequestDelayFinished(DataPacket *)), to, SLOT(slotDataReceived(DataPacket *)));
+        connect(this, SIGNAL(signalResponseDelayFinished(DataPacket *)), from, SLOT(slotDataReceived(DataPacket *)));
     }
 }
 
@@ -84,8 +84,8 @@ void ModuleCable::clearData()
         disconnect(to, SIGNAL(signalResponseSended(DataPacket *)), nullptr, nullptr);
 
         // 初始化request和response发送完毕事件
-        disconnect(this, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
-        disconnect(this, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
+        disconnect(this, SIGNAL(signalRequestDelayFinished(DataPacket *)), nullptr, nullptr);
+        disconnect(this, SIGNAL(signalResponseDelayFinished(DataPacket *)), nullptr, nullptr);
     }
     
     request_list.clear();
@@ -106,12 +106,12 @@ void ModuleCable::passOneClock(PASS_ONE_CLOCK_FLAG flag)
             {
                 request_list.removeAt(i--);
                 rt->runningOut("    cable 结束：" + packet->toString() + " >> 下一步");
-                emit signalRequestDelayFinished(this, packet);
+                emit signalRequestDelayFinished(packet);
             }
             else
             {
                 packet->delayToNext();
-                rt->runningOut("    cable 延迟：" + packet->toString());
+//                rt->runningOut("    cable 延迟：" + packet->toString());
             }
         }
     }
@@ -123,7 +123,7 @@ void ModuleCable::passOneClock(PASS_ONE_CLOCK_FLAG flag)
             if (packet->isDelayFinished())
             {
                 response_list.removeAt(i--);
-                emit signalResponseDelayFinished(this, packet);
+                emit signalResponseDelayFinished(packet);
             }
             else
             {

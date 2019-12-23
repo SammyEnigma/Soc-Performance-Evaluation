@@ -63,7 +63,17 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
             if (packet->isDelayFinished())
             {
                 // 判断packet的传输目标
-
+                if (packet->getTargetPort() != nullptr)
+                {
+                    // TODO: 使用 Picker 进行轮询
+                    ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+                    request_queue.removeAt(i--);
+                    ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
+                    if (cable == nullptr)
+                        continue;
+                    packet->resetDelay(cable->getData("delay")->i());
+                    port->sendData(packet, DATA_REQUEST);
+                }
             }
             else
             {
@@ -80,6 +90,17 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
             DataPacket *packet = response_queue.at(i);
             if (packet->isDelayFinished())
             {
+                // 判断packet的传输目标
+                if (packet->getTargetPort() != nullptr)
+                {
+                    ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+                    response_queue.removeAt(i--);
+                    ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
+                    if (cable == nullptr)
+                        continue;
+                    packet->resetDelay(cable->getData("delay")->i());
+                    port->sendData(packet, DATA_REQUEST);
+                }
             }
             else
             {
@@ -87,6 +108,8 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
             }
         }
     }
+
+    updatePacketPos();
 }
 
 /**
@@ -96,7 +119,22 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
  */
 void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
 {
-    qDebug() << "HUB 收到数据";
+    ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
+    if (oppo != nullptr)
+    {
+        if (oppo->getText().indexOf("master",0,Qt::CaseInsensitive) != -1)
+        {
+            request_queue.enqueue(packet);
+            rt->runningOut("Hub 收到 request : " + QString::number(request_queue.size()));
+            packet->setTargetPort(getToPort(port));
+        }
+        else if (oppo->getText().indexOf("slave",0,Qt::CaseInsensitive) != -1)
+        {
+            response_queue.enqueue(packet);
+            rt->runningOut("Hub 收到 response : " + QString::number(response_queue.size()));
+            packet->setTargetPort(getToPort(port));
+        }
+    }
 }
 
 void SwitchModule::updatePacketPos()
@@ -107,7 +145,15 @@ void SwitchModule::updatePacketPos()
     int l = 4;
     foreach (DataPacket *packet, request_queue)
     {
-        packet->setDrawPos(QPoint(l, h));
+        packet->setDrawPos(pos() + QPoint(l, h));
+        l += 4 + PACKET_SIZE;
+    }
+
+    h += height + 4;
+    l = 4;
+    foreach (DataPacket *packet, response_queue)
+    {
+        packet->setDrawPos(pos() + QPoint(l, h));
         l += 4 + PACKET_SIZE;
     }
 }
@@ -119,4 +165,32 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     // 画自己的数量
     QPainter painter(this);
     QFontMetrics fm(this->font());
+}
+
+PortBase *SwitchModule::getToPort(PortBase *from_port)
+{
+    ShapeBase* from_shape = static_cast<ShapeBase*>(from_port->getOppositeShape());
+    if (from_shape == nullptr)
+        return nullptr;
+    QString from_name = from_shape->getText();
+    QString to_name;
+    if (from_name.startsWith("master", Qt::CaseInsensitive))
+        to_name = "Slave";
+    else
+        to_name = "Master";
+    if (from_name.endsWith("1"))
+        to_name += "1";
+    else
+        to_name += "2";
+
+    qDebug() << "SwitchModule::getToPort : " << static_cast<ShapeBase*>(from_port->getOppositeShape())->getText() << to_name;
+    foreach (PortBase* p, ports)
+    {
+        qDebug() << "遍历：名字：" << static_cast<ShapeBase*>(p->getOppositeShape())->getText();
+        if (p->getOppositeShape() != nullptr && static_cast<ShapeBase*>(p->getOppositeShape())->getText() == to_name)
+            return p;
+    }
+    ERR("没找到适合的 to port: "+to_name)
+
+    return nullptr;
 }

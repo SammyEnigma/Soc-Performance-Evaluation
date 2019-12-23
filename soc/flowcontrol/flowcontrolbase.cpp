@@ -110,7 +110,7 @@ void FlowControlBase::clearData()
 
 void FlowControlBase::passOneClock()
 {
-    FCDEB "Clock:" << current_clock << " >>";
+    FCDEB "\nClock:" << current_clock << " >>";
 }
 
 void FlowControlBase::refreshUI()

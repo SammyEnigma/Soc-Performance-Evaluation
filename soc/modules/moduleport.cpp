@@ -152,7 +152,26 @@ void ModulePort::slotDataList()
     emit signalDataList();
 }
 
-void ModulePort::slotDataReceived(CableBase *cable, DataPacket *packet)
+void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
+{
+    CableBase* cable = getCable();
+    if (cable == nullptr)
+        return ;
+    switch (type)
+    {
+    case DATA_REQUEST:
+        emit signalSendDelayFinished(this, packet);
+        break;
+    case DATA_RESPONSE:
+        emit signalResponseSended(packet);
+        break;
+    case DATA_TOKEN:
+        emit signalDequeueTokenDelayFinished();
+        break;
+    }
+}
+
+void ModulePort::slotDataReceived(DataPacket *packet)
 {
 	if (receive_cache)
     {
@@ -163,11 +182,6 @@ void ModulePort::slotDataReceived(CableBase *cable, DataPacket *packet)
     {
         emit signalDataReceived(this, packet);
     }
-}
-
-void ModulePort::slotResponseReceived(DataPacket* packet)
-{
-    qDebug() << "收到 response";
 }
 
 int ModulePort::getLatency()
