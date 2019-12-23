@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-19 09:49:09
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 09:42:56
+ * @LastEditTime : 2019-12-23 10:02:32
  * @Description: 1Master ↔ 1Slave
  */
 #include "flowcontrol_master1_slave1.h"
@@ -21,27 +21,7 @@ bool FlowControl_Master1_Slave1::initModules()
     master_port = static_cast<ModulePort *>(ms_cable->getFromPort());
     slave_port = static_cast<ModulePort *>(ms_cable->getToPort());
 
-    if (!master)
-    {
-        DEB << "无法找到 Master";
-        return false;
-    }
-    if (!slave)
-    {
-        DEB << "无法找到 Slave";
-        return false;
-    }
-    if (!ms_cable)
-    {
-        DEB << "无法找到 Master 和 Slave 的连接";
-        return false;
-    }
-    if (!master_port || !slave_port)
-    {
-        DEB << "无法找到对应的连接端口";
-        return false;
-    }
-    return true;
+    return master && slave && ms_cable && master_port && slave_port;
 }
 
 void FlowControl_Master1_Slave1::initData()

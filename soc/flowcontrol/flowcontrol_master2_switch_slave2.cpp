@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-20 11:01:41
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-20 15:52:34
+ * @LastEditTime : 2019-12-23 11:09:57
  * @Description: Master*2 + Switch + Slave*2
  */
 #include "flowcontrol_master2_switch_slave2.h"
@@ -103,6 +103,46 @@ void FlowControl_Master2_Switch_Slave2::clearData()
 
 void FlowControl_Master2_Switch_Slave2::passOneClock()
 {
+	FlowControlBase::passOneClock();
+
+    // 创建token，保证Master可传输数据的来源
+    while (master1->data_list.size() < 5)
+        master1->data_list.append(createToken());
+    while (master2->data_list.size() < 5)
+        master2->data_list.append(createToken());
+    
+    // Master
+    master1->passOneClock();
+    master2->passOneClock();
+    
+    // Master >> Hub
+    master1_cable->passOneClock(PASS_REQUEST);
+    master2_cable->passOneClock(PASS_REQUEST);
+    
+    // Hub
+    hub->passOneClock();
+    
+    // Hub >> Slave
+    slave1_cable->passOneClock(PASS_REQUEST);
+    slave2_cable->passOneClock(PASS_REQUEST);
+    
+    // Slave
+    slave1->passOneClock();
+    slave2->passOneClock();
+    
+    // Hub << Slave
+    slave1_cable->passOneClock(PASS_RESPONSE);
+    slave2_cable->passOneClock(PASS_RESPONSE);
+    
+    // Hub
+    hub->passOneClock();
+    
+    // Master << Hub
+    master1_cable->passOneClock(PASS_RESPONSE);
+    master2_cable->passOneClock(PASS_RESPONSE);
+
+    // ==== 时钟结束后首尾 ====
+    current_clock++;
 }
 
 void FlowControl_Master2_Switch_Slave2::refreshUI()

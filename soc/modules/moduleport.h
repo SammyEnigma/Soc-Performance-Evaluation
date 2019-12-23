@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-19 16:33:49
+ * @LastEditTime : 2019-12-23 11:34:27
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #ifndef MODULEPORT_H
@@ -53,6 +53,7 @@ signals:
     void signalReceivedDataDequeueReaded(DataPacket *packet);           // 出queue时，进入处理队列
     void signalDequeueTokenDelayFinished();                             // 出queue后延迟返回给Master的token延迟结束
     void signalResponseSended(DataPacket *packet); // 处理结束后返回给某个端口
+    void signalDataReceived(ModulePort* port, DataPacket *packet);
 
 public slots:
     void slotDataList() override; // 请求编辑数据列表

@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 09:58:51
+ * @LastEditTime : 2019-12-23 11:15:21
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -42,24 +42,20 @@ void ModuleCable::initData()
         to->another_can_receive = to_shape->getToken();
 
         // 初始化途中互相调整token
-        disconnect(from, SIGNAL(signalDequeueTokenDelayFinished()), nullptr, nullptr);
         connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=]{
             to->another_can_receive++;
             rt->runningOut("接收到 return token, 对方能接收：" + QString::number(to->anotherCanRecive()));
         });
-        disconnect(to, SIGNAL(signalDequeueTokenDelayFinished()), nullptr, nullptr);
         connect(to, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {
             from->another_can_receive++;
             rt->runningOut("接收到 return token, 对方能接收：" + QString::number(from->anotherCanRecive()));
         });
 
-        disconnect(from, SIGNAL(signalResponseSended(DataPacket *)), nullptr, nullptr);
         connect(from, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
             response_list.append(packet);
             packet->setTargetPort(to);
             packet->resetDelay(getTransferDelay());
         });
-        disconnect(to, SIGNAL(signalResponseSended(DataPacket *)), nullptr, nullptr);
         connect(to, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
             response_list.append(packet);
             packet->setTargetPort(from);

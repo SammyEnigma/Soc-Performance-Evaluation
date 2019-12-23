@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 09:34:02
+ * @LastEditTime : 2019-12-23 13:15:07
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #include "moduleport.h"
@@ -155,6 +155,7 @@ void ModulePort::slotDataReceived(CableBase *cable, DataPacket *packet)
 {
     enqueue_list.append(packet);
     packet->resetDelay(getLatency());
+    emit signalDataReceived(this, packet);
 }
 
 void ModulePort::slotResponseReceived(DataPacket* packet)
