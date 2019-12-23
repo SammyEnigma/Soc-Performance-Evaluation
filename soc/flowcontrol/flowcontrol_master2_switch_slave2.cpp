@@ -46,6 +46,7 @@ void FlowControl_Master2_Switch_Slave2::initData()
     // 初始化属性
     hub->initData();
     master1->initData();
+    master2->initData();
     slave1->initData();
     slave2->initData();
     master1_cable->initData();
@@ -80,6 +81,7 @@ void FlowControl_Master2_Switch_Slave2::clearData()
 {
     hub->clearData();
     master1->clearData();
+    master2->clearData();
     slave1->clearData();
     slave2->clearData();
     master1_cable->clearData();

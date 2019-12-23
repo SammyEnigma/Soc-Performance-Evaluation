@@ -23,7 +23,7 @@ void ModuleInterface::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut("port发送槽" + QString::number(port->another_can_receive));
+            rt->runningOut("port发送，对方能接收" + QString::number(port->another_can_receive));
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());

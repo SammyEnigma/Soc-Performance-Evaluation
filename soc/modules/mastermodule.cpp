@@ -41,17 +41,17 @@ void MasterModule::clearData()
 
 void MasterModule::passOneClock()
 {
-	// Slave有可接收的buffer时，Master开始发送
+    // 连接的对方有可接收的buffer时，Master开始发送
     foreach (PortBase* p, ShapeBase::ports)
     {
         ModulePort* port = static_cast<ModulePort*>(p);
         ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
-        if (oppo != nullptr && oppo->getClass() == "Slave")
+        if (oppo != nullptr)
         {
             // 确定是这个连接Slave的端口，开始判断发送事件
             if (!data_list.isEmpty() && port->isBandwidthBufferFinished() && port->anotherCanRecive()) // 有数据、有带宽、对方能接收
             {
-                rt->runningOut("Master创建token, 对方能接收："+QString::number(port->another_can_receive-1));
+                rt->runningOut(getText()+"创建token, 对方能接收："+QString::number(port->another_can_receive-1));
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
                 packet->setDrawPos(geometry().center());
                 packet->resetDelay(port->getLatency());
