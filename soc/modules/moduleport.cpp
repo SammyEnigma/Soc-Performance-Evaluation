@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 13:15:07
+ * @LastEditTime : 2019-12-23 14:11:02
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #include "moduleport.h"
@@ -10,7 +10,8 @@
 ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       bandwidth(1), bandwidth_buffer(1),
-      latency(1), return_delay(0), another_can_receive(0)
+      latency(1), return_delay(0), another_can_receive(0), 
+      receive_cache(true)
 {
 }
 
@@ -153,9 +154,15 @@ void ModulePort::slotDataList()
 
 void ModulePort::slotDataReceived(CableBase *cable, DataPacket *packet)
 {
-    enqueue_list.append(packet);
-    packet->resetDelay(getLatency());
-    emit signalDataReceived(this, packet);
+	if (receive_cache)
+    {
+        enqueue_list.append(packet);
+        packet->resetDelay(getLatency());
+    }
+    else
+    {
+        emit signalDataReceived(this, packet);
+    }
 }
 
 void ModulePort::slotResponseReceived(DataPacket* packet)
@@ -201,4 +208,9 @@ void ModulePort::resetBandwidthBuffer()
 int ModulePort::anotherCanRecive()
 {
     return another_can_receive;
+}
+
+void ModulePort::setReceiveCache(bool c)
+{
+    this->receive_cache = c;
 }

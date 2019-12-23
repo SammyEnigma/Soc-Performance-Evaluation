@@ -62,6 +62,7 @@ void FlowControl_Master2_Switch_Slave2::initData()
     hm2_port->another_can_receive = hub->getToken();
     hs1_port->another_can_receive = hub->getToken();
     hs2_port->another_can_receive = hub->getToken();
+
     master1_port->initBandwidthBufer();
     master2_port->initBandwidthBufer();
     slave1_port->initBandwidthBufer();
@@ -120,7 +121,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     master2_cable->passOneClock(PASS_REQUEST);
     
     // Hub
-    hub->passOneClock();
+    hub->passOneClock(PASS_REQUEST);
     
     // Hub >> Slave
     slave1_cable->passOneClock(PASS_REQUEST);
@@ -135,7 +136,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     slave2_cable->passOneClock(PASS_RESPONSE);
     
     // Hub
-    hub->passOneClock();
+    hub->passOneClock(PASS_RESPONSE);
     
     // Master << Hub
     master1_cable->passOneClock(PASS_RESPONSE);

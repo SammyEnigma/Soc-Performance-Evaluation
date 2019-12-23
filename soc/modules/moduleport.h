@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 11:34:27
+ * @LastEditTime : 2019-12-23 14:10:09
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #ifndef MODULEPORT_H
@@ -12,7 +12,8 @@
 #include "portbase.h"
 #include "datapacket.h"
 
-enum PASS_ONE_CLOCK_FLAG_PORT {
+enum PASS_ONE_CLOCK_FLAG_PORT
+{
     PASS_NONE,
     PASS_SEND,
     PASS_RECEIVE,
@@ -44,6 +45,8 @@ public:
 
     int anotherCanRecive();
 
+    void setReceiveCache(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）
+
 protected:
     virtual void fromStringAddin(QString s) override;
     virtual QString toStringAddin() override;
@@ -52,13 +55,13 @@ signals:
     void signalSendDelayFinished(ModulePort *port, DataPacket *packet); // 发送延迟结束
     void signalReceivedDataDequeueReaded(DataPacket *packet);           // 出queue时，进入处理队列
     void signalDequeueTokenDelayFinished();                             // 出queue后延迟返回给Master的token延迟结束
-    void signalResponseSended(DataPacket *packet); // 处理结束后返回给某个端口
-    void signalDataReceived(ModulePort* port, DataPacket *packet);
+    void signalResponseSended(DataPacket *packet);                      // 处理结束后返回给某个端口
+    void signalDataReceived(ModulePort *port, DataPacket *packet);
 
 public slots:
     void slotDataList() override; // 请求编辑数据列表
     void slotDataReceived(CableBase *cable, DataPacket *packet);
-    void slotResponseReceived(DataPacket *packet); 
+    void slotResponseReceived(DataPacket *packet);
 
 public:
     PacketList send_delay_list;
@@ -73,6 +76,8 @@ private:
     int bandwidth_buffer; // 发送的clock缓存，超过bandwidth才能发送
     int latency;          // the delay of the sending the request/response
     int return_delay;     // the delay on the return of the Token
+
+    bool receive_cache; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列
 };
 
 #endif // MODULEPORT_H

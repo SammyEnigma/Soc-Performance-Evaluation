@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-19 09:08:59
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 13:24:07
+ * @LastEditTime : 2019-12-23 14:24:53
  * @Description: Switch
  */
 #include "switchmodule.h"
@@ -36,7 +36,8 @@ void SwitchModule::initData()
 
         // 连接信号槽
         ModulePort *port = static_cast<ModulePort *>(p);
-        connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort * port, DataPacket *)));
+        port->setReceiveCache(false);
+        connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
     }
 }
 
@@ -56,13 +57,35 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
     // request queue
     if (flag == PASS_REQUEST)
     {
-        
+        for (int i = 0; i < request_queue.size(); ++i)
+        {
+            DataPacket *packet = request_queue.at(i);
+            if (packet->isDelayFinished())
+            {
+                // 判断packet的传输目标
+                
+            }
+            else
+            {
+                packet->delayToNext();
+            }
+        }
     }
-    
+
     // response queue
     if (flag == PASS_REQUEST)
     {
-        
+        for (int i = 0; i < response_queue.size(); ++i)
+        {
+            DataPacket *packet = response_queue.at(i);
+            if (packet->isDelayFinished())
+            {
+            }
+            else
+            {
+                packet->delayToNext();
+            }
+        }
     }
 }
 
@@ -73,11 +96,20 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
  */
 void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
 {
-	qDebug() << "HUB 收到数据";
+    qDebug() << "HUB 收到数据";
 }
 
 void SwitchModule::updatePacketPos()
 {
+    QFontMetrics fm(this->font());
+    int height = fm.lineSpacing();
+    int h = height * 3 + 4;
+    int l = 4;
+    foreach (DataPacket *packet, request_queue)
+    {
+        packet->setDrawPos(QPoint(l, h));
+        l += 4 + PACKET_SIZE;
+    }
 }
 
 void SwitchModule::paintEvent(QPaintEvent *event)
@@ -88,4 +120,3 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QFontMetrics fm(this->font());
 }
-
