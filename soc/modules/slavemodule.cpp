@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:09:05
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-19 16:23:35
+ * @LastEditTime : 2019-12-23 09:44:34
  * @Description: SlaveModule
  */
 #include "slavemodule.h"
@@ -32,6 +32,13 @@ void SlaveModule::initData()
     this->process_delay = getData("process_delay");
     
     ModuleInterface::initData();
+}
+
+void SlaveModule::clearData()
+{
+    ModuleInterface::clearData();
+    
+    process_list.clear();
 }
 
 void SlaveModule::passOneClock()

@@ -32,6 +32,13 @@ void MasterModule::initData()
     this->token = getData("token");
 }
 
+void MasterModule::clearData()
+{
+    ModuleInterface::clearData();
+    
+    data_list.clear();
+}
+
 void MasterModule::passOneClock()
 {
 	// Slave有可接收的buffer时，Master开始发送

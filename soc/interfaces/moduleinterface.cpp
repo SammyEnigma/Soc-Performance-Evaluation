@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-09 14:01:52
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-19 16:17:39
+ * @LastEditTime : 2019-12-23 09:14:14
  * @Description: 模块接口，包含发送等功能
  */
 #include "moduleinterface.h"
@@ -19,7 +19,6 @@ void ModuleInterface::initData()
         ModulePort *port = static_cast<ModulePort *>(p);
 
         // ==== 发送部分（Master） ====
-        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
         connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
@@ -31,12 +30,25 @@ void ModuleInterface::initData()
         });
 
         // ==== 接收部分（Slave） ====
-        disconnect(port, SIGNAL(signalReceivedDataDequeueReaded(DataPacket *)), nullptr, nullptr);
         connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
             process_list.append(packet);
             packet->resetDelay(getProcessDelay());
             rt->runningOut("Slave接收，进入处理环节："+packet->toString());
         });
+    }
+}
+
+void ModuleInterface::clearData()
+{
+    foreach (PortBase *p, ports)
+    {
+        ModulePort *port = static_cast<ModulePort *>(p);
+
+        // ==== 发送部分（Master） ====
+        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
+
+        // ==== 接收部分（Slave） ====
+        disconnect(port, SIGNAL(signalReceivedDataDequeueReaded(DataPacket *)), nullptr, nullptr);
     }
 }
 

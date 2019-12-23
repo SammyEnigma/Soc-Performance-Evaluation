@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-10 09:04:53
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-18 16:57:21
+ * @LastEditTime : 2019-12-23 09:33:22
  * @Description: 两个模块之间的连接线，也是一个简单的模块
  */
 #include "modulecable.h"
@@ -66,6 +66,28 @@ void ModuleCable::initData()
             packet->resetDelay(getTransferDelay());
         });
     }
+}
+
+void ModuleCable::clearData()
+{
+    if (from_port != nullptr && to_port != nullptr)
+    {
+        // 初始化双方token
+        ModulePort *from = static_cast<ModulePort *>(from_port);
+        ModulePort *to = static_cast<ModulePort *>(to_port);
+
+        // 初始化途中互相调整token
+        disconnect(from, SIGNAL(signalDequeueTokenDelayFinished()), nullptr, nullptr);
+        disconnect(to, SIGNAL(signalDequeueTokenDelayFinished()), nullptr, nullptr);
+
+        disconnect(from, SIGNAL(signalResponseSended(DataPacket *)), nullptr, nullptr);
+        disconnect(to, SIGNAL(signalResponseSended(DataPacket *)), nullptr, nullptr);
+    }
+    
+    request_list.clear();
+    request_data_list.clear();
+    response_list.clear();
+    response_data_list.clear();
 }
 
 void ModuleCable::passOneClock(PASS_ONE_CLOCK_FLAG flag)

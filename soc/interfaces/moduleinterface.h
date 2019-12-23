@@ -21,6 +21,7 @@ public:
     ModuleInterface(QList<PortBase *> &ports, QObject *parent = nullptr);
 
     virtual void initData();
+    virtual void clearData();
 
     void setToken(int token);
     void setBandwidth(int bandwidth);

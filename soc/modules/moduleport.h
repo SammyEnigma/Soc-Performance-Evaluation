@@ -29,6 +29,7 @@ public:
     friend class FlowControl_Master1_Slave1;
     virtual ModulePort *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual QString getClass() override;
+    void clearData();
 
     void passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag = PASS_BOTH);
 

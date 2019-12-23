@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-19 09:49:09
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-19 09:52:30
+ * @LastEditTime : 2019-12-23 09:42:56
  * @Description: 1Master ↔ 1Slave
  */
 #include "flowcontrol_master1_slave1.h"
@@ -60,9 +60,7 @@ void FlowControl_Master1_Slave1::initData()
     slave_port->initBandwidthBufer();
 
     // 连接信号槽
-    disconnect(ms_cable, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
     connect(ms_cable, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), slave_port, SLOT(slotDataReceived(CableBase *, DataPacket *)));
-    disconnect(ms_cable, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
     connect(ms_cable, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), master_port, SLOT(slotDataReceived(CableBase *, DataPacket *)));
 }
 
@@ -70,22 +68,20 @@ void FlowControl_Master1_Slave1::clearData()
 {
     FlowControlBase::clearData();
 
-    master->data_list.clear();
-    master_port->send_delay_list.clear();
-    slave_port->enqueue_list.clear();
-    slave_port->data_queue.clear();
-    slave_port->dequeue_list.clear();
-    slave->process_list.clear();
-    slave_port->return_delay_list.clear();
-    ms_cable->request_list.clear();
-    ms_cable->request_data_list.clear();
-    ms_cable->response_list.clear();
-    ms_cable->response_data_list.clear();
+    master->clearData();
+    master_port->clearData();
+    slave_port->clearData();
+    slave->clearData();
+    ms_cable->clearData();
+    
     foreach (DataPacket *packet, all_packets)
     {
         packet->deleteLater();
     }
     all_packets.clear();
+
+    disconnect(ms_cable, SIGNAL(signalRequestDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
+    disconnect(ms_cable, SIGNAL(signalResponseDelayFinished(CableBase *, DataPacket *)), nullptr, nullptr);
 }
 
 /**

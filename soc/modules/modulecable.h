@@ -39,6 +39,7 @@ public:
 
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
     void initData();
+    void clearData();
     virtual void adjustGeometryByPorts() override;
     virtual void passOneClock(PASS_ONE_CLOCK_FLAG flag);
 

@@ -2,7 +2,7 @@
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
  * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-19 15:15:22
+ * @LastEditTime : 2019-12-23 09:34:02
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #include "moduleport.h"
@@ -28,6 +28,15 @@ ModulePort *ModulePort::newInstanceBySelf(QWidget *parent)
 QString ModulePort::getClass()
 {
     return "ModulePort";
+}
+
+void ModulePort::clearData()
+{
+    send_delay_list.clear();
+    enqueue_list.clear();
+    data_queue.clear();
+    dequeue_list.clear();
+    return_delay_list.clear();
 }
 
 void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
