@@ -10,6 +10,7 @@
 DataPacket::DataPacket(QObject *parent)
     : QObject(parent),
       valid(false), data(0), par(0),
+      come_port(nullptr), target_port(nullptr),
       delay_step(0), delay_max(0)
 {
 }
@@ -70,7 +71,17 @@ QPoint DataPacket::getDrawPos()
 void DataPacket::setDrawPos(QPoint pos)
 {
     emit signalPosChanged(this->draw_pos, pos);
-    this->draw_pos = pos;
+    draw_pos = pos;
+}
+
+PortBase *DataPacket::getComePort()
+{
+    return come_port;
+}
+
+void DataPacket::setComePort(PortBase *port)
+{
+    come_port = port;
 }
 
 PortBase* DataPacket::getTargetPort()

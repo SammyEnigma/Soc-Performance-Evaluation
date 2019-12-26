@@ -9,11 +9,13 @@
 
 FlowControl_Master1_Slave1::FlowControl_Master1_Slave1(GraphicArea *ga, QObject *parent) : FlowControlBase(ga, parent)
 {
+    log("创建FlowControl_Master1_Slave1");
 }
 
 bool FlowControl_Master1_Slave1::initModules()
 {
     FlowControlBase::initModules();
+    log("FlowControl_Master1_Slave1::initModules");
 
     master = static_cast<MasterModule *>(graphic->findShapeByClass("Master"));
     slave = static_cast<SlaveModule *>(graphic->findShapeByClass("Slave"));

@@ -36,6 +36,8 @@ public:
     QPoint getDrawPos();
     void setDrawPos(QPoint pos);
     
+    PortBase* getComePort();
+    void setComePort(PortBase *port);
     PortBase* getTargetPort();
     void setTargetPort(PortBase *port);
 
@@ -51,6 +53,7 @@ protected:
     DataFormat data; // 数据（复杂格式）
     char par;        // 忘了是什么了
     
+    PortBase* come_port;   // 来的端口
     PortBase* target_port; // 要发送的端口方向
 
 private:

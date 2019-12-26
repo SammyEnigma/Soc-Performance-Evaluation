@@ -9,11 +9,13 @@
 
 FlowControl_Master2_Switch_Slave2::FlowControl_Master2_Switch_Slave2(GraphicArea *ga, QObject *parent) : FlowControlBase(ga, parent)
 {
+    log("创建FlowControl_Master2_Switch_Slave2");
 }
 
 bool FlowControl_Master2_Switch_Slave2::initModules()
 {
     FlowControlBase::initModules();
+    log("FlowControl_Master2_Switch_Slave2::initModules");
 
     hub = static_cast<SwitchModule *>(graphic->findShapeByClass("Switch"));
     master1 = static_cast<MasterModule *>(graphic->findShapeByText("Master1"));
