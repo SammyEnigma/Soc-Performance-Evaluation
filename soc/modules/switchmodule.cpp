@@ -38,6 +38,18 @@ void SwitchModule::initData()
         ModulePort *port = static_cast<ModulePort *>(p);
         port->setReceiveCache(false);
         connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
+
+        // ==== 发送部分（Master） ====
+        connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {
+            qDebug() << "connect(port, &ModulePort::signalSendDelayFinished";
+            ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
+            if (cable == nullptr)
+                return;
+            rt->runningOut("port发送，对方能接收" + QString::number(port->another_can_receive));
+            packet->setTargetPort(cable->getToPort());
+            cable->request_list.append(packet);
+            packet->resetDelay(cable->getTransferDelay());
+        });
     }
 }
 
@@ -57,6 +69,7 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
     // request queue
     if (flag == PASS_REQUEST)
     {
+        int picker_bandwidth = getData("picker_bandwidth")->i();
         for (int i = 0; i < request_queue.size(); ++i)
         {
             DataPacket *packet = request_queue.at(i);
@@ -65,14 +78,21 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
                 // 判断packet的传输目标
                 if (packet->getTargetPort() != nullptr)
                 {
-                    // TODO: 使用 Picker 进行轮询
-                    ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
-                    request_queue.removeAt(i--);
-                    ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
-                    if (cable == nullptr)
-                        continue;
-                    packet->resetDelay(cable->getData("delay")->i());
-                    port->sendData(packet, DATA_REQUEST);
+                    // 使用 Picker 进行轮询
+                    if (picker_bandwidth-- > 0)
+                    {
+                        ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+                        request_queue.removeAt(i--);
+                        ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
+                        if (cable == nullptr)
+                            continue;
+                        packet->resetDelay(cable->getData("delay")->i());
+                        port->sendData(packet, DATA_REQUEST);
+                        rt->runningOut("Hub 发送：" + packet->toString());
+
+                        // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+
+                    }
                 }
             }
             else
@@ -83,7 +103,7 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
     }
 
     // response queue
-    if (flag == PASS_REQUEST)
+    if (flag == PASS_RESPONSE)
     {
         for (int i = 0; i < response_queue.size(); ++i)
         {
@@ -99,7 +119,7 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
                     if (cable == nullptr)
                         continue;
                     packet->resetDelay(cable->getData("delay")->i());
-                    port->sendData(packet, DATA_REQUEST);
+                    port->sendData(packet, DATA_RESPONSE);
                 }
             }
             else
@@ -122,17 +142,19 @@ void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
     ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
     if (oppo != nullptr)
     {
-        if (oppo->getText().indexOf("master",0,Qt::CaseInsensitive) != -1)
+        if (oppo->getText().indexOf("master",0,Qt::CaseInsensitive) != -1) // 收到来自Master的request
         {
             request_queue.enqueue(packet);
             rt->runningOut("Hub 收到 request : " + QString::number(request_queue.size()));
             packet->setTargetPort(getToPort(port));
+            packet->resetDelay(getData("latency")->i());
         }
-        else if (oppo->getText().indexOf("slave",0,Qt::CaseInsensitive) != -1)
+        else if (oppo->getText().indexOf("slave",0,Qt::CaseInsensitive) != -1) // 收到来自Slave的response
         {
             response_queue.enqueue(packet);
             rt->runningOut("Hub 收到 response : " + QString::number(response_queue.size()));
             packet->setTargetPort(getToPort(port));
+            packet->resetDelay(getData("latency")->i());
         }
     }
 }
@@ -183,10 +205,8 @@ PortBase *SwitchModule::getToPort(PortBase *from_port)
     else
         to_name += "2";
 
-    qDebug() << "SwitchModule::getToPort : " << static_cast<ShapeBase*>(from_port->getOppositeShape())->getText() << to_name;
     foreach (PortBase* p, ports)
     {
-        qDebug() << "遍历：名字：" << static_cast<ShapeBase*>(p->getOppositeShape())->getText();
         if (p->getOppositeShape() != nullptr && static_cast<ShapeBase*>(p->getOppositeShape())->getText() == to_name)
             return p;
     }
