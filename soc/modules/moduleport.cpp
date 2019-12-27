@@ -9,9 +9,9 @@
 
 ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
+      another_can_receive(0),
       bandwidth(1), bandwidth_buffer(1),
-      latency(1), return_delay(0), another_can_receive(0), 
-      receive_cache(true)
+      latency(1), return_delay(0), receive_cache(true)
 {
 }
 
@@ -93,9 +93,7 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
                     resetBandwidthBuffer();
 
                     // the delay on the return of the Token
-                    DataPacket *ret = new DataPacket(this->parentWidget());
-                    return_delay_list.append(ret);
-                    ret->resetDelay(return_delay);
+                    resendTokenReleased(new DataPacket(this->parentWidget()));
                 }
             }
             else
@@ -122,6 +120,16 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
     }
 
     nextBandwidthBuffer(); // Master发送、Slave出队列
+}
+
+/**
+ * 所在的形状释放一个数据包后，自己可以多接收一个数据包
+ * 调用此方法，让port延迟发送给对面的连接线一个token
+ */
+void ModulePort::resendTokenReleased(DataPacket *packet)
+{
+    return_delay_list.append(packet);
+    packet->resetDelay(return_delay);
 }
 
 void ModulePort::fromStringAddin(QString s)

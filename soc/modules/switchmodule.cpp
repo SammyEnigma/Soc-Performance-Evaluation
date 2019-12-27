@@ -91,7 +91,11 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
                         rt->runningOut("Hub 发送：" + packet->toString());
 
                         // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-
+                        if (packet->getComePort() != nullptr)
+                        {
+                            ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
+                            port->resendTokenReleased(new DataPacket());
+                        }
                     }
                 }
             }
@@ -127,6 +131,12 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
                 packet->delayToNext();
             }
         }
+
+        foreach (PortBase* p, ports)
+        {
+            ModulePort* port = static_cast<ModulePort*>(p);
+            port->passOneClock(PASS_RECEIVE);
+        }
     }
 
     updatePacketPos();
@@ -146,6 +156,7 @@ void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
         {
             request_queue.enqueue(packet);
             rt->runningOut("Hub 收到 request : " + QString::number(request_queue.size()));
+            packet->setComePort(port);
             packet->setTargetPort(getToPort(port));
             packet->resetDelay(getData("latency")->i());
         }
@@ -153,6 +164,7 @@ void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
         {
             response_queue.enqueue(packet);
             rt->runningOut("Hub 收到 response : " + QString::number(response_queue.size()));
+            packet->setComePort(port);
             packet->setTargetPort(getToPort(port));
             packet->resetDelay(getData("latency")->i());
         }
