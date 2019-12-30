@@ -93,7 +93,7 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
                     resetBandwidthBuffer();
 
                     // the delay on the return of the Token
-                    resendTokenReleased(new DataPacket(this->parentWidget()));
+                    sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
                 }
             }
             else
@@ -126,7 +126,7 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
  * 所在的形状释放一个数据包后，自己可以多接收一个数据包
  * 调用此方法，让port延迟发送给对面的连接线一个token
  */
-void ModulePort::resendTokenReleased(DataPacket *packet)
+void ModulePort::sendDequeueTokenToComeModule(DataPacket *packet)
 {
     return_delay_list.append(packet);
     packet->resetDelay(return_delay);
