@@ -10,7 +10,7 @@
 #include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
+    : QMainWindow(parent), ui(new Ui::MainWindow), flow_control(nullptr)
 {
     log("初始化MainWindow");
     ui->setupUi(this);
@@ -215,9 +215,10 @@ void MainWindow::on_actionZoom_Out_O_triggered()
 
 void MainWindow::on_actionRun_triggered()
 {
+    log("MainWindow::on_actionRun_triggered()");
     if (flow_control != nullptr)
         flow_control->deleteLater();
-    
+
 //     flow_control = new FlowControl_Master1_Slave1(ui->scrollAreaWidgetContents_2, this);
     flow_control = new FlowControl_Master2_Switch_Slave2(ui->scrollAreaWidgetContents_2, this);
 
