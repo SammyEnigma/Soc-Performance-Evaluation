@@ -21,6 +21,11 @@ DataPacket::DataPacket(QString tag, QObject *parent) : DataPacket(parent)
     this->tag = tag;
 }
 
+DataPacket::DataPacket(int delay, QObject *parent) :DataPacket(parent)
+{
+    resetDelay(delay);
+}
+
 /**
  * 数据包所在的阶段更改后，重新设置延迟
  * @param ignore 是否忽略一次延迟（因为后续位置的遍历可能会用到改数据包）

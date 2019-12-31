@@ -2,7 +2,8 @@
 
 FlowControlBase::FlowControlBase(GraphicArea *ga, QObject *parent) : QObject(parent), graphic(ga), run_timer(new QTimer(this)), current_clock(-1)
 {
-    run_timer->setInterval(ONE_CLOCK_INTERVAL); // 定时执行一次 clock 
+    log("FlowControlBase::FlowControlBase1");
+    run_timer->setInterval(ONE_CLOCK_INTERVAL); // 定时执行一次 clock
     connect(run_timer, SIGNAL(timeout()), this, SLOT(nextStep()));
 
     connect(this, &FlowControlBase::signalTokenCreated, this, [=](DataPacket *packet) {
@@ -23,6 +24,7 @@ FlowControlBase::FlowControlBase(GraphicArea *ga, QObject *parent) : QObject(par
             }
         }
     });
+
 }
 
 /**

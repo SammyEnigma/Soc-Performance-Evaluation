@@ -55,8 +55,7 @@ void MasterModule::passOneClock()
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
                 packet->setDrawPos(geometry().center());
                 packet->resetDelay(port->getLatency());
-                port->send_delay_list.append(packet);
-                port->another_can_receive--;
+                port->send_delay_list.append(packet);             
                 port->resetBandwidthBuffer();
             }
             

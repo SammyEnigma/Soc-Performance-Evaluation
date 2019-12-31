@@ -38,6 +38,8 @@ void ModulePort::clearData()
     data_queue.clear();
     dequeue_list.clear();
     return_delay_list.clear();
+    receive_update_delay_list.clear();
+    send_update_delay_list.clear();
 }
 
 void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
@@ -52,7 +54,22 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
             if (packet->isDelayFinished())
             {
                 send_delay_list.removeAt(i--);
-                emit signalSendDelayFinished(this, packet);
+                emit signalSendDelayFinished(this, packet);              
+                send_update_delay_list.append(new DataPacket(1));
+            }
+            else
+            {
+                packet->delayToNext();
+            }
+        }
+
+        for(int i = 0; i < send_update_delay_list.size(); i++)
+        {
+            DataPacket *packet = send_update_delay_list.at(i);
+            if (packet->isDelayFinished())
+            {
+                send_update_delay_list.removeAt(i--);
+                another_can_receive--;
             }
             else
             {
@@ -91,6 +108,7 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
                     dequeue_list.removeAt(i--);
                     emit signalReceivedDataDequeueReaded(packet);
                     resetBandwidthBuffer();
+                    receive_update_delay_list.append(new DataPacket(1));
 
                     // the delay on the return of the Token
                     sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
@@ -101,6 +119,21 @@ void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
                 packet->delayToNext();
             }
         }
+
+        for(int i = 0; i < receive_update_delay_list.size(); i++)
+        {
+            DataPacket *packet = receive_update_delay_list.at(i);
+            if (packet->isDelayFinished())
+            {
+                receive_update_delay_list.removeAt(i--);
+                another_can_receive++;
+            }
+            else
+            {
+                packet->delayToNext();
+            }
+        }
+
         // Slave pick queue时return token 给Master
         for (int i = 0; i < return_delay_list.size(); i++)
         {

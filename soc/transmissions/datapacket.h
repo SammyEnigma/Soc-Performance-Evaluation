@@ -25,6 +25,7 @@ class DataPacket : public QObject
 public:
     DataPacket(QObject *parent = nullptr);
     DataPacket(QString tag, QObject *parent = nullptr);
+    DataPacket(int delay, QObject *parent = nullptr);
 
     void resetDelay(int max, bool ignore = false); // 重新设置延迟
     void delayToNext();                            // 延迟到下一个阶段

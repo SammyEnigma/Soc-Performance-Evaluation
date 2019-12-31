@@ -77,6 +77,8 @@ public:
     QQueue<DataPacket *> data_queue;
     PacketList dequeue_list;
     PacketList return_delay_list;
+    PacketList receive_update_delay_list;
+    PacketList send_update_delay_list;
     int another_can_receive; // 端口对面模块的剩余buffer（token）
 
 private:
