@@ -57,6 +57,13 @@ void SwitchModule::clearData()
 {
     request_queue.clear();
     response_queue.clear();
+    foreach (PortBase *p, ShapeBase::ports)
+    {
+        // 连接信号槽
+        ModulePort *port = static_cast<ModulePort *>(p);
+        disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
+    }
 }
 
 int SwitchModule::getToken()
@@ -94,7 +101,7 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
                         if (packet->getComePort() != nullptr)
                         {
                             ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
-                            port->resendTokenReleased(new DataPacket());
+                            port->sendDequeueTokenToComeModule(new DataPacket());
                         }
                     }
                 }
@@ -124,6 +131,13 @@ void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
                         continue;
                     packet->resetDelay(cable->getData("delay")->i());
                     port->sendData(packet, DATA_RESPONSE);
+
+                    // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+                    if (packet->getComePort() != nullptr)
+                    {
+                        ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
+                        port->sendDequeueTokenToComeModule(new DataPacket());
+                    }
                 }
             }
             else
@@ -164,10 +178,14 @@ void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
         {
             response_queue.enqueue(packet);
             rt->runningOut("Hub 收到 response : " + QString::number(response_queue.size()));
-            packet->setComePort(port);
-            packet->setTargetPort(getToPort(port));
-            packet->resetDelay(getData("latency")->i());
         }
+        else // 不知道是啥
+            return ;
+
+        // 通过端口确定来去的方向
+        packet->setComePort(port);
+        packet->setTargetPort(getToPort(port));
+        packet->resetDelay(getData("latency")->i());
     }
 }
 
