@@ -15,7 +15,7 @@
 #include "modulecable.h"
 #include "datapacketview.h"
 
-#define ONE_CLOCK_INTERVAL 600
+#define ONE_CLOCK_INTERVAL 500
 
 #define FCDEB \
     if (1)    \

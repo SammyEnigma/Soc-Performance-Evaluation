@@ -195,7 +195,6 @@ void SwitchModule::updatePacketPos()
     int height = fm.lineSpacing();
     int h = height * 3 + 4;
     int l = 4;
-    qDebug() << request_queue.size();
     foreach (DataPacket *packet, request_queue)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
