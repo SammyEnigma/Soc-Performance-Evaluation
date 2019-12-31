@@ -57,6 +57,13 @@ void SwitchModule::clearData()
 {
     request_queue.clear();
     response_queue.clear();
+    foreach (PortBase *p, ShapeBase::ports)
+    {
+        // 连接信号槽
+        ModulePort *port = static_cast<ModulePort *>(p);
+        disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
+    }
 }
 
 int SwitchModule::getToken()
