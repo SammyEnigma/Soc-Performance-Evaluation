@@ -26,7 +26,8 @@ public:
     void clearData();
     int getToken();
     
-    void passOneClock(PASS_ONE_CLOCK_FLAG flag);
+    virtual void passOnPackets();
+    virtual void delayOneClock();
 
     void updatePacketPos();
 

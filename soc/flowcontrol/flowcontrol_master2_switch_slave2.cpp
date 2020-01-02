@@ -117,34 +117,42 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
         master2->data_list.append(createToken());
     
     // Master
-    master1->passOneClock();
-    master2->passOneClock();
+    master1->passOnPackets();
+    master2->passOnPackets();
     
     // Master >> Hub
-    master1_cable->passOneClock(PASS_REQUEST);
-    master2_cable->passOneClock(PASS_REQUEST);
+    master1_cable->passOnPackets();
+    master2_cable->passOnPackets();
     
     // Hub
-    hub->passOneClock(PASS_REQUEST);
+    hub->passOnPackets();
     
     // Hub >> Slave
-    slave1_cable->passOneClock(PASS_REQUEST);
-    slave2_cable->passOneClock(PASS_REQUEST);
+    slave1_cable->passOnPackets();
+    slave2_cable->passOnPackets();
     
     // Slave
-    slave1->passOneClock();
-    slave2->passOneClock();
-    
-    // Hub << Slave
-    slave1_cable->passOneClock(PASS_RESPONSE);
-    slave2_cable->passOneClock(PASS_RESPONSE);
-    
+    slave1->passOnPackets();
+    slave2->passOnPackets();
+
+    // Master
+    master1->delayOneClock();
+    master2->delayOneClock();
+
+    // Master >> Hub
+    master1_cable->delayOneClock();
+    master2_cable->delayOneClock();
+
     // Hub
-    hub->passOneClock(PASS_RESPONSE);
-    
-    // Master << Hub
-    master1_cable->passOneClock(PASS_RESPONSE);
-    master2_cable->passOneClock(PASS_RESPONSE);
+    hub->delayOneClock();
+
+    // Hub >> Slave
+    slave1_cable->delayOneClock();
+    slave2_cable->delayOneClock();
+
+    // Slave
+    slave1->delayOneClock();
+    slave2->delayOneClock();
 
     // ==== 时钟结束后首尾 ====
     current_clock++;

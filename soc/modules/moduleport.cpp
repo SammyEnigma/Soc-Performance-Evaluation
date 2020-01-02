@@ -42,114 +42,89 @@ void ModulePort::clearData()
     send_update_delay_list.clear();
 }
 
-void ModulePort::passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag)
+void ModulePort::passOnPackets()
 {
-    if (flag == PASS_SEND || flag ==  PASS_BOTH)
+    // ==== 发送部分（Master） ====
+    // 发送延迟结束，开始准备发送
+    for (int i = 0; i < send_delay_list.size(); i++)
     {
-        // ==== 发送部分（Master） ====
-        // 发送延迟结束，开始准备发送
-        for (int i = 0; i < send_delay_list.size(); i++)
-        {
-            DataPacket *packet = send_delay_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                send_delay_list.removeAt(i--);
-                emit signalSendDelayFinished(this, packet);              
-                send_update_delay_list.append(new DataPacket(1));
-            }
-            else
-            {
-                packet->delayToNext();
-            }
-        }
+        DataPacket *packet = send_delay_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
 
-        for(int i = 0; i < send_update_delay_list.size(); i++)
+        send_delay_list.removeAt(i--);
+        emit signalSendDelayFinished(this, packet);
+        send_update_delay_list.append(new DataPacket(1));
+    }
+
+    for(int i = 0; i < send_update_delay_list.size(); i++)
+    {
+        DataPacket *packet = send_update_delay_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+
+        send_update_delay_list.removeAt(i--);
+        another_can_receive--;
+    }
+
+    // ==== 接收部分（Slave） ====
+    // Slave进队列（latency=1 clock）
+    for (int i = 0; i < enqueue_list.size(); i++)
+    {
+        DataPacket *packet = enqueue_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+        enqueue_list.removeAt(i--);
+        dequeue_list.append(packet);
+        packet->resetDelay(getBandwidth());
+    }
+
+    // Slave出队列（bandwidth clock）-->处理数据
+    for (int i = 0; i < dequeue_list.size(); i++)
+    {
+        DataPacket *packet = dequeue_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+        if (isBandwidthBufferFinished())
         {
-            DataPacket *packet = send_update_delay_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                send_update_delay_list.removeAt(i--);
-                another_can_receive--;
-            }
-            else
-            {
-                packet->delayToNext();
-            }
+            dequeue_list.removeAt(i--);
+            emit signalReceivedDataDequeueReaded(packet);
+            resetBandwidthBuffer();
+            receive_update_delay_list.append(new DataPacket(1));
+
+            // the delay on the return of the Token
+            sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
         }
     }
-    
-    if (flag == PASS_RECEIVE || flag == PASS_BOTH)
+
+    for(int i = 0; i < receive_update_delay_list.size(); i++)
     {
-        // ==== 接收部分（Slave） ====
-        // Slave进队列（latency=1 clock）
-        for (int i = 0; i < enqueue_list.size(); i++)
-        {
-            DataPacket *packet = enqueue_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                enqueue_list.removeAt(i--);
-                dequeue_list.append(packet);
-                packet->resetDelay(getBandwidth());
-            }
-            else
-            {
-                packet->delayToNext();
-            }
-        }
+        DataPacket *packet = receive_update_delay_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
 
-        // Slave出队列（bandwidth clock）-->处理数据
-        for (int i = 0; i < dequeue_list.size(); i++)
-        {
-            DataPacket *packet = dequeue_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                if (isBandwidthBufferFinished())
-                {
-                    dequeue_list.removeAt(i--);
-                    emit signalReceivedDataDequeueReaded(packet);
-                    resetBandwidthBuffer();
-                    receive_update_delay_list.append(new DataPacket(1));
+        receive_update_delay_list.removeAt(i--);
+        another_can_receive++;
+    }
 
-                    // the delay on the return of the Token
-                    sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
-                }
-            }
-            else
-            {
-                packet->delayToNext();
-            }
-        }
+    // Slave pick queue时return token 给Master
+    for (int i = 0; i < return_delay_list.size(); i++)
+    {
+        DataPacket *packet = return_delay_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
 
-        for(int i = 0; i < receive_update_delay_list.size(); i++)
-        {
-            DataPacket *packet = receive_update_delay_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                receive_update_delay_list.removeAt(i--);
-                another_can_receive++;
-            }
-            else
-            {
-                packet->delayToNext();
-            }
-        }
+        return_delay_list.removeAt(i--);
+        emit signalDequeueTokenDelayFinished();
+        rt->runningOut("return 延迟结束");
+        packet->deleteLater();
+    }
+}
 
-        // Slave pick queue时return token 给Master
-        for (int i = 0; i < return_delay_list.size(); i++)
-        {
-            DataPacket *packet = return_delay_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                return_delay_list.removeAt(i--);
-                emit signalDequeueTokenDelayFinished();
-                rt->runningOut("return 延迟结束");
-                packet->deleteLater();
-            }
-            else
-            {
-                packet->delayToNext();
-            }
-        }
+void ModulePort::delayOneClock()
+{
+    foreach (DataPacket* packet, send_delay_list + send_update_delay_list + enqueue_list + dequeue_list + receive_update_delay_list + return_delay_list) {
+        packet->delayToNext();
     }
 
     nextBandwidthBuffer(); // Master发送、Slave出队列

@@ -41,15 +41,26 @@ void SlaveModule::clearData()
     process_list.clear();
 }
 
-void SlaveModule::passOneClock()
+void SlaveModule::passOnPackets()
 {
     foreach (PortBase *port, ShapeBase::ports)
     {
         ModulePort *mp = static_cast<ModulePort *>(port);
-        mp->passOneClock(PASS_RECEIVE);
+        mp->passOnPackets();
     }
 
-    ModuleInterface::passOneClock(); // 模块内处理
+    ModuleInterface::passOnPackets();
+}
+
+void SlaveModule::delayOneClock()
+{
+    foreach (PortBase *port, ShapeBase::ports)
+    {
+        ModulePort *mp = static_cast<ModulePort *>(port);
+        mp->delayOneClock();
+    }
+
+    ModuleInterface::delayOneClock();
 }
 
 void SlaveModule::updatePacketPos()

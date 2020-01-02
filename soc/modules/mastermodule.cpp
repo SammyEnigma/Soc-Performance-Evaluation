@@ -39,7 +39,7 @@ void MasterModule::clearData()
     data_list.clear();
 }
 
-void MasterModule::passOneClock()
+void MasterModule::passOnPackets()
 {
     // 连接的对方有可接收的buffer时，Master开始发送
     foreach (PortBase* p, ShapeBase::ports)
@@ -55,13 +55,20 @@ void MasterModule::passOneClock()
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
                 packet->setDrawPos(geometry().center());
                 packet->resetDelay(port->getLatency());
-                port->send_delay_list.append(packet);             
+                port->send_delay_list.append(packet);
                 port->resetBandwidthBuffer();
             }
-            
-            // port 内部数据传输流
-            port->passOneClock(PASS_SEND);
-        }
+        }// port 内部数据传输流
+        port->passOnPackets();
+    }
+}
+
+void MasterModule::delayOneClock()
+{
+    foreach (PortBase* p, ShapeBase::ports)
+    {
+        ModulePort* port = static_cast<ModulePort*>(p);
+        port->delayOneClock();
     }
 
     updatePacketPos();

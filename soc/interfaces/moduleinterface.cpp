@@ -80,35 +80,38 @@ int ModuleInterface::getProcessDelay()
     return process_delay->i();
 }
 
-void ModuleInterface::passOneClock()
+void ModuleInterface::passOnPackets()
 {
-    // 模块内处理
+    // 模块内处理（Slave）
     for (int i = 0; i < process_list.size(); i++)
     {
         DataPacket *packet = process_list.at(i);
-        if (packet->isDelayFinished())
+        if (!packet->isDelayFinished())
+            continue;
+
+        ModulePort *mp = nullptr;
+        foreach (PortBase *port, ports)
         {
-            ModulePort *mp = nullptr;
-            foreach (PortBase *port, ports)
+            if (port->getCable() != nullptr)
             {
-                if (port->getCable() != nullptr)
-                {
-                    mp = static_cast<ModulePort *>(port);
-                    break;
-                }
-            }
-            if (mp != nullptr && mp->anotherCanRecive())
-            {
-                process_list.removeAt(i--);
-                emit mp->signalResponseSended(packet);
-                rt->runningOut("    处理结束，开始response：" + packet->toString());
+                mp = static_cast<ModulePort *>(port);
+                break;
             }
         }
-        else
+        if (mp != nullptr && mp->anotherCanRecive())
         {
-            packet->delayToNext();
-            rt->runningOut("    正在处理：" + packet->toString());
+            process_list.removeAt(i--);
+            emit mp->signalResponseSended(packet);
+            rt->runningOut("    处理结束，开始response：" + packet->toString());
         }
+    }
+}
+
+void ModuleInterface::delayOneClock()
+{
+    foreach (DataPacket* packet, process_list)
+    {
+        packet->delayToNext();
     }
 
     updatePacketPos();

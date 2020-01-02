@@ -71,86 +71,86 @@ int SwitchModule::getToken()
     return token;
 }
 
-void SwitchModule::passOneClock(PASS_ONE_CLOCK_FLAG flag)
+void SwitchModule::passOnPackets()
 {
     // request queue
-    if (flag == PASS_REQUEST)
+    int picker_bandwidth = getData("picker_bandwidth")->i();
+    for (int i = 0; i < request_queue.size(); ++i)
     {
-        int picker_bandwidth = getData("picker_bandwidth")->i();
-        for (int i = 0; i < request_queue.size(); ++i)
-        {
-            DataPacket *packet = request_queue.at(i);
-            if (packet->isDelayFinished())
-            {
-                // 判断packet的传输目标
-                if (packet->getTargetPort() != nullptr)
-                {
-                    // 使用 Picker 进行轮询
-                    if (picker_bandwidth-- > 0)
-                    {
-                        ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
-                        request_queue.removeAt(i--);
-                        ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
-                        if (cable == nullptr)
-                            continue;
-                        packet->resetDelay(cable->getData("delay")->i());
-                        port->sendData(packet, DATA_REQUEST);
-                        rt->runningOut("Hub 发送：" + packet->toString());
+        DataPacket *packet = request_queue.at(i);
+        if (!packet->isDelayFinished())
+            continue;
 
-                        // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-                        if (packet->getComePort() != nullptr)
-                        {
-                            ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
-                            port->sendDequeueTokenToComeModule(new DataPacket());
-                        }
-                    }
-                }
-            }
-            else
+        // 判断packet的传输目标
+        if (packet->getTargetPort() != nullptr)
+        {
+            // 使用 Picker 进行轮询
+            if (picker_bandwidth-- > 0)
             {
-                packet->delayToNext();
+                ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+                request_queue.removeAt(i--);
+                ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
+                if (cable == nullptr)
+                    continue;
+                packet->resetDelay(cable->getData("delay")->i());
+                port->sendData(packet, DATA_REQUEST);
+                rt->runningOut("Hub 发送：" + packet->toString());
+
+                // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+                if (packet->getComePort() != nullptr)
+                {
+                    ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
+                    port->sendDequeueTokenToComeModule(new DataPacket());
+                }
             }
         }
     }
 
     // response queue
-    if (flag == PASS_RESPONSE)
+    for (int i = 0; i < response_queue.size(); ++i)
     {
-        for (int i = 0; i < response_queue.size(); ++i)
-        {
-            DataPacket *packet = response_queue.at(i);
-            if (packet->isDelayFinished())
-            {
-                // 判断packet的传输目标
-                if (packet->getTargetPort() != nullptr)
-                {
-                    ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
-                    response_queue.removeAt(i--);
-                    ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
-                    if (cable == nullptr)
-                        continue;
-                    packet->resetDelay(cable->getData("delay")->i());
-                    port->sendData(packet, DATA_RESPONSE);
+        DataPacket *packet = response_queue.at(i);
+        if (!packet->isDelayFinished())
+            continue;
 
-                    // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-                    if (packet->getComePort() != nullptr)
-                    {
-                        ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
-                        port->sendDequeueTokenToComeModule(new DataPacket());
-                    }
-                }
-            }
-            else
+        // 判断packet的传输目标
+        if (packet->getTargetPort() != nullptr)
+        {
+            ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+            response_queue.removeAt(i--);
+            ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
+            if (cable == nullptr)
+                continue;
+            packet->resetDelay(cable->getData("delay")->i());
+            port->sendData(packet, DATA_RESPONSE);
+
+            // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+            if (packet->getComePort() != nullptr)
             {
-                packet->delayToNext();
+                ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
+                port->sendDequeueTokenToComeModule(new DataPacket());
             }
         }
+    }
 
-        foreach (PortBase* p, ports)
-        {
-            ModulePort* port = static_cast<ModulePort*>(p);
-            port->passOneClock(PASS_RECEIVE);
-        }
+    foreach (PortBase* p, ports)
+    {
+        ModulePort* port = static_cast<ModulePort*>(p);
+        port->passOnPackets();
+    }
+}
+
+void SwitchModule::delayOneClock()
+{
+    foreach (DataPacket* packet, request_queue + response_queue)
+    {
+        packet->delayToNext();
+    }
+
+    foreach (PortBase* p, ports)
+    {
+        ModulePort* port = static_cast<ModulePort*>(p);
+        port->delayOneClock();
     }
 
     updatePacketPos();

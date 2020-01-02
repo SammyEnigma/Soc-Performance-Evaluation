@@ -39,7 +39,8 @@ public:
     virtual QString getClass() override;
     void clearData();
 
-    void passOneClock(PASS_ONE_CLOCK_FLAG_PORT flag = PASS_BOTH);
+    void passOnPackets();
+    void delayOneClock();
     void sendDequeueTokenToComeModule(DataPacket* packet); // 模块发出收到的数据时，原方向返回一个token表示自己可以多接收一个
 
     int getLatency();

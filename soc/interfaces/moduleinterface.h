@@ -35,7 +35,8 @@ public:
 signals:
 
 public slots:
-    virtual void passOneClock(); // 模拟时钟流逝1个clock
+    virtual void passOnPackets(); // 1、queue中packet延迟满后，传入到下一个queue
+    virtual void delayOneClock(); // 2、传输/处理/读取延迟到下一个clock
     virtual void updatePacketPos();
 
 public:

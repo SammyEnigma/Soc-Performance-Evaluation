@@ -94,42 +94,35 @@ void ModuleCable::clearData()
     response_data_list.clear();
 }
 
-void ModuleCable::passOneClock(PASS_ONE_CLOCK_FLAG flag)
+void ModuleCable::passOnPackets()
 {
-    // 连接线传输延迟
-    if (flag == PASS_REQUEST)
+    for (int i = 0; i < request_list.size(); i++)
     {
-        for (int i = 0; i < request_list.size(); i++)
-        {
-            DataPacket *packet = request_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                request_list.removeAt(i--);
-                rt->runningOut("    cable 结束：" + packet->toString() + " >> 下一步");
-                emit signalRequestDelayFinished(packet);
-            }
-            else
-            {
-                packet->delayToNext();
-//                rt->runningOut("    cable 延迟：" + packet->toString());
-            }
-        }
+        DataPacket *packet = request_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+
+        request_list.removeAt(i--);
+        rt->runningOut("    cable 结束：" + packet->toString() + " >> 下一步");
+        emit signalRequestDelayFinished(packet);
     }
-    else if (flag == PASS_RESPONSE)
+
+    for (int i = 0; i < response_list.size(); i++)
     {
-        for (int i = 0; i < response_list.size(); i++)
-        {
-            DataPacket *packet = response_list.at(i);
-            if (packet->isDelayFinished())
-            {
-                response_list.removeAt(i--);
-                emit signalResponseDelayFinished(packet);
-            }
-            else
-            {
-                packet->delayToNext();
-            }
-        }
+        DataPacket *packet = response_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+
+        response_list.removeAt(i--);
+        emit signalResponseDelayFinished(packet);
+    }
+}
+
+void ModuleCable::delayOneClock()
+{
+    foreach (DataPacket* packet, request_list + response_list)
+    {
+        packet->delayToNext();
     }
 
     updatePacketPos();

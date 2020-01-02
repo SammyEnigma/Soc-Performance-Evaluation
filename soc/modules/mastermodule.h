@@ -26,7 +26,8 @@ public:
     virtual void initData() override;
     virtual void clearData() override;
 
-    void passOneClock() override;
+    void passOnPackets() override;
+    void delayOneClock() override;
 
 protected:
 	void paintEvent(QPaintEvent *event) override;

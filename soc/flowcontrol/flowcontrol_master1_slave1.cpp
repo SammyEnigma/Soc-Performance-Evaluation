@@ -236,16 +236,22 @@ void FlowControl_Master1_Slave1::passOneClock()
         master->data_list.append(createToken());
 
     // Master
-    master->passOneClock();
+    master->passOnPackets();
 
     // Master >> Slave
-    ms_cable->passOneClock(PASS_REQUEST);
+    ms_cable->passOnPackets();
 
     // Slave
-    slave->passOneClock();
+    slave->passOnPackets();
 
-    // Master << Slave
-    ms_cable->passOneClock(PASS_RESPONSE);
+    // Master
+    master->delayOneClock();
+
+    // Master >> Slave
+    ms_cable->delayOneClock();
+
+    // Slave
+    slave->delayOneClock();
 
     // ==== 时钟结束后首尾 ====
     current_clock++;

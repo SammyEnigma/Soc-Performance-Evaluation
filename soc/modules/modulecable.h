@@ -41,7 +41,8 @@ public:
     void initData();
     void clearData();
     virtual void adjustGeometryByPorts() override;
-    virtual void passOneClock(PASS_ONE_CLOCK_FLAG flag);
+    virtual void passOnPackets();
+    virtual void delayOneClock();
 
     virtual void updatePacketPos();
     QPoint getPropPosByLineType(double prop, LINE_TYPE line);
