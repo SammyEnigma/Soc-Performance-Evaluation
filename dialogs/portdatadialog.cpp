@@ -20,6 +20,9 @@ PortDataDialog::PortDataDialog(ModulePort *port) :
     ui->spinBox->setValue(port->bandwidth);
     ui->spinBox_2->setValue(port->latency);
     ui->spinBox_3->setValue(port->return_delay);
+    ui->spinBox_4->setValue(port->send_update_delay);
+    ui->spinBox_5->setValue(port->receive_update_delay);
+    ui->spinBox_6->setValue(port->token);
 }
 
 PortDataDialog::~PortDataDialog()
@@ -40,4 +43,19 @@ void PortDataDialog::on_spinBox_2_valueChanged(int)
 void PortDataDialog::on_spinBox_3_valueChanged(int)
 {
     port->return_delay = ui->spinBox_3->value();
+}
+
+void PortDataDialog::on_spinBox_4_valueChanged(int)
+{
+    port->send_update_delay = ui->spinBox_4->value();
+}
+
+void PortDataDialog::on_spinBox_5_valueChanged(int)
+{
+    port->receive_update_delay = ui->spinBox_5->value();
+}
+
+void PortDataDialog::on_spinBox_6_valueChanged(int)
+{
+    port->token = ui->spinBox_6->value();
 }

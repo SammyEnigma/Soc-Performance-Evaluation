@@ -27,7 +27,8 @@ PortBase *SwitchModule::createPort()
 
 void SwitchModule::initData()
 {
-    this->token = getData("token")->i();
+    // this->token = getData("token")->i();
+    // Switch的token是两种方向（request和response）各自所有端口相加之和，不进行计算
 
     foreach (PortBase *p, ShapeBase::ports)
     {

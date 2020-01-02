@@ -54,6 +54,7 @@ public:
     void resetBandwidthBuffer();
 
     int anotherCanRecive();
+    int getToken();
 
     void setReceiveCache(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）
 

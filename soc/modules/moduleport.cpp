@@ -257,6 +257,11 @@ int ModulePort::anotherCanRecive()
     return another_can_receive;
 }
 
+int ModulePort::getToken()
+{
+    return token;
+}
+
 void ModulePort::setReceiveCache(bool c)
 {
     this->receive_cache = c;
