@@ -57,14 +57,14 @@ void FlowControl_Master2_Switch_Slave2::initData()
     slave2_cable->initData();
     
     // 设置运行数据
-    master1_port->another_can_receive = hub->getToken();
-    master2_port->another_can_receive = hub->getToken();
-    slave1_port->another_can_receive = hub->getToken();
-    slave2_port->another_can_receive = hub->getToken();
-    hm1_port->another_can_receive = hub->getToken();
-    hm2_port->another_can_receive = hub->getToken();
-    hs1_port->another_can_receive = hub->getToken();
-    hs2_port->another_can_receive = hub->getToken();
+    master1_port->another_can_receive = hm1->getToken();
+    master2_port->another_can_receive = hm2->getToken();
+    slave1_port->another_can_receive = hs1->getToken();
+    slave2_port->another_can_receive = hs2->getToken();
+    hm1_port->another_can_receive = master1->getToken();
+    hm2_port->another_can_receive = master2->getToken();
+    hs1_port->another_can_receive = slave1->getToken();
+    hs2_port->another_can_receive = slave2->getToken();
 
     master1_port->initBandwidthBufer();
     master2_port->initBandwidthBufer();

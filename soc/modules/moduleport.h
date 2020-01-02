@@ -24,7 +24,7 @@ enum DATA_TYPE
 {
     DATA_REQUEST,
     DATA_RESPONSE,
-    DATA_TOKEN,    // 1bit的数据
+    DATA_TOKEN, // 1bit的数据
 };
 
 class ModulePort : public PortBase
@@ -35,13 +35,14 @@ public:
     friend class PortDataDialog;
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
+    friend class FlowControl_Master2_Switch_Slave2;
     virtual ModulePort *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual QString getClass() override;
     void clearData();
 
     void passOnPackets();
     void delayOneClock();
-    void sendDequeueTokenToComeModule(DataPacket* packet); // 模块发出收到的数据时，原方向返回一个token表示自己可以多接收一个
+    void sendDequeueTokenToComeModule(DataPacket *packet); // 模块发出收到的数据时，原方向返回一个token表示自己可以多接收一个
 
     int getLatency();
     int getBandwidth();
@@ -68,9 +69,9 @@ signals:
     void signalDataReceived(ModulePort *port, DataPacket *packet);      // 收到信号的槽函数触发的接收信号，发送给父控件
 
 public slots:
-    void slotDataList() override;                                // 请求编辑数据列表
-    void sendData(DataPacket* packet, DATA_TYPE type);           // 发送特定数据
-    void slotDataReceived(DataPacket *packet); // 接收到数据（包括request和response）
+    void slotDataList() override;                      // 请求编辑数据列表
+    void sendData(DataPacket *packet, DATA_TYPE type); // 发送特定数据
+    void slotDataReceived(DataPacket *packet);         // 接收到数据（包括request和response）
 
 public:
     PacketList send_delay_list;
@@ -83,10 +84,13 @@ public:
     int another_can_receive; // 端口对面模块的剩余buffer（token）
 
 private:
-    int bandwidth;        // 带宽，多少个clock发送1个token（越大越慢）
-    int bandwidth_buffer; // 发送的clock缓存，超过bandwidth才能发送
-    int latency;          // the delay of the sending the request/response
-    int return_delay;     // the delay on the return of the Token
+    int bandwidth;            // 带宽，多少个clock发送1个token（越大越慢）
+    int bandwidth_buffer;     // 发送的clock缓存，超过bandwidth才能发送
+    int latency;              // the delay of the sending the request/response
+    int return_delay;         // the delay on the return of the Token
+    int send_update_delay;    // 发送时自己buffer-1的延迟
+    int receive_update_delay; // 接收到token时自己buffer+1的延迟
+    int token;                // 自己可以接收几个（port内部和模块内部的区别）
 
     bool receive_cache; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列
 };

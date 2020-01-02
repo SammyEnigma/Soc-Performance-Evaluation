@@ -11,7 +11,8 @@ ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       another_can_receive(0),
       bandwidth(1), bandwidth_buffer(1),
-      latency(1), return_delay(0), receive_cache(true)
+      latency(1), return_delay(0), receive_cache(true),
+      send_update_delay(0), receive_update_delay(0), token(1)
 {
 }
 
@@ -23,6 +24,9 @@ ModulePort *ModulePort::newInstanceBySelf(QWidget *parent)
     port->bandwidth = this->bandwidth;
     port->latency = this->latency;
     port->return_delay = this->return_delay;
+    port->send_update_delay = this->send_update_delay;
+    port->receive_update_delay = this->receive_update_delay;
+    port->token = this->token;
     return port;
 }
 
@@ -145,12 +149,21 @@ void ModulePort::fromStringAddin(QString s)
     QString bandwidth = StringUtil::getXml(s, "BANDWIDTH");
     QString latency = StringUtil::getXml(s, "LATENCY");
     QString return_delay = StringUtil::getXml(s, "RETURN_DELAY");
+    QString send_update_delay = StringUtil::getXml(s, "SEND_UPDATE_DELAY");
+    QString receive_update_delay = StringUtil::getXml(s, "RECEIVE_UPDATE_DELAY");
+    QString token = StringUtil::getXml(s, "TOKEN");
     if (!bandwidth.isEmpty())
         this->bandwidth = bandwidth.toInt();
     if (!latency.isEmpty())
         this->latency = latency.toInt();
     if (!return_delay.isEmpty())
         this->return_delay = return_delay.toInt();
+    if (!send_update_delay.isEmpty())
+        this->send_update_delay = send_update_delay.toInt();
+    if (!receive_update_delay.isEmpty())
+        this->receive_update_delay = receive_update_delay.toInt();
+    if (!token.isEmpty())
+        this->token = token.toInt();
 }
 
 QString ModulePort::toStringAddin()
@@ -160,6 +173,9 @@ QString ModulePort::toStringAddin()
     full += indent + StringUtil::makeXml(bandwidth, "BANDWIDTH");
     full += indent + StringUtil::makeXml(latency, "LATENCY");
     full += indent + StringUtil::makeXml(return_delay, "RETURN_DELAY");
+    full += indent + StringUtil::makeXml(send_update_delay, "SEND_UPDATE_DELAY");
+    full += indent + StringUtil::makeXml(receive_update_delay, "RECEIVE_UPDATE_DELAY");
+    full += indent + StringUtil::makeXml(token, "TOKEN");
     return full;
 }
 
