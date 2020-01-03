@@ -87,6 +87,7 @@ void FlowControlBase::nextStep()
 {
     if (current_clock == -1) // 未初始化
         return;
+
     passOneClock();
     refreshUI();
 }

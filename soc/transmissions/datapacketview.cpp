@@ -11,6 +11,10 @@ DataPacketView::DataPacketView(DataPacket *packet, QWidget *parent) : QWidget(pa
 {
     Q_ASSERT(packet != nullptr);
     connect(packet, SIGNAL(signalPosChanged(QPoint, QPoint)), this, SLOT(updatePosition(QPoint, QPoint)));
+    connect(packet, SIGNAL(signalDeleted()), this, SLOT(deleteLater()));
+    connect(packet, &DataPacket::signalDeleted, this, [&]{
+        packet = nullptr;
+    });
 
     setFixedSize(PACKET_SIZE, PACKET_SIZE);
 }
@@ -24,10 +28,13 @@ void DataPacketView::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QColor c = Qt::red;
-    if (packet->getTag() == "master1")
-        c = QColor(50,205,50);
-    else if (packet->getTag() == "master2")
-        c = Qt::blue;
+    if (packet != nullptr)
+    {
+        if (packet->getTag() == "master1")
+            c = QColor(50,205,50);
+        else if (packet->getTag() == "master2")
+            c = Qt::blue;
+    }
     painter.fillRect(0,0,width(),height(),c);
 }
 

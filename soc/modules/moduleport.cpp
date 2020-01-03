@@ -124,7 +124,6 @@ void ModulePort::passOnPackets()
         rt->runningOut(getPortId()+"的return delay结束，发出token");
         return_delay_list.removeAt(i--);
         sendData(nullptr, DATA_TOKEN);
-        packet->deleteLater();
     }
 }
 

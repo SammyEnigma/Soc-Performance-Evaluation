@@ -56,8 +56,10 @@ public:
 signals:
     void signalDelayFinished();
     void signalPosChanged(QPoint old_pos, QPoint new_pos);
+    void signalDeleted();
 
 public slots:
+    void deleteLater();
 
 protected:
     bool valid;      // 是否有效

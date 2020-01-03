@@ -146,7 +146,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     // Master >> Hub
     master1_cable->delayOneClock();
     master2_cable->delayOneClock();
-qDebug() << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
+
     // Hub
     hub->delayOneClock();
 
@@ -157,15 +157,15 @@ qDebug() << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
     // Slave
     slave1->delayOneClock();
     slave2->delayOneClock();
-qDebug() << "-----------------------------------------------";
+
     // ==== 时钟结束后首尾 ====
     current_clock++;
 }
 
 void FlowControl_Master2_Switch_Slave2::refreshUI()
 {
-	FlowControlBase::refreshUI();
-    
+    FlowControlBase::refreshUI();
+
     hub->update();
     master1->update();
     master2->update();

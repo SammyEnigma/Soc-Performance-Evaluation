@@ -113,3 +113,9 @@ bool DataPacket::getDataType()
 {
     return data_type;
 }
+
+void DataPacket::deleteLater()
+{
+    emit signalDeleted();
+    QObject::deleteLater();
+}
