@@ -58,7 +58,6 @@ void ModulePort::passOnPackets()
 
         send_delay_list.removeAt(i--);
         sendData(packet, DATA_REQUEST);
-        send_update_delay_list.append(new DataPacket(send_update_delay));
     }
 
     for(int i = 0; i < send_update_delay_list.size(); i++)
@@ -198,7 +197,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     {
     case DATA_REQUEST:
         emit signalSendDelayFinished(this, packet);
-//        send_update_delay_list.append(new DataPacket(send_update_delay)); // BUG: 加上这句，another_can_receive-- 后面会断（可能需要恢复++的）
+        send_update_delay_list.append(new DataPacket(send_update_delay)); // BUG: 加上这句，another_can_receive-- 后面会断（可能需要恢复++的）
         break;
     case DATA_RESPONSE:
         emit signalResponseSended(packet);
