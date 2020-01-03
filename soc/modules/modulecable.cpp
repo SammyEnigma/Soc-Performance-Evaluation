@@ -173,8 +173,8 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
         if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y()) // 左上角 - 右下角
         {
             int offset = LINE_SPACE * (LINE_COUNT - line - 1);
-            int w = width() - offset;
-            int h = height() - offset;
+            int w = width() - PADDING*2 - offset;
+            int h = height() - PADDING*2 - offset;
             int total = w + h;
             x = static_cast<int>(total * prop);
             if (x > w)
@@ -187,8 +187,8 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
         else // 右上角 - 左下角
         {
             int offset = LINE_SPACE * line;
-            int w = width() - offset;
-            int h = height() - offset;
+            int w = width() - PADDING*2 - offset;
+            int h = height() - PADDING*2 - offset;
             int total = w + h;
             x = static_cast<int>(total * prop);
             if (x > w)
@@ -205,8 +205,8 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
         if (arrow_pos1.x() <= arrow_pos2.x() && arrow_pos1.y() <= arrow_pos2.y()) // 左上角 - 右下角
         {
             int offset = LINE_SPACE * line;
-            int w = width() - offset;
-            int h = height() - offset;
+            int w = width() - PADDING*2 - offset;
+            int h = height() - PADDING*2 - offset;
             int total = w + h;
             y = static_cast<int>(total * prop);
             if (y > h)
@@ -220,8 +220,8 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
         else // 右上角 - 左下角
         {
             int offset = LINE_SPACE * (LINE_COUNT - line - 1);
-            int w = width() - offset;
-            int h = height() - offset;
+            int w = width() - PADDING*2 - offset;
+            int h = height() - PADDING*2 - offset;
             int total = w + h;
             y = static_cast<int>(total * prop);
             if (y > h)
@@ -233,6 +233,8 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
             y -= _border_size;
         }
     }
+    x += PADDING;
+    y += PADDING;
     return QPoint(x, y) + this->pos();
 }
 
@@ -297,20 +299,20 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(0, i * LINE_SPACE, width() - i * LINE_SPACE - _border_size, i * LINE_SPACE);
-                    painter.drawLine(width() - i * LINE_SPACE - _border_size, i * LINE_SPACE, width() - i * LINE_SPACE - _border_size, height());
-                    paintLinePort(painter, QPoint(0, i * LINE_SPACE));
-                    paintLinePort(painter, QPoint(width() - i * LINE_SPACE - _border_size, height()));
+                    painter.drawLine(PADDING, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING);
+                    painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING);
+                    paintLinePort(painter, QPoint(PADDING, i * LINE_SPACE + PADDING));
+                    paintLinePort(painter, QPoint(width()-PADDING - i * LINE_SPACE - _border_size, height() - PADDING));
                 }
             }
             else // 右上角 - 左下角
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(width() - _border_size, i * LINE_SPACE, i * LINE_SPACE, i * LINE_SPACE);
-                    painter.drawLine(i * LINE_SPACE, i * LINE_SPACE, i * LINE_SPACE, height());
-                    paintLinePort(painter, QPoint(width() - _border_size, i * LINE_SPACE));
-                    paintLinePort(painter, QPoint(i * LINE_SPACE, height()));
+                    painter.drawLine(width() - PADDING - _border_size, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING);
+                    painter.drawLine(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, height() - PADDING);
+                    paintLinePort(painter, QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING));
+                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING));
                 }
             }
         }
@@ -320,20 +322,20 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(i * LINE_SPACE, 0, i * LINE_SPACE, height() - i * LINE_SPACE - _border_size);
-                    painter.drawLine(i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size, width(), height() - i * LINE_SPACE - _border_size);
-                    paintLinePort(painter, QPoint(i * LINE_SPACE, 0));
-                    paintLinePort(painter, QPoint(width(), height() - i * LINE_SPACE - _border_size));
+                    painter.drawLine(i * LINE_SPACE + PADDING, PADDING, i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
+                    painter.drawLine(i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size, width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
+                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, PADDING));
+                    paintLinePort(painter, QPoint(width()-PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
                 }
             }
             else // 右上角 - 左下角
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
-                    painter.drawLine(width() - i * LINE_SPACE - _border_size, 0, width() - i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size);
-                    painter.drawLine(width() - i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size, 0, height() - i * LINE_SPACE - _border_size);
-                    paintLinePort(painter, QPoint(width() - i * LINE_SPACE - _border_size, 0));
-                    paintLinePort(painter, QPoint(0, height() - i * LINE_SPACE - _border_size));
+                    painter.drawLine(width()-PADDING - i * LINE_SPACE - _border_size, PADDING, width()-PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size);
+                    painter.drawLine(width()-PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size, PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
+                    paintLinePort(painter, QPoint(width()-PADDING - i * LINE_SPACE - _border_size, PADDING));
+                    paintLinePort(painter, QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
                 }
             }
         }
@@ -342,7 +344,9 @@ void ModuleCable::paintEvent(QPaintEvent *event)
 
 void ModuleCable::paintLinePort(QPainter& painter, QPoint center, int val)
 {
+    painter.save();
     QRect rect(center.x() - PORT_SIZE/2, center.y() - PORT_SIZE/2, PORT_SIZE, PORT_SIZE);
+    painter.setPen(QPen(Qt::black, 1));
     painter.fillRect(rect, QColor(Qt::white));
     painter.drawRect(rect);
     if (val != -0x3f3f3f3f)
@@ -353,6 +357,7 @@ void ModuleCable::paintLinePort(QPainter& painter, QPoint center, int val)
         QString text = QString::number(val);
         painter.drawText(center.x() - fm.horizontalAdvance(text)/2, center.y()-fm.height()/2, text);
     }
+    painter.restore();
 }
 
 void ModuleCable::adjustGeometryByPorts()
