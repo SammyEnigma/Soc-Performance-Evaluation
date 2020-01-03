@@ -30,7 +30,7 @@ void ModuleCable::initData()
 {
     this->IPTD = getData("delay");
 
-    // 注意：需要先初始化两个port的data
+    // 注意：需要先初始化两个port的data（外面）
     if (from_port != nullptr && to_port != nullptr)
     {
         // 初始化双方token
@@ -40,6 +40,7 @@ void ModuleCable::initData()
         ModuleInterface *to_shape = reinterpret_cast<ModuleInterface *>(to->getShape());
         from->another_can_receive = from_shape->getToken();
         to->another_can_receive = to_shape->getToken();
+//        qDebug() << from->getPortId() << to->getPortId() << from->another_can_receive << to->another_can_receive;
 
         // 初始化途中互相调整token
         connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {

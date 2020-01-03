@@ -16,6 +16,7 @@
 #include "globalvars.h"
 #include "flowcontrol_master1_slave1.h"
 #include "flowcontrol_master2_switch_slave2.h"
+#include "flowcontrolautomatic.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

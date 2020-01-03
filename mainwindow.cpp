@@ -221,6 +221,7 @@ void MainWindow::on_actionRun_triggered()
 
 //     flow_control = new FlowControl_Master1_Slave1(ui->scrollAreaWidgetContents_2, this);
     flow_control = new FlowControl_Master2_Switch_Slave2(ui->scrollAreaWidgetContents_2, this);
+//    flow_control = new FlowControlAutomatic(ui->scrollAreaWidgetContents_2, this);
 
     flow_control->startRun();
     ui->actionRun->setVisible(false);

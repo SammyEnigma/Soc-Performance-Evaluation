@@ -52,6 +52,7 @@ SOURCES += \
     shapes/squareshape.cpp \
     soc/flowcontrol/flowcontrol_master1_slave1.cpp \
     soc/flowcontrol/flowcontrol_master2_switch_slave2.cpp \
+    soc/flowcontrol/flowcontrolautomatic.cpp \
     soc/flowcontrol/flowcontrolbase.cpp \
     soc/interfaces/moduleinterface.cpp \
     soc/modules/mastermodule.cpp \
@@ -81,6 +82,7 @@ HEADERS += \
     shapes/rectangleshape.h \
     shapes/squareshape.h \
     soc/flowcontrol/flowcontrol_master2_switch_slave2.h \
+    soc/flowcontrol/flowcontrolautomatic.h \
     soc/flowcontrol/flowcontrolbase.h \
     soc/flowcontrol/flowcontrol_master1_slave1.h \
     soc/interfaces/moduleinterface.h \

@@ -218,6 +218,21 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     // 画自己的数量
     QPainter painter(this);
     QFontMetrics fm(this->font());
+    ModulePort* port1 = nullptr, *port2 = nullptr;
+    foreach (PortBase* port, ports)
+    {
+        if (port->getOppositeShape() != nullptr && static_cast<ShapeBase*>(port->getOppositeShape())->getText() == "Master1")
+            port1 = static_cast<ModulePort*>(port);
+        else if (port->getOppositeShape() != nullptr && static_cast<ShapeBase*>(port->getOppositeShape())->getText() == "Master2")
+            port2 = static_cast<ModulePort*>(port);
+    }
+    if (port1 != nullptr && port2 != nullptr)
+    {
+        painter.drawText(QPoint(4,4+fm.lineSpacing()), "M1可接收:7");
+        painter.drawText(QPoint(4,4+fm.lineSpacing()*2), "M2可接收:9");
+//        painter.drawText(QPoint(4,4+fm.lineSpacing()), " M1可接收:"+QString::number(port1->anotherCanRecive()));
+//        painter.drawText(QPoint(4,4+fm.lineSpacing()*2), "M2可接收:"+QString::number(port2->anotherCanRecive()));
+    }
 }
 
 PortBase *SwitchModule::getToPort(PortBase *from_port)
