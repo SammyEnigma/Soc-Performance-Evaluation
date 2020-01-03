@@ -36,6 +36,7 @@ public:
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
     friend class FlowControl_Master2_Switch_Slave2;
+    friend class ModuleCable;
     virtual ModulePort *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual QString getClass() override;
     void clearData();

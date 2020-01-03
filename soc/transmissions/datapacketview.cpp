@@ -44,6 +44,6 @@ void DataPacketView::updatePosition(QPoint old_pos, QPoint new_pos)
     ani->setStartValue(this->pos());
     ani->setEndValue(new_pos - QPoint(PACKET_SIZE / 2, PACKET_SIZE / 2));
     ani->setDuration(PACKET_ANIMATION_INTERVAL);
-    ani->setEasingCurve(QEasingCurve::InOutCubic);
+//    ani->setEasingCurve(QEasingCurve::InOutCubic);
     ani->start();
 }

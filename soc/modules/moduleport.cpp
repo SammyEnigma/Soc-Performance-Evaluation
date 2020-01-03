@@ -58,7 +58,7 @@ void ModulePort::passOnPackets()
 
         send_delay_list.removeAt(i--);
         emit signalSendDelayFinished(this, packet);
-        send_update_delay_list.append(new DataPacket(1));
+        send_update_delay_list.append(new DataPacket(send_update_delay));
     }
 
     for(int i = 0; i < send_update_delay_list.size(); i++)
@@ -94,7 +94,7 @@ void ModulePort::passOnPackets()
             dequeue_list.removeAt(i--);
             emit signalReceivedDataDequeueReaded(packet);
             resetBandwidthBuffer();
-            receive_update_delay_list.append(new DataPacket(1));
+//            receive_update_delay_list.append(new DataPacket(receive_update_delay));
 
             // the delay on the return of the Token
             sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
@@ -108,6 +108,7 @@ void ModulePort::passOnPackets()
             continue;
 
         receive_update_delay_list.removeAt(i--);
+        rt->runningOut(getPortId()+"接收token的update延迟结束，对方能接受："+QString::number(another_can_receive)+"+1");
         another_can_receive++;
     }
 
