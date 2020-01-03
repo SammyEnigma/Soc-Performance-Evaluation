@@ -193,11 +193,11 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     switch (type)
     {
     case DATA_REQUEST:
-        qDebug() << "emit signalSendDelayFinished(this, packet);";
         emit signalSendDelayFinished(this, packet);
         break;
     case DATA_RESPONSE:
         emit signalResponseSended(packet);
+        send_update_delay_list.append(new DataPacket(send_update_delay));
         break;
     case DATA_TOKEN:
         emit signalDequeueTokenDelayFinished();

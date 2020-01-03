@@ -90,7 +90,8 @@ void ModuleInterface::passOnPackets()
             continue;
 
         ModulePort *mp = nullptr;
-        foreach (PortBase *port, ports)
+        // TODO: 找到进来的那个端口，原路返回（收到时记录进来的端口）
+        foreach (PortBase *port, ports) // 遍历找到第一个非空端口发送出去
         {
             if (port->getCable() != nullptr)
             {
@@ -100,9 +101,9 @@ void ModuleInterface::passOnPackets()
         }
         if (mp != nullptr && mp->anotherCanRecive())
         {
-            process_list.removeAt(i--);
-            emit mp->signalResponseSended(packet);
             rt->runningOut("    处理结束，开始response：" + packet->toString());
+            process_list.removeAt(i--);
+            mp->sendData(packet, DATA_RESPONSE);
         }
     }
 }

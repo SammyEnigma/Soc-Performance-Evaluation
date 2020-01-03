@@ -42,7 +42,6 @@ void SwitchModule::initData()
 
         // ==== 发送部分（Master） ====
         connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {
-            qDebug() << "connect(port, &ModulePort::signalSendDelayFinished";
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
@@ -228,10 +227,8 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     }
     if (port1 != nullptr && port2 != nullptr)
     {
-        painter.drawText(QPoint(4,4+fm.lineSpacing()), "M1可接收:7");
-        painter.drawText(QPoint(4,4+fm.lineSpacing()*2), "M2可接收:9");
-//        painter.drawText(QPoint(4,4+fm.lineSpacing()), " M1可接收:"+QString::number(port1->anotherCanRecive()));
-//        painter.drawText(QPoint(4,4+fm.lineSpacing()*2), "M2可接收:"+QString::number(port2->anotherCanRecive()));
+        painter.drawText(QPoint(4,4+fm.lineSpacing()), "M1可接收:"+QString::number(port1->anotherCanRecive()));
+        painter.drawText(QPoint(4,4+fm.lineSpacing()*2), "M2可接收:"+QString::number(port2->anotherCanRecive()));
     }
 }
 
