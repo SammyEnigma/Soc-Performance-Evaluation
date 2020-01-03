@@ -112,13 +112,13 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
 
     // 创建token，保证Master可传输数据的来源
     while (master1->data_list.size() < 5)
-        master1->data_list.append(createToken());
+        master1->data_list.append(createToken("master1"));
     while (master2->data_list.size() < 5)
-        master2->data_list.append(createToken());
+        master2->data_list.append(createToken("master2"));
     
     // Master
     master1->passOnPackets();
-    master2->passOnPackets();
+    master2->passOnPackets(); // 暂时关闭，一边调试
     
     // Master >> Hub
     master1_cable->passOnPackets();

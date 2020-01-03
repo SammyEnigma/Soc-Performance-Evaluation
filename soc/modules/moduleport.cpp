@@ -255,6 +255,10 @@ void ModulePort::resetBandwidthBuffer()
 int ModulePort::anotherCanRecive()
 {
     return another_can_receive;
+    /* if (another_can_receive > 0)
+        return another_can_receive;
+    else // 0 或 负数（这是错误）
+        return 0; */
 }
 
 int ModulePort::getToken()

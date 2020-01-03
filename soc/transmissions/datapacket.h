@@ -33,6 +33,7 @@ public:
     double currentProp();
 
     QString toString();
+    QString getTag();
     
     QPoint getDrawPos();
     void setDrawPos(QPoint pos);

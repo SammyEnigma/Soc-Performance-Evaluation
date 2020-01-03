@@ -33,7 +33,7 @@ void ModuleInterface::initData()
         connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
             process_list.append(packet);
             packet->resetDelay(getProcessDelay());
-            rt->runningOut("Slave接收，进入处理环节："+packet->toString());
+            rt->runningOut(port->getPortId()+"接收到数据，进入处理环节："+packet->toString());
         });
     }
 }

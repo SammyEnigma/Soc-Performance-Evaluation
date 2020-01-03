@@ -145,10 +145,10 @@ CableBase *FlowControlBase::getModuleCable(ShapeBase *shape1, ShapeBase *shape2,
 /**
  * 创建一个顺序编号的token的工厂方法
  */
-DataPacket *FlowControlBase::createToken()
+DataPacket *FlowControlBase::createToken(QString tag)
 {
     static int token_id = 0;
-    DataPacket *packet = new DataPacket("编号" + QString::number(++token_id), this);
+    DataPacket *packet = new DataPacket(tag.isEmpty() ? "编号" + QString::number(++token_id) : tag, this);
     packet->setDrawPos(QPoint(-1, -1));
     packet->resetDelay(0);
     all_packets.append(packet);

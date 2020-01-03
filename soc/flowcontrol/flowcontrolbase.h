@@ -43,7 +43,7 @@ protected:
     virtual void passOneClock();
     virtual void refreshUI();
 
-    DataPacket *createToken();
+    DataPacket *createToken(QString tag = "");
     void deleteToken(DataPacket *packet);
     CableBase *getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single = false);
     

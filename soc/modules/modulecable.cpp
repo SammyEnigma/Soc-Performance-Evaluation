@@ -180,7 +180,7 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
             if (x > w)
             {
                 y = x - w;
-                x = w;
+                x = w-_border_size;
             }
             y += offset;
         }
