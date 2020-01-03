@@ -34,15 +34,15 @@ void ModuleCable::initData()
     if (from_port != nullptr && to_port != nullptr)
     {
         // 初始化双方token
-        ModulePort* from = static_cast<ModulePort*>(from_port);
-        ModulePort* to = static_cast<ModulePort*>(to_port);
-        ModuleInterface* from_shape = reinterpret_cast<ModuleInterface*>(from->getShape());
-        ModuleInterface* to_shape = reinterpret_cast<ModuleInterface*>(to->getShape());
+        ModulePort *from = static_cast<ModulePort *>(from_port);
+        ModulePort *to = static_cast<ModulePort *>(to_port);
+        ModuleInterface *from_shape = reinterpret_cast<ModuleInterface *>(from->getShape());
+        ModuleInterface *to_shape = reinterpret_cast<ModuleInterface *>(to->getShape());
         from->another_can_receive = from_shape->getToken();
         to->another_can_receive = to_shape->getToken();
 
         // 初始化途中互相调整token
-        connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=]{
+        connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {
             to->another_can_receive++;
             rt->runningOut("接收到 return token, 对方能接收：" + QString::number(to->anotherCanRecive()));
         });
@@ -61,7 +61,7 @@ void ModuleCable::initData()
             packet->setTargetPort(from);
             packet->resetDelay(getTransferDelay());
         });
-        
+
         // 初始化request和response发送完毕事件
         connect(this, SIGNAL(signalRequestDelayFinished(DataPacket *)), to, SLOT(slotDataReceived(DataPacket *)));
         connect(this, SIGNAL(signalResponseDelayFinished(DataPacket *)), from, SLOT(slotDataReceived(DataPacket *)));
@@ -87,7 +87,7 @@ void ModuleCable::clearData()
         disconnect(this, SIGNAL(signalRequestDelayFinished(DataPacket *)), nullptr, nullptr);
         disconnect(this, SIGNAL(signalResponseDelayFinished(DataPacket *)), nullptr, nullptr);
     }
-    
+
     request_list.clear();
     request_data_list.clear();
     response_list.clear();
@@ -120,7 +120,7 @@ void ModuleCable::passOnPackets()
 
 void ModuleCable::delayOneClock()
 {
-    foreach (DataPacket* packet, request_list + response_list)
+    foreach (DataPacket *packet, request_list + response_list)
     {
         packet->delayToNext();
     }
@@ -137,7 +137,7 @@ void ModuleCable::updatePacketPos()
 
     foreach (DataPacket *packet, response_list)
     {
-        packet->setDrawPos(getPropPosByLineType((1-packet->currentProp()), RESPONSE_LINE));
+        packet->setDrawPos(getPropPosByLineType((1 - packet->currentProp()), RESPONSE_LINE));
     }
 }
 
@@ -155,16 +155,16 @@ QPoint ModuleCable::getPropPosByLineType(double prop, LINE_TYPE line)
     {
         /**
           * 注意：不管是 左上、右上、左下、右下，都是左边的线下标为0，即最左边是REQUEST
-          * 上下旋转时，线的相对下标会变，但是不影响使用（MVC分离）
+          * 上下旋转时，线的相对下标会变，但是不影响使用（Model-View分离）
           */
         if (arrow_pos1.x() == arrow_pos2.x() || arrow_pos1.y() == arrow_pos2.x() || (arrow_pos1.y() - arrow_pos2.y()) / static_cast<double>(arrow_pos1.x() - arrow_pos2.x()) < 0) // 右上-左下 角度倾斜
         {
-            x = static_cast<int>(x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line);
+            x = static_cast<int>(x1 + (x2 - x1) * prop - _breadth_x / 2 + _space_x * line);
             y = static_cast<int>(y1 + (y2 - y1) * prop - _breadth_y / 2 + _space_y * line);
         }
         else // 左上-右下 角度倾斜，δx和δy一致，需要特判
         {
-            x = static_cast<int>(x1 + (x2 - x1)*prop - _breadth_x / 2 + _space_x * line);
+            x = static_cast<int>(x1 + (x2 - x1) * prop - _breadth_x / 2 + _space_x * line);
             y = static_cast<int>(y1 + (y2 - y1) * prop + _breadth_y / 2 - _space_y * line);
         }
     }
@@ -276,6 +276,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y,
                                      arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y);
+                    paintLinePort(painter, QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y));
+                    paintLinePort(painter, QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y));
                 }
             }
             else // 左上-右下 角度倾斜，δx和δy一致，需要特判
@@ -284,6 +286,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() + _breadth_y / 2 - i * _space_y,
                                      arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y);
+                    paintLinePort(painter, QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() + _breadth_y / 2 - i * _space_y));
+                    paintLinePort(painter, QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y));
                 }
             }
         }
@@ -295,6 +299,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(0, i * LINE_SPACE, width() - i * LINE_SPACE - _border_size, i * LINE_SPACE);
                     painter.drawLine(width() - i * LINE_SPACE - _border_size, i * LINE_SPACE, width() - i * LINE_SPACE - _border_size, height());
+                    paintLinePort(painter, QPoint(0, i * LINE_SPACE));
+                    paintLinePort(painter, QPoint(width() - i * LINE_SPACE - _border_size, height()));
                 }
             }
             else // 右上角 - 左下角
@@ -303,6 +309,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(width() - _border_size, i * LINE_SPACE, i * LINE_SPACE, i * LINE_SPACE);
                     painter.drawLine(i * LINE_SPACE, i * LINE_SPACE, i * LINE_SPACE, height());
+                    paintLinePort(painter, QPoint(width() - _border_size, i * LINE_SPACE));
+                    paintLinePort(painter, QPoint(i * LINE_SPACE, height()));
                 }
             }
         }
@@ -314,6 +322,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(i * LINE_SPACE, 0, i * LINE_SPACE, height() - i * LINE_SPACE - _border_size);
                     painter.drawLine(i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size, width(), height() - i * LINE_SPACE - _border_size);
+                    paintLinePort(painter, QPoint(i * LINE_SPACE, 0));
+                    paintLinePort(painter, QPoint(width(), height() - i * LINE_SPACE - _border_size));
                 }
             }
             else // 右上角 - 左下角
@@ -322,9 +332,26 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(width() - i * LINE_SPACE - _border_size, 0, width() - i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size);
                     painter.drawLine(width() - i * LINE_SPACE - _border_size, height() - i * LINE_SPACE - _border_size, 0, height() - i * LINE_SPACE - _border_size);
+                    paintLinePort(painter, QPoint(width() - i * LINE_SPACE - _border_size, 0));
+                    paintLinePort(painter, QPoint(0, height() - i * LINE_SPACE - _border_size));
                 }
             }
         }
+    }
+}
+
+void ModuleCable::paintLinePort(QPainter& painter, QPoint center, int val)
+{
+    QRect rect(center.x() - PORT_SIZE/2, center.y() - PORT_SIZE/2, PORT_SIZE, PORT_SIZE);
+    painter.fillRect(rect, QColor(Qt::white));
+    painter.drawRect(rect);
+    if (val != -0x3f3f3f3f)
+    {
+        QFont font(this->font());
+        // font.setPointSize(font.pointSize()/2);
+        QFontMetrics fm(font);
+        QString text = QString::number(val);
+        painter.drawText(center.x() - fm.horizontalAdvance(text)/2, center.y()-fm.height()/2, text);
     }
 }
 
@@ -391,9 +418,11 @@ void ModuleCable::adjustGeometryByPorts()
     }
 
     // 设置坐标（千万不要用 setFixedSize ！否则无法调整大小）
-    setGeometry(left, top, right - left, bottom - top);
+    setGeometry(left - PADDING, top - PADDING, right - left + PADDING * 2, bottom - top + PADDING * 2);
 
     // 计算相对位置，缓存两个 arrow_pos，提升性能
     arrow_pos1 = cen1 - geometry().topLeft();
     arrow_pos2 = cen2 - geometry().topLeft();
+    // arrow_pos1 += QPoint(BORDER_PADDING, BORDER_PADDING);
+    // arrow_pos2 += QPoint(BORDER_PADDING, BORDER_PADDING);
 }

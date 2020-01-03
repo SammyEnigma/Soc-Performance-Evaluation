@@ -15,6 +15,8 @@
 
 #define LINE_COUNT 2
 #define LINE_SPACE 16
+#define PADDING 10
+#define PORT_SIZE 8
 
 enum PASS_ONE_CLOCK_FLAG {
     PASS_REQUEST,
@@ -49,6 +51,9 @@ public:
 
     void setTransferDelay(int delay);
     int getTransferDelay();
+    
+private:
+    void paintLinePort(QPainter &painter, QPoint center, int val = -0x3f3f3f3f);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
