@@ -116,9 +116,11 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     while (master2->data_list.size() < 5)
         master2->data_list.append(createToken("master2"));
     
+    // ==== 传递 ====
+
     // Master
-    master1->passOnPackets();
-    master2->passOnPackets(); // 暂时关闭，一边调试
+//    master1->passOnPackets();
+    master2->passOnPackets();
     
     // Master >> Hub
     master1_cable->passOnPackets();
@@ -135,6 +137,8 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     slave1->passOnPackets();
     slave2->passOnPackets();
 
+    // ==== 延迟 ====
+
     // Master
     master1->delayOneClock();
     master2->delayOneClock();
@@ -142,7 +146,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     // Master >> Hub
     master1_cable->delayOneClock();
     master2_cable->delayOneClock();
-
+qDebug() << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
     // Hub
     hub->delayOneClock();
 
@@ -153,7 +157,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     // Slave
     slave1->delayOneClock();
     slave2->delayOneClock();
-
+qDebug() << "-----------------------------------------------";
     // ==== 时钟结束后首尾 ====
     current_clock++;
 }
@@ -162,6 +166,7 @@ void FlowControl_Master2_Switch_Slave2::refreshUI()
 {
 	FlowControlBase::refreshUI();
     
+    hub->update();
     master1->update();
     master2->update();
     slave1->update();

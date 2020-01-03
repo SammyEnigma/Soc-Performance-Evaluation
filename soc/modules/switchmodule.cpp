@@ -37,7 +37,7 @@ void SwitchModule::initData()
 
         // 连接信号槽
         ModulePort *port = static_cast<ModulePort *>(p);
-        port->setReceiveCache(false);
+        port->setRequestToQueue(false);
         connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
 
         // ==== 发送部分（Master） ====
@@ -45,7 +45,7 @@ void SwitchModule::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut("port发送，对方能接收" + QString::number(port->another_can_receive));
+            rt->runningOut("switch " + port->getPortId() + " 发送，对方能接收" + QString::number(port->another_can_receive));
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
@@ -121,8 +121,10 @@ void SwitchModule::passOnPackets()
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
+            rt->runningOut("Hub response延迟结束，"+port->getPortId()+"返回，对方能接收："+QString::number(port->anotherCanRecive())+"-1");
             packet->resetDelay(cable->getData("delay")->i());
             port->sendData(packet, DATA_RESPONSE);
+            // port->another_can_receive--; // BUG: 已在port延迟--，但是似乎无效？
 
             // 通过进来的端口，返回发送出去的token（依赖port的return delay）
             if (packet->getComePort() != nullptr)

@@ -13,6 +13,13 @@
 
 #define PACKET_SIZE 8
 
+enum DATA_TYPE
+{
+    DATA_REQUEST,
+    DATA_RESPONSE,
+    DATA_TOKEN, // 1bit的数据
+};
+
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 
 class PortBase;
@@ -43,6 +50,9 @@ public:
     PortBase* getTargetPort();
     void setTargetPort(PortBase *port);
 
+    void setDataType(DATA_TYPE type);
+    bool getDataType();
+
 signals:
     void signalDelayFinished();
     void signalPosChanged(QPoint old_pos, QPoint new_pos);
@@ -54,6 +64,7 @@ protected:
     QString tag;     // 编号ID
     DataFormat data; // 数据（复杂格式）
     char par;        // 忘了是什么了
+    DATA_TYPE data_type; // 数据类型：request/response/token
     
     PortBase* come_port;   // 来的端口
     PortBase* target_port; // 要发送的端口方向

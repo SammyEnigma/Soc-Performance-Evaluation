@@ -20,13 +20,6 @@ enum PASS_ONE_CLOCK_FLAG_PORT
     PASS_BOTH
 };
 
-enum DATA_TYPE
-{
-    DATA_REQUEST,
-    DATA_RESPONSE,
-    DATA_TOKEN, // 1bit的数据
-};
-
 class ModulePort : public PortBase
 {
     Q_OBJECT
@@ -57,7 +50,8 @@ public:
     int anotherCanRecive();
     int getToken();
 
-    void setReceiveCache(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）
+    void setRequestToQueue(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）
+    void setDiscardResponse(bool d = true);
 
 protected:
     virtual void fromStringAddin(QString s) override;
@@ -94,7 +88,8 @@ private:
     int receive_update_delay; // 接收到token时自己buffer+1的延迟
     int token;                // 自己可以接收几个（port内部和模块内部的区别）
 
-    bool receive_cache; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列
+    bool request_to_queue; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列
+    bool discard_response; // Master的port收到response，没有实际作用，丢弃数据包
 };
 
 #endif // MODULEPORT_H

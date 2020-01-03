@@ -11,7 +11,7 @@ ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       another_can_receive(0),
       bandwidth(1), bandwidth_buffer(1),
-      latency(1), return_delay(0), receive_cache(true),
+      latency(1), return_delay(0), request_to_queue(true), discard_response(false),
       send_update_delay(0), receive_update_delay(0), token(1)
 {
 }
@@ -57,7 +57,7 @@ void ModulePort::passOnPackets()
             continue;
 
         send_delay_list.removeAt(i--);
-        emit signalSendDelayFinished(this, packet);
+        sendData(packet, DATA_REQUEST);
         send_update_delay_list.append(new DataPacket(send_update_delay));
     }
 
@@ -69,6 +69,7 @@ void ModulePort::passOnPackets()
 
         send_update_delay_list.removeAt(i--);
         another_can_receive--;
+        packet->deleteLater();
     }
 
     // ==== 接收部分（Slave） ====
@@ -110,6 +111,7 @@ void ModulePort::passOnPackets()
         receive_update_delay_list.removeAt(i--);
         rt->runningOut(getPortId()+"接收token的update延迟结束，对方能接受："+QString::number(another_can_receive)+"+1");
         another_can_receive++;
+        packet->deleteLater();
     }
 
     // Slave pick queue时return token 给Master
@@ -119,9 +121,9 @@ void ModulePort::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
 
+        rt->runningOut(getPortId()+"的return delay结束，发出token");
         return_delay_list.removeAt(i--);
-        emit signalDequeueTokenDelayFinished();
-        rt->runningOut("return 延迟结束");
+        sendData(nullptr, DATA_TOKEN);
         packet->deleteLater();
     }
 }
@@ -187,9 +189,12 @@ void ModulePort::slotDataList()
 
 void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 {
+    rt->runningOut("    "+getPortId()+" 发送数据sendData："+(type==DATA_REQUEST?"request":(type==DATA_RESPONSE?"response":"token")));
     CableBase* cable = getCable();
     if (cable == nullptr)
         return ;
+    if (packet != nullptr)
+        packet->setDataType(type);
     switch (type)
     {
     case DATA_REQUEST:
@@ -207,13 +212,25 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 
 void ModulePort::slotDataReceived(DataPacket *packet)
 {
-	if (receive_cache)
+    rt->runningOut(getPortId() + " 收到数据slotDataReceived");
+    if (request_to_queue)
     {
-        enqueue_list.append(packet);
-        packet->resetDelay(getLatency());
+        if (discard_response && packet->getDataType()==DATA_RESPONSE)
+        {
+            rt->runningOut(getPortId() + ": Master 不进行处理 response");
+            sendDequeueTokenToComeModule(packet);
+            return ;
+        }
+        else
+        {
+            rt->runningOut(getPortId() + ": 开始进队列");
+            enqueue_list.append(packet);
+            packet->resetDelay(getLatency());
+        }
     }
     else
     {
+        rt->runningOut(getPortId()+ ": 未设置接收缓冲，发送信号传递至所在模块");
         emit signalDataReceived(this, packet);
     }
 }
@@ -256,10 +273,6 @@ void ModulePort::resetBandwidthBuffer()
 int ModulePort::anotherCanRecive()
 {
     return another_can_receive;
-    /* if (another_can_receive > 0)
-        return another_can_receive;
-    else // 0 或 负数（这是错误）
-        return 0; */
 }
 
 int ModulePort::getToken()
@@ -267,7 +280,12 @@ int ModulePort::getToken()
     return token;
 }
 
-void ModulePort::setReceiveCache(bool c)
+void ModulePort::setRequestToQueue(bool c)
 {
-    this->receive_cache = c;
+    request_to_queue = c;
+}
+
+void ModulePort::setDiscardResponse(bool d)
+{
+    discard_response = d;
 }

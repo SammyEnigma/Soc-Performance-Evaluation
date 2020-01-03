@@ -30,6 +30,10 @@ void MasterModule::initData()
     ModuleInterface::initData();
 
     this->token = getData("token");
+    foreach (PortBase* port, ShapeBase::ports)
+    {
+        static_cast<ModulePort*>(port)->setDiscardResponse(true);
+    }
 }
 
 void MasterModule::clearData()
@@ -51,7 +55,7 @@ void MasterModule::passOnPackets()
             // 确定是这个连接Slave的端口，开始判断发送事件
             if (!data_list.isEmpty() && port->isBandwidthBufferFinished() && port->anotherCanRecive() > 0) // 有数据、有带宽、对方能接收
             {
-                rt->runningOut(getText()+"创建token, "+port->getPortId()+"对方能接收："+QString::number(port->another_can_receive)+"-1");
+                rt->runningOut(getText()+"创建token, "+port->getPortId()+"当前对方能接收："+QString::number(port->another_can_receive));
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
                 packet->setDrawPos(geometry().center());
                 packet->resetDelay(port->getLatency());

@@ -9,7 +9,7 @@
 
 DataPacket::DataPacket(QObject *parent)
     : QObject(parent),
-      valid(false), data(0), par(0),
+      valid(false), data(0), par(0), data_type(DATA_REQUEST),
       come_port(nullptr), target_port(nullptr),
       delay_step(0), delay_max(0)
 {
@@ -102,4 +102,14 @@ PortBase* DataPacket::getTargetPort()
 void DataPacket::setTargetPort(PortBase* port)
 {
     target_port = port;
+}
+
+void DataPacket::setDataType(DATA_TYPE type)
+{
+    data_type = type;
+}
+
+bool DataPacket::getDataType()
+{
+    return data_type;
 }
