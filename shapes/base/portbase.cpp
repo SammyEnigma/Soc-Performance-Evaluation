@@ -154,11 +154,11 @@ void PortBase::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
     QPainter painter(this);
-    painter.fillRect(0,0,width(),width(),Qt::white);
+    painter.fillRect(0,0,width(),width(),QColor(128,128,128,64));
 
     QPainterPath path;
     path.addRect(0,0,width()-1,height()-1);
-    painter.setPen(Qt::black);
+    painter.setPen(QColor(0,0,0,64));
     painter.drawPath(path);
 }
 
