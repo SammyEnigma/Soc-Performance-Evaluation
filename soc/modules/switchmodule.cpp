@@ -124,7 +124,6 @@ void SwitchModule::passOnPackets()
             rt->runningOut("Hub response延迟结束，"+port->getPortId()+"返回，对方能接收："+QString::number(port->anotherCanRecive())+"-1");
             packet->resetDelay(cable->getData("delay")->i());
             port->sendData(packet, DATA_RESPONSE);
-            // port->another_can_receive--; // BUG: 已在port延迟--，但是似乎无效？
 
             // 通过进来的端口，返回发送出去的token（依赖port的return delay）
             if (packet->getComePort() != nullptr)
