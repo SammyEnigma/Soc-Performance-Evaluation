@@ -221,7 +221,7 @@ DataType ShapeBase::getDataType(QString name)
 /**
  * 给父类模块用的，确保数据存在
  */
-CustomDataList *ShapeBase::ensureDataList()
+CustomDataList ShapeBase::ensureDataList()
 {
     
 }
@@ -230,7 +230,7 @@ CustomDataList *ShapeBase::ensureDataList()
  * 设置默认的数据
  * 模块内部个性化，继承后单独设置
  */
-CustomDataList *ShapeBase::setDefaultDataList()
+CustomDataList ShapeBase::setDefaultDataList()
 {
     
 }

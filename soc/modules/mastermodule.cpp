@@ -46,7 +46,7 @@ void MasterModule::clearData()
 
 CustomDataList MasterModule::setDefaultDataList()
 {
-    
+    custom_data_list.append(new CustomDataType("token", 16));
 }
 
 void MasterModule::passOnPackets()
