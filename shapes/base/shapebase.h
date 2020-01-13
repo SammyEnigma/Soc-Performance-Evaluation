@@ -92,6 +92,8 @@ public:
     bool containsData(QString name);
     QVariant getDataValue(QString name, QVariant def = 0);
     DataType getDataType(QString name);
+    virtual CustomDataList *ensureDataList();
+    virtual CustomDataList *setDefaultDataList();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

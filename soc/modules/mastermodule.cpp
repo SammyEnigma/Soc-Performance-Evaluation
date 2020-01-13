@@ -28,6 +28,7 @@ PortBase *MasterModule::createPort()
 void MasterModule::initData()
 {
     ModuleInterface::initData();
+    ensureDataList();
 
     this->token = getData("token");
     foreach (PortBase* port, ShapeBase::ports)
@@ -41,6 +42,11 @@ void MasterModule::clearData()
     ModuleInterface::clearData();
     
     data_list.clear();
+}
+
+CustomDataList MasterModule::setDefaultDataList()
+{
+    
 }
 
 void MasterModule::passOnPackets()
