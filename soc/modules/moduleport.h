@@ -47,7 +47,9 @@ public:
     bool isBandwidthBufferFinished();
     void resetBandwidthBuffer();
 
-    int anotherCanRecive();
+    void initReceiveToken(int t);
+    int getReceiveToken();
+    bool anotherCanRecive();
     int getToken();
 
     void setRequestToQueue(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）

@@ -59,7 +59,7 @@ void MasterModule::passOnPackets()
         if (oppo != nullptr)
         {
             // 确定是这个连接Slave的端口，开始判断发送事件
-            if (!data_list.isEmpty() && port->isBandwidthBufferFinished() && port->anotherCanRecive() > 0) // 有数据、有带宽、对方能接收
+            if (!data_list.isEmpty() && port->isBandwidthBufferFinished() && port->anotherCanRecive()) // 有数据、有带宽、对方能接收
             {
                 rt->runningOut(getText()+"创建token, "+port->getPortId()+"当前对方能接收："+QString::number(port->another_can_receive));
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
@@ -94,6 +94,6 @@ void MasterModule::paintEvent(QPaintEvent *event)
     if (ShapeBase::ports.size())
     {
         ModulePort* slave_port = static_cast<ModulePort*>(ShapeBase::ports.first());
-        painter.drawText(5, fm.lineSpacing(), QString("buffer: 对方=%1, 自己=%2").arg(slave_port->anotherCanRecive()).arg(getToken()));
+        painter.drawText(5, fm.lineSpacing(), QString("buffer: 对方=%1, 自己=%2").arg(slave_port->getReceiveToken()).arg(getToken()));
     }
 }

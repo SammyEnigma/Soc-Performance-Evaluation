@@ -129,7 +129,7 @@ void SwitchModule::passOnPackets()
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
-            rt->runningOut("Hub response延迟结束，"+port->getPortId()+"返回，对方能接收："+QString::number(port->anotherCanRecive())+"-1");
+            rt->runningOut("Hub response延迟结束，" + port->getPortId() + "返回，对方能接收：" + QString::number(port->getReceiveToken()) + "-1");
             packet->resetDelay(cable->getData("delay")->i());
             port->sendData(packet, DATA_RESPONSE);
 
@@ -236,8 +236,8 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     }
     if (port1 != nullptr && port2 != nullptr)
     {
-        painter.drawText(QPoint(4,4+fm.lineSpacing()), "M1可接收:"+QString::number(port1->anotherCanRecive()));
-        painter.drawText(QPoint(4,4+fm.lineSpacing()*2), "M2可接收:"+QString::number(port2->anotherCanRecive()));
+        painter.drawText(QPoint(4, 4 + fm.lineSpacing()), "M1可接收:" + QString::number(port1->getReceiveToken()));
+        painter.drawText(QPoint(4, 4 + fm.lineSpacing() * 2), "M2可接收:" + QString::number(port2->getReceiveToken()));
     }
 }
 

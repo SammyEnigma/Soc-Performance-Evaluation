@@ -269,9 +269,19 @@ void ModulePort::resetBandwidthBuffer()
     bandwidth_buffer = 0;
 }
 
-int ModulePort::anotherCanRecive()
+void ModulePort::initReceiveToken(int x)
+{
+    another_can_receive = x + send_update_delay;
+}
+
+int ModulePort::getReceiveToken()
 {
     return another_can_receive;
+}
+
+bool ModulePort::anotherCanRecive()
+{
+    return another_can_receive - send_update_delay;
 }
 
 int ModulePort::getToken()
