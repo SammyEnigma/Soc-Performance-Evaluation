@@ -53,7 +53,8 @@ public:
     int getTransferDelay();
     
 private:
-    void paintLinePort(QPainter &painter, QPoint center, int val = -0x3f3f3f3f);
+    void paintLinePort(QPainter &painter, QPoint center, bool is_from = true, int val = -0x3f3f3f3f);
+    void paintLineArrow(QPoint pos1, QPoint pos2);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

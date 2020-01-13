@@ -119,7 +119,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     // ==== 传递 ====
 
     // Master
-//    master1->passOnPackets();
+    master1->passOnPackets();
     master2->passOnPackets();
     
     // Master >> Hub

@@ -284,9 +284,17 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y,
                                      arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y);
-                    paintLinePort(painter, QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y));
-                    paintLinePort(painter, QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y));
+                    paintLinePort(painter, QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y), true);
+                    paintLinePort(painter, QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y), false);
                 }
+                
+                // 画箭头，第一条向arrow1，第二条向arrow2
+                int i = 1;
+                paintLineArrow(QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y),
+                                 QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y));
+                i = LINE_COUNT - 1;
+                paintLineArrow(QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y),
+                                QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y));
             }
             else // 左上-右下 角度倾斜，δx和δy一致，需要特判
             {
@@ -294,8 +302,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() + _breadth_y / 2 - i * _space_y,
                                      arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y);
-                    paintLinePort(painter, QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() + _breadth_y / 2 - i * _space_y));
-                    paintLinePort(painter, QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y));
+                    paintLinePort(painter, QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() + _breadth_y / 2 - i * _space_y), true);
+                    paintLinePort(painter, QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y), false);
                 }
             }
         }
@@ -307,8 +315,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(PADDING, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING);
                     painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING);
-                    paintLinePort(painter, QPoint(PADDING, i * LINE_SPACE + PADDING));
-                    paintLinePort(painter, QPoint(width()-PADDING - i * LINE_SPACE - _border_size, height() - PADDING));
+                    paintLinePort(painter, QPoint(PADDING, i * LINE_SPACE + PADDING), true);
+                    paintLinePort(painter, QPoint(width()-PADDING - i * LINE_SPACE - _border_size, height() - PADDING), false);
                 }
             }
             else // 右上角 - 左下角
@@ -317,8 +325,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(width() - PADDING - _border_size, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING);
                     painter.drawLine(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, height() - PADDING);
-                    paintLinePort(painter, QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING));
-                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING));
+                    paintLinePort(painter, QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING), true);
+                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING), false);
                 }
             }
         }
@@ -330,8 +338,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(i * LINE_SPACE + PADDING, PADDING, i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
                     painter.drawLine(i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size, width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
-                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, PADDING));
-                    paintLinePort(painter, QPoint(width()-PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
+                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, PADDING), true);
+                    paintLinePort(painter, QPoint(width()-PADDING, height() - PADDING - i * LINE_SPACE - _border_size), false);
                 }
             }
             else // 右上角 - 左下角
@@ -340,21 +348,35 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(width()-PADDING - i * LINE_SPACE - _border_size, PADDING, width()-PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size);
                     painter.drawLine(width()-PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size, PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
-                    paintLinePort(painter, QPoint(width()-PADDING - i * LINE_SPACE - _border_size, PADDING));
-                    paintLinePort(painter, QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
+                    paintLinePort(painter, QPoint(width()-PADDING - i * LINE_SPACE - _border_size, PADDING), true);
+                    paintLinePort(painter, QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size), false);
                 }
             }
         }
     }
 }
 
-void ModuleCable::paintLinePort(QPainter& painter, QPoint center, int val)
+/**
+ * 画端口的点
+ * from是圆形，to是方形
+ */
+void ModuleCable::paintLinePort(QPainter& painter, QPoint center, bool is_from, int val)
 {
     painter.save();
     QRect rect(center.x() - PORT_SIZE/2, center.y() - PORT_SIZE/2, PORT_SIZE, PORT_SIZE);
     painter.setPen(QPen(Qt::black, 1));
-    painter.fillRect(rect, QColor(Qt::white));
-    painter.drawRect(rect);
+    if (is_from) // 开始：画圆形
+    {
+        QPainterPath path;
+        path.addEllipse(rect);
+        painter.fillPath(path, Qt::white);
+        painter.drawPath(path);
+    }
+    else // 结束，画方形
+    {
+        painter.fillRect(rect, QColor(Qt::white));
+        painter.drawRect(rect);
+    }
     if (val != -0x3f3f3f3f)
     {
         QFont font(this->font());
@@ -364,6 +386,11 @@ void ModuleCable::paintLinePort(QPainter& painter, QPoint center, int val)
         painter.drawText(center.x() - fm.horizontalAdvance(text)/2, center.y()-fm.height()/2, text);
     }
     painter.restore();
+}
+
+void ModuleCable::paintLineArrow(QPoint pos1, QPoint pos2)
+{
+    
 }
 
 void ModuleCable::adjustGeometryByPorts()
