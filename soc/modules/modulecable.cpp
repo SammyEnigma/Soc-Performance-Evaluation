@@ -308,8 +308,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(PADDING, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING);
                     painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING);
-                    paintLinePort(painter, QPoint(PADDING, i * LINE_SPACE + PADDING), true);
-                    paintLinePort(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING), false);
+                    paintLinePort(painter, QPoint(PADDING, i * LINE_SPACE + PADDING), i < LINE_COUNT - 1);
+                    paintLinePort(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING), i ==  LINE_COUNT - 1);
                 }
                 
                 int i = 0;
@@ -323,8 +323,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(width() - PADDING - _border_size, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING);
                     painter.drawLine(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, height() - PADDING);
-                    paintLinePort(painter, QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING), true);
-                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING), false);
+                    paintLinePort(painter, QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING), i < LINE_COUNT - 1);
+                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING), i == LINE_COUNT - 1);
                 }
                 
                 int i = 0;
@@ -341,8 +341,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(i * LINE_SPACE + PADDING, PADDING, i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
                     painter.drawLine(i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size, width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
-                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, PADDING), true);
-                    paintLinePort(painter, QPoint(width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size), false);
+                    paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, PADDING), i < LINE_COUNT - 1);
+                    paintLinePort(painter, QPoint(width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size), i == LINE_COUNT - 1);
                 }
                 
                 int i = 0;
@@ -356,8 +356,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 {
                     painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, PADDING, width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size);
                     painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size, PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
-                    paintLinePort(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, PADDING), true);
-                    paintLinePort(painter, QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size), false);
+                    paintLinePort(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, PADDING), i < LINE_COUNT - 1);
+                    paintLinePort(painter, QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size), i == LINE_COUNT - 1);
                 }
                 
                 int i = 0;
