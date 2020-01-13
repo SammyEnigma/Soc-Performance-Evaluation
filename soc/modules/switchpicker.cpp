@@ -1,6 +1,6 @@
 #include "switchpicker.h"
 
-SwitchPicker::SwitchPicker(QObject *parent) : QObject(parent), round_index(0), bandwidth(1), bandwidth_buffer(1)
+SwitchPicker::SwitchPicker(QObject *parent) : QObject(parent), mode(Round_Robin_Scheduling), round_index(0), bandwidth(1), bandwidth_buffer(1)
 {
 
 }
@@ -16,6 +16,11 @@ void SwitchPicker::setPorts(QList<ModulePort *> ports)
     round_index = 0;
 }
 
+void SwitchPicker::setMode(PICKER_MODE mode)
+{
+    this->mode = mode;
+}
+
 ModulePort *SwitchPicker::getPickPort()
 {
     if (ports.size() == 0)
@@ -29,11 +34,11 @@ void SwitchPicker::delayOneClock()
     {
     case Round_Robin_Scheduling: // 轮询调度
     {
-        if (round_index < 0) // 第一次轮询
+        if (round_index < 0) // 出错的轮询
             round_index = 0;
         else // 下一个轮询
             round_index++;
-        if (round_index >= ports.size()) // 恢复到一开始的索引
+        if (round_index >= ports.size()) // 一轮结束，恢复到一开始的索引
             round_index = 0;
     }
     }
@@ -42,8 +47,8 @@ void SwitchPicker::delayOneClock()
 
 void SwitchPicker::setBandwidth(int b)
 {
-    this->bandwidth = bandwidth;
-    bandwidth_buffer = bandwidth;
+    this->bandwidth = b;
+    bandwidth_buffer = b;
 }
 
 bool SwitchPicker::isBandwidthBufferFinished()

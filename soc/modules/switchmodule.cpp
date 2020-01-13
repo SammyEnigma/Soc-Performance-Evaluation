@@ -100,20 +100,20 @@ void SwitchModule::passOnPackets()
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
-            packet->resetDelay(cable->getData("delay")->i());
-            port->sendData(packet, DATA_REQUEST);
-            rt->runningOut("Hub 发送：" + packet->toString());
-
-            // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-            if (packet->getComePort() != nullptr)
+            
+            foreach (SwitchPicker* picker, pickers)
             {
-                ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
-                foreach (SwitchPicker* picker, pickers)
+                if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
                 {
-                    qDebug() << "遍历picker";
-                    if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
+                    // 发送数据
+                    packet->resetDelay(cable->getData("delay")->i());
+                    port->sendData(packet, DATA_REQUEST);
+                    rt->runningOut("Hub 发送：" + packet->toString());
+
+                    // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+                    if (packet->getComePort() != nullptr)
                     {
-                        qDebug() << "可发送";
+                        port = static_cast<ModulePort*>(packet->getComePort());
                         port->sendDequeueTokenToComeModule(new DataPacket());
                         picker->resetBandwidthBuffer();
                         break;
@@ -138,18 +138,21 @@ void SwitchModule::passOnPackets()
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
-            rt->runningOut("Hub response延迟结束，" + port->getPortId() + "返回，对方能接收：" + QString::number(port->getReceiveToken()) + "-1");
-            packet->resetDelay(cable->getData("delay")->i());
-            port->sendData(packet, DATA_RESPONSE);
+            
 
-            // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-            if (packet->getComePort() != nullptr)
+            foreach (SwitchPicker *picker, pickers)
             {
-                ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
-                foreach (SwitchPicker *picker, pickers)
+                if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
                 {
-                    if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
+                    // 发送数据
+                    rt->runningOut("Hub response延迟结束，" + port->getPortId() + "返回，对方能接收：" + QString::number(port->getReceiveToken()) + "-1");
+                    packet->resetDelay(cable->getData("delay")->i());
+                    port->sendData(packet, DATA_RESPONSE);
+
+                    // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+                    if (packet->getComePort() != nullptr)
                     {
+                        port = static_cast<ModulePort*>(packet->getComePort());
                         port->sendDequeueTokenToComeModule(new DataPacket());
                         picker->resetBandwidthBuffer();
                         break;
@@ -291,6 +294,7 @@ PortBase *SwitchModule::getToPort(PortBase *from_port)
 
 void SwitchModule::linkPickerPorts(QList<ModulePort *> ports)
 {
-    SwitchPicker* sp = new SwitchPicker(ports, this);
-    pickers.append(sp);
+    SwitchPicker* picker = new SwitchPicker(ports, this);
+    picker->setMode(Round_Robin_Scheduling);
+    pickers.append(picker);
 }

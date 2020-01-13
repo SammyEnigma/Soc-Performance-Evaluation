@@ -15,6 +15,8 @@ class SwitchPicker : public QObject
 public:
     SwitchPicker(QObject *parent = nullptr);
     SwitchPicker(QList<ModulePort*> ports, QObject *parent = nullptr);
+    
+    friend class SwitchModule;
 
     void setPorts(QList<ModulePort*> ports);
     void setMode(PICKER_MODE mode);
