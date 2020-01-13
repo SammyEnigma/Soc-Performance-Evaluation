@@ -60,6 +60,7 @@ SOURCES += \
     soc/modules/moduleport.cpp \
     soc/modules/slavemodule.cpp \
     soc/modules/switchmodule.cpp \
+    soc/modules/switchpicker.cpp \
     soc/transmissions/datapacket.cpp \
     soc/transmissions/datapacketview.cpp
 
@@ -91,6 +92,7 @@ HEADERS += \
     soc/modules/moduleport.h \
     soc/modules/slavemodule.h \
     soc/modules/switchmodule.h \
+    soc/modules/switchpicker.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \
     utils/bytearrayutil.h \
