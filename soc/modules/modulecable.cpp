@@ -289,11 +289,11 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 }
                 
                 // 画箭头，第一条向arrow1，第二条向arrow2
-                int i = 1;
-                paintLineArrow(QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y),
+                int i = 0;
+                paintLineArrow(painter, QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y),
                                  QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y));
                 i = LINE_COUNT - 1;
-                paintLineArrow(QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y),
+                paintLineArrow(painter, QPoint(arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y),
                                 QPoint(arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y));
             }
             else // 左上-右下 角度倾斜，δx和δy一致，需要特判
@@ -388,9 +388,23 @@ void ModuleCable::paintLinePort(QPainter& painter, QPoint center, bool is_from, 
     painter.restore();
 }
 
-void ModuleCable::paintLineArrow(QPoint pos1, QPoint pos2)
+/**
+ * 从方向 pos1 -> pos2 的线的箭头
+ * 箭头在 pos2 上面
+ */
+void ModuleCable::paintLineArrow(QPainter &painter, QPoint pos1, QPoint pos2)
 {
-    
+    double angle = atan2(pos2.y() - pos1.y(), pos2.x() - pos1.x()) + PI;
+    QPoint arr1(
+        pos2.x() + ARROW_LENGTH * cos(angle - ARROW_DEGREES), 
+        pos2.y() + ARROW_LENGTH * sin(angle - ARROW_DEGREES)
+    );
+    QPoint arr2(
+        pos2.x() + ARROW_LENGTH * cos(angle + ARROW_DEGREES), 
+        pos2.y() + ARROW_LENGTH * sin(angle + ARROW_DEGREES)
+    );
+    painter.drawLine(pos2, arr1);
+    painter.drawLine(pos2, arr2);
 }
 
 void ModuleCable::adjustGeometryByPorts()

@@ -17,6 +17,9 @@
 #define LINE_SPACE 16
 #define PADDING 10
 #define PORT_SIZE 8
+#define ARROW_LENGTH 12
+#define ARROW_DEGREES PI/6
+#define PI 3.1415926
 
 enum PASS_ONE_CLOCK_FLAG {
     PASS_REQUEST,
@@ -54,7 +57,7 @@ public:
     
 private:
     void paintLinePort(QPainter &painter, QPoint center, bool is_from = true, int val = -0x3f3f3f3f);
-    void paintLineArrow(QPoint pos1, QPoint pos2);
+    void paintLineArrow(QPainter &painter, QPoint pos1, QPoint pos2);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
