@@ -14,6 +14,7 @@
 #include "slavemodule.h"
 #include "modulecable.h"
 #include "datapacketview.h"
+#include "watchwidget.h"
 
 #define ONE_CLOCK_INTERVAL 300
 
@@ -57,6 +58,7 @@ protected:
     int current_clock;      // 当前时钟位置
     PacketList all_packets; // 所有数据包（指针）的列表
     QList<DataPacketView *> all_packet_view;
+    QList<WatchWidget*> watch_widgets;
 };
 
 #endif // FLOWCONTROLBASE_H

@@ -103,11 +103,7 @@ void FlowControl_Master2_Switch_Slave2::clearData()
     hs1_port->clearData();
     hs2_port->clearData();
 
-    foreach (DataPacket *packet, all_packets)
-    {
-        packet->deleteLater();
-    }
-    all_packets.clear();
+    FlowControlBase::clearData();
 }
 
 void FlowControl_Master2_Switch_Slave2::passOneClock()
@@ -124,7 +120,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
 
     // Master
     master1->passOnPackets();
-    // master2->passOnPackets();
+    master2->passOnPackets();
     
     // Master >> Hub
     master1_cable->passOnPackets();
@@ -161,9 +157,6 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
     // Slave
     slave1->delayOneClock();
     slave2->delayOneClock();
-
-    // ==== 时钟结束后首尾 ====
-    current_clock++;
 }
 
 void FlowControl_Master2_Switch_Slave2::refreshUI()

@@ -115,11 +115,23 @@ void FlowControlBase::clearData()
 {
     if (!rt->running || current_clock == -1)
         return;
+
+    foreach (DataPacket *packet, all_packets)
+    {
+        packet->deleteLater();
+    }
+    all_packets.clear();
+
+    foreach (WatchWidget *watch, watch_widgets)
+    {
+        watch->deleteLater();
+    }
+    watch_widgets.clear();
 }
 
 void FlowControlBase::passOneClock()
 {
-    FCDEB "\n======== Clock:" << current_clock << " >> " << (current_clock+1) << " ========";
+    FCDEB "\n======== Clock:" << ++current_clock;
 }
 
 void FlowControlBase::refreshUI()
