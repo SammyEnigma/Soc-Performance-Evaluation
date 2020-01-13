@@ -28,6 +28,7 @@ PortBase *SlaveModule::createPort()
 
 void SlaveModule::initData()
 {
+    ensureDataList();
     this->token = getData("token");
     this->process_delay = getData("process_delay");
     
@@ -39,6 +40,12 @@ void SlaveModule::clearData()
     ModuleInterface::clearData();
     
     process_list.clear();
+}
+
+void SlaveModule::setDefaultDataList()
+{
+    custom_data_list.append(new CustomDataType("token", 16));
+    custom_data_list.append(new CustomDataType("process_delay", 3));
 }
 
 void SlaveModule::passOnPackets()

@@ -44,7 +44,7 @@ void MasterModule::clearData()
     data_list.clear();
 }
 
-CustomDataList MasterModule::setDefaultDataList()
+void MasterModule::setDefaultDataList()
 {
     custom_data_list.append(new CustomDataType("token", 16));
 }

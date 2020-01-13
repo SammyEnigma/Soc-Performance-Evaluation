@@ -70,6 +70,7 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
     {
         this->custom_data_list.append(data->newInstanceBySelf());
     }
+    ensureDataList();
 }
 
 void ShapeBase::fromString(QString s)
@@ -223,14 +224,16 @@ DataType ShapeBase::getDataType(QString name)
  */
 CustomDataList ShapeBase::ensureDataList()
 {
-    
+    if (custom_data_list.size() == 0)
+        setDefaultDataList();
+    return custom_data_list;
 }
 
 /**
  * 设置默认的数据
  * 模块内部个性化，继承后单独设置
  */
-CustomDataList ShapeBase::setDefaultDataList()
+void ShapeBase::setDefaultDataList()
 {
     
 }

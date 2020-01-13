@@ -45,6 +45,7 @@ public:
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
     void initData();
     void clearData();
+    virtual void setDefaultDataList() override;
     virtual void adjustGeometryByPorts() override;
     virtual void passOnPackets();
     virtual void delayOneClock();

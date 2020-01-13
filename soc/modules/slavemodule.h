@@ -25,6 +25,7 @@ public:
     virtual PortBase* createPort() override;
     virtual void initData() override;
     virtual void clearData() override;
+    virtual void setDefaultDataList() override;
 
     void passOnPackets() override;
     void delayOneClock() override;

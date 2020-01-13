@@ -24,6 +24,7 @@ public:
     virtual PortBase* createPort();
     void initData();
     void clearData();
+    virtual void setDefaultDataList() override;
     int getToken();
     
     virtual void passOnPackets();

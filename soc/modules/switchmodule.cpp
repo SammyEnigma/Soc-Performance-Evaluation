@@ -27,6 +27,7 @@ PortBase *SwitchModule::createPort()
 
 void SwitchModule::initData()
 {
+    ensureDataList();
     // this->token = getData("token")->i();
     // Switch的token是两种方向（request和response）各自所有端口相加之和，不进行计算
 
@@ -64,6 +65,13 @@ void SwitchModule::clearData()
         disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
         disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
     }
+}
+
+void SwitchModule::setDefaultDataList()
+{
+    custom_data_list.append(new CustomDataType("token", 16));
+    custom_data_list.append(new CustomDataType("latency", 3));
+    custom_data_list.append(new CustomDataType("picker_bandwidth", 1));
 }
 
 int SwitchModule::getToken()
