@@ -124,7 +124,7 @@ void FlowControl_Master2_Switch_Slave2::passOneClock()
 
     // Master
     master1->passOnPackets();
-    master2->passOnPackets();
+    // master2->passOnPackets();
     
     // Master >> Hub
     master1_cable->passOnPackets();
