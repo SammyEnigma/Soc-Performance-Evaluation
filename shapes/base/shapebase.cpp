@@ -504,6 +504,10 @@ void ShapeBase::mousePressEvent(QMouseEvent *event)
         if (hasColor(event->pos()))
             emit signalMenuShowed();
     }
+    else if (event->button() == Qt::MidButton)
+    {
+        event->ignore();
+    }
 
     return QWidget::mousePressEvent(event);
 }
@@ -535,7 +539,10 @@ void ShapeBase::mouseMoveEvent(QMouseEvent *event)
         event->accept();
         return;
     }
-
+    else if (event->button() & Qt::MidButton)
+    {
+        event->ignore();
+    }
     return QWidget::mouseMoveEvent(event);
 }
 

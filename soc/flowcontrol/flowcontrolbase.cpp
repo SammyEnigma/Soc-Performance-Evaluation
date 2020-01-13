@@ -144,6 +144,11 @@ void FlowControlBase::refreshUI()
     {
         view->raise(); // 显示在最上层（点击形状会置顶，这时候会覆盖此控件）
     }
+    foreach (WatchWidget* watch, watch_widgets)
+    {
+        watch->raise();
+        watch->update();
+    }
 }
 
 /**

@@ -2,7 +2,9 @@
 
 WatchWidget::WatchWidget(QWidget* target, QWidget *parent) : QWidget(parent)
 {
-    target = target;
+    this->target = target;
+    this->offset = QPoint(-20, 30);
+    move(target->pos() + offset);
 }
 
 void WatchWidget::addWatch(int *addr, QString desc)
@@ -22,7 +24,7 @@ void WatchWidget::updateWatch()
     {
         QString s = descs.at(i).isEmpty() ?
                     QString::number(*(values.at(i))) :
-                    QString("%1:%2").arg(descs.at(i)).arg(*(values.at(i)));
+                    QString("%1:%200").arg(descs.at(i)).arg(*(values.at(i)));
         int w = fm.horizontalAdvance(s);
         if (w > max_width)
             max_width = w;
@@ -63,6 +65,7 @@ void WatchWidget::mouseMoveEvent(QMouseEvent *event)
         QPoint delta = p - _global_press_pos;
         move(pos() + delta);
         _global_press_pos = p;
+        offset += delta;
     }
 
     return QWidget::mouseMoveEvent(event);
