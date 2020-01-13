@@ -103,6 +103,12 @@ bool FlowControlBase::initModules()
 void FlowControlBase::initData()
 {
     current_clock = 0;
+    
+    // 初始化所有控件的数据
+    foreach (ShapeBase* shape, graphic->shape_lists)
+    {
+        shape->ensureDataList();
+    }
 }
 
 void FlowControlBase::clearData()

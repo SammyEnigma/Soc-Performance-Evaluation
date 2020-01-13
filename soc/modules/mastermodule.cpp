@@ -28,7 +28,6 @@ PortBase *MasterModule::createPort()
 void MasterModule::initData()
 {
     ModuleInterface::initData();
-    ensureDataList();
 
     this->token = getData("token");
     foreach (PortBase* port, ShapeBase::ports)

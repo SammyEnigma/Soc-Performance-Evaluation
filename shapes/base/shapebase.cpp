@@ -70,7 +70,8 @@ void ShapeBase::copyDataFrom(ShapeBase *shape)
     {
         this->custom_data_list.append(data->newInstanceBySelf());
     }
-    ensureDataList();
+
+    // ensureDataList(); // 左边创建列表中的是空的，所以复制过来的一瞬间会出现默认值；再之后从文件中读取，将会出问题
 }
 
 void ShapeBase::fromString(QString s)

@@ -28,7 +28,6 @@ PortBase *SlaveModule::createPort()
 
 void SlaveModule::initData()
 {
-    ensureDataList();
     this->token = getData("token");
     this->process_delay = getData("process_delay");
     

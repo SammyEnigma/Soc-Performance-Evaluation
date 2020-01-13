@@ -28,7 +28,6 @@ ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
 
 void ModuleCable::initData()
 {
-    ensureDataList();
     this->IPTD = getData("delay");
 
     // 注意：需要先初始化两个port的data（外面）
