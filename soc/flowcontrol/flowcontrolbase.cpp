@@ -124,6 +124,10 @@ void FlowControlBase::passOneClock()
 
 void FlowControlBase::refreshUI()
 {
+    foreach (CableBase* cable, graphic->cable_lists)
+    {
+        cable->raise(); // 提高箭头的Z轴位置，以便于看清
+    }
     foreach (DataPacketView *view, all_packet_view)
     {
         view->raise(); // 显示在最上层（点击形状会置顶，这时候会覆盖此控件）

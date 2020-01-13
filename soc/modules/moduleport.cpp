@@ -281,7 +281,7 @@ int ModulePort::getReceiveToken()
 
 bool ModulePort::anotherCanRecive()
 {
-    return another_can_receive - send_update_delay;
+    return another_can_receive > send_update_delay;
 }
 
 int ModulePort::getToken()
