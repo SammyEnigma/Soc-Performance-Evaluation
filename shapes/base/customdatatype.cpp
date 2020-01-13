@@ -94,6 +94,16 @@ int CustomDataType::operator--(int)
     return val.toInt()+1;
 }
 
+CustomDataType::operator int()
+{
+    return i();
+}
+
+CustomDataType::operator QString()
+{
+    return value().toString();
+}
+
 void CustomDataType::setName(QString name)
 {
     this->name = name;
