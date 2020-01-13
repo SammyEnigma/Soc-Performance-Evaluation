@@ -96,16 +96,16 @@ void SwitchModule::passOnPackets()
         if (packet->getTargetPort() != nullptr)
         {
             ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
-            request_queue.removeAt(i--);
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
             
             foreach (SwitchPicker* picker, pickers)
             {
-                if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
+                if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port) // 带宽足够，并且是（轮询）到这个端口
                 {
                     // 发送数据
+                    request_queue.removeAt(i--);
                     packet->resetDelay(cable->getData("delay")->i());
                     port->sendData(packet, DATA_REQUEST);
                     rt->runningOut("Hub 发送：" + packet->toString());
@@ -134,7 +134,6 @@ void SwitchModule::passOnPackets()
         if (packet->getTargetPort() != nullptr)
         {
             ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
-            response_queue.removeAt(i--);
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
@@ -146,6 +145,7 @@ void SwitchModule::passOnPackets()
                 {
                     // 发送数据
                     rt->runningOut("Hub response延迟结束，" + port->getPortId() + "返回，对方能接收：" + QString::number(port->getReceiveToken()) + "-1");
+                    response_queue.removeAt(i--);
                     packet->resetDelay(cable->getData("delay")->i());
                     port->sendData(packet, DATA_RESPONSE);
 
