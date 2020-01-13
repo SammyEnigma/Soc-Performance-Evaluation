@@ -75,7 +75,11 @@ void FlowControl_Master2_Switch_Slave2::initData()
     hs1_port->initBandwidthBufer();
     hs2_port->initBandwidthBufer();
     
-    // 连接信号槽
+    // 设置Switch的Picker数据
+    hub->linkPickerPorts(QList<ModulePort *>{hm1_port, hm2_port});
+    hub->linkPickerPorts(QList<ModulePort *>{hs1_port, hs2_port});
+    
+    // 连接特殊信号槽
     
 }
 

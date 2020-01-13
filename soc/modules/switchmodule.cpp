@@ -64,6 +64,11 @@ void SwitchModule::clearData()
         disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
         disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
     }
+    foreach (SwitchPicker* picker, pickers)
+    {
+        picker->deleteLater();
+    }
+    pickers.clear();
 }
 
 void SwitchModule::setDefaultDataList()
@@ -81,7 +86,6 @@ int SwitchModule::getToken()
 void SwitchModule::passOnPackets()
 {
     // request queue
-    int picker_bandwidth = getData("picker_bandwidth")->i();
     for (int i = 0; i < request_queue.size(); ++i)
     {
         DataPacket *packet = request_queue.at(i);
@@ -91,23 +95,29 @@ void SwitchModule::passOnPackets()
         // 判断packet的传输目标
         if (packet->getTargetPort() != nullptr)
         {
-            // 使用 Picker 进行轮询
-            if (picker_bandwidth-- > 0)
-            {
-                ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
-                request_queue.removeAt(i--);
-                ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
-                if (cable == nullptr)
-                    continue;
-                packet->resetDelay(cable->getData("delay")->i());
-                port->sendData(packet, DATA_REQUEST);
-                rt->runningOut("Hub 发送：" + packet->toString());
+            ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+            request_queue.removeAt(i--);
+            ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
+            if (cable == nullptr)
+                continue;
+            packet->resetDelay(cable->getData("delay")->i());
+            port->sendData(packet, DATA_REQUEST);
+            rt->runningOut("Hub 发送：" + packet->toString());
 
-                // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-                if (packet->getComePort() != nullptr)
+            // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+            if (packet->getComePort() != nullptr)
+            {
+                ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
+                foreach (SwitchPicker* picker, pickers)
                 {
-                    ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
-                    port->sendDequeueTokenToComeModule(new DataPacket());
+                    qDebug() << "遍历picker";
+                    if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
+                    {
+                        qDebug() << "可发送";
+                        port->sendDequeueTokenToComeModule(new DataPacket());
+                        picker->resetBandwidthBuffer();
+                        break;
+                    }
                 }
             }
         }
@@ -136,7 +146,15 @@ void SwitchModule::passOnPackets()
             if (packet->getComePort() != nullptr)
             {
                 ModulePort* port = static_cast<ModulePort*>(packet->getComePort());
-                port->sendDequeueTokenToComeModule(new DataPacket());
+                foreach (SwitchPicker *picker, pickers)
+                {
+                    if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
+                    {
+                        port->sendDequeueTokenToComeModule(new DataPacket());
+                        picker->resetBandwidthBuffer();
+                        break;
+                    }
+                }
             }
         }
     }
@@ -159,6 +177,11 @@ void SwitchModule::delayOneClock()
     {
         ModulePort* port = static_cast<ModulePort*>(p);
         port->delayOneClock();
+    }
+    
+    foreach (SwitchPicker* picker, pickers)
+    {
+        picker->delayOneClock();
     }
 
     updatePacketPos();
@@ -264,4 +287,10 @@ PortBase *SwitchModule::getToPort(PortBase *from_port)
     ERR("没找到适合的 to port: "+to_name)
 
     return nullptr;
+}
+
+void SwitchModule::linkPickerPorts(QList<ModulePort *> ports)
+{
+    SwitchPicker* sp = new SwitchPicker(ports, this);
+    pickers.append(sp);
 }

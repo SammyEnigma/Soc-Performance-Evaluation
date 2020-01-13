@@ -10,6 +10,7 @@
 
 #include "hexagonshape.h"
 #include "moduleinterface.h"
+#include "switchpicker.h"
 
 class SwitchModule : public HexagonShape
 {
@@ -30,6 +31,8 @@ public:
     virtual void passOnPackets();
     virtual void delayOneClock();
 
+    void linkPickerPorts(QList<ModulePort *> ports);
+
     void updatePacketPos();
 
 protected:
@@ -45,6 +48,8 @@ private:
     QQueue<DataPacket*> request_queue;
     QQueue<DataPacket*> response_queue;
     int token;
+    
+    QList<SwitchPicker*> pickers;
 };
 
 #endif // SWITCHMODULE_H
