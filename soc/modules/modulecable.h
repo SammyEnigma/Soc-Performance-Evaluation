@@ -56,6 +56,8 @@ public:
     int getTransferDelay();
     
 private:
+    void paintCableLine(QPainter &painter, int x1, int y1, int x2, int y2, bool reverse = false);
+    void paintCableLine(QPainter &painter, QPoint pos1, QPoint pos2, bool reverse = false);
     void paintLinePort(QPainter &painter, QPoint center, bool is_from = true, int val = -0x3f3f3f3f);
     void paintLineArrow(QPainter &painter, QPoint pos1, QPoint pos2);
 
