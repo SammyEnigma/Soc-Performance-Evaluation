@@ -28,6 +28,7 @@ INCLUDEPATH += \
     soc/modules \
     soc/interfaces \
     soc/flowcontrol \
+    soc/tools \
 
 SOURCES += \
     dialogs/portdatadialog.cpp \
@@ -61,6 +62,7 @@ SOURCES += \
     soc/modules/slavemodule.cpp \
     soc/modules/switchmodule.cpp \
     soc/modules/switchpicker.cpp \
+    soc/tools/watchwidget.cpp \
     soc/transmissions/datapacket.cpp \
     soc/transmissions/datapacketview.cpp
 
@@ -93,6 +95,7 @@ HEADERS += \
     soc/modules/slavemodule.h \
     soc/modules/switchmodule.h \
     soc/modules/switchpicker.h \
+    soc/tools/watchwidget.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \
     utils/bytearrayutil.h \
