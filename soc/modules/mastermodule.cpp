@@ -88,11 +88,11 @@ void MasterModule::paintEvent(QPaintEvent *event)
     CircleShape::paintEvent(event);
     
     // 画自己的数量
-    QPainter painter(this);
+    /* QPainter painter(this);
     QFontMetrics fm(this->font());
     if (ShapeBase::ports.size())
     {
         ModulePort* slave_port = static_cast<ModulePort*>(ShapeBase::ports.first());
         painter.drawText(5, fm.lineSpacing(), QString("buffer: 对方=%1, 自己=%2").arg(slave_port->getReceiveToken()).arg(getToken()));
-    }
+    } */
 }
