@@ -14,12 +14,13 @@
 #include "qmath.h"
 
 #define LINE_COUNT 2
-#define LINE_SPACE 16
+#define LINE_SPACE 20
 #define PADDING 10
 #define PORT_SIZE 8
 #define ARROW_LENGTH 12
 #define ARROW_DEGREES PI/6
 #define PI 3.1415926
+#define DEF_VAL -0x3f3f3f3f
 
 enum PASS_ONE_CLOCK_FLAG {
     PASS_REQUEST,
@@ -59,7 +60,7 @@ public:
 private:
     void paintCableLine(QPainter &painter, int x1, int y1, int x2, int y2, bool reverse = false);
     void paintCableLine(QPainter &painter, QPoint pos1, QPoint pos2, bool reverse = false);
-    void paintLinePort(QPainter &painter, QPoint center, bool is_from = true, int val = -0x3f3f3f3f);
+    void paintLinePort(QPainter &painter, QPoint center, bool is_from = true, int val = DEF_VAL);
     void paintLineArrow(QPainter &painter, QPoint pos1, QPoint pos2);
 
 protected:

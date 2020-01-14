@@ -299,6 +299,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                                    arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y, i >= LINE_COUNT - 1);
                 }
             }
+            
         }
         else if (_line_type == 1) // 横竖
         {
@@ -412,10 +413,10 @@ void ModuleCable::paintLinePort(QPainter &painter, QPoint center, bool is_from, 
         painter.fillRect(rect, QColor(Qt::white));
         painter.drawRect(rect);
     }
-    if (val != -0x3f3f3f3f)
+    if (val != DEF_VAL)
     {
         QFont font(this->font());
-        // font.setPointSize(font.pointSize()/2);
+        font.setPointSize(font.pointSize()/2);
         QFontMetrics fm(font);
         QString text = QString::number(val);
         painter.drawText(center.x() - fm.horizontalAdvance(text) / 2, center.y() - fm.height() / 2, text);

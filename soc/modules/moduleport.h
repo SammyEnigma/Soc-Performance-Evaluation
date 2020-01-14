@@ -58,6 +58,8 @@ public:
 protected:
     virtual void fromStringAddin(QString s) override;
     virtual QString toStringAddin() override;
+    
+    void paintEvent(QPaintEvent *event) override;
 
 signals:
     void signalSendDelayFinished(ModulePort *port, DataPacket *packet); // 发送延迟结束（发送request）
