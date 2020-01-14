@@ -10,6 +10,8 @@
 FlowControl_Master2_Switch_Slave2::FlowControl_Master2_Switch_Slave2(GraphicArea *ga, QObject *parent) : FlowControlBase(ga, parent)
 {
     log("创建FlowControl_Master2_Switch_Slave2");
+    
+    auto a = 1.600_bw;
 }
 
 bool FlowControl_Master2_Switch_Slave2::initModules()

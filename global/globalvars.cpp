@@ -1,6 +1,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDateTime>
+#include "defines.h"
 #include "runtimeinfo.h"
 #include "usettings.h"
 #include "fileutil.h"
@@ -39,7 +40,51 @@ QString log(QVariant str)
     return str.toString();
 }
 
+/**
+ * 获取时间戳（毫秒）
+ */
 qint64 getTimestamp()
 {
     return QDateTime::currentMSecsSinceEpoch();
+}
+
+/**
+ * 重载分数：小数形式
+ * 注意：仅供测试，编译器优化小数去掉后缀，即：1.200 等于 1/2，不会是 1/200
+ * 例如：3.5_bw 即为 3/5 大小的 Fraction
+ */
+Fraction operator"" _bw(long double d)
+{
+    int numerator = static_cast<int>(d);
+    return Fraction(numerator);
+}
+
+/**
+ * 重载分数：字符串形式
+ */
+Fraction operator"" _fr(const char* str, size_t size)
+{
+    Q_UNUSED(size)
+    QString s(str);
+    int dot = s.indexOf(".");
+    if (dot == -1) // 没有小数点，整数，为 分子/1
+    {
+        return Fraction(s.toInt());
+    }
+    else if (dot == 0) // 没有分子，为 1/分母
+    {
+        s = s.right(s.length()-1);
+        return Fraction(1, s.toInt());
+    }
+    else if (dot >= s.length()-1) // 小数点在末尾，为 分子/1
+    {
+        s = s.left(s.length()-1);
+        return Fraction(s.toInt());
+    }
+    else // 分数形式
+    {
+        QString nume = s.left(dot);
+        QString deno = s.right(s.length()-dot-1);
+        return Fraction(nume.toInt(), deno.toInt());
+    }
 }

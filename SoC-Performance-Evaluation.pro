@@ -71,6 +71,7 @@ HEADERS += \
     dialogs/portpositiondialog.h \
     dialogs/shapedatadialog.h \
     dialogs/shapepropertydialog.h \
+    global/defines.h \
     global/settings.h \
     global/usettings.h \
     graphic/graphicarea.h \
