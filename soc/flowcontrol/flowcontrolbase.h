@@ -30,11 +30,14 @@ public:
     FlowControlBase(GraphicArea *ga, QObject *parent = nullptr);
     
     struct DelayRunBean {
-        int total_delay;    // 延迟的 clock 数
-        RunType func;       // 可执行函数(Lambda)
+        DelayRunBean(int dly, RunType* func, bool after = false) : total_delay(dly), func(func), curr_delay(0), after(after)
+        {
+        }
 
-        int curr_delay = 0; // 当前延迟
-        bool after = false; // 是否等其他代码运行完后再运行
+        int total_delay; // 延迟的 clock 数
+        RunType* func;   // 可执行函数(Lambda)
+        int curr_delay;  // 当前延迟
+        bool after;      // 是否等其他代码运行完后再运行
     };
 
 public slots:
@@ -66,7 +69,7 @@ protected:
     GraphicArea *graphic;
     QTimer *run_timer;
     int current_clock;      // 当前时钟位置
-    QList<DelayRunBean>delay_runs;
+    QList<DelayRunBean*>delay_runs;
     PacketList all_packets; // 所有数据包（指针）的列表
     QList<DataPacketView *> all_packet_view;
     QList<WatchWidget *> watch_widgets;

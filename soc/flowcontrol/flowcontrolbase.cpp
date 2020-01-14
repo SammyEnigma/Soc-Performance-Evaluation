@@ -135,15 +135,18 @@ void FlowControlBase::passOneClock()
 
     for (int i = 0; i < delay_runs.size(); i++)
     {
-        DelayRunBean& drb = delay_runs[i];
-        drb.curr_delay++;
-        if (drb.curr_delay >= drb.total_delay)
+        DelayRunBean* drb = delay_runs[i];
+        drb->curr_delay++;
+        if (drb->curr_delay >= drb->total_delay)
         {
-            const RunType func = drb.func;
-            if (drb.after)
-                QTimer::singleShot(0, func);
+            RunType* func = drb->func;
+            if (drb->after)
+                QTimer::singleShot(0, [=]{
+                    (*func)();
+                    delete drb;
+                });
             else
-                func();
+                (*func)();
             delay_runs.removeAt(i--);
         }
     }
@@ -224,8 +227,15 @@ void FlowControlBase::printfAllData()
     qDebug() << "=================================";
 }
 
+/**
+ * 延迟运行
+ * 注意：因为是延迟，此处Lambda非常建议按值[=]捕获，不要按引用[&]捕获局部变量！
+ * @param delay 延迟的clock
+ * @param f     函数(Lambda)
+ */
 void FlowControlBase::delayRun(int delay, RunType &f)
 {
-    DelayRunBean drb{delay, f};
+    RunType* func = new RunType(f);
+    DelayRunBean* drb = new DelayRunBean(delay, func);
     delay_runs.append(drb);
 }

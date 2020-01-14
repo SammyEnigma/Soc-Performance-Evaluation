@@ -85,7 +85,7 @@ void FlowControl_Master2_Switch_Slave2::initData()
     // 添加监视数据
     WatchWidget* token_watch = new WatchWidget(master1, graphic);
     token_watch->addWatch(&(master1_port->another_can_receive), "Token");
-    token_watch->show();
+//    token_watch->show();
     watch_widgets.append(token_watch);
 }
 
