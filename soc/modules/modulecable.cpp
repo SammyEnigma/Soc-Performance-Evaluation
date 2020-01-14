@@ -448,6 +448,7 @@ void ModuleCable::adjustGeometryByPorts()
         return;
     }
 
+    // 相对绘图区域的位置
     QPoint cen1 = from_port->getGlobalPos();
     QPoint cen2 = to_port->getGlobalPos();
 
@@ -474,10 +475,10 @@ void ModuleCable::adjustGeometryByPorts()
         _space_x = LINE_SPACE * delta_y / gx2y2;
         _space_y = LINE_SPACE * delta_x / gx2y2;
 
-        left -= _breadth_x / 2;
-        right += _breadth_x / 2;
-        top -= _breadth_y / 2;
-        bottom += _breadth_y / 2;
+        left -= _breadth_x;
+        right += _breadth_x;
+        top -= _breadth_y;
+        bottom += _breadth_y;
     }
     else // 二折线
     {
@@ -502,32 +503,76 @@ void ModuleCable::adjustGeometryByPorts()
         }
     }
 
+    // 计算相对port的偏移，让port中的内容显示出来
+    int delta_x1 = 0, delta_y1 = 0, delta_x2 = 0, delta_y2 = 0;
+    if (gx2y2 > PORT_SQUARE * 5)
+    {
+        const int OFFSET = PORT_SQUARE*2/3;
+        if (_line_type == 0) // 直线
+        {
+            if (right - left > OFFSET * 5)
+            {
+                left += OFFSET;
+                right -= OFFSET;
+            }
+            if (bottom - top > OFFSET * 5)
+            {
+                top += OFFSET;
+                bottom -= OFFSET;
+            }
+        }
+        else if (_line_type == 1) // 横竖
+        {
+            if (arrow_pos1.x() + OFFSET * 5 <= arrow_pos2.x() && arrow_pos1.y() + OFFSET * 5 <= arrow_pos2.y()) // ↘
+            {
+                left += OFFSET;
+                bottom -= OFFSET;
+            }
+            else if (arrow_pos1.x() + OFFSET * 5 <= arrow_pos2.x() && arrow_pos1.y() > arrow_pos2.y() + OFFSET * 5) // ↗
+            {
+                right -= OFFSET;
+                top += OFFSET;
+            }
+            else if (arrow_pos1.x() > arrow_pos2.x() + OFFSET * 5 && arrow_pos1.y() + OFFSET * 5 <= arrow_pos2.y()) // ↙
+            {
+                right -= OFFSET;
+                bottom -= OFFSET;
+            }
+            else if (arrow_pos1.x() > arrow_pos2.x() + OFFSET * 5 && arrow_pos1.y() > arrow_pos2.y() + OFFSET * 5) // ↖
+            {
+                left += OFFSET;
+                bottom -= OFFSET;
+            }
+        }
+        else if (_line_type == 2) // 竖横
+        {
+            if (arrow_pos1.x() + OFFSET * 5 <= arrow_pos2.x() && arrow_pos1.y() + OFFSET * 5 <= arrow_pos2.y()) // ↘
+            {
+                top += OFFSET;
+                right -= OFFSET;
+            }
+            else if (arrow_pos1.x() + OFFSET * 5 <= arrow_pos2.x() && arrow_pos1.y() > arrow_pos2.y() + OFFSET * 5) // ↗
+            {
+                top += OFFSET;
+                left += OFFSET;
+            }
+            else if (arrow_pos1.x() > arrow_pos2.x() + OFFSET * 5 && arrow_pos1.y() + OFFSET * 5 <= arrow_pos2.y()) // ↙
+            {
+                top += OFFSET;
+                left += OFFSET;
+            }
+            else if (arrow_pos1.x() > arrow_pos2.x() + OFFSET * 5 && arrow_pos1.y() > arrow_pos2.y() + OFFSET * 5) // ↖
+            {
+                top += OFFSET;
+                right -= OFFSET;
+            }
+        }
+    }
+
     // 设置坐标（千万不要用 setFixedSize ！否则无法调整大小）
     setGeometry(left - PADDING, top - PADDING, right - left + PADDING * 2, bottom - top + PADDING * 2);
 
     // 计算相对位置，缓存两个 arrow_pos，提升性能
     arrow_pos1 = cen1 - geometry().topLeft();
     arrow_pos2 = cen2 - geometry().topLeft();
-
-    // 计算相对port的偏移，让port中的内容显示出来
-    if (gx2y2 > PORT_SQUARE * 5)
-    {
-        QPoint offset1(0, 0), offset2(0, 0);
-        if (_line_type == 0) // 直线
-        {
-            int delta_x1 = PORT_SQUARE/2, delta_y1 = PORT_SQUARE/2;
-            if (arrow_pos1.x() > arrow_pos2.x())
-                delta_x1 *= -1;
-            if (arrow_pos1.y() > arrow_pos2.y())
-                delta_y1 *= -1;
-            arrow_pos1 += QPoint(delta_x1, delta_y1);
-            arrow_pos2 -= QPoint(delta_x1, delta_y1);
-        }
-        else if (_line_type == 1) // 横竖
-        {
-        }
-        else if (_line_type == 2) // 竖横
-        {
-        }
-    }
 }
