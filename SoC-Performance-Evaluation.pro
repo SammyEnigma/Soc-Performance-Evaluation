@@ -55,6 +55,8 @@ SOURCES += \
     soc/flowcontrol/flowcontrol_master2_switch_slave2.cpp \
     soc/flowcontrol/flowcontrolautomatic.cpp \
     soc/flowcontrol/flowcontrolbase.cpp \
+    soc/flowcontrol/timeframe.cpp \
+    soc/flowcontrol/timeframecontroller.cpp \
     soc/interfaces/moduleinterface.cpp \
     soc/modules/mastermodule.cpp \
     soc/modules/modulecable.cpp \
@@ -90,6 +92,8 @@ HEADERS += \
     soc/flowcontrol/flowcontrolautomatic.h \
     soc/flowcontrol/flowcontrolbase.h \
     soc/flowcontrol/flowcontrol_master1_slave1.h \
+    soc/flowcontrol/timeframe.h \
+    soc/flowcontrol/timeframecontroller.h \
     soc/interfaces/moduleinterface.h \
     soc/modules/mastermodule.h \
     soc/modules/modulecable.h \

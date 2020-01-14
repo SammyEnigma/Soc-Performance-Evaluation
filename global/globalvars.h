@@ -5,8 +5,6 @@
 #include "runtimeinfo.h"
 #include "usettings.h"
 
-#define CHOOSED_SHAPE_MIME_TYPE "choosed_shape" // 当前选中的形状，在 MIME 中传递的 userData 的 ID
-
 // ==== 全局设置 ====
 extern bool DEBUG_MODE;
 

@@ -115,17 +115,13 @@ public:
         return Fraction(nume + integer * deno, deno);
     }
 
-    void setNumerator(int n)
+    void setValue(int n, int d)
     {
         numerator = n;
-    }
-
-    void setDenominator(int d)
-    {
         denominator = d;
     }
 
-    const QString toString() const
+    QString toString() const
     {
         if (denominator == 0) // 分母是0
             return QString("Invalid Fraction: %1/%2").arg(numerator).arg(denominator);
@@ -173,6 +169,11 @@ public:
     Fraction operator+(const int& i) const
     {
         return Fraction(numerator + denominator*i, denominator);
+    }
+
+    Fraction operator+(const double& d) const
+    {
+        return (*this) + fromDecimal(d);
     }
 
     Fraction operator+(const Fraction& f) const
@@ -226,6 +227,11 @@ public:
         return Fraction(numerator - denominator*i, denominator);
     }
 
+    Fraction operator-(const double& d) const
+    {
+        return (*this) - fromDecimal(d);
+    }
+
     Fraction operator-(const Fraction& f) const
     {
         int nume, deno;
@@ -277,34 +283,44 @@ public:
         return Fraction(numerator * f.numerator, denominator * f.denominator);
     }
 
+    Fraction operator*(const double& d) const
+    {
+        return (*this) * fromDecimal(d);
+    }
+
     Fraction operator/(const Fraction& f) const
     {
         return operator*(f.reciprocal());
     }
 
-    Fraction& operator++()   // 注意：这里自增的是分子，而不是整体！
+    Fraction operator/(const double& d) const
     {
-        numerator++;
+        return (*this) / fromDecimal(d);
+    }
+
+    Fraction& operator++()
+    {
+        numerator += denominator;
         return *this;
     }
 
-    Fraction operator++(int) // 注意：这里自增的是分子，而不是整体！
+    Fraction operator++(int)
     {
         Fraction temp(*this);
-        numerator++;
+        numerator += denominator;
         return temp;
     }
 
-    Fraction& operator--()   // 注意：这里自减的是分子，而不是整体！
+    Fraction& operator--()
     {
-        numerator--;
+        numerator -= denominator;
         return *this;
     }
 
-    Fraction operator--(int) // 注意：这里自减的是分子，而不是整体！
+    Fraction operator--(int)
     {
         Fraction temp(*this);
-        numerator--;
+        numerator -= denominator;
         return temp;
     }
 
@@ -316,7 +332,7 @@ public:
 
     friend std::istream& operator >> (std::istream& input,Fraction& f)  //定义重载运算符“>>”
     {
-       input>>f.numerator>>f.denominator;
+       input >> f.numerator >> f.denominator;
        return input;
     }
 
@@ -342,7 +358,7 @@ private:
         return i > 0 ? i : -i;
     }
 
-private:
+protected:
     int numerator;   // 分子
     int denominator; // 分母
 };
