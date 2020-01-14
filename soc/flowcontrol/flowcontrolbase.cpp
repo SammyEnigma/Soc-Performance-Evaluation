@@ -115,7 +115,7 @@ void FlowControlBase::clearData()
 {
     if (!rt->running || current_clock == -1)
         return;
-
+    delay_runs.clear();
     foreach (DataPacket *packet, all_packets)
     {
         packet->deleteLater();
@@ -132,6 +132,21 @@ void FlowControlBase::clearData()
 void FlowControlBase::passOneClock()
 {
     FCDEB "\n======== Clock:" << ++current_clock;
+
+    for (int i = 0; i < delay_runs.size(); i++)
+    {
+        DelayRunBean& drb = delay_runs[i];
+        drb.curr_delay++;
+        if (drb.curr_delay >= drb.total_delay)
+        {
+            const RunType func = drb.func;
+            if (drb.after)
+                QTimer::singleShot(0, func);
+            else
+                func();
+            delay_runs.removeAt(i--);
+        }
+    }
 }
 
 void FlowControlBase::refreshUI()
@@ -207,4 +222,10 @@ void FlowControlBase::printfAllData()
         qDebug() << all_packets.at(i)->toString();
     }
     qDebug() << "=================================";
+}
+
+void FlowControlBase::delayRun(int delay, RunType &f)
+{
+    DelayRunBean drb{delay, f};
+    delay_runs.append(drb);
 }

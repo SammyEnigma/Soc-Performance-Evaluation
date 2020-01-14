@@ -9,6 +9,7 @@
 #ifndef FLOWCONTROLBASE_H
 #define FLOWCONTROLBASE_H
 
+#include <functional>
 #include "graphicarea.h"
 #include "mastermodule.h"
 #include "slavemodule.h"
@@ -17,16 +18,24 @@
 #include "watchwidget.h"
 
 #define ONE_CLOCK_INTERVAL 300
-
 #define FCDEB \
     if (1)    \
     qDebug() <<
+typedef std::function<void ()>const RunType;
 
 class FlowControlBase : public QObject
 {
     Q_OBJECT
 public:
     FlowControlBase(GraphicArea *ga, QObject *parent = nullptr);
+    
+    struct DelayRunBean {
+        int total_delay;    // 延迟的 clock 数
+        RunType func;       // 可执行函数(Lambda)
+
+        int curr_delay = 0; // 当前延迟
+        bool after = false; // 是否等其他代码运行完后再运行
+    };
 
 public slots:
     void startRun();  // 开始运行
@@ -35,7 +44,8 @@ public slots:
     void resumeRun(); // 继续运行
     void nextStep();  // 运行下一步
 
-    void printfAllData();
+    void printfAllData(); // 调试输出
+    void delayRun(int delay, RunType& f);
 
 protected:
     virtual bool initModules();
@@ -47,18 +57,19 @@ protected:
     DataPacket *createToken(QString tag = "");
     void deleteToken(DataPacket *packet);
     CableBase *getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single = false);
-    
+
 signals:
     void signalTokenCreated(DataPacket *packet); // 发送给流控View，同步创建可视化控件
     void signalTokenDeleted(DataPacket *packet); // 发送给流控View，同步删除可视化控件
-    
+
 protected:
     GraphicArea *graphic;
     QTimer *run_timer;
     int current_clock;      // 当前时钟位置
+    QList<DelayRunBean>delay_runs;
     PacketList all_packets; // 所有数据包（指针）的列表
     QList<DataPacketView *> all_packet_view;
-    QList<WatchWidget*> watch_widgets;
+    QList<WatchWidget *> watch_widgets;
 };
 
 #endif // FLOWCONTROLBASE_H
