@@ -45,7 +45,7 @@ void SwitchModule::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut("switch " + port->getPortId() + " 发送，对方能接收" + QString::number(port->another_can_receive));
+            rt->runningOut("switch " + port->getPortId() + " 发送完毕，对方能接收" + QString::number(port->another_can_receive) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
