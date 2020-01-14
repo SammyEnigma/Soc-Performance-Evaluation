@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     initView();
     initData();
     log("初始化MainWindow结束");
+
+    qDebug() << Fraction::fromDecimal(1.33);
 }
 
 MainWindow::~MainWindow()
