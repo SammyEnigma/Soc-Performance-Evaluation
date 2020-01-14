@@ -299,7 +299,6 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                                    arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y, i >= LINE_COUNT - 1);
                 }
             }
-            
         }
         else if (_line_type == 1) // 横竖
         {
@@ -312,7 +311,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                     paintLinePort(painter, QPoint(PADDING, i * LINE_SPACE + PADDING), i >= LINE_COUNT - 1);
                     paintLinePort(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING), i < LINE_COUNT - 1);
                 }
-                
+
                 int i = LINE_COUNT - 1;
                 paintLineArrow(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING), QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING));
                 i = 0;
@@ -327,7 +326,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                     paintLinePort(painter, QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING), i < LINE_COUNT - 1);
                     paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING), i == LINE_COUNT - 1);
                 }
-                
+
                 int i = LINE_COUNT - 1;
                 paintLineArrow(painter, QPoint(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING), QPoint(i * LINE_SPACE + PADDING, height() - PADDING));
                 i = 0;
@@ -345,7 +344,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                     paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, PADDING), i < LINE_COUNT - 1);
                     paintLinePort(painter, QPoint(width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size), i == LINE_COUNT - 1);
                 }
-                
+
                 int i = 0;
                 paintLineArrow(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size), QPoint(width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
                 i = LINE_COUNT - 1;
@@ -360,7 +359,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                     paintLinePort(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, PADDING), i >= LINE_COUNT - 1);
                     paintLinePort(painter, QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size), i < LINE_COUNT - 1);
                 }
-                
+
                 int i = LINE_COUNT - 1;
                 paintLineArrow(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size), QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
                 i = 0;
@@ -416,7 +415,7 @@ void ModuleCable::paintLinePort(QPainter &painter, QPoint center, bool is_from, 
     if (val != DEF_VAL)
     {
         QFont font(this->font());
-        font.setPointSize(font.pointSize()/2);
+        font.setPointSize(font.pointSize() / 2);
         QFontMetrics fm(font);
         QString text = QString::number(val);
         painter.drawText(center.x() - fm.horizontalAdvance(text) / 2, center.y() - fm.height() / 2, text);
@@ -457,7 +456,7 @@ void ModuleCable::adjustGeometryByPorts()
     int right = qMax(cen1.x(), cen2.x());
     int bottom = qMax(cen1.y(), cen2.y());
 
-    int breadth = (LINE_COUNT - 1) * LINE_SPACE + _border_size; // 所有宽度外加线宽
+    int breadth = (LINE_COUNT - 1) * LINE_SPACE + _border_size; // 所有线条间距外加线宽
     int delta_x = qAbs(cen1.x() - cen2.x());
     int delta_y = qAbs(cen1.y() - cen2.y());
     int gx2y2 = static_cast<int>(sqrt(delta_x * delta_x + delta_y * delta_y));
@@ -509,6 +508,26 @@ void ModuleCable::adjustGeometryByPorts()
     // 计算相对位置，缓存两个 arrow_pos，提升性能
     arrow_pos1 = cen1 - geometry().topLeft();
     arrow_pos2 = cen2 - geometry().topLeft();
-    // arrow_pos1 += QPoint(BORDER_PADDING, BORDER_PADDING);
-    // arrow_pos2 += QPoint(BORDER_PADDING, BORDER_PADDING);
+
+    // 计算相对port的偏移，让port中的内容显示出来
+    if (gx2y2 > PORT_SQUARE * 5)
+    {
+        QPoint offset1(0, 0), offset2(0, 0);
+        if (_line_type == 0) // 直线
+        {
+            int delta_x1 = PORT_SQUARE/2, delta_y1 = PORT_SQUARE/2;
+            if (arrow_pos1.x() > arrow_pos2.x())
+                delta_x1 *= -1;
+            if (arrow_pos1.y() > arrow_pos2.y())
+                delta_y1 *= -1;
+            arrow_pos1 += QPoint(delta_x1, delta_y1);
+            arrow_pos2 -= QPoint(delta_x1, delta_y1);
+        }
+        else if (_line_type == 1) // 横竖
+        {
+        }
+        else if (_line_type == 2) // 竖横
+        {
+        }
+    }
 }

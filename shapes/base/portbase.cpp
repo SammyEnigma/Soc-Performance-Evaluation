@@ -12,7 +12,7 @@
 PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent), opposite(nullptr), cable(nullptr)
 {
     setMinimumSize(5, 5);
-    setFixedSize(16, 16);
+    setFixedSize(PORT_SQUARE, PORT_SQUARE);
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotMenuShowed(const QPoint &)));

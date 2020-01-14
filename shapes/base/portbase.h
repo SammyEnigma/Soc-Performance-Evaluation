@@ -21,6 +21,8 @@
 #include "stringutil.h"
 #include "globalvars.h"
 
+#define PORT_SQUARE 16
+
 class CableBase;
 
 class PortBase : public QWidget
