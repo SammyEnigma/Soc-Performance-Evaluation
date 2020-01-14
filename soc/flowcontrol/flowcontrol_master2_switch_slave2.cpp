@@ -11,7 +11,8 @@ FlowControl_Master2_Switch_Slave2::FlowControl_Master2_Switch_Slave2(GraphicArea
 {
     log("创建FlowControl_Master2_Switch_Slave2");
     
-    auto a = 1.600_bw;
+    auto a = "1.600"_fr;
+    qDebug() << a;
 }
 
 bool FlowControl_Master2_Switch_Slave2::initModules()

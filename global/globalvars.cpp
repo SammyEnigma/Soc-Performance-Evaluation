@@ -66,6 +66,7 @@ Fraction operator"" _fr(const char* str, size_t size)
 {
     Q_UNUSED(size)
     QString s(str);
+    s = s.trimmed();
     int dot = s.indexOf(".");
     if (dot == -1) // 没有小数点，整数，为 分子/1
     {
