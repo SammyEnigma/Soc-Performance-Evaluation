@@ -1,3 +1,7 @@
+/**
+ * 完整的分数类
+ */
+
 #ifndef FRACTION_H
 #define FRACTION_H
 
@@ -32,10 +36,64 @@ public:
         denominator = f.denominator;
     }
 
-    Fraction(const Fraction& f)
+    Fraction(QString s)
+    {
+        Fraction f = fromString(s);
+        numerator = f.numerator;
+        denominator = f.denominator;
+    }
+
+    Fraction(const Fraction &f)
     {
         numerator = f.numerator;
         denominator = f.denominator;
+    }
+
+    static Fraction fromString(QString s)
+    {
+        s = s.trimmed();
+        if (s.contains(".")) // 小数形式
+        {
+            int dot = s.indexOf(".");
+            if (dot == 0) // 小数点在开头，.123
+            {
+                s = "0"+s;
+                return Fraction::fromDecimal(s.toDouble());
+            }
+            else if (dot >= s.length() - 1) // 小数点在末尾，123.
+            {
+                s = s.left(s.length() - 1);
+                return Fraction(s.toInt());
+            }
+            else // 正常的格式
+            {
+                return Fraction::fromDecimal(s.toDouble());
+            }
+        }
+        else if (s.contains("/")) // 分数形式
+        {
+            int sp = s.indexOf("/");
+            if (sp == 0) // 没有分子，为 1/分母
+            {
+                s = s.right(s.length() - 1);
+                return Fraction(1, s.toInt());
+            }
+            else if (sp >= s.length() - 1) // 小数点在末尾，为 分子/1
+            {
+                s = s.left(s.length() - 1);
+                return Fraction(s.toInt());
+            }
+            else // 分数形式
+            {
+                QString nume = s.left(sp);
+                QString deno = s.right(s.length() - sp - 1);
+                return Fraction(nume.toInt(), deno.toInt());
+            }
+        }
+        else // 其他形式：比如整数
+        {
+            return Fraction(s.toInt());
+        }
     }
 
     /**
@@ -46,71 +104,71 @@ public:
     static Fraction fromDecimal(double d)
     {
         bool nega = false;
-            if (d < 0)
-            {
-                d = -d;
-                nega = true;
-            }
+        if (d < 0)
+        {
+            d = -d;
+            nega = true;
+        }
 
-            // 获取整数部分和小数部分
-            int integer = static_cast<int>(d);
-            double decimal = d - integer;
-            // 去掉死循环（最多保留6位）
-            /*if (abs(decimal * 1e6 - static_cast<int>(decimal * 1e6)) < 1e6)
+        // 获取整数部分和小数部分
+        int integer = static_cast<int>(d);
+        double decimal = d - integer;
+        // 去掉死循环（最多保留6位）
+        /*if (abs(decimal * 1e6 - static_cast<int>(decimal * 1e6)) < 1e6)
                 decimal = */
-            // 计算误差
-            double eps = 0.05; // 0.1级别误差的四舍五入
-            double temp_decimal = decimal;
-            while (abs(temp_decimal * 10 - static_cast<int>(temp_decimal*10+1e-6)) > 1e-6) // 如果小数部分还有
+        // 计算误差
+        double eps = 0.05; // 0.1级别误差的四舍五入
+        double temp_decimal = decimal;
+        while (abs(temp_decimal * 10 - static_cast<int>(temp_decimal * 10 + 1e-6)) > 1e-6) // 如果小数部分还有
+        {
+            eps /= 10;
+            temp_decimal = temp_decimal * 10 - static_cast<int>(temp_decimal * 10);
+            if (eps < 1e-5)
+                break;
+        }
+        if (abs(eps - 0.05) < 1e-6) // 一位小数的情况，精确到下一层
+            eps /= 10;
+        // 遍历分母和分子，判断数字
+        int nume = 1, deno = 1;
+        int suit_nume = nume, suit_deno = deno;
+        bool find = false;
+        if (abs(decimal < 1e-6)) // 0
+        {
+            suit_nume = 0;
+            suit_deno = 1;
+            find = true;
+        }
+        while (++deno < 999999) // 遍历分母
+        {
+            // 二分法查找
+            int left = 1, right = deno; // [left, right)
+            while (left < right)
             {
-                eps /= 10;
-                temp_decimal = temp_decimal * 10 - static_cast<int>(temp_decimal*10);
-                if (eps < 1e-5)
-                    break;
-            }
-            if (abs(eps - 0.05) < 1e-6) // 一位小数的情况，精确到下一层
-                eps /= 10;
-            // 遍历分母和分子，判断数字
-            int nume = 1, deno = 1;
-            int suit_nume = nume, suit_deno = deno;
-            bool find = false;
-            if (abs(decimal < 1e-6)) // 0
-            {
-                suit_nume = 0;
-                suit_deno = 1;
-                find = true;
-            }
-            while (++deno < 999999) // 遍历分母
-            {
-                // 二分法查找
-                int left = 1, right = deno; // [left, right)
-                while (left < right)
+                int mid = (left + right) / 2;
+                double value = static_cast<double>(mid) / static_cast<double>(deno);
+                if (abs(value - decimal) < eps)
                 {
-                    int mid = (left + right) / 2;
-                    double value = static_cast<double>(mid) / static_cast<double>(deno);
-                    if (abs(value-decimal) < eps)
-                    {
-                        suit_nume = mid;
-                        suit_deno = deno;
-                        find = true;
-                        break;
-                    }
-                    else if (value < decimal)
-                    {
-                        if (left == mid)
-                            break;
-                        left = mid;
-                    }
-                    else if (value > decimal)
-                    {
-                        if (right == mid)
-                            break;
-                        right = mid;
-                    }
-                }
-                if (find)
+                    suit_nume = mid;
+                    suit_deno = deno;
+                    find = true;
                     break;
+                }
+                else if (value < decimal)
+                {
+                    if (left == mid)
+                        break;
+                    left = mid;
+                }
+                else if (value > decimal)
+                {
+                    if (right == mid)
+                        break;
+                    right = mid;
+                }
             }
+            if (find)
+                break;
+        }
 
         return Fraction(nume + integer * deno, deno);
     }
@@ -143,7 +201,7 @@ public:
 
     int roundInt() const // 四舍五入
     {
-        return (numerator + denominator/2) / denominator;
+        return (numerator + denominator / 2) / denominator;
     }
 
     double toDouble() const
@@ -156,27 +214,27 @@ public:
         return Fraction(denominator, numerator);
     }
 
-    Fraction reciprocal(const Fraction& f) const
+    Fraction reciprocal(const Fraction &f) const
     {
         return f.reciprocal();
     }
 
-    operator QString () const
+    operator QString() const
     {
         return toString();
     }
 
-    Fraction operator+(const int& i) const
+    Fraction operator+(const int &i) const
     {
-        return Fraction(numerator + denominator*i, denominator);
+        return Fraction(numerator + denominator * i, denominator);
     }
 
-    Fraction operator+(const double& d) const
+    Fraction operator+(const double &d) const
     {
         return (*this) + fromDecimal(d);
     }
 
-    Fraction operator+(const Fraction& f) const
+    Fraction operator+(const Fraction &f) const
     {
         int nume, deno;
         bool nega = false;
@@ -222,17 +280,17 @@ public:
         return Fraction(nega ? -nume : nume, deno);
     }
 
-    Fraction operator-(const int& i) const
+    Fraction operator-(const int &i) const
     {
-        return Fraction(numerator - denominator*i, denominator);
+        return Fraction(numerator - denominator * i, denominator);
     }
 
-    Fraction operator-(const double& d) const
+    Fraction operator-(const double &d) const
     {
         return (*this) - fromDecimal(d);
     }
 
-    Fraction operator-(const Fraction& f) const
+    Fraction operator-(const Fraction &f) const
     {
         int nume, deno;
         bool nega = false;
@@ -278,27 +336,27 @@ public:
         return Fraction(nega ? -nume : nume, deno);
     }
 
-    Fraction operator*(const Fraction& f) const
+    Fraction operator*(const Fraction &f) const
     {
         return Fraction(numerator * f.numerator, denominator * f.denominator);
     }
 
-    Fraction operator*(const double& d) const
+    Fraction operator*(const double &d) const
     {
         return (*this) * fromDecimal(d);
     }
 
-    Fraction operator/(const Fraction& f) const
+    Fraction operator/(const Fraction &f) const
     {
         return operator*(f.reciprocal());
     }
 
-    Fraction operator/(const double& d) const
+    Fraction operator/(const double &d) const
     {
         return (*this) / fromDecimal(d);
     }
 
-    Fraction& operator++()
+    Fraction &operator++()
     {
         numerator += denominator;
         return *this;
@@ -311,7 +369,7 @@ public:
         return temp;
     }
 
-    Fraction& operator--()
+    Fraction &operator--()
     {
         numerator -= denominator;
         return *this;
@@ -324,16 +382,16 @@ public:
         return temp;
     }
 
-    friend std::ostream& operator << (std::ostream& output,Fraction& f)
+    friend std::ostream &operator<<(std::ostream &output, Fraction &f)
     {
         output << f.toString().toStdString();
         return output;
     }
 
-    friend std::istream& operator >> (std::istream& input,Fraction& f)  //定义重载运算符“>>”
+    friend std::istream &operator>>(std::istream &input, Fraction &f) //定义重载运算符“>>”
     {
-       input >> f.numerator >> f.denominator;
-       return input;
+        input >> f.numerator >> f.denominator;
+        return input;
     }
 
 private:

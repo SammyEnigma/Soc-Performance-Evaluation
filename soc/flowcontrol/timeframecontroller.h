@@ -1,3 +1,7 @@
+/**
+ * 时间帧控制器
+ */
+
 #ifndef TIMEFRAMECONTROLLER_H
 #define TIMEFRAMECONTROLLER_H
 
