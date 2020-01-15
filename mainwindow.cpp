@@ -35,10 +35,10 @@ void MainWindow::saveToFile(QString file_path)
     log("保存至文件：" + file_path);
     QString full_string;
     full_string += StringUtil::makeXml(ui->scrollArea->horizontalScrollBar()->sliderPosition(), "SCROLL_HORIZONTAL");
-    full_string += "\n"+StringUtil::makeXml(ui->scrollArea->verticalScrollBar()->sliderPosition(), "SCROLL_VERTICAL");
-    full_string += "\n"+StringUtil::makeXml(ui->scrollAreaWidgetContents_2->width(), "GRAPHIC_WIDTH");
-    full_string += "\n"+StringUtil::makeXml(ui->scrollAreaWidgetContents_2->height(), "GRAPHIC_HEIGHT");
-    full_string += "\n"+ui->scrollAreaWidgetContents_2->toString();
+    full_string += "\n" + StringUtil::makeXml(ui->scrollArea->verticalScrollBar()->sliderPosition(), "SCROLL_VERTICAL");
+    full_string += "\n" + StringUtil::makeXml(ui->scrollAreaWidgetContents_2->width(), "GRAPHIC_WIDTH");
+    full_string += "\n" + StringUtil::makeXml(ui->scrollAreaWidgetContents_2->height(), "GRAPHIC_HEIGHT");
+    full_string += "\n" + ui->scrollAreaWidgetContents_2->toString();
     FileUtil::writeTextFile(file_path, full_string);
 }
 
@@ -62,7 +62,7 @@ void MainWindow::readFromFile(QString file_path)
     int scroll_v = StringUtil::getXmlInt(full_string, "SCROLL_VERTICAL");
     if (scroll_h != 0 || scroll_v != 0)
     {
-        QTimer::singleShot(0, [=]{ // 不知道为什么必须要延迟才可以滚动，不如不生效（可能是上限没有改过来？）
+        QTimer::singleShot(0, [=] { // 不知道为什么必须要延迟才可以滚动，不如不生效（可能是上限没有改过来？）
             ui->scrollArea->horizontalScrollBar()->setSliderPosition(scroll_h);
             ui->scrollArea->verticalScrollBar()->setSliderPosition(scroll_v);
         });
@@ -87,18 +87,18 @@ void MainWindow::readFromFile(QString file_path)
             ui->scrollAreaWidgetContents_2->select(shape, true);
     }
     // 遍历线连接（因为需要等port全部加载完成后）
-    QMap<QString, PortBase*>ports = ui->scrollAreaWidgetContents_2->ports_map;
-    foreach (ShapeBase* shape, ui->scrollAreaWidgetContents_2->shape_lists)
+    QMap<QString, PortBase *> ports = ui->scrollAreaWidgetContents_2->ports_map;
+    foreach (ShapeBase *shape, ui->scrollAreaWidgetContents_2->shape_lists)
     {
         if (shape->getLargeType() == CableType)
         {
-            CableBase* cable = static_cast<CableBase*>(shape);
+            CableBase *cable = static_cast<CableBase *>(shape);
             QString portID1 = StringUtil::getXml(cable->readedText(), "FROM_PORT_ID");
             QString portID2 = StringUtil::getXml(cable->readedText(), "TO_PORT_ID");
             if (portID1.isEmpty() || portID2.isEmpty())
             {
                 ERR("无法读取连接的ID")
-                continue ;
+                continue;
             }
             if (!ports.contains(portID1) || !ports.contains(portID2))
             {
@@ -110,7 +110,7 @@ void MainWindow::readFromFile(QString file_path)
             ui->scrollAreaWidgetContents_2->cable_lists.append(cable);
         }
     }
-//    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
+    //    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
 
 /**
@@ -195,8 +195,8 @@ void MainWindow::on_actionZoom_In_I_triggered()
     ui->scrollAreaWidgetContents_2->zoomIn(prop);
 
     // 调整滚动条的位置
-    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + static_cast<int>(geo.width() * (prop-1) / 2));
-    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + static_cast<int>(geo.height() * (prop-1) / 2));
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + static_cast<int>(geo.width() * (prop - 1) / 2));
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + static_cast<int>(geo.height() * (prop - 1) / 2));
 }
 
 /**
@@ -209,8 +209,8 @@ void MainWindow::on_actionZoom_Out_O_triggered()
     ui->scrollAreaWidgetContents_2->zoomIn(prop);
 
     // 调整滚动条的位置
-    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + static_cast<int>(geo.width() * (prop-1) / 2));
-    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + static_cast<int>(geo.height() * (prop-1) / 2));
+    ui->scrollArea->horizontalScrollBar()->setSliderPosition(ui->scrollArea->horizontalScrollBar()->sliderPosition() + static_cast<int>(geo.width() * (prop - 1) / 2));
+    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->sliderPosition() + static_cast<int>(geo.height() * (prop - 1) / 2));
 }
 
 void MainWindow::on_actionRun_triggered()
@@ -219,9 +219,9 @@ void MainWindow::on_actionRun_triggered()
     if (flow_control != nullptr)
         flow_control->deleteLater();
 
-//     flow_control = new FlowControl_Master1_Slave1(ui->scrollAreaWidgetContents_2, this);
-    flow_control = new FlowControl_Master2_Switch_Slave2(ui->scrollAreaWidgetContents_2, this);
-//    flow_control = new FlowControlAutomatic(ui->scrollAreaWidgetContents_2, this);
+    // flow_control = new FlowControl_Master1_Slave1(ui->scrollAreaWidgetContents_2, this);
+    // flow_control = new FlowControl_Master2_Switch_Slave2(ui->scrollAreaWidgetContents_2, this);
+    flow_control = new FlowControlAutomatic(ui->scrollAreaWidgetContents_2, this);
 
     flow_control->startRun();
     ui->actionRun->setVisible(false);
@@ -266,7 +266,7 @@ void MainWindow::on_actionStop_triggered()
     ui->actionPause_P->setEnabled(false);
     ui->actionResume_S->setVisible(false);
     ui->actionStep->setEnabled(false);
-    
+
     flow_control->deleteLater();
     flow_control = nullptr;
 }
