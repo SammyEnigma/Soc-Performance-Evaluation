@@ -58,6 +58,7 @@ SOURCES += \
     soc/flowcontrol/timeframe.cpp \
     soc/flowcontrol/timeframecontroller.cpp \
     soc/interfaces/moduleinterface.cpp \
+    soc/modules/ipmodule.cpp \
     soc/modules/mastermodule.cpp \
     soc/modules/modulecable.cpp \
     soc/modules/moduleport.cpp \
@@ -95,6 +96,7 @@ HEADERS += \
     soc/flowcontrol/timeframe.h \
     soc/flowcontrol/timeframecontroller.h \
     soc/interfaces/moduleinterface.h \
+    soc/modules/ipmodule.h \
     soc/modules/mastermodule.h \
     soc/modules/modulecable.h \
     soc/modules/moduleport.h \

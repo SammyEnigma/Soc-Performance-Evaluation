@@ -108,11 +108,13 @@ void ShapeListWidget::loadShapes()
     loadCustomShape(new SwitchModule(this));
     loadCustomShape(new ModuleCable(this));
     loadCustomShape(new CableBase(this));
-    loadCustomShape(new CircleShape(this));
+    loadCustomShape(new IPModule(this));
+
+    /*loadCustomShape(new CircleShape(this));
     loadCustomShape(new EllipseShape(this));
     loadCustomShape(new SquareShape(this));
     loadCustomShape(new RectangleShape(this));
-    loadCustomShape(new HexagonShape(this));
+    loadCustomShape(new HexagonShape(this));*/
 
     // 遍历文件目录，逐个加载
     QDir dir(rt->SHAPE_PATH);
