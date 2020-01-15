@@ -9,8 +9,6 @@ public:
     IPModule(QWidget* parent = nullptr);
 
     virtual IPModule *newInstanceBySelf(QWidget* parent = nullptr) override;
-
-private:
 };
 
 #endif // IPMODULE_H
