@@ -20,6 +20,7 @@
 #include "portpositiondialog.h"
 #include "customdatatype.h"
 
+#define DEFAULT_SIZE 128
 #define BORDER_SIZE 2 // 边缘padding，用来放调整大小的边界线
 #define ERR(x) qDebug() << log(x);
 
