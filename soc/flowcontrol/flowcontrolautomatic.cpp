@@ -26,11 +26,12 @@ void FlowControlAutomatic::initData()
         {
             module->initData();
 
+            // 设置 Switch 的连接
             if (module->getClass() == "Switch")
             {
                 // 设置Hub的Picker
                 SwitchModule* hub = static_cast<SwitchModule*>(shape);
-                QString picker_string = hub->getData("picker")->toString();
+                QString picker_string = hub->getData("picker")->value().toString();
                 QStringList groups = picker_string.split(";");
                 foreach (QString pickers_string, groups)
                 {
