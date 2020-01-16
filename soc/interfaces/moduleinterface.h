@@ -6,7 +6,6 @@
 class ModuleInterface
 {
 public:
-    virtual QString getModuleInfo() = 0;
     virtual void initData() = 0;
     virtual void clearData() = 0;
 

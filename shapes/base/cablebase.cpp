@@ -1,7 +1,7 @@
 #include "cablebase.h"
 
 CableBase::CableBase(QWidget *parent)
-    : ShapeBase(parent),
+    : ModuleBase(parent),
       from_port(nullptr), to_port(nullptr),
       arrow_pos1(QPoint(-1, -1)), arrow_pos2(QPoint(-1, -1)),
       _line_type(DEFAULT_LINE_TYPE)
@@ -17,7 +17,7 @@ CableBase::CableBase(QWidget *parent)
     _pixmap = pixmap;
 }
 
-CableBase::CableBase(PortBase *p1, PortBase *p2, QWidget *parent) : ShapeBase(parent)
+CableBase::CableBase(PortBase *p1, PortBase *p2, QWidget *parent) : ModuleBase(parent)
 {
     setPorts(p1, p2);
 }

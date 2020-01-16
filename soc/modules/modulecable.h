@@ -28,7 +28,7 @@ enum PASS_ONE_CLOCK_FLAG {
     PASS_RESPONSE
 };
 
-class ModuleCable : public CableBase, public ModuleInterface
+class ModuleCable : public CableBase
 {
 	Q_OBJECT
 public:
@@ -44,7 +44,6 @@ public:
         RESPONSE_DATA_LINE
     };
 
-    virtual QString getModuleInfo() override;
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
     void initData() override;
     void clearData() override;

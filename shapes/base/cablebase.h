@@ -9,10 +9,11 @@
 #define CABLEBASE_H
 
 #include "shapebase.h"
+#include "modulebase.h"
 
 const int DEFAULT_LINE_TYPE = 0;
 
-class CableBase : public ShapeBase
+class CableBase : public ModuleBase
 {
     Q_OBJECT
     friend class ShapePropertyDialog;
@@ -35,6 +36,13 @@ public:
     PortBase* getToPort();
     ShapeBase* getFromShape();
     ShapeBase* getToShape();
+
+    virtual void initData() override {}
+    virtual void clearData() override {}
+
+    virtual void passOnPackets() override {}
+    virtual void delayOneClock() override {}
+    virtual void updatePacketPos() override {}
 
 protected:
     void paintEvent(QPaintEvent *event) override;

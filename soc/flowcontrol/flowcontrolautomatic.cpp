@@ -51,11 +51,11 @@ void FlowControlAutomatic::passOneClock()
 {
     FlowControlBase::passOneClock();
 
-    /*foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
         QString _text = shape->getText();
-        ModuleInterface *module = reinterpret_cast<ModuleInterface *>(shape);
+        ModuleBase *module = static_cast<ModuleBase *>(shape);
         if (_class == "IP" || _class == "Master")
         {
             IPModule *IP = static_cast<IPModule *>(shape);
@@ -63,23 +63,15 @@ void FlowControlAutomatic::passOneClock()
                 IP->data_list.append(createToken());
             }
         }
-        qDebug() << "运行模块：" << shape->getText();
         module->passOnPackets();
-    }*/
-    ShapeBase* shape = shapes.at(0);
-    qDebug() << shape->getText();
-    ModuleInterface *module = reinterpret_cast<ModuleInterface *>(shape);
-    module->passOnPackets();
-    qDebug() << "运行结束";
+    }
 
-    /*foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
-        ModuleInterface *module = reinterpret_cast<ModuleInterface *>(shape);
-
-        qDebug() << "延迟模块；" << shape->getText();
+        ModuleBase *module = static_cast<ModuleBase *>(shape);
         module->delayOneClock();
-    }*/
+    }
 }
 
 void FlowControlAutomatic::refreshUI()
