@@ -7,7 +7,7 @@
  */
 #include "slavemodule.h"
 
-SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), MasterSlaveInterface(ShapeBase::ports, parent)
+SlaveModule::SlaveModule(QWidget *parent) : MasterSlave(parent)
 {
     _class = _text = "Slave";
     dequeue_signal_buffer = 0;
@@ -21,22 +21,17 @@ SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
-PortBase *SlaveModule::createPort()
-{
-    return new ModulePort(this);
-}
-
 void SlaveModule::initData()
 {
     this->token = getData("token");
     this->process_delay = getData("process_delay");
     
-    MasterSlaveInterface::initData();
+    MasterSlave::initData();
 }
 
 void SlaveModule::clearData()
 {
-    MasterSlaveInterface::clearData();
+    MasterSlave::clearData();
     
     process_list.clear();
 }
@@ -55,18 +50,7 @@ void SlaveModule::passOnPackets()
         mp->passOnPackets();
     }
 
-    MasterSlaveInterface::passOnPackets();
-}
-
-void SlaveModule::delayOneClock()
-{
-    foreach (PortBase *port, ShapeBase::ports)
-    {
-        ModulePort *mp = static_cast<ModulePort *>(port);
-        mp->delayOneClock();
-    }
-
-    MasterSlaveInterface::delayOneClock();
+    MasterSlave::passOnPackets();
 }
 
 void SlaveModule::updatePacketPos()
@@ -99,7 +83,7 @@ void SlaveModule::updatePacketPos()
 
 void SlaveModule::paintEvent(QPaintEvent *event)
 {
-    EllipseShape::paintEvent(event);
+    ShapeBase::paintEvent(event);
 
     // 画自己的数量
     QPainter painter(this);

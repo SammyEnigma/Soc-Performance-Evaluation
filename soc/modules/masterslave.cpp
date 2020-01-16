@@ -1,9 +1,9 @@
 #include "masterslave.h"
 
-MasterSlave::MasterSlave(QList<PortBase *> &ports, QWidget *parent)
+MasterSlave::MasterSlave(QWidget *parent)
     : ModuleBase(parent), token(nullptr), process_delay(nullptr)
 {
-    this->ports = ports;
+    
 }
 
 void MasterSlave::initData()
@@ -108,6 +108,12 @@ void MasterSlave::delayOneClock()
     foreach (DataPacket *packet, process_list)
     {
         packet->delayToNext();
+    }
+
+    foreach (PortBase *p, ShapeBase::ports)
+    {
+        ModulePort *port = static_cast<ModulePort *>(p);
+        port->delayOneClock();
     }
 
     updatePacketPos();

@@ -7,7 +7,7 @@
  */
 #include "mastermodule.h"
 
-MasterModule::MasterModule(QWidget *parent) : CircleShape(parent), MasterSlaveInterface(ShapeBase::ports, parent)
+MasterModule::MasterModule(QWidget *parent) : MasterSlave(parent)
 {
     _class = _text = "Master";
 }
@@ -20,14 +20,9 @@ MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
-PortBase *MasterModule::createPort()
-{
-    return new ModulePort(this);
-}
-
 void MasterModule::initData()
 {
-    MasterSlaveInterface::initData();
+    MasterSlave::initData();
 
     this->token = getData("token");
     foreach (PortBase* port, ShapeBase::ports)
@@ -38,7 +33,7 @@ void MasterModule::initData()
 
 void MasterModule::clearData()
 {
-    MasterSlaveInterface::clearData();
+    MasterSlave::clearData();
     
     data_list.clear();
 }
@@ -72,20 +67,9 @@ void MasterModule::passOnPackets()
     }
 }
 
-void MasterModule::delayOneClock()
-{
-    foreach (PortBase* p, ShapeBase::ports)
-    {
-        ModulePort* port = static_cast<ModulePort*>(p);
-        port->delayOneClock();
-    }
-
-    updatePacketPos();
-}
-
 void MasterModule::paintEvent(QPaintEvent *event)
 {
-    CircleShape::paintEvent(event);
+    ShapeBase::paintEvent(event);
     
     // 画自己的数量
     /* QPainter painter(this);

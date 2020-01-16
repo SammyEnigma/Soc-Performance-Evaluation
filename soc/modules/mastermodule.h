@@ -8,11 +8,9 @@
 #ifndef MASTERMODULE_H
 #define MASTERMODULE_H
 
-#include "circleshape.h"
-#include "masterslaveinterface.h"
-#include "moduleport.h"
+#include "masterslave.h"
 
-class MasterModule : public CircleShape, public MasterSlaveInterface
+class MasterModule : public MasterSlave
 {
     // Q_OBJECT // 这个不能加！否则会爆 'QObject' is an ambiguous base of 'MasterModule' 的问题
 public:
@@ -22,13 +20,12 @@ public:
     friend class FlowControl_Master1_Slave1;
 
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
-    virtual PortBase* createPort() override;
     virtual void initData() override;
     virtual void clearData() override;
     virtual void setDefaultDataList() override;
 
     void passOnPackets() override;
-    void delayOneClock() override;
+    
 
 protected:
 	void paintEvent(QPaintEvent *event) override;

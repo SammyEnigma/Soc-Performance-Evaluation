@@ -8,12 +8,9 @@
 #ifndef SLAVEMODULE_H
 #define SLAVEMODULE_H
 
-#include "ellipseshape.h"
-#include "masterslaveinterface.h"
-#include "qqueue.h"
-#include "moduleport.h"
+#include "masterslave.h"
 
-class SlaveModule : public EllipseShape, public MasterSlaveInterface
+class SlaveModule : public MasterSlave
 {
 public:
     SlaveModule(QWidget *parent = nullptr);
@@ -22,13 +19,11 @@ public:
     friend class FlowControl_Master1_Slave1;
 
     virtual SlaveModule *newInstanceBySelf(QWidget *parent = nullptr) override;
-    virtual PortBase* createPort() override;
     virtual void initData() override;
     virtual void clearData() override;
     virtual void setDefaultDataList() override;
 
     void passOnPackets() override;
-    void delayOneClock() override;
     void updatePacketPos() override;
 
 protected:

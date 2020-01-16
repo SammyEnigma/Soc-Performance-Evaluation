@@ -10,7 +10,7 @@ class MasterSlave : public ModuleBase
 {
     Q_OBJECT
 public:
-    MasterSlave(QList<PortBase *> &ports, QWidget *parent = nullptr);
+    MasterSlave(QWidget *parent = nullptr);
 
     virtual void initData() override;
     virtual void clearData() override;
@@ -23,6 +23,7 @@ public:
     int getDefaultToken();
 
     int getProcessDelay();
+
 signals:
 
 public slots:
