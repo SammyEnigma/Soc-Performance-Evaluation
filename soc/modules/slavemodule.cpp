@@ -29,13 +29,6 @@ void SlaveModule::initData()
     MasterSlave::initData();
 }
 
-void SlaveModule::clearData()
-{
-    MasterSlave::clearData();
-    
-    process_list.clear();
-}
-
 void SlaveModule::setDefaultDataList()
 {
     custom_data_list.append(new CustomDataType("token", 16));

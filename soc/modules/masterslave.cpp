@@ -45,6 +45,9 @@ void MasterSlave::clearData()
         // ==== 接收部分（Slave） ====
         disconnect(port, SIGNAL(signalReceivedDataDequeueReaded(DataPacket *)), nullptr, nullptr);
     }
+    
+    data_list.clear();
+    process_list.clear();
 }
 
 void MasterSlave::setToken(int token)

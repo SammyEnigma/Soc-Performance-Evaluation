@@ -8,11 +8,11 @@
 #ifndef SWITCHMODULE_H
 #define SWITCHMODULE_H
 
-#include "hexagonshape.h"
-#include "masterslaveinterface.h"
+#include "modulebase.h"
+#include "modulecable.h"
 #include "switchpicker.h"
 
-class SwitchModule : public HexagonShape
+class SwitchModule : public ModuleBase
 {
 	Q_OBJECT
 public:
@@ -37,6 +37,8 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event);
+    
+    virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
     
 private:
     PortBase* getToPort(PortBase* from_port);

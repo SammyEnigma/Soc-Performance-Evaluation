@@ -20,7 +20,6 @@ public:
 
     virtual SlaveModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual void initData() override;
-    virtual void clearData() override;
     virtual void setDefaultDataList() override;
 
     void passOnPackets() override;

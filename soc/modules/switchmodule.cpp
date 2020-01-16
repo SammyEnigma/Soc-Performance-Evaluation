@@ -7,7 +7,7 @@
  */
 #include "switchmodule.h"
 
-SwitchModule::SwitchModule(QWidget *parent) : HexagonShape(parent)
+SwitchModule::SwitchModule(QWidget *parent) : ModuleBase(parent)
 {
     _class = _text = "Switch";
 }
@@ -246,7 +246,7 @@ void SwitchModule::updatePacketPos()
 
 void SwitchModule::paintEvent(QPaintEvent *event)
 {
-    HexagonShape::paintEvent(event);
+    ModuleBase::paintEvent(event);
 
     // 画自己的数量
     QPainter painter(this);
@@ -297,4 +297,32 @@ void SwitchModule::linkPickerPorts(QList<ModulePort *> ports)
     SwitchPicker* picker = new SwitchPicker(ports, this);
     picker->setMode(Round_Robin_Scheduling);
     pickers.append(picker);
+}
+
+void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
+{
+    int w = draw_rect.width(), h = draw_rect.height();
+    // 3a^2 + 2wa - w^2 - h^2 = 0
+    double delta = (2 * w) * (2 * w) - 4 * 3 * (-w * w - h * h);
+    double jie = (-2 * w + qSqrt(delta)) / (2 * 3);
+
+    QPainterPath path;
+    path.moveTo((w - jie) / 2, 0);
+    path.lineTo((w + jie) / 2, 0);
+    path.lineTo(w, h / 2);
+    path.lineTo((w + jie) / 2, h);
+    path.lineTo((w - jie) / 2, h);
+    path.lineTo(0, h / 2);
+    path.lineTo((w - jie) / 2, 0);
+
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
+    {
+        painter.fillPath(path, _pixmap_color);
+    }
+    if (_border_size > 0 && _border_color != Qt::transparent) // 画边界
+    {
+        painter.setPen(QPen(_border_color, _border_size));
+        painter.drawPath(path);
+    }
 }

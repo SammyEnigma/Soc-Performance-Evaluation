@@ -31,13 +31,6 @@ void MasterModule::initData()
     }
 }
 
-void MasterModule::clearData()
-{
-    MasterSlave::clearData();
-    
-    data_list.clear();
-}
-
 void MasterModule::setDefaultDataList()
 {
     custom_data_list.append(new CustomDataType("token", 16));
