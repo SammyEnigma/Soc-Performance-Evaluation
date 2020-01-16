@@ -585,7 +585,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                                 had = true;
                             }
                         }
-                        if (!had)
+                        if (!had) // 未被占用，可以使用
                         {
                             cable->setPorts(_stick_from_port, nearest_port);
                             cable->adjustGeometryByPorts();
@@ -593,7 +593,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                             ShapeBase *c = insertShapeByRect(_drag_prev_shape, cable->geometry());
                             cable_lists.append(static_cast<CableBase *>(c));
                         }
-                        else
+                        else // 已经被占用了
                         {
                             _stick_from_port = nullptr;
                             DEB << log("连接线重复了");

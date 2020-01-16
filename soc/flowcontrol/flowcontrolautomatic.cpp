@@ -96,13 +96,20 @@ void FlowControlAutomatic::passOneClock()
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
-        if (_class == "Master")
+        QString _text = shape->getText();
+        if (_class == "IP")
+        {
+            IPModule* IP = static_cast<IPModule*>(shape);
+            while (IP->data_list.size() < 5) {
+                IP->data_list.append(createToken());
+            }
+
+            IP->passOnPackets();
+        }
+        else if (_class == "Master")
         {
             // 主动创建数据
             MasterModule* master = static_cast<MasterModule*>(shape);
-            while (master->data_list.size() < 5)
-                master->data_list.append(createToken());
-
             master->passOnPackets();
         }
         else if (_class == "Slave")
@@ -117,12 +124,20 @@ void FlowControlAutomatic::passOneClock()
         {
             static_cast<ModuleCable*>(shape)->passOnPackets();
         }
+        else if (_class == "DRAM")
+        {
+            static_cast<DRAMModule*>(shape)->passOnPackets();
+        }
     }
 
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
-        if (_class == "Master")
+        if (_class == "IP")
+        {
+            static_cast<IPModule*>(shape)->delayOneClock();
+        }
+        else if (_class == "Master")
         {
             static_cast<MasterModule*>(shape)->delayOneClock();
         }
@@ -137,6 +152,10 @@ void FlowControlAutomatic::passOneClock()
         else if (_class == "ModuleCable")
         {
             static_cast<ModuleCable*>(shape)->delayOneClock();
+        }
+        else if (_class == "DRAM")
+        {
+            static_cast<DRAMModule*>(shape)->delayOneClock();
         }
     }
 }
