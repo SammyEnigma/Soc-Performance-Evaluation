@@ -11,6 +11,7 @@
 #include <QObject>
 #include "cablebase.h"
 #include "masterslaveinterface.h"
+#include "moduleinterface.h"
 #include "qmath.h"
 
 #define LINE_COUNT 2
@@ -27,7 +28,7 @@ enum PASS_ONE_CLOCK_FLAG {
     PASS_RESPONSE
 };
 
-class ModuleCable : public CableBase
+class ModuleCable : public CableBase, public ModuleInterface
 {
 	Q_OBJECT
 public:
@@ -43,15 +44,16 @@ public:
         RESPONSE_DATA_LINE
     };
 
+    virtual QString getModuleInfo() override;
     virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
-    void initData();
-    void clearData();
+    void initData() override;
+    void clearData() override;
     virtual void setDefaultDataList() override;
     virtual void adjustGeometryByPorts() override;
-    virtual void passOnPackets();
-    virtual void delayOneClock();
+    virtual void passOnPackets() override;
+    virtual void delayOneClock() override;
 
-    virtual void updatePacketPos();
+    virtual void updatePacketPos() override;
     QPoint getPropPosByLineType(double prop, LINE_TYPE line);
 
     void setTransferDelay(int delay);

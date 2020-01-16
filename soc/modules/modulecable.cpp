@@ -8,7 +8,7 @@
 #include "modulecable.h"
 
 ModuleCable::ModuleCable(QWidget *parent)
-    : CableBase(parent),
+    : CableBase(parent), ModuleInterface(),
       packet_lists(QList<PacketList>{PacketList(), PacketList(), PacketList(), PacketList()}), // 初始化四个
       request_list(packet_lists[REQUEST_LINE]), request_data_list(packet_lists[REQUEST_DATA_LINE]),
       response_list(packet_lists[RESPONSE_LINE]), response_data_list(packet_lists[RESPONSE_DATA_LINE])
@@ -16,6 +16,11 @@ ModuleCable::ModuleCable(QWidget *parent)
     _class = _text = "ModuleCable";
 
     _breadth_x = _breadth_y = _space_x = _space_y = 0;
+}
+
+QString ModuleCable::getModuleInfo()
+{
+    return getText();
 }
 
 ModuleCable *ModuleCable::newInstanceBySelf(QWidget *parent)
@@ -102,6 +107,7 @@ void ModuleCable::setDefaultDataList()
 
 void ModuleCable::passOnPackets()
 {
+    qDebug() << "运行到ModuleCable::passOnPackets()";
     for (int i = 0; i < request_list.size(); i++)
     {
         DataPacket *packet = request_list.at(i);

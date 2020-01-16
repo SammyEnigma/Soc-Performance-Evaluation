@@ -1,9 +1,12 @@
 #ifndef MODULEINTERFACE_H
 #define MODULEINTERFACE_H
 
+#include <QString>
+
 class ModuleInterface
 {
 public:
+    virtual QString getModuleInfo() = 0;
     virtual void initData() = 0;
     virtual void clearData() = 0;
 

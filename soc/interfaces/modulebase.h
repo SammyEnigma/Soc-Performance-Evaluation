@@ -23,8 +23,13 @@ public:
     {
         return new ModulePort(this);
     }
+    
+    virtual QString getModuleInfo() override
+    {
+        return ShapeBase::getText();
+    }
 
-    void drawShapePixmap(QPainter &painter, QRect draw_rect)
+    void drawShapePixmap(QPainter &painter, QRect draw_rect) override
     {
         QPainterPath path;
         path.addRect(draw_rect);
