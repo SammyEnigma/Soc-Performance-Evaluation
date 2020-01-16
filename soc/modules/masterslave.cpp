@@ -3,7 +3,7 @@
 MasterSlave::MasterSlave(QWidget *parent)
     : ModuleBase(parent), token(nullptr), process_delay(nullptr)
 {
-    
+    _class = _text = "MasterSlave";
 }
 
 void MasterSlave::initData()

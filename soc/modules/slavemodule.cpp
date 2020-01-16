@@ -83,7 +83,7 @@ void SlaveModule::updatePacketPos()
 
 void SlaveModule::paintEvent(QPaintEvent *event)
 {
-    ShapeBase::paintEvent(event);
+    ModuleBase::paintEvent(event);
 
     // 画自己的数量
     QPainter painter(this);
@@ -109,5 +109,21 @@ void SlaveModule::paintEvent(QPaintEvent *event)
         QString prcs_s = QString("处理:%1").arg(process_list.size());
         w = fm.horizontalAdvance(prcs_s);
         painter.drawText(width() - w-margin, height*3, prcs_s);
+    }
+}
+
+void SlaveModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
+{
+    QPainterPath path;
+    path.addRect(draw_rect);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
+    {
+        painter.fillPath(path, _pixmap_color);
+    }
+    if (_border_size > 0 && _border_color != Qt::transparent) // 画边界
+    {
+        painter.setPen(QPen(Qt::gray, _border_size));
+        painter.drawPath(path);
     }
 }

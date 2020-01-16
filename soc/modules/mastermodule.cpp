@@ -69,7 +69,7 @@ void MasterModule::passOnPackets()
 
 void MasterModule::paintEvent(QPaintEvent *event)
 {
-    ShapeBase::paintEvent(event);
+    ModuleBase::paintEvent(event);
     
     // 画自己的数量
     /* QPainter painter(this);
@@ -79,4 +79,20 @@ void MasterModule::paintEvent(QPaintEvent *event)
         ModulePort* slave_port = static_cast<ModulePort*>(ShapeBase::ports.first());
         painter.drawText(5, fm.lineSpacing(), QString("buffer: 对方=%1, 自己=%2").arg(slave_port->getReceiveToken()).arg(getToken()));
     } */
+}
+
+void MasterModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
+{
+    QPainterPath path;
+    path.addEllipse(draw_rect);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
+    {
+        painter.fillPath(path, _pixmap_color);
+    }
+    if (_border_size > 0 && _border_color != Qt::transparent) // 画边界
+    {
+        painter.setPen(QPen(Qt::gray, _border_size));
+        painter.drawPath(path);
+    }
 }

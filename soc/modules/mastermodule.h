@@ -30,6 +30,8 @@ public:
 protected:
 	void paintEvent(QPaintEvent *event) override;
     
+    virtual void drawShapePixmap(QPainter &painter, QRect draw_rect);
+    
 };
 
 #endif // MASTERMODULE_H
