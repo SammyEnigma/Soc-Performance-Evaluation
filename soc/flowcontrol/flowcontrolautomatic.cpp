@@ -20,36 +20,18 @@ void FlowControlAutomatic::initData()
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
-        if (_class == "Master" || _class == "IP")
-        {
-            static_cast<MasterModule*>(shape)->initData();
-        }
-        else if (_class == "Slave")
-        {
-            static_cast<SlaveModule*>(shape)->initData();
-        }
-        else if (_class == "Switch")
-        {
-            static_cast<SwitchModule*>(shape)->initData();
-        }
-        else if (_class == "DRAM")
-        {
-            static_cast<DRAMModule *>(shape)->initData();
-        }
-        else if (_class == "ModuleCable")
-        {
+        ModuleBase* module = static_cast<ModuleBase*>(shape);
+        if (_class != "ModuleCable")
+            module->initData();
+        else // 连接线需要等待所有模块初始化结束后才初始化
             continue;
-        }
     }
 
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
         if (_class == "ModuleCable")
-        {
-            qDebug() << "初始化连接线";
             static_cast<ModuleCable*>(shape)->initData();
-        }
     }
 }
 
@@ -58,22 +40,8 @@ void FlowControlAutomatic::clearData()
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
-        if (_class == "Master")
-        {
-            static_cast<MasterModule*>(shape)->clearData();
-        }
-        else if (_class == "Slave")
-        {
-            static_cast<SlaveModule*>(shape)->clearData();
-        }
-        else if (_class == "Switch")
-        {
-            static_cast<SwitchModule*>(shape)->clearData();
-        }
-        else if (_class == "ModuleCable")
-        {
-            static_cast<ModuleCable*>(shape)->clearData();
-        }
+        ModuleBase *module = static_cast<ModuleBase *>(shape);
+        module->clearData();
     }
 
     shapes.clear();
@@ -87,67 +55,24 @@ void FlowControlAutomatic::passOneClock()
     {
         QString _class = shape->getClass();
         QString _text = shape->getText();
-        if (_class == "IP")
+        ModuleBase *module = static_cast<ModuleBase *>(shape);
+        if (_class == "IP" || _class == "Master")
         {
-            IPModule* IP = static_cast<IPModule*>(shape);
+            IPModule *IP = static_cast<IPModule *>(shape);
             while (IP->data_list.size() < 5) {
                 IP->data_list.append(createToken());
-                FCDEB "创建数据";
             }
-
-            IP->passOnPackets();
+            qDebug() << "创建数据";
         }
-        else if (_class == "Master")
-        {
-            // 主动创建数据
-            MasterModule* master = static_cast<MasterModule*>(shape);
-            master->passOnPackets();
-        }
-        else if (_class == "Slave")
-        {
-            static_cast<SlaveModule*>(shape)->passOnPackets();
-        }
-        else if (_class == "Switch")
-        {
-            static_cast<SwitchModule*>(shape)->passOnPackets();
-        }
-        else if (_class == "ModuleCable")
-        {
-            static_cast<ModuleCable*>(shape)->passOnPackets();
-        }
-        else if (_class == "DRAM")
-        {
-            static_cast<DRAMModule*>(shape)->passOnPackets();
-        }
+        qDebug() << "运行模块：" << module->getText();
+        module->passOnPackets();
     }
 
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
-        if (_class == "IP")
-        {
-            static_cast<IPModule*>(shape)->delayOneClock();
-        }
-        else if (_class == "Master")
-        {
-            static_cast<MasterModule*>(shape)->delayOneClock();
-        }
-        else if (_class == "Slave")
-        {
-            static_cast<SlaveModule*>(shape)->delayOneClock();
-        }
-        else if (_class == "Switch")
-        {
-            static_cast<SwitchModule*>(shape)->delayOneClock();
-        }
-        else if (_class == "ModuleCable")
-        {
-            static_cast<ModuleCable*>(shape)->delayOneClock();
-        }
-        else if (_class == "DRAM")
-        {
-            static_cast<DRAMModule*>(shape)->delayOneClock();
-        }
+        ModuleBase *module = static_cast<ModuleBase *>(shape);
+        module->delayOneClock();
     }
 }
 

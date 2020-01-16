@@ -36,11 +36,9 @@ void ModuleCable::initData()
         // 初始化双方token
         ModulePort *from = static_cast<ModulePort *>(from_port);
         ModulePort *to = static_cast<ModulePort *>(to_port);
-        MasterSlaveInterface *from_shape = reinterpret_cast<MasterSlaveInterface *>(from->getShape());
-        MasterSlaveInterface *to_shape = reinterpret_cast<MasterSlaveInterface *>(to->getShape());
-        from->another_can_receive = from_shape->getToken();
-        to->another_can_receive = to_shape->getToken();
-        qDebug() << from->getPortId() << to->getPortId() << from->another_can_receive << to->another_can_receive;
+        from->another_can_receive = from->getToken();
+        to->another_can_receive = to->getToken();
+        rt->runningOut(QString("初始化Token：%1 <--> %2, token = %3 / %4").arg(from->getPortId()).arg(to->getPortId()).arg(from->another_can_receive).arg(to->another_can_receive));
 
         // 初始化途中互相调整token
         connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {
