@@ -9,7 +9,7 @@
 #define SWITCHMODULE_H
 
 #include "hexagonshape.h"
-#include "moduleinterface.h"
+#include "masterslaveinterface.h"
 #include "switchpicker.h"
 
 class SwitchModule : public HexagonShape

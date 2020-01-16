@@ -10,7 +10,7 @@
 
 #include <QObject>
 #include "cablebase.h"
-#include "moduleinterface.h"
+#include "masterslaveinterface.h"
 #include "qmath.h"
 
 #define LINE_COUNT 2

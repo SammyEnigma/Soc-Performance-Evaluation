@@ -7,7 +7,7 @@
  */
 #include "slavemodule.h"
 
-SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), ModuleInterface(ShapeBase::ports, parent)
+SlaveModule::SlaveModule(QWidget *parent) : EllipseShape(parent), MasterSlaveInterface(ShapeBase::ports, parent)
 {
     _class = _text = "Slave";
     dequeue_signal_buffer = 0;
@@ -31,12 +31,12 @@ void SlaveModule::initData()
     this->token = getData("token");
     this->process_delay = getData("process_delay");
     
-    ModuleInterface::initData();
+    MasterSlaveInterface::initData();
 }
 
 void SlaveModule::clearData()
 {
-    ModuleInterface::clearData();
+    MasterSlaveInterface::clearData();
     
     process_list.clear();
 }
@@ -55,7 +55,7 @@ void SlaveModule::passOnPackets()
         mp->passOnPackets();
     }
 
-    ModuleInterface::passOnPackets();
+    MasterSlaveInterface::passOnPackets();
 }
 
 void SlaveModule::delayOneClock()
@@ -66,7 +66,7 @@ void SlaveModule::delayOneClock()
         mp->delayOneClock();
     }
 
-    ModuleInterface::delayOneClock();
+    MasterSlaveInterface::delayOneClock();
 }
 
 void SlaveModule::updatePacketPos()

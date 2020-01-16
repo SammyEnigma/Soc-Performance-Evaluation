@@ -57,7 +57,7 @@ SOURCES += \
     soc/flowcontrol/flowcontrolbase.cpp \
     soc/flowcontrol/timeframe.cpp \
     soc/flowcontrol/timeframecontroller.cpp \
-    soc/interfaces/moduleinterface.cpp \
+    soc/interfaces/masterslaveinterface.cpp \
     soc/modules/drammodule.cpp \
     soc/modules/ipmodule.cpp \
     soc/modules/mastermodule.cpp \
@@ -96,7 +96,7 @@ HEADERS += \
     soc/flowcontrol/flowcontrol_master1_slave1.h \
     soc/flowcontrol/timeframe.h \
     soc/flowcontrol/timeframecontroller.h \
-    soc/interfaces/moduleinterface.h \
+    soc/interfaces/masterslaveinterface.h \
     soc/modules/drammodule.h \
     soc/modules/ipmodule.h \
     soc/modules/mastermodule.h \

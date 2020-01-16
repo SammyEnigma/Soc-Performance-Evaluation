@@ -5,8 +5,8 @@
  * @LastEditTime : 2019-12-19 11:18:51
  * @Description: 模块接口，包含发送等功能
  */
-#ifndef MODULEINTERFACE_H
-#define MODULEINTERFACE_H
+#ifndef MASTERSLAVEINTERFACE_H
+#define MASTERSLAVEINTERFACE_H
 
 #include <QList>
 #include "datapacket.h"
@@ -14,11 +14,11 @@
 #include "moduleport.h"
 #include "modulecable.h"
 
-class ModuleInterface : public QObject
+class MasterSlaveInterface : public QObject
 {
     Q_OBJECT
 public:
-    ModuleInterface(QList<PortBase *> &ports, QObject *parent = nullptr);
+    MasterSlaveInterface(QList<PortBase *> &ports, QObject *parent = nullptr);
 
     virtual void initData();
     virtual void clearData();
@@ -51,4 +51,4 @@ private:
     QList<PortBase*>& ports; // Shape那边来的ports，为了方便，隐藏起来，Module可直接用Shape的
 };
 
-#endif // MODULEINTERFACE_H
+#endif // MASTERSLAVEINTERFACE_H

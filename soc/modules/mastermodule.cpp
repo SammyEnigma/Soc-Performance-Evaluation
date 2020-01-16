@@ -7,7 +7,7 @@
  */
 #include "mastermodule.h"
 
-MasterModule::MasterModule(QWidget *parent) : CircleShape(parent), ModuleInterface(ShapeBase::ports, parent)
+MasterModule::MasterModule(QWidget *parent) : CircleShape(parent), MasterSlaveInterface(ShapeBase::ports, parent)
 {
     _class = _text = "Master";
 }
@@ -27,7 +27,7 @@ PortBase *MasterModule::createPort()
 
 void MasterModule::initData()
 {
-    ModuleInterface::initData();
+    MasterSlaveInterface::initData();
 
     this->token = getData("token");
     foreach (PortBase* port, ShapeBase::ports)
@@ -38,7 +38,7 @@ void MasterModule::initData()
 
 void MasterModule::clearData()
 {
-    ModuleInterface::clearData();
+    MasterSlaveInterface::clearData();
     
     data_list.clear();
 }

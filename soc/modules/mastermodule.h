@@ -9,10 +9,10 @@
 #define MASTERMODULE_H
 
 #include "circleshape.h"
-#include "moduleinterface.h"
+#include "masterslaveinterface.h"
 #include "moduleport.h"
 
-class MasterModule : public CircleShape, public ModuleInterface
+class MasterModule : public CircleShape, public MasterSlaveInterface
 {
     // Q_OBJECT // 这个不能加！否则会爆 'QObject' is an ambiguous base of 'MasterModule' 的问题
 public:

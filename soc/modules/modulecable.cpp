@@ -36,8 +36,8 @@ void ModuleCable::initData()
         // 初始化双方token
         ModulePort *from = static_cast<ModulePort *>(from_port);
         ModulePort *to = static_cast<ModulePort *>(to_port);
-        ModuleInterface *from_shape = reinterpret_cast<ModuleInterface *>(from->getShape());
-        ModuleInterface *to_shape = reinterpret_cast<ModuleInterface *>(to->getShape());
+        MasterSlaveInterface *from_shape = reinterpret_cast<MasterSlaveInterface *>(from->getShape());
+        MasterSlaveInterface *to_shape = reinterpret_cast<MasterSlaveInterface *>(to->getShape());
         from->another_can_receive = from_shape->getToken();
         to->another_can_receive = to_shape->getToken();
         //        qDebug() << from->getPortId() << to->getPortId() << from->another_can_receive << to->another_can_receive;

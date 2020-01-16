@@ -9,11 +9,11 @@
 #define SLAVEMODULE_H
 
 #include "ellipseshape.h"
-#include "moduleinterface.h"
+#include "masterslaveinterface.h"
 #include "qqueue.h"
 #include "moduleport.h"
 
-class SlaveModule : public EllipseShape, public ModuleInterface
+class SlaveModule : public EllipseShape, public MasterSlaveInterface
 {
 public:
     SlaveModule(QWidget *parent = nullptr);

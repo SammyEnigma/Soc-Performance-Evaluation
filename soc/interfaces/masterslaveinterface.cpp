@@ -5,14 +5,14 @@
  * @LastEditTime : 2019-12-23 09:14:14
  * @Description: 模块接口，包含发送等功能
  */
-#include "moduleinterface.h"
+#include "masterslaveinterface.h"
 
-ModuleInterface::ModuleInterface(QList<PortBase *> &ports, QObject *parent)
+MasterSlaveInterface::MasterSlaveInterface(QList<PortBase *> &ports, QObject *parent)
     : token(nullptr), process_delay(nullptr), ports(ports)
 {
 }
 
-void ModuleInterface::initData()
+void MasterSlaveInterface::initData()
 {
     foreach (PortBase *p, ports)
     {
@@ -38,7 +38,7 @@ void ModuleInterface::initData()
     }
 }
 
-void ModuleInterface::clearData()
+void MasterSlaveInterface::clearData()
 {
     foreach (PortBase *p, ports)
     {
@@ -52,35 +52,35 @@ void ModuleInterface::clearData()
     }
 }
 
-void ModuleInterface::setToken(int token)
+void MasterSlaveInterface::setToken(int token)
 {
     if (this->token == nullptr)
         return;
     this->token->setValue(token);
 }
 
-int ModuleInterface::getToken()
+int MasterSlaveInterface::getToken()
 {
     if (this->token == nullptr)
         return 0;
     return token->i();
 }
 
-int ModuleInterface::getDefaultToken()
+int MasterSlaveInterface::getDefaultToken()
 {
     if (this->token == nullptr)
         return 0;
     return token->getDefault().toInt();
 }
 
-int ModuleInterface::getProcessDelay()
+int MasterSlaveInterface::getProcessDelay()
 {
     if (this->process_delay == nullptr)
         return 0;
     return process_delay->i();
 }
 
-void ModuleInterface::passOnPackets()
+void MasterSlaveInterface::passOnPackets()
 {
     // 模块内处理（Slave）
     for (int i = 0; i < process_list.size(); i++)
@@ -108,7 +108,7 @@ void ModuleInterface::passOnPackets()
     }
 }
 
-void ModuleInterface::delayOneClock()
+void MasterSlaveInterface::delayOneClock()
 {
     foreach (DataPacket* packet, process_list)
     {
@@ -122,6 +122,6 @@ void ModuleInterface::delayOneClock()
  * 更新拥有的数据包的坐标信息
  * 如果数据包已经有坐标了，则显示动画
  */
-void ModuleInterface::updatePacketPos()
+void MasterSlaveInterface::updatePacketPos()
 {
 }
