@@ -21,22 +21,23 @@ public:
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
 
-    virtual SwitchModule *newInstanceBySelf(QWidget *parent = nullptr);
-    virtual PortBase* createPort();
-    void initData();
-    void clearData();
+    virtual SwitchModule *newInstanceBySelf(QWidget *parent = nullptr) override;
+    virtual PortBase* createPort() override;
+    void initData() override;
+    void clearData() override;
     virtual void setDefaultDataList() override;
     int getToken();
     
-    virtual void passOnPackets();
-    virtual void delayOneClock();
+    virtual void passOnPackets() override;
+    virtual void delayOneClock() override;
 
     void linkPickerPorts(QList<ModulePort *> ports);
+    void linkPickerPorts(QList<ShapeBase *> shapes);
 
-    void updatePacketPos();
+    void updatePacketPos() override;
 
 protected:
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
     
     virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
     

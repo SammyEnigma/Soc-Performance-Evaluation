@@ -17,16 +17,40 @@ void FlowControlAutomatic::initData()
 {
     FlowControlBase::initData();
 
+    // 模块数据初始化
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
         ModuleBase* module = static_cast<ModuleBase*>(shape);
         if (_class != "ModuleCable")
+        {
             module->initData();
+
+            if (module->getClass() == "Switch")
+            {
+                // 设置Hub的Picker
+                SwitchModule* hub = static_cast<SwitchModule*>(shape);
+                QString picker_string = hub->getData("picker")->toString();
+                QStringList groups = picker_string.split(";");
+                foreach (QString pickers_string, groups)
+                {
+                    QStringList pickers = pickers_string.split(",");
+                    QList<ShapeBase*>picker_shapes;
+                    foreach (QString picker, pickers)
+                    {
+                        ShapeBase* shape = graphic->findShapeByText(picker);
+                        picker_shapes.append(shape);
+                    }
+                    if (picker_shapes.size())
+                        hub->linkPickerPorts(picker_shapes);
+                }
+            }
+        }
         else // 连接线需要等待所有模块初始化结束后才初始化
             continue;
     }
 
+    // 设置连接
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();

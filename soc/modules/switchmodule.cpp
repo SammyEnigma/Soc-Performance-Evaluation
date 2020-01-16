@@ -299,6 +299,24 @@ void SwitchModule::linkPickerPorts(QList<ModulePort *> ports)
     pickers.append(picker);
 }
 
+void SwitchModule::linkPickerPorts(QList<ShapeBase *> shapes)
+{
+    QList<ModulePort *> picker_ports;
+    foreach (ShapeBase* shape, shapes)
+    {
+        foreach (PortBase* port, ports)
+        {
+            if (port->getOppositeShape() == shape)
+            {
+                picker_ports.append(static_cast<ModulePort*>(port));
+                break;
+            }
+        }
+    }
+    if (picker_ports.size())
+        linkPickerPorts(picker_ports);
+}
+
 void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
     int w = draw_rect.width(), h = draw_rect.height();
