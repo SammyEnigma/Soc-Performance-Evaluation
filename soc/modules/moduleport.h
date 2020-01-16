@@ -51,6 +51,7 @@ public:
     int getReceiveToken();
     bool anotherCanRecive();
     int getToken();
+    void setToken(int token);
 
     void setRequestToQueue(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）
     void setDiscardResponse(bool d = true);

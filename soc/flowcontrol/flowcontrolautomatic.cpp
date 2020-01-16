@@ -20,7 +20,7 @@ void FlowControlAutomatic::initData()
     foreach (ShapeBase* shape, shapes)
     {
         QString _class = shape->getClass();
-        if (_class == "Master")
+        if (_class == "Master" || _class == "IP")
         {
             static_cast<MasterModule*>(shape)->initData();
         }
@@ -32,20 +32,9 @@ void FlowControlAutomatic::initData()
         {
             static_cast<SwitchModule*>(shape)->initData();
         }
-        else if (_class == "IP")
-        {
-            static_cast<IPModule *>(shape)->initData();
-        }
         else if (_class == "DRAM")
         {
             static_cast<DRAMModule *>(shape)->initData();
-        }
-        else if (_class == "CPU")
-        {
-        }
-        else if (_class == "GPU")
-        {
-            
         }
         else if (_class == "ModuleCable")
         {
@@ -58,6 +47,7 @@ void FlowControlAutomatic::initData()
         QString _class = shape->getClass();
         if (_class == "ModuleCable")
         {
+            qDebug() << "初始化连接线";
             static_cast<ModuleCable*>(shape)->initData();
         }
     }
@@ -102,6 +92,7 @@ void FlowControlAutomatic::passOneClock()
             IPModule* IP = static_cast<IPModule*>(shape);
             while (IP->data_list.size() < 5) {
                 IP->data_list.append(createToken());
+                FCDEB "创建数据";
             }
 
             IP->passOnPackets();

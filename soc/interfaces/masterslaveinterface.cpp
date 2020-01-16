@@ -17,6 +17,7 @@ void MasterSlaveInterface::initData()
     foreach (PortBase *p, ports)
     {
         ModulePort *port = static_cast<ModulePort *>(p);
+        // port->setToken(token->i());
 
         // ==== 发送部分（Master） ====
         connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {

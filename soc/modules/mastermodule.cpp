@@ -32,7 +32,7 @@ void MasterModule::initData()
     this->token = getData("token");
     foreach (PortBase* port, ShapeBase::ports)
     {
-        static_cast<ModulePort*>(port)->setDiscardResponse(true);
+        static_cast<ModulePort*>(port)->setDiscardResponse(true); // 不处理response
     }
 }
 

@@ -40,7 +40,7 @@ void ModuleCable::initData()
         MasterSlaveInterface *to_shape = reinterpret_cast<MasterSlaveInterface *>(to->getShape());
         from->another_can_receive = from_shape->getToken();
         to->another_can_receive = to_shape->getToken();
-        //        qDebug() << from->getPortId() << to->getPortId() << from->another_can_receive << to->another_can_receive;
+        qDebug() << from->getPortId() << to->getPortId() << from->another_can_receive << to->another_can_receive;
 
         // 初始化途中互相调整token
         connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {

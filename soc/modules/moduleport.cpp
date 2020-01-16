@@ -300,6 +300,11 @@ int ModulePort::getToken()
     return token;
 }
 
+void ModulePort::setToken(int token)
+{
+    this->token = token;
+}
+
 void ModulePort::setRequestToQueue(bool c)
 {
     request_to_queue = c;
