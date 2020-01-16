@@ -61,6 +61,7 @@ SOURCES += \
     soc/modules/drammodule.cpp \
     soc/modules/ipmodule.cpp \
     soc/modules/mastermodule.cpp \
+    soc/modules/masterslave.cpp \
     soc/modules/modulecable.cpp \
     soc/modules/moduleport.cpp \
     soc/modules/slavemodule.cpp \
@@ -100,6 +101,7 @@ HEADERS += \
     soc/modules/drammodule.h \
     soc/modules/ipmodule.h \
     soc/modules/mastermodule.h \
+    soc/modules/masterslave.h \
     soc/modules/modulecable.h \
     soc/modules/moduleport.h \
     soc/modules/slavemodule.h \
