@@ -1,19 +1,19 @@
 #ifndef MASTERSLAVE_H
 #define MASTERSLAVE_H
 
-#include "shapebase.h"
+#include "modulebase.h"
 #include "datapacket.h"
 #include "moduleport.h"
 #include "modulecable.h"
 
-class MasterSlave : public ShapeBase
+class MasterSlave : public ModuleBase
 {
     Q_OBJECT
 public:
     MasterSlave(QList<PortBase *> &ports, QWidget *parent = nullptr);
 
-    virtual void initData();
-    virtual void clearData();
+    virtual void initData() override;
+    virtual void clearData() override;
 
     void setToken(int token);
     void setBandwidth(int bandwidth);
@@ -26,9 +26,9 @@ public:
 signals:
 
 public slots:
-    virtual void passOnPackets(); // 1、queue中packet延迟满后，传入到下一个queue
-    virtual void delayOneClock(); // 2、传输/处理/读取延迟到下一个clock
-    virtual void updatePacketPos();
+    virtual void passOnPackets() override; // 1、queue中packet延迟满后，传入到下一个queue
+    virtual void delayOneClock() override; // 2、传输/处理/读取延迟到下一个clock
+    virtual void updatePacketPos() override;
 
 public:
     PacketList data_list;

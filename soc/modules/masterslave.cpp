@@ -1,7 +1,7 @@
 #include "masterslave.h"
 
 MasterSlave::MasterSlave(QList<PortBase *> &ports, QWidget *parent)
-    : ShapeBase(parent), token(nullptr), process_delay(nullptr)
+    : ModuleBase(parent), token(nullptr), process_delay(nullptr)
 {
     this->ports = ports;
 }

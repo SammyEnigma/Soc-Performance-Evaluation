@@ -98,6 +98,8 @@ HEADERS += \
     soc/flowcontrol/timeframe.h \
     soc/flowcontrol/timeframecontroller.h \
     soc/interfaces/masterslaveinterface.h \
+    soc/interfaces/modulebase.h \
+    soc/interfaces/moduleinterface.h \
     soc/modules/drammodule.h \
     soc/modules/ipmodule.h \
     soc/modules/mastermodule.h \
