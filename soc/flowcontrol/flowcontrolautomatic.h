@@ -3,6 +3,8 @@
 
 #include "flowcontrolbase.h"
 #include "switchmodule.h"
+#include "ipmodule.h"
+#include "drammodule.h"
 
 class FlowControlAutomatic : public FlowControlBase
 {

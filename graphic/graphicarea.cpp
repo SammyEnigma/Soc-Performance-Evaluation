@@ -285,6 +285,7 @@ void GraphicArea::remove(ShapeBase *shape)
     // 删除形状的端口
     if (shape->getLargeType() != CableType) // 本身不是连接线
     {
+        log("删除形状的连接线");
         QMap<QString, PortBase*>::iterator it = ports_map.begin();
         while (it != ports_map.end())
         {
@@ -305,6 +306,7 @@ void GraphicArea::remove(ShapeBase *shape)
                 ++it;
             }
         }
+        log("清除连接线结束");
     }
     else // 连接线，删除端口信息
     {
@@ -316,6 +318,7 @@ void GraphicArea::remove(ShapeBase *shape)
         cable_lists.removeOne(cable);
     }
     shape->deleteLater();
+//    shape->hide();
 }
 
 void GraphicArea::zoomIn(double prop)
@@ -935,7 +938,6 @@ void GraphicArea::removePortCable(PortBase *port)
                 cable->getToPort()->clearCable();
             // 删除线控件
             remove(cable);
-            cable_lists.removeAt(i--);
         }
     }
 }

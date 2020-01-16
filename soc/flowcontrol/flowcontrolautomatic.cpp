@@ -32,6 +32,21 @@ void FlowControlAutomatic::initData()
         {
             static_cast<SwitchModule*>(shape)->initData();
         }
+        else if (_class == "IP")
+        {
+            static_cast<IPModule *>(shape)->initData();
+        }
+        else if (_class == "DRAM")
+        {
+            static_cast<DRAMModule *>(shape)->initData();
+        }
+        else if (_class == "CPU")
+        {
+        }
+        else if (_class == "GPU")
+        {
+            
+        }
         else if (_class == "ModuleCable")
         {
             continue;

@@ -484,7 +484,7 @@ void ModuleCable::adjustGeometryByPorts()
     {
         _breadth_x = _breadth_y = breadth;
         _space_x = _space_y = LINE_SPACE;
-
+        
         if (_line_type == 1) // 横竖
         {
             top -= _breadth_y / 2;

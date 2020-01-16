@@ -74,7 +74,7 @@ protected:
     QPointF _prop_pos; // 相对于形状的比例（x比例、y比例）
     
     PortBase* opposite; // 连接对面的端口。可通过端口获取形状
-    CableBase* cable;
+    CableBase* cable;   // 连接线
 
     qint64 _press_timestamp;
 };
