@@ -38,7 +38,10 @@ void MasterSlave::initData()
                 ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
                 if (mp == port)
                     mp = static_cast<ModulePort *>(ports.at(1));
-                mp->sendData(packet, packet->getDataType());
+                if (mp->anotherCanRecive())
+                {
+                    mp->sendData(packet, packet->getDataType());
+                }
             }
         });
     }
