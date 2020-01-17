@@ -95,6 +95,12 @@ int MasterSlave::getProcessDelay()
 
 void MasterSlave::passOnPackets()
 {
+    foreach (PortBase *port, ShapeBase::ports)
+    {
+        ModulePort *mp = static_cast<ModulePort *>(port);
+        mp->passOnPackets();
+    }
+
     // 模块内处理（Slave）
     for (int i = 0; i < process_list.size(); i++)
     {

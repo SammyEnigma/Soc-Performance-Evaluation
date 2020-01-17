@@ -1,9 +1,9 @@
 #ifndef DRAMMODULE_H
 #define DRAMMODULE_H
 
-#include "ipmodule.h"
+#include "slavemodule.h"
 
-class DRAMModule : public IPModule
+class DRAMModule : public SlaveModule
 {
 public:
     DRAMModule(QWidget* parent = nullptr);

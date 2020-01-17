@@ -1,6 +1,6 @@
 #include "drammodule.h"
 
-DRAMModule::DRAMModule(QWidget *parent) : IPModule(parent)
+DRAMModule::DRAMModule(QWidget *parent) : SlaveModule(parent)
 {
     _class = _text = "DRAM";
 
@@ -21,7 +21,7 @@ DRAMModule *DRAMModule::newInstanceBySelf(QWidget *parent)
 
 void DRAMModule::paintEvent(QPaintEvent *event)
 {
-    ShapeBase::paintEvent(event);
+    SlaveModule::paintEvent(event);
 }
 
 void DRAMModule::drawShapePixmap(QPainter &painter, QRect draw_rect)

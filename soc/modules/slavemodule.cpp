@@ -35,11 +35,7 @@ void SlaveModule::setDefaultDataList()
 
 void SlaveModule::passOnPackets()
 {
-    foreach (PortBase *port, ShapeBase::ports)
-    {
-        ModulePort *mp = static_cast<ModulePort *>(port);
-        mp->passOnPackets();
-    }
+    
 
     MasterSlave::passOnPackets();
 }
