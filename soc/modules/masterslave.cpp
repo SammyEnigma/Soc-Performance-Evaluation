@@ -48,6 +48,7 @@ void MasterSlave::clearData()
     
     data_list.clear();
     process_list.clear();
+    ModuleBase::clearData();
 }
 
 void MasterSlave::setToken(int token)

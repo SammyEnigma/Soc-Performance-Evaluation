@@ -24,6 +24,16 @@ public:
         return new ModulePort(this);
     }
 
+    void clearData() override
+    {
+        // 清理port
+        foreach (PortBase *p, ports)
+        {
+            ModulePort *port = static_cast<ModulePort *>(p);
+            port->clearData();
+        }
+    }
+
     void drawShapePixmap(QPainter &painter, QRect draw_rect) override
     {
         QPainterPath path;

@@ -96,6 +96,8 @@ void SwitchModule::passOnPackets()
         if (packet->getTargetPort() != nullptr)
         {
             ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+            if (!port->anotherCanRecive()) // 对方没有token了，直接跳过后面所有步骤
+                continue;
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
