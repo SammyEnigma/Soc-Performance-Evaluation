@@ -26,9 +26,19 @@ void MasterSlave::initData()
 
         // ==== 接收部分（Slave） ====
         connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
-            process_list.append(packet);
-            packet->resetDelay(getProcessDelay());
-            rt->runningOut(port->getPortId() + "接收到数据，进入处理环节：" + packet->toString());
+            if (ports.size() <= 1) // 只有一个端口
+            {
+                process_list.append(packet);
+                packet->resetDelay(getProcessDelay());
+                rt->runningOut(port->getPortId() + "接收到数据，进入处理环节：" + packet->toString());
+            }
+            else // 多个端口
+            {
+                ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
+                if (mp == port)
+                    mp = static_cast<ModulePort *>(ports.at(1));
+                mp->sendData(packet, packet->getDataType());
+            }
         });
     }
 }
