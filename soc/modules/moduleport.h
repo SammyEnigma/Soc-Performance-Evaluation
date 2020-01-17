@@ -75,9 +75,9 @@ public slots:
     void slotDataReceived(DataPacket *packet);         // 接收到数据（包括request和response）
 
 public:
+    QQueue<DataPacket *> data_queue;
     PacketList send_delay_list;
     PacketList enqueue_list;
-    QQueue<DataPacket *> data_queue;
     PacketList dequeue_list;
     PacketList return_delay_list;
     PacketList receive_update_delay_list;

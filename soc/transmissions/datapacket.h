@@ -51,7 +51,7 @@ public:
     void setTargetPort(PortBase *port);
 
     void setDataType(DATA_TYPE type);
-    bool getDataType();
+    DATA_TYPE getDataType();
 
 signals:
     void signalDelayFinished();

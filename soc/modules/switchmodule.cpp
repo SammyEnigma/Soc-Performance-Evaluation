@@ -20,11 +20,6 @@ SwitchModule *SwitchModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
-PortBase *SwitchModule::createPort()
-{
-    return new ModulePort(this);
-}
-
 void SwitchModule::initData()
 {
     // this->token = getData("token")->i();

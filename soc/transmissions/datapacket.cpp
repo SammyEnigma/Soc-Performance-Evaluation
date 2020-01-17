@@ -109,7 +109,7 @@ void DataPacket::setDataType(DATA_TYPE type)
     data_type = type;
 }
 
-bool DataPacket::getDataType()
+DATA_TYPE DataPacket::getDataType()
 {
     return data_type;
 }

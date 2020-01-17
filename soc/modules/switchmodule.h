@@ -22,7 +22,6 @@ public:
     friend class FlowControl_Master1_Slave1;
 
     virtual SwitchModule *newInstanceBySelf(QWidget *parent = nullptr) override;
-    virtual PortBase* createPort() override;
     void initData() override;
     void clearData() override;
     virtual void setDefaultDataList() override;
