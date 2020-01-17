@@ -36,8 +36,8 @@ void ModuleCable::initData()
         // 初始化双方token
         ModulePort *from = static_cast<ModulePort *>(from_port);
         ModulePort *to = static_cast<ModulePort *>(to_port);
-        from->another_can_receive = from->getToken();
-        to->another_can_receive = to->getToken();
+        from->another_can_receive = to->getToken();
+        to->another_can_receive = from->getToken();
         rt->runningOut(QString("初始化Token：%1 <--> %2, token = %3 / %4").arg(from->getPortId()).arg(to->getPortId()).arg(from->another_can_receive).arg(to->another_can_receive));
 
         // 初始化途中互相调整token
@@ -102,7 +102,6 @@ void ModuleCable::setDefaultDataList()
 
 void ModuleCable::passOnPackets()
 {
-    qDebug() << "运行到ModuleCable::passOnPackets()";
     for (int i = 0; i < request_list.size(); i++)
     {
         DataPacket *packet = request_list.at(i);

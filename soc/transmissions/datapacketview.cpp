@@ -30,10 +30,21 @@ void DataPacketView::paintEvent(QPaintEvent *)
     QColor c = Qt::red;
     if (packet != nullptr)
     {
-        if (packet->getTag() == "master1")
+        QString text = packet->getTag();
+        if (text.endsWith("1"))
             c = QColor(50,205,50);
-        else if (packet->getTag() == "master2")
-            c = Qt::blue;
+        else if (text.endsWith("2"))
+            c = QColor(255, 115, 0);
+        else if (text.endsWith("3"))
+            c = QColor(255, 255, 0);
+        else if (text.endsWith("4"))
+            c = QColor(54, 191, 54);
+        else if (text.endsWith("5"))
+            c = QColor(48, 213, 200);
+        else if (text.endsWith("6"))
+            c = QColor(30, 144, 255);
+        else if (text.endsWith("7"))
+            c = QColor(102, 51, 204);
     }
     painter.fillRect(0,0,width(),height(),c);
 }
