@@ -225,10 +225,11 @@ void ModulePort::slotDataReceived(DataPacket *packet)
     rt->runningOut(getPortId() + " 收到数据slotDataReceived");
     if (request_to_queue)
     {
-        if (discard_response && packet->getDataType()==DATA_RESPONSE)
+        if (discard_response && packet->getDataType()==DATA_RESPONSE) // 无视response，master的属性
         {
             rt->runningOut(getPortId() + ": Master 不进行处理 response");
-            sendDequeueTokenToComeModule(packet);
+            packet->deleteLater();
+            sendDequeueTokenToComeModule(new DataPacket()); // 让发送方token+1
             return ;
         }
         else
@@ -238,7 +239,7 @@ void ModulePort::slotDataReceived(DataPacket *packet)
             packet->resetDelay(getLatency());
         }
     }
-    else
+    else // Switch直接传送到模块中
     {
         rt->runningOut(getPortId()+ ": 未设置接收缓冲，发送信号传递至所在模块");
         emit signalDataReceived(this, packet);

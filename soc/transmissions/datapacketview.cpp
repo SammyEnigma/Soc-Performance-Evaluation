@@ -13,7 +13,7 @@ DataPacketView::DataPacketView(DataPacket *packet, QWidget *parent) : QWidget(pa
     connect(packet, SIGNAL(signalPosChanged(QPoint, QPoint)), this, SLOT(updatePosition(QPoint, QPoint)));
     connect(packet, SIGNAL(signalDeleted()), this, SLOT(deleteLater()));
     connect(packet, &DataPacket::signalDeleted, this, [&]{
-        packet = nullptr;
+//        packet = nullptr;
     });
 
     setFixedSize(PACKET_SIZE, PACKET_SIZE);

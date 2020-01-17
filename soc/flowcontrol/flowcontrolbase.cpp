@@ -199,6 +199,15 @@ DataPacket *FlowControlBase::createToken(QString tag)
     packet->resetDelay(0);
     all_packets.append(packet);
     emit signalTokenCreated(packet);
+    connect(packet, &DataPacket::signalDeleted, this, [=]{ // 比如Master收到Response后，销毁数据
+        all_packets.removeOne(packet);
+        for (int i = 0; i < all_packet_view.size(); i++)
+            if (all_packet_view.at(i)->getPacket() == packet)
+            {
+                all_packet_view.removeAt(i);
+                break;
+            }
+    });
     return packet;
 }
 
