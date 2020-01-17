@@ -974,6 +974,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     {
         property_action->setEnabled(false);
         copy_action->setEnabled(false);
+        data_action->setEnabled(false);
         delete_action->setEnabled(false);
         add_port_action->setEnabled(false);
     }
