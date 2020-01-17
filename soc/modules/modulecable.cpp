@@ -97,7 +97,7 @@ void ModuleCable::clearData()
 
 void ModuleCable::setDefaultDataList()
 {
-    custom_data_list.append(new CustomDataType("delay", 5));
+    custom_data_list.append(new CustomDataType("delay", 5, 5));
 }
 
 void ModuleCable::passOnPackets()

@@ -68,9 +68,9 @@ void SwitchModule::clearData()
 
 void SwitchModule::setDefaultDataList()
 {
-    custom_data_list.append(new CustomDataType("token", 16));
-    custom_data_list.append(new CustomDataType("latency", 3));
-    custom_data_list.append(new CustomDataType("picker_bandwidth", 1));
+    custom_data_list.append(new CustomDataType("token", 16, 16));
+    custom_data_list.append(new CustomDataType("latency", 3, 3));
+    custom_data_list.append(new CustomDataType("picker_bandwidth", 1, 1));
 }
 
 int SwitchModule::getToken()

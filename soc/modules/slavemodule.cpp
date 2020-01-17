@@ -22,17 +22,15 @@ SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
 }
 
 void SlaveModule::initData()
-{
-    this->token = getData("token");
+{   
     this->process_delay = getData("process_delay");
-    
     MasterSlave::initData();
 }
 
 void SlaveModule::setDefaultDataList()
 {
-    custom_data_list.append(new CustomDataType("token", 16));
-    custom_data_list.append(new CustomDataType("process_delay", 3));
+    custom_data_list.append(new CustomDataType("token", 16, 16));
+    custom_data_list.append(new CustomDataType("process_delay", 3, 3));
 }
 
 void SlaveModule::passOnPackets()

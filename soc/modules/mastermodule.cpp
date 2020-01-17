@@ -24,16 +24,18 @@ void MasterModule::initData()
 {
     MasterSlave::initData();
 
-    this->token = getData("token");
-    foreach (PortBase* port, ShapeBase::ports)
+    if (ports.size() <= 1)
     {
-        static_cast<ModulePort*>(port)->setDiscardResponse(true); // 不处理response
+        foreach (PortBase* port, ShapeBase::ports)
+        {
+            static_cast<ModulePort*>(port)->setDiscardResponse(true); // 不处理response
+        }
     }
 }
 
 void MasterModule::setDefaultDataList()
 {
-    custom_data_list.append(new CustomDataType("token", 16));
+    custom_data_list.append(new CustomDataType("token", 16, 16));
 }
 
 void MasterModule::passOnPackets()
