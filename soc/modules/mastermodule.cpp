@@ -56,6 +56,7 @@ void MasterModule::passOnPackets()
                 packet->resetDelay(port->getLatency());
                 port->send_delay_list.append(packet);
                 port->resetBandwidthBuffer();
+                emit signalTokenSendStarted(packet);
             }
         }// port 内部数据传输流
         port->passOnPackets();

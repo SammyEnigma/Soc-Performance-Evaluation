@@ -25,6 +25,7 @@ public:
     int getProcessDelay();
 
 signals:
+	void signalTokenSendStarted(DataPacket* packet); // token开始发送（刚从模块进入延迟发送队列，还未发送出去）
 
 public slots:
     virtual void passOnPackets() override; // 1、queue中packet延迟满后，传入到下一个queue
