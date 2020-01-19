@@ -16,6 +16,7 @@
 #include "modulecable.h"
 #include "datapacketview.h"
 #include "watchwidget.h"
+#include "timeframe.h"
 
 #define ONE_CLOCK_INTERVAL 300
 #define FCDEB \
@@ -68,7 +69,7 @@ signals:
 protected:
     GraphicArea *graphic;
     QTimer *run_timer;
-    int current_clock;      // 当前时钟位置
+    TimeFrame current_clock;      // 当前时钟位置
     QList<DelayRunBean*>delay_runs;
     PacketList all_packets; // 所有数据包（指针）的列表
     QList<DataPacketView *> all_packet_view;

@@ -16,6 +16,7 @@ public:
     TimeFrame operator++(int); // 注意：这里自增/自减的是分子，而不是整体！
     TimeFrame &operator--();   // 注意：这里自增/自减的是分子，而不是整体！
     TimeFrame operator--(int); // 注意：这里自增/自减的是分子，而不是整体！
+    TimeFrame &operator=(const TimeFrame& f);
 
     void resetBuffer(int b); // 全部重新设置
     bool nextBuffer();       // buffer到下一个

@@ -223,6 +223,32 @@ public:
     {
         return toString();
     }
+    
+    Fraction &operator=(const int &i)
+    {
+        this->numerator = i;
+        this->denominator = 1;
+        return *this;
+    }
+
+    Fraction &operator=(const double &d)
+    {
+        fromDecimal(d);
+        return *this;
+    }
+
+    Fraction &operator=(const QString &s)
+    {
+        fromString(s);
+        return *this;
+    }
+
+    Fraction &operator=(const Fraction &f)
+    {
+        this->numerator = f.numerator;
+        this->denominator = f.denominator;
+        return *this;
+    }
 
     Fraction operator+(const int &i) const
     {
@@ -270,7 +296,7 @@ public:
         if (nume && deno) // 两个都不是0
         {
             int g = gcd(nume, deno);
-            if (g > 0)
+            if (g > 1)
             {
                 nume /= g;
                 deno /= g;

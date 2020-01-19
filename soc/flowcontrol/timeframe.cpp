@@ -19,6 +19,14 @@ TimeFrame TimeFrame::operator--(int)
     return temp;
 }
 
+TimeFrame &TimeFrame::operator=(const TimeFrame& f) 
+{
+    static_cast<Fraction>(*this) = f;
+    this->total_buffer = f.total_buffer;
+    this->curr_buffer = f.curr_buffer;
+    return *this;
+}
+
 void TimeFrame::resetBuffer(int b)
 {
     total_buffer = b;
