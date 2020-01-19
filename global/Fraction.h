@@ -50,6 +50,16 @@ public:
         this->denominator = d;
     }
 
+    void expandDenominator(int d)
+    {
+        if (d % denominator != 0)
+        {
+            qDebug() << "expand denominator 错误：" << denominator << " >> " << d;
+        }
+        numerator *= (d / denominator);
+        denominator = d;
+    }
+
     void setAutoReduction(bool b = false)
     {
         auto_reduction = b;

@@ -280,7 +280,7 @@ bool ModulePort::isBandwidthBufferFinished()
 
 void ModulePort::resetBandwidthBuffer()
 {
-    bandwidth.resetBuffer();
+    bandwidth.resetBuffer(bandwidth.getDenominator() * rt->standard_frame / bandwidth.getNumerator());
 }
 
 void ModulePort::initReceiveToken(int x)
@@ -293,9 +293,9 @@ int ModulePort::getReceiveToken()
     return another_can_receive;
 }
 
-bool ModulePort::anotherCanRecive()
+bool ModulePort::anotherCanRecive(int cut)
 {
-    return another_can_receive - send_update_delay_list.size() > 0;
+    return another_can_receive - send_update_delay_list.size() > cut;
 }
 
 int ModulePort::getToken()

@@ -50,7 +50,7 @@ public:
 
     void initReceiveToken(int t);
     int getReceiveToken();
-    bool anotherCanRecive();
+    bool anotherCanRecive(int cut = 0);
     int getToken();
     void setToken(int token);
 

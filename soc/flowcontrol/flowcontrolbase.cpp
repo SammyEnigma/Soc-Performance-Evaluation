@@ -110,7 +110,7 @@ void FlowControlBase::initData()
     foreach (PortBase* port, graphic->ports_map)
     {
         ModulePort* mp = static_cast<ModulePort*>(port);
-        int deno = mp->getBandwidth().getDenominator();
+        int deno = mp->getBandwidth().getNumerator();
         denos.append(deno);
     }
     com_mul = lcm(denos);
