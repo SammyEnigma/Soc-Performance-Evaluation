@@ -147,7 +147,8 @@ void FlowControlBase::clearData()
 void FlowControlBase::passOneClock()
 {
     FCDEB "\n======== Clock:" << ++current_clock;
-    rt->total_clock++;
+    if (current_clock.getNumerator() % current_clock.getDenominator() == 0)
+        rt->total_clock++;
 
     for (int i = 0; i < delay_runs.size(); i++)
     {
