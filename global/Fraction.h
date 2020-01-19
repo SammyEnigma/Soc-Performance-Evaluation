@@ -11,7 +11,7 @@
 class Fraction
 {
 public:
-    Fraction(int n = 0, int d = 1) : numerator(n), denominator(d)
+    Fraction(int n = 0, int d = 1) : numerator(n), denominator(d), auto_reduction(true)
     {
         if (d == 0)
             denominator = 1;
@@ -28,7 +28,32 @@ public:
             denominator = -denominator;
         }
     }
-
+    
+    void setNumerator(int n)
+    {
+        this->numerator = n;
+    }
+    
+    int getNumerator()
+    {
+        return numerator;
+    }
+    
+    int getDenominator()
+    {
+        return denominator;
+    }
+        
+    void setDenominator(int d)
+    {
+        this->denominator = d;
+    }
+    
+    void setAutoReduction(bool b = false)
+    {
+        auto_reduction = b;
+    }
+    
     Fraction(double d)
     {
         Fraction f = fromDecimal(d);
@@ -293,7 +318,7 @@ public:
         }
 
         // 辗转相除法去掉公约数
-        if (nume && deno) // 两个都不是0
+        if (nume && deno && auto_reduction) // 两个都不是0
         {
             int g = gcd(nume, deno);
             if (g > 1)
@@ -349,7 +374,7 @@ public:
         }
 
         // 辗转相除法去掉公约数
-        if (nume && deno) // 两个都不是0
+        if (nume && deno && auto_reduction) // 两个都不是0
         {
             int g = gcd(nume, deno);
             if (g > 0)
@@ -445,6 +470,7 @@ private:
 protected:
     int numerator;   // 分子
     int denominator; // 分母
+    bool auto_reduction;
 };
 
 #endif // FRACTION_H

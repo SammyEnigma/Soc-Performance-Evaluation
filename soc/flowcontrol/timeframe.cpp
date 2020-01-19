@@ -2,7 +2,7 @@
 
 TimeFrame::TimeFrame(int nume, int deno) : Fraction(nume, deno), total_buffer(0), curr_buffer(0)
 {
-
+    setAutoReduction(false);
 }
 
 TimeFrame TimeFrame::operator++(int)
@@ -27,9 +27,22 @@ TimeFrame &TimeFrame::operator=(const TimeFrame& f)
     return *this;
 }
 
+TimeFrame TimeFrame::nextFrame()
+{
+    numerator++;
+    return *this;
+}
+
+TimeFrame TimeFrame::nextClock()
+{
+    numerator += denominator;
+    return *this;
+}
+
 void TimeFrame::resetBuffer(int b)
 {
-    total_buffer = b;
+    if (b > -1) // 如果需要设置总buffer
+        total_buffer = b;
     curr_buffer = 0;
 }
 
