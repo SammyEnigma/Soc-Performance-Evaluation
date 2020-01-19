@@ -277,26 +277,6 @@ public:
         return *this;
     }
 
-    bool operator==(const Fraction &f)
-    {
-        return this->numerator == f.numerator && this->denominator == f.denominator;
-    }
-
-    bool operator!=(const Fraction &f)
-    {
-        return this->numerator != f.numerator || this->denominator != f.denominator;
-    }
-
-    bool operator==(const double &d)
-    {
-        return *this == Fraction::fromDecimal(d);
-    }
-
-    bool operator!=(const double &d)
-    {
-        return *this != Fraction::fromDecimal(d);
-    }
-
     Fraction operator+(const int &i) const
     {
         return Fraction(numerator + denominator * i, denominator);
@@ -438,6 +418,66 @@ public:
     Fraction operator/(const double &d) const
     {
         return (*this) / fromDecimal(d);
+    }
+
+    bool operator==(const Fraction &f)
+    {
+        return this->numerator == f.numerator && this->denominator == f.denominator;
+    }
+
+    bool operator!=(const Fraction &f)
+    {
+        return this->numerator != f.numerator || this->denominator != f.denominator;
+    }
+
+    bool operator==(const double &d)
+    {
+        return *this == Fraction::fromDecimal(d);
+    }
+
+    bool operator!=(const double &d)
+    {
+        return *this != Fraction::fromDecimal(d);
+    }
+
+    bool operator>(const Fraction &f) const
+    {
+        return this->numerator * f.denominator > f.numerator * this->denominator;
+    }
+
+    bool operator>(const double &d) const
+    {
+        return this->numerator * 1 > d * this->denominator;
+    }
+
+    bool operator>=(const Fraction &f) const
+    {
+        return this->numerator * f.denominator >= f.numerator * this->denominator;
+    }
+
+    bool operator>=(const double &d) const
+    {
+        return this->numerator * 1 >= d * this->denominator;
+    }
+
+    bool operator<(const Fraction &f) const
+    {
+        return this->numerator * f.denominator < f.numerator * this->denominator;
+    }
+
+    bool operator<(const double &d) const
+    {
+        return this->numerator * 1 < d * this->denominator;
+    }
+
+    bool operator<=(const Fraction &f) const
+    {
+        return this->numerator * f.denominator <= f.numerator * this->denominator;
+    }
+
+    bool operator<=(const double &d) const
+    {
+        return this->numerator * 1 <= d * this->denominator;
     }
 
     Fraction &operator++()
