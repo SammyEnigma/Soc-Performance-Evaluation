@@ -242,8 +242,8 @@ void ModulePort::slotDataReceived(DataPacket *packet)
     else // Switch直接传送到模块中
     {
         rt->runningOut(getPortId()+ ": 未设置接收缓冲，发送信号传递至所在模块");
-        emit signalDataReceived(this, packet);
     }
+    emit signalDataReceived(this, packet); // 如果是switch，则处理该信号；其余模块要么不理它，要么只计数
 }
 
 int ModulePort::getLatency()

@@ -10,6 +10,7 @@ public:
 
     virtual DRAMModule *newInstanceBySelf(QWidget* parent = nullptr) override;
     virtual void initData();
+    virtual void clearData();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

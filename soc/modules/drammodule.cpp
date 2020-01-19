@@ -25,6 +25,26 @@ void DRAMModule::initData()
     
     token_receive_count = 0;
     
+    foreach (PortBase *p, ShapeBase::ports)
+    {
+        // 连接信号槽
+        ModulePort *port = static_cast<ModulePort *>(p);
+        connect(port, ModulePort::signalDataReceived, this, [=](ModulePort *, DataPacket *){
+            token_receive_count++;
+        });
+    }
+}
+
+void DRAMModule::clearData()
+{
+    SlaveModule::clearData();
+
+    foreach (PortBase *p, ShapeBase::ports)
+    {
+        // 连接信号槽
+        ModulePort *port = static_cast<ModulePort *>(p);
+        disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
+    }
 }
 
 void DRAMModule::paintEvent(QPaintEvent *event)
