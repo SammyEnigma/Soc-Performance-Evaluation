@@ -103,6 +103,18 @@ bool FlowControlBase::initModules()
 void FlowControlBase::initData()
 {
     current_clock = 0;
+
+    // 获取所有bandwidth总和的最小公倍数，然后把帧数设置成这个
+    int com_mul = 1;
+    QList<int> denos;
+    foreach (PortBase* port, graphic->ports_map)
+    {
+        ModulePort* mp = static_cast<ModulePort*>(port);
+        int deno = mp->getBandwidth().getDenominator();
+        denos.append(deno);
+    }
+    com_mul = getLeastCommonMultiple(denos);
+    current_clock.setDenominator(com_mul);
     
     // 初始化所有控件的数据
     foreach (ShapeBase* shape, graphic->shape_lists)
@@ -187,6 +199,11 @@ CableBase *FlowControlBase::getModuleCable(ShapeBase *shape1, ShapeBase *shape2,
     if (module_cable->getClass() != "ModuleCable")
         return nullptr;
     return module_cable;
+}
+
+int FlowControlBase::getLeastCommonMultiple(QList<int> numbers)
+{
+    return 15;
 }
 /**
  * 创建一个顺序编号的token的工厂方法

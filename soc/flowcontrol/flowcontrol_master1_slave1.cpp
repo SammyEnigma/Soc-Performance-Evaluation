@@ -126,7 +126,7 @@ void FlowControl_Master1_Slave1::passOneClock0()
         {
             slave_port->enqueue_list.removeAt(i--);
             slave_port->dequeue_list.append(packet);
-            packet->resetDelay(slave_port->getBandwidth());
+            packet->resetDelay(slave_port->getBandwidth().toInt());
         }
         else
         {

@@ -16,7 +16,6 @@ public:
     ~PortDataDialog();
 
 private slots:
-    void on_spinBox_valueChanged(int);
 
     void on_spinBox_2_valueChanged(int);
 
@@ -27,6 +26,8 @@ private slots:
     void on_spinBox_5_valueChanged(int arg1);
 
     void on_spinBox_6_valueChanged(int arg1);
+
+    void on_lineEdit_2_editingFinished();
 
 private:
     Ui::PortDataDialog *ui;

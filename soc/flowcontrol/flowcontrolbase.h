@@ -62,6 +62,9 @@ protected:
     void deleteToken(DataPacket *packet);
     CableBase *getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single = false);
 
+private:
+    int getLeastCommonMultiple(QList<int> numbers);
+
 signals:
     void signalTokenCreated(DataPacket *packet); // 发送给流控View，同步创建可视化控件
     void signalTokenDeleted(DataPacket *packet); // 发送给流控View，同步删除可视化控件

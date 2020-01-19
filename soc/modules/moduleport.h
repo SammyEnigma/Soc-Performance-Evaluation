@@ -11,6 +11,7 @@
 #include <QQueue>
 #include "portbase.h"
 #include "datapacket.h"
+#include "timeframe.h"
 
 enum PASS_ONE_CLOCK_FLAG_PORT
 {
@@ -39,7 +40,7 @@ public:
     void sendDequeueTokenToComeModule(DataPacket *packet); // 模块发出收到的数据时，原方向返回一个token表示自己可以多接收一个
 
     int getLatency();
-    int getBandwidth();
+    TimeFrame getBandwidth();
     int getReturnDelay();
 
     void initBandwidthBufer();
@@ -85,8 +86,7 @@ public:
     int another_can_receive; // 端口对面模块的剩余buffer（token）
 
 private:
-    int bandwidth;            // 带宽，多少个clock发送1个token（越大越慢）
-    int bandwidth_buffer;     // 发送的clock缓存，超过bandwidth才能发送
+    TimeFrame bandwidth;            // 带宽，多少个clock发送1个token（越大越慢）
     int latency;              // the delay of the sending the request/response
     int return_delay;         // the delay on the return of the Token
     int send_update_delay;    // 发送时自己buffer-1的延迟

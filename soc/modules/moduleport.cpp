@@ -10,7 +10,7 @@
 ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       another_can_receive(0),
-      bandwidth(1), bandwidth_buffer(1),
+      bandwidth(1),
       latency(1), return_delay(0), request_to_queue(true), discard_response(false),
       send_update_delay(0), receive_update_delay(0), token(1)
 {
@@ -80,10 +80,10 @@ void ModulePort::passOnPackets()
             continue;
         enqueue_list.removeAt(i--);
         dequeue_list.append(packet);
-        packet->resetDelay(getBandwidth());
+        packet->resetDelay(getBandwidth().toInt());
     }
 
-    // Slave出队列（bandwidth clock）-->处理数据
+    // Slave出队列（1/bandwidth clock）-->处理数据
     for (int i = 0; i < dequeue_list.size(); i++)
     {
         DataPacket *packet = dequeue_list.at(i);
@@ -251,7 +251,7 @@ int ModulePort::getLatency()
     return latency;
 }
 
-int ModulePort::getBandwidth()
+TimeFrame ModulePort::getBandwidth()
 {
     return bandwidth;
 }
@@ -263,22 +263,22 @@ int ModulePort::getReturnDelay()
 
 void ModulePort::initBandwidthBufer()
 {
-    bandwidth_buffer = bandwidth;
+    bandwidth.resetBuffer();
 }
 
 bool ModulePort::nextBandwidthBuffer()
 {
-    return ++bandwidth_buffer >= bandwidth;
+    return bandwidth.nextFrame().isBufferFinished();
 }
 
 bool ModulePort::isBandwidthBufferFinished()
 {
-    return bandwidth_buffer >= bandwidth;
+    return bandwidth.isBufferFinished();
 }
 
 void ModulePort::resetBandwidthBuffer()
 {
-    bandwidth_buffer = 0;
+    bandwidth.resetBuffer();
 }
 
 void ModulePort::initReceiveToken(int x)

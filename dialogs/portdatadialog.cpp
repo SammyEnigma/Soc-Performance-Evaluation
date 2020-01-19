@@ -17,7 +17,7 @@ PortDataDialog::PortDataDialog(ModulePort *port) :
 
     this->setWindowTitle(port->getClass());
     ui->lineEdit->setText(port->getPortId());
-    ui->spinBox->setValue(port->bandwidth);
+    ui->lineEdit_2->setText(port->bandwidth.toString());
     ui->spinBox_2->setValue(port->latency);
     ui->spinBox_3->setValue(port->return_delay);
     ui->spinBox_4->setValue(port->send_update_delay);
@@ -28,11 +28,6 @@ PortDataDialog::PortDataDialog(ModulePort *port) :
 PortDataDialog::~PortDataDialog()
 {
     delete ui;
-}
-
-void PortDataDialog::on_spinBox_valueChanged(int)
-{
-    port->bandwidth = ui->spinBox->value();
 }
 
 void PortDataDialog::on_spinBox_2_valueChanged(int)
@@ -58,4 +53,9 @@ void PortDataDialog::on_spinBox_5_valueChanged(int)
 void PortDataDialog::on_spinBox_6_valueChanged(int)
 {
     port->token = ui->spinBox_6->value();
+}
+
+void PortDataDialog::on_lineEdit_2_editingFinished()
+{
+    port->bandwidth.fromString(ui->lineEdit_2->text());
 }
