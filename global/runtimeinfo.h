@@ -32,6 +32,7 @@ public:
         auto_stick_ports = false;
         running = false;
         standard_frame = 1;
+        total_clock = 0;
     }
 
     void runningOut(QString s)
@@ -49,6 +50,7 @@ public:
     bool running;
     QStringList running_out;
     int standard_frame;
+    int total_clock;
 };
 
 #endif // RUNTIMEINFO_H

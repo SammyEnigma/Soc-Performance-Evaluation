@@ -32,5 +32,27 @@ void IPModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     QFontMetrics fm(this->font());
-    painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1").arg(token_send_count));
+    double prop = 0;
+    if (ports.size() && rt->total_clock)
+    {
+        ModulePort *send_port = nullptr;
+        foreach (PortBase* p,  ports)
+        {
+            ModulePort* port = static_cast<ModulePort *>(p);
+            if (port->getCable() != nullptr)
+            {
+                if (port->getCable()->getFromPort() == port)
+                {
+                    send_port = port;
+                    break;
+                }
+            }
+        }
+        if (send_port != nullptr)
+        {
+            double bandwidth = send_port->getBandwidth().toDouble();
+            prop = token_send_count * 100 / rt->total_clock / bandwidth;
+        }
+    }
+    painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1 %2%").arg(token_send_count).arg(prop));
 }

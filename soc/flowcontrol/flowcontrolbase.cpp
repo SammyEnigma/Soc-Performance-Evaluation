@@ -103,6 +103,7 @@ bool FlowControlBase::initModules()
 void FlowControlBase::initData()
 {
     current_clock = 0;
+    rt->total_clock = 0;
 
     // 获取所有bandwidth总和的最小公倍数，然后把帧数设置成这个
     int com_mul = 1;
@@ -146,6 +147,7 @@ void FlowControlBase::clearData()
 void FlowControlBase::passOneClock()
 {
     FCDEB "\n======== Clock:" << ++current_clock;
+    rt->total_clock++;
 
     for (int i = 0; i < delay_runs.size(); i++)
     {
