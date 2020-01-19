@@ -6,6 +6,7 @@
 #define FRACTION_H
 
 #include <QString>
+#include <QDebug>
 #include <iostream>
 
 class Fraction
@@ -28,32 +29,32 @@ public:
             denominator = -denominator;
         }
     }
-    
+
     void setNumerator(int n)
     {
         this->numerator = n;
     }
-    
+
     int getNumerator()
     {
         return numerator;
     }
-    
+
     int getDenominator()
     {
         return denominator;
     }
-        
+
     void setDenominator(int d)
     {
         this->denominator = d;
     }
-    
+
     void setAutoReduction(bool b = false)
     {
         auto_reduction = b;
     }
-    
+
     Fraction(double d)
     {
         Fraction f = fromDecimal(d);
@@ -153,17 +154,18 @@ public:
         }
         if (abs(eps - 0.05) < 1e-6) // 一位小数的情况，精确到下一层
             eps /= 10;
+
         // 遍历分母和分子，判断数字
         int nume = 1, deno = 1;
         int suit_nume = nume, suit_deno = deno;
         bool find = false;
-        if (abs(decimal < 1e-6)) // 0
+        if (abs(decimal < 1e-6)) // 小数部分是0，即整数
         {
             suit_nume = 0;
             suit_deno = 1;
             find = true;
         }
-        while (++deno < 999999) // 遍历分母
+        while (++deno < 999999) // 遍历分母，从1开始逐渐增大
         {
             // 二分法查找
             int left = 1, right = deno; // [left, right)
@@ -195,7 +197,7 @@ public:
                 break;
         }
 
-        return Fraction(nume + integer * deno, deno);
+        return Fraction((nega?-1:1) * (suit_nume + integer * suit_deno), suit_deno);
     }
 
     void setValue(int n, int d)
@@ -248,7 +250,7 @@ public:
     {
         return toString();
     }
-    
+
     Fraction &operator=(const int &i)
     {
         this->numerator = i;
@@ -273,6 +275,26 @@ public:
         this->numerator = f.numerator;
         this->denominator = f.denominator;
         return *this;
+    }
+
+    bool operator==(const Fraction &f)
+    {
+        return this->numerator == f.numerator && this->denominator == f.denominator;
+    }
+
+    bool operator!=(const Fraction &f)
+    {
+        return this->numerator != f.numerator || this->denominator != f.denominator;
+    }
+
+    bool operator==(const double &d)
+    {
+        return *this == Fraction::fromDecimal(d);
+    }
+
+    bool operator!=(const double &d)
+    {
+        return *this != Fraction::fromDecimal(d);
     }
 
     Fraction operator+(const int &i) const
@@ -389,7 +411,18 @@ public:
 
     Fraction operator*(const Fraction &f) const
     {
-        return Fraction(numerator * f.numerator, denominator * f.denominator);
+        int nume = numerator * f.numerator;
+        int deno = denominator * f.denominator;
+        if (nume && deno && auto_reduction && f.auto_reduction) // 两个都不是0，并且双方都支持约分
+        {
+            int g = gcd(nume, deno);
+            if (g > 0)
+            {
+                nume /= g;
+                deno /= g;
+            }
+        }
+        return Fraction(nume, deno);
     }
 
     Fraction operator*(const double &d) const
@@ -470,7 +503,8 @@ private:
 protected:
     int numerator;   // 分子
     int denominator; // 分母
-    bool auto_reduction;
+    bool auto_reduction; // 乘法/加法是否自动约分
+    bool padding_size_to_4;
 };
 
 #endif // FRACTION_H
