@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QPoint>
+#include "timeframe.h"
 
 #define PACKET_SIZE 8
 
@@ -72,9 +73,9 @@ protected:
     PortBase* target_port; // 要发送的端口方向
 
 private:
-    int delay_step; // 数据包传送有延迟，查看延迟的位置
-    int delay_max;  // 最大的延迟数量
-    
+    TimeFrame delay_step; // 数据包传送有延迟，查看延迟的位置
+    TimeFrame delay_max;  // 最大的延迟数量
+
     QPoint draw_pos; // 本次/上次绘制的位置（产生动画）
 };
 

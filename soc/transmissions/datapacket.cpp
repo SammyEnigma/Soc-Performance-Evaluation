@@ -60,7 +60,7 @@ bool DataPacket::isDelayFinished()
  */
 double DataPacket::currentProp()
 {
-    return static_cast<double>(delay_step) / delay_max;
+    return (delay_step / delay_max).toDouble();
 }
 
 QString DataPacket::toString()

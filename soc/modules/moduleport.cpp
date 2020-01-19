@@ -154,7 +154,7 @@ void ModulePort::fromStringAddin(QString s)
     QString receive_update_delay = StringUtil::getXml(s, "RECEIVE_UPDATE_DELAY");
     QString token = StringUtil::getXml(s, "TOKEN");
     if (!bandwidth.isEmpty())
-        this->bandwidth = bandwidth.toInt();
+        this->bandwidth = TimeFrame(bandwidth);
     if (!latency.isEmpty())
         this->latency = latency.toInt();
     if (!return_delay.isEmpty())

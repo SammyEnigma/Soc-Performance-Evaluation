@@ -6,17 +6,21 @@
 #define TIMEFRAME_H
 
 #include "Fraction.h"
+static int standard_frame; // 分母
 
 class TimeFrame : public Fraction
 {
 public:
-    TimeFrame(int nume, int deno = 1);
+    TimeFrame(int nume, int deno);
+    TimeFrame(int number);
+    TimeFrame(QString s);
 
     TimeFrame &operator++();   // 注意：这里自增/自减的是分子，而不是整体！
     TimeFrame operator++(int); // 注意：这里自增/自减的是分子，而不是整体！
     TimeFrame &operator--();   // 注意：这里自增/自减的是分子，而不是整体！
     TimeFrame operator--(int); // 注意：这里自增/自减的是分子，而不是整体！
     TimeFrame &operator=(const TimeFrame &f);
+    TimeFrame &operator=(const int &i); // 赋初值
 
     TimeFrame nextFrame();
     TimeFrame nextClock();

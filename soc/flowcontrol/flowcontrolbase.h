@@ -63,7 +63,9 @@ protected:
     CableBase *getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single = false);
 
 private:
-    int getLeastCommonMultiple(QList<int> numbers);
+    int gcd(int a, int b);
+    int lcm(int a, int b);
+    int lcm(QList<int> numbers);
 
 signals:
     void signalTokenCreated(DataPacket *packet); // 发送给流控View，同步创建可视化控件

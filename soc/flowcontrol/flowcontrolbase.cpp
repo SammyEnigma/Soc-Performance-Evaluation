@@ -113,8 +113,10 @@ void FlowControlBase::initData()
         int deno = mp->getBandwidth().getDenominator();
         denos.append(deno);
     }
-    com_mul = getLeastCommonMultiple(denos);
+    com_mul = lcm(denos);
+    rt->runningOut("最小帧数：1 clock = " + QString::number(com_mul) + " frame");
     current_clock.setDenominator(com_mul);
+    standard_frame = com_mul;
     
     // 初始化所有控件的数据
     foreach (ShapeBase* shape, graphic->shape_lists)
@@ -201,9 +203,31 @@ CableBase *FlowControlBase::getModuleCable(ShapeBase *shape1, ShapeBase *shape2,
     return module_cable;
 }
 
-int FlowControlBase::getLeastCommonMultiple(QList<int> numbers)
+int FlowControlBase::gcd(int a, int b)
 {
-    return 15;
+    if (a < b)
+    {
+        int t = a;
+        a = b;
+        b = t;
+    }
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+int FlowControlBase::lcm(int a, int b)
+{
+    return a * b / gcd(a, b);
+}
+
+int FlowControlBase::lcm(QList<int> numbers)
+{
+    int i;
+    int s=1;
+    for (i=0;i<numbers.size();i++)
+    {
+        s = lcm(s,numbers[i]);
+    }
+    return s;
 }
 /**
  * 创建一个顺序编号的token的工厂方法
