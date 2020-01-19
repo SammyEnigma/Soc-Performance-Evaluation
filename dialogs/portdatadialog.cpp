@@ -57,5 +57,5 @@ void PortDataDialog::on_spinBox_6_valueChanged(int)
 
 void PortDataDialog::on_lineEdit_2_editingFinished()
 {
-    port->bandwidth.fromString(ui->lineEdit_2->text());
+    port->bandwidth.loadString(ui->lineEdit_2->text());
 }

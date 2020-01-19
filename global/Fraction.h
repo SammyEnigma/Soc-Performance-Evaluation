@@ -75,6 +75,14 @@ public:
         denominator = f.denominator;
     }
 
+    Fraction loadString(QString s)
+    {
+        Fraction f = Fraction::fromString(s);
+        this->numerator = f.numerator;
+        this->denominator = f.denominator;
+        return *this;
+    }
+
     static Fraction fromString(QString s)
     {
         s = s.trimmed();
