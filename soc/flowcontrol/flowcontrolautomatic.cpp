@@ -76,7 +76,6 @@ void FlowControlAutomatic::clearData()
 
 void FlowControlAutomatic::passOneClock()
 {
-	qDebug() << "FlowControlAutomatic::passOneClock";
     FlowControlBase::passOneClock();
 
     foreach (ShapeBase* shape, shapes)

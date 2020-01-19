@@ -31,6 +31,7 @@ public:
         current_choosed_shape = nullptr;
         auto_stick_ports = false;
         running = false;
+        standard_frame = 1;
     }
 
     void runningOut(QString s)
@@ -47,6 +48,7 @@ public:
     
     bool running;
     QStringList running_out;
+    int standard_frame;
 };
 
 #endif // RUNTIMEINFO_H

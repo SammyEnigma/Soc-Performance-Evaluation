@@ -6,7 +6,7 @@
 #define TIMEFRAME_H
 
 #include "Fraction.h"
-static int standard_frame; // 分母
+#include "globalvars.h"
 
 class TimeFrame : public Fraction
 {

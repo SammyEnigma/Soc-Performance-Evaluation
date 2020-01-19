@@ -5,7 +5,7 @@ TimeFrame::TimeFrame(int nume, int deno) : Fraction(nume, deno), total_buffer(0)
     setAutoReduction(false);
 }
 
-TimeFrame::TimeFrame(int number) : TimeFrame(number * standard_frame, standard_frame)
+TimeFrame::TimeFrame(int number) : TimeFrame(number * rt->standard_frame, rt->standard_frame)
 {
     
 }
@@ -31,7 +31,8 @@ TimeFrame TimeFrame::operator--(int)
 
 TimeFrame &TimeFrame::operator=(const TimeFrame& f) 
 {
-    static_cast<Fraction>(*this) = f;
+//    static_cast<Fraction>(*this) = static_cast<Fraction>(f); // 不能用这个方法，因为改的不是自己的数据
+    *static_cast<Fraction*>(this) = static_cast<Fraction>(f);
     this->total_buffer = f.total_buffer;
     this->curr_buffer = f.curr_buffer;
     return *this;
@@ -39,7 +40,7 @@ TimeFrame &TimeFrame::operator=(const TimeFrame& f)
 
 TimeFrame &TimeFrame::operator=(const int &i)
 {
-    static_cast<Fraction>(*this) = Fraction(i*standard_frame, standard_frame);
+    *static_cast<Fraction*>(this) = Fraction(i*rt->standard_frame, rt->standard_frame);
     this->total_buffer = 0;
     this->curr_buffer = 0;
     return *this;

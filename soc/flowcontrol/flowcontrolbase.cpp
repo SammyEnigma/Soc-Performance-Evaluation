@@ -116,7 +116,7 @@ void FlowControlBase::initData()
     com_mul = lcm(denos);
     rt->runningOut("最小帧数：1 clock = " + QString::number(com_mul) + " frame");
     current_clock.setDenominator(com_mul);
-    standard_frame = com_mul;
+    rt->standard_frame = com_mul;
     
     // 初始化所有控件的数据
     foreach (ShapeBase* shape, graphic->shape_lists)

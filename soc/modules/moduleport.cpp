@@ -154,7 +154,9 @@ void ModulePort::fromStringAddin(QString s)
     QString receive_update_delay = StringUtil::getXml(s, "RECEIVE_UPDATE_DELAY");
     QString token = StringUtil::getXml(s, "TOKEN");
     if (!bandwidth.isEmpty())
+    {
         this->bandwidth = TimeFrame(bandwidth);
+    }
     if (!latency.isEmpty())
         this->latency = latency.toInt();
     if (!return_delay.isEmpty())
@@ -268,7 +270,7 @@ void ModulePort::initBandwidthBufer()
 
 bool ModulePort::nextBandwidthBuffer()
 {
-    return bandwidth.nextFrame().isBufferFinished();
+    return bandwidth.nextBuffer();
 }
 
 bool ModulePort::isBandwidthBufferFinished()
