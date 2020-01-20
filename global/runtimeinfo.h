@@ -51,6 +51,7 @@ public:
     QStringList running_out;
     int standard_frame;
     int total_clock;
+    int total_frame;
 };
 
 #endif // RUNTIMEINFO_H

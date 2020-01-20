@@ -33,7 +33,7 @@ void IPModule::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing, true);
     QFontMetrics fm(this->font());
     double prop = 0;
-    if (ports.size() && rt->total_clock)
+    if (ports.size() && rt->total_frame)
     {
         ModulePort *send_port = nullptr;
         foreach (PortBase* p,  ports)
@@ -51,7 +51,7 @@ void IPModule::paintEvent(QPaintEvent *event)
         if (send_port != nullptr)
         {
             double bandwidth = send_port->getBandwidth().toDouble();
-            prop = token_send_count * 100 / rt->total_clock / bandwidth;
+            prop = token_send_count * 100 / rt->total_frame;
             if (prop > 100)
                 prop = 100;
         }
