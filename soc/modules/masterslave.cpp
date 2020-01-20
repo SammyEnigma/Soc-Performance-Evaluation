@@ -36,12 +36,13 @@ void MasterSlave::initData()
             else // 多个端口
             {
                 ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
-                if (mp == port)
+                if (mp == port && ports.size() > 1)
                     mp = static_cast<ModulePort *>(ports.at(1));
-                if (mp->anotherCanRecive())
-                {
-                    mp->sendData(packet, packet->getDataType());
-                }
+                packet->setComePort(port);
+                packet->setTargetPort(mp);
+                packet->resetDelay(0);
+                data_list.append(packet); // 等待自己发送
+                rt->runningOut(getText() + "收到" + mp->getPortId() + "的数据，放入 data_list 中(当前数量："+QString::number(data_list.size())+")" );
             }
         });
     }

@@ -58,9 +58,25 @@ void MasterModule::passOnPackets()
                 port->resetBandwidthBuffer();
                 emit signalTokenSendStarted(packet);
             }
-        }// port 内部数据传输流
-        port->passOnPackets();
+        }
     }
+    
+    if (getClass() == "Master") // IPModule也是Master，但是data_list是挨个发的，只有Master自己才需要直接全部发送（只要有token）
+    {
+        for (int i = 0; i < data_list.size(); i++)
+        {
+            DataPacket *packet = data_list.at(i);
+            if (!packet->isDelayFinished())
+                continue;
+            ModulePort *port = static_cast<ModulePort *>(packet->getTargetPort());
+            if (port->anotherCanRecive())
+            {
+                port->sendData(packet, DATA_REQUEST);
+            }
+        }
+    }
+    
+    MasterSlave::passOnPackets();
 }
 
 void MasterModule::updatePacketPos()
