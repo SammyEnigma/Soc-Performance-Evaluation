@@ -82,32 +82,58 @@ void MasterModule::passOnPackets()
 void MasterModule::updatePacketPos()
 {
     ModulePort* port = nullptr;
+    ModulePort* send_port = nullptr;
     foreach (PortBase* p, getPorts())
     {
-        if (p->getOppositeShape() != nullptr && static_cast<ShapeBase*>(p->getOppositeShape())->getClass() == "IP") {
+        if (p->getOppositeShape() == nullptr)
+            continue;
+        if (static_cast<ShapeBase*>(p->getOppositeShape())->getClass() == "IP") {
             port = static_cast<ModulePort *>(p);
-            break;
+        } else {
+            send_port = static_cast<ModulePort*>(p);
         }
     }
-    if (port == nullptr)
-        return;
-    
+
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
-
-    QPoint pos = this->pos() + QPoint(width()/2-PACKET_SIZE*2, height * 2 + 4);
-    foreach (DataPacket *packet, port->enqueue_list)
+    if (port != nullptr)
     {
-        packet->setDrawPos(pos);
+        QPoint pos = this->pos() + QPoint(width() / 2 - PACKET_SIZE * 2, height * 2 + 4);
+        foreach (DataPacket *packet, port->enqueue_list)
+        {
+            packet->setDrawPos(pos);
+        }
+
+        int h = height * 2 + 4;
+        foreach (DataPacket *packet, port->dequeue_list)
+        {
+            pos = this->pos() + QPoint(width() / 2, h);
+            h += 4 + PACKET_SIZE;
+            packet->setDrawPos(pos);
+        }
     }
 
-    int h = height * 2 + 4;
-    foreach (DataPacket *packet, port->dequeue_list)
+    if (getClass() == "Master")
     {
-        pos = this->pos() + QPoint(width() / 2+PACKET_SIZE*2, h);
-        h += 4 + PACKET_SIZE;
-        packet->setDrawPos(pos);
+        int h = height * 2 + 4;
+        foreach (DataPacket *packet, data_list)
+        {
+            QPoint pos = this->pos() + QPoint(width() / 2 + PACKET_SIZE * 3, h);
+            h += 4 + PACKET_SIZE;
+            packet->setDrawPos(pos);
+        }
     }
+
+    if (send_port != nullptr && getClass() == "Master") {
+        int h = height * 2 + 4;
+        foreach (DataPacket *packet, port->send_delay_list)
+        {
+            QPoint pos = this->pos() + QPoint(width() / 2 + PACKET_SIZE * 5, h);
+            h += 4 + PACKET_SIZE;
+            packet->setDrawPos(pos);
+        }
+    }
+   
 }
 
 void MasterModule::paintEvent(QPaintEvent *event)
