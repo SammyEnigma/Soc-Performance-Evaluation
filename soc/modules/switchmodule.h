@@ -42,6 +42,7 @@ protected:
     
 private:
     PortBase* getToPort(PortBase* from_port);
+    QList<ModulePort *> getToPorts(PortBase* from_port);
 
 public slots:
 	void slotDataReceived(ModulePort* port, DataPacket *packet);

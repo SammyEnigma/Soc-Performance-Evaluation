@@ -88,35 +88,45 @@ void SwitchModule::passOnPackets()
             continue;
 
         // 判断packet的传输目标
-        if (packet->getTargetPort() != nullptr)
+        QList<ModulePort*> ports = getToPorts(packet->getComePort());
+        if (ports.size() != 0)
         {
-            ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+            /*ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
             if (!port->anotherCanRecive()) // 对方没有token了，直接跳过后面所有步骤
                 continue;
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
-                continue;
+                continue;*/
             
             foreach (SwitchPicker* picker, pickers)
             {
-                if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port) // 带宽足够，并且是（轮询）到这个端口
-                {
-                    // 发送数据
-                    request_queue.removeAt(i--);
-                    packet->resetDelay(cable->getData("delay")->i());
-                    port->sendData(packet, DATA_REQUEST);
-                    rt->runningOut("Hub 发送：" + packet->toString());
+                if (!picker->isBandwidthBufferFinished()) // 带宽足够
+                    continue;
+                ModulePort* pick_port = picker->getPickPort();
+                if (!ports.contains(pick_port)) // 轮询到这个端口
+                    continue;
+                // 发送数据
+                ModuleCable* cable = static_cast<ModuleCable*>(pick_port->getCable());
+                if (cable == nullptr)
+                    continue;
+                request_queue.removeAt(i--);
+                packet->resetDelay(cable->getData("delay")->i());
+                pick_port->sendData(packet, DATA_REQUEST);
+                picker->resetBandwidthBuffer();
+                rt->runningOut("Hub 发送：" + packet->toString());
 
-                    // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-                    if (packet->getComePort() != nullptr)
-                    {
-                        port = static_cast<ModulePort*>(packet->getComePort());
-                        port->sendDequeueTokenToComeModule(new DataPacket());
-                        picker->resetBandwidthBuffer();
-                        break;
-                    }
+                // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+                if (packet->getComePort() != nullptr)
+                {
+                    ModulePort* from_port = static_cast<ModulePort*>(packet->getComePort());
+                    from_port->sendDequeueTokenToComeModule(new DataPacket());
+                    break;
                 }
             }
+        }
+        else
+        {
+            rt->runningOut("packet 没有找到对应的 to port");
         }
     }
 
@@ -145,13 +155,13 @@ void SwitchModule::passOnPackets()
                     response_queue.removeAt(i--);
                     packet->resetDelay(cable->getData("delay")->i());
                     port->sendData(packet, DATA_RESPONSE);
+                    picker->resetBandwidthBuffer();
 
                     // 通过进来的端口，返回发送出去的token（依赖port的return delay）
                     if (packet->getComePort() != nullptr)
                     {
                         port = static_cast<ModulePort*>(packet->getComePort());
                         port->sendDequeueTokenToComeModule(new DataPacket());
-                        picker->resetBandwidthBuffer();
                         break;
                     }
                 }
@@ -194,7 +204,7 @@ void SwitchModule::delayOneClock()
  */
 void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
 {
-    ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
+    /*ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
     if (oppo != nullptr)
     {
         if (oppo->getText().indexOf("master",0,Qt::CaseInsensitive) != -1) // 收到来自Master的request
@@ -217,7 +227,13 @@ void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
         packet->setComePort(port);
         packet->setTargetPort(getToPort(port));
         packet->resetDelay(getData("latency")->i());
-    }
+    }*/
+    packet->setComePort(port);
+    packet->resetDelay(getData("latency")->i());
+    if (packet->getDataType() == DATA_REQUEST)
+        request_queue.append(packet);
+    else if (packet->getDataType() == DATA_RESPONSE)
+        response_queue.append(packet);
 }
 
 void SwitchModule::updatePacketPos()
@@ -286,7 +302,47 @@ PortBase *SwitchModule::getToPort(PortBase *from_port)
     }
     ERR("没找到适合的 to port: "+to_name)
 
-    return nullptr;
+            return nullptr;
+}
+
+/**
+ * 获取一个端口进来的DataPacket，出去的方向
+ * 需要用户手动设定 route 属性，格式为：
+ * from1:to1,to2;from2:to3
+ */
+QList<ModulePort *> SwitchModule::getToPorts(PortBase *from_port)
+{
+    QList<ModulePort*>to_ports;
+    if (from_port->getOppositeShape() == nullptr)
+        return to_ports;
+    QString shape_name = static_cast<ShapeBase*>(from_port->getOppositeShape())->getText();
+
+    QString routes = getDataValue("route").toString();
+    QStringList routes_list = routes.split(";");
+    foreach (QString route, routes_list)
+    {
+        if (!route.contains(":"))
+            continue;
+        QString from = route.split(":").at(0);
+        QStringList toes = route.split(":").at(1).split(",");
+        if (from == shape_name)
+        {
+            // 找到对应的端口
+            foreach (QString to, toes)
+            {
+                foreach (PortBase* port, ports)
+                {
+                    if (port->getOppositeShape() != nullptr && static_cast<ShapeBase*>(port->getOppositeShape())->getText() == to)
+                    {
+                        to_ports.append(static_cast<ModulePort*>(port));
+                        break;
+                    }
+                }
+            }
+            return to_ports;
+        }
+    }
+    return to_ports;
 }
 
 void SwitchModule::linkPickerPorts(QList<ModulePort *> ports)
