@@ -38,11 +38,19 @@ void MasterSlave::initData()
                 ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
                 if (mp == port && ports.size() > 1)
                     mp = static_cast<ModulePort *>(ports.at(1));
-                packet->setComePort(port);
-                packet->setTargetPort(mp);
-                packet->resetDelay(0);
-                data_list.append(packet); // 等待自己发送
-                rt->runningOut(getText() + "收到" + mp->getPortId() + "的数据，放入 data_list 中(当前数量："+QString::number(data_list.size())+")" );
+                if (getClass() == "Master") // Master存到data_list里面
+                {
+                    packet->setComePort(port);
+                    packet->setTargetPort(mp);
+                    packet->resetDelay(0);
+                    data_list.append(packet); // 等待自己发送
+                    rt->runningOut(getText() + "收到" + port->getPortId() + "的数据，放入 data_list 中(当前数量：" + QString::number(data_list.size()) + ")");
+                }
+                else // Slave或者其他的，直接继续下发
+                {
+                    mp->sendData(packet, packet->getDataType());
+                    rt->runningOut(getText() + "收到" + port->getPortId() + "数据，开始下发");
+                }
             }
         });
     }
