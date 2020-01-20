@@ -231,6 +231,7 @@ void MainWindow::on_actionRun_triggered()
     ui->actionPause_P->setEnabled(true);
     ui->actionResume_S->setVisible(false);
     ui->actionStep->setEnabled(true);
+    ui->actionTen_Step_T->setEnabled(true);
 }
 
 void MainWindow::on_actionPause_P_triggered()
@@ -266,6 +267,7 @@ void MainWindow::on_actionStop_triggered()
     ui->actionPause_P->setEnabled(false);
     ui->actionResume_S->setVisible(false);
     ui->actionStep->setEnabled(false);
+    ui->actionTen_Step_T->setEnabled(false);
 
     flow_control->deleteLater();
     flow_control = nullptr;
@@ -294,4 +296,10 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionGithub_G_triggered()
 {
     QDesktopServices::openUrl(QUrl(QLatin1String("https://github.com/Graphical-SoC-Performance/Soc-Performance-Evaluation")));
+}
+
+void MainWindow::on_actionTen_Step_T_triggered()
+{
+    for (int i = 0; i < 10; i ++)
+        flow_control->nextStep();
 }

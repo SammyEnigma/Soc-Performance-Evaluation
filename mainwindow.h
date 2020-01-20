@@ -64,6 +64,8 @@ private slots:
 
     void on_actionGithub_G_triggered();
 
+    void on_actionTen_Step_T_triggered();
+
 private:
     void initSystem(); // 初始化系统（比如目录结构）
     void initView();   // 初始化布局

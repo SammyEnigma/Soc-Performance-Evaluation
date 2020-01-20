@@ -230,6 +230,7 @@
    <addaction name="actionPause_P"/>
    <addaction name="actionResume_S"/>
    <addaction name="actionStep"/>
+   <addaction name="actionTen_Step_T"/>
   </widget>
   <action name="actionSave">
    <property name="icon">
@@ -649,6 +650,10 @@
   <action name="actionTen_Step_T">
    <property name="enabled">
     <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/one_step</normaloff>:/icons/one_step</iconset>
    </property>
    <property name="text">
     <string>Ten Step (&amp;T)</string>
