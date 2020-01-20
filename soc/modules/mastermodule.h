@@ -24,7 +24,7 @@ public:
     virtual void setDefaultDataList() override;
 
     void passOnPackets() override;
-    
+    void updatePacketPos() override;
 
 protected:
 	void paintEvent(QPaintEvent *event) override;

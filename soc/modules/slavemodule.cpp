@@ -42,6 +42,8 @@ void SlaveModule::passOnPackets()
 
 void SlaveModule::updatePacketPos()
 {
+    if (getPorts().size() == 0)
+        return;
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
 
