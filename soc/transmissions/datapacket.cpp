@@ -92,6 +92,7 @@ PortBase *DataPacket::getComePort()
 void DataPacket::setComePort(PortBase *port)
 {
     come_port = port;
+    history_come_ports.append(port);
 }
 
 PortBase* DataPacket::getTargetPort()
@@ -102,6 +103,29 @@ PortBase* DataPacket::getTargetPort()
 void DataPacket::setTargetPort(PortBase* port)
 {
     target_port = port;
+}
+
+QList<PortBase *> DataPacket::getHistoryPorts()
+{
+    return history_come_ports;
+}
+
+/**
+ * switch获取通过packet来的路线，决定它response返回的路线
+ * @param ports        switch 的所有端口
+ * @param exclude_port response时进来的端口，要排除掉这个
+ * @return             这个switch最后应该返回的端口
+ */
+PortBase *DataPacket::getReturnPort(QList<PortBase *> ports, PortBase *exclude_port)
+{
+    foreach (PortBase* port, ports)
+    {
+        if (port == exclude_port)
+            continue;
+        if (history_come_ports.contains(port))
+            return port;
+    }
+    return nullptr;
 }
 
 void DataPacket::setDataType(DATA_TYPE type)

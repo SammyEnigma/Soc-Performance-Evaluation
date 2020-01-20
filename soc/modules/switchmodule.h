@@ -41,8 +41,9 @@ protected:
     virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
     
 private:
-    PortBase* getToPort(PortBase* from_port);
     QList<ModulePort *> getToPorts(PortBase* from_port);
+    QList<ModulePort *> getReturnPorts(PortBase* to_port);
+    ModulePort* getPortByShapeName(QString text);
 
 public slots:
 	void slotDataReceived(ModulePort* port, DataPacket *packet);

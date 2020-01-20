@@ -50,6 +50,8 @@ public:
     void setComePort(PortBase *port);
     PortBase* getTargetPort();
     void setTargetPort(PortBase *port);
+    QList<PortBase*> getHistoryPorts();
+    PortBase* getReturnPort(QList<PortBase*> ports, PortBase* exclude_port);
 
     void setDataType(DATA_TYPE type);
     DATA_TYPE getDataType();
@@ -72,6 +74,7 @@ protected:
     PortBase* come_port;   // 来的端口
     PortBase* target_port; // 要发送的端口方向
     // QList<PortBase*> target_ports; // 要发送的端口list（来的方向只有一个，但是去的方向可以有多个）
+    QList<PortBase*> history_come_ports;
 
 private:
     TimeFrame delay_step; // 数据包传送有延迟，查看延迟的位置

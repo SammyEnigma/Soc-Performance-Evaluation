@@ -91,13 +91,6 @@ void SwitchModule::passOnPackets()
         QList<ModulePort*> ports = getToPorts(packet->getComePort());
         if (ports.size() != 0)
         {
-            /*ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
-            if (!port->anotherCanRecive()) // 对方没有token了，直接跳过后面所有步骤
-                continue;
-            ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
-            if (cable == nullptr)
-                continue;*/
-            
             foreach (SwitchPicker* picker, pickers)
             {
                 if (!picker->isBandwidthBufferFinished()) // 带宽足够
@@ -138,13 +131,13 @@ void SwitchModule::passOnPackets()
             continue;
 
         // 判断packet的传输目标
-        if (packet->getTargetPort() != nullptr)
+        if (packet->getComePort() != nullptr)
         {
-            ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+            ModulePort* port = static_cast<ModulePort*>(packet->getReturnPort(this->ports, packet->getComePort()));
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
-            
+
 
             foreach (SwitchPicker *picker, pickers)
             {
@@ -204,30 +197,6 @@ void SwitchModule::delayOneClock()
  */
 void SwitchModule::slotDataReceived(ModulePort *port, DataPacket *packet)
 {
-    /*ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
-    if (oppo != nullptr)
-    {
-        if (oppo->getText().indexOf("master",0,Qt::CaseInsensitive) != -1) // 收到来自Master的request
-        {
-            request_queue.enqueue(packet);
-            rt->runningOut("Hub 收到 request : " + QString::number(request_queue.size()));
-            packet->setComePort(port);
-            packet->setTargetPort(getToPort(port));
-            packet->resetDelay(getData("latency")->i());
-        }
-        else if (oppo->getText().indexOf("slave",0,Qt::CaseInsensitive) != -1) // 收到来自Slave的response
-        {
-            response_queue.enqueue(packet);
-            rt->runningOut("Hub 收到 response : " + QString::number(response_queue.size()));
-        }
-        else // 不知道是啥
-            return ;
-
-        // 通过端口确定来去的方向
-        packet->setComePort(port);
-        packet->setTargetPort(getToPort(port));
-        packet->resetDelay(getData("latency")->i());
-    }*/
     packet->setComePort(port);
     packet->resetDelay(getData("latency")->i());
     if (packet->getDataType() == DATA_REQUEST)
@@ -279,34 +248,8 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     }
 }
 
-PortBase *SwitchModule::getToPort(PortBase *from_port)
-{
-    ShapeBase* from_shape = static_cast<ShapeBase*>(from_port->getOppositeShape());
-    if (from_shape == nullptr)
-        return nullptr;
-    QString from_name = from_shape->getText();
-    QString to_name;
-    if (from_name.startsWith("master", Qt::CaseInsensitive))
-        to_name = "Slave";
-    else
-        to_name = "Master";
-    if (from_name.endsWith("1"))
-        to_name += "1";
-    else
-        to_name += "2";
-
-    foreach (PortBase* p, ports)
-    {
-        if (p->getOppositeShape() != nullptr && static_cast<ShapeBase*>(p->getOppositeShape())->getText() == to_name)
-            return p;
-    }
-    ERR("没找到适合的 to port: "+to_name)
-
-            return nullptr;
-}
-
 /**
- * 获取一个端口进来的DataPacket，出去的方向
+ * 获取一个端口进来的DataPacket，出去的方向（一对多）
  * 需要用户手动设定 route 属性，格式为：
  * from1:to1,to2;from2:to3
  */
@@ -343,6 +286,52 @@ QList<ModulePort *> SwitchModule::getToPorts(PortBase *from_port)
         }
     }
     return to_ports;
+}
+
+/**
+ * 通过之前发送出去的端口，原路返回 response（多对多）
+ */
+QList<ModulePort *> SwitchModule::getReturnPorts(PortBase *to_port)
+{
+    QList<ModulePort*> from_ports;
+    if (to_port->getOppositeShape() == nullptr)
+        return from_ports;
+    QString shape_name = static_cast<ShapeBase*>(to_port->getOppositeShape())->getText();
+
+    QString routes = getDataValue("route").toString();
+    QStringList routes_list = routes.split(";");
+    foreach (QString route, routes_list)
+    {
+        if (!route.contains(":"))
+            continue;
+        QString from = route.split(":").at(0);
+        QStringList toes = route.split(":").at(1).split(",");
+
+        // 找到对应的端口
+        foreach (QString to, toes)
+        {
+            foreach (PortBase* port, ports)
+            {
+                if (port == to_port) // 是这个端口没错了
+                {
+                    from_ports.append(getPortByShapeName(from));
+                }
+            }
+        }
+    }
+    return from_ports;
+}
+
+ModulePort *SwitchModule::getPortByShapeName(QString text)
+{
+    foreach (PortBase* port, ports)
+    {
+        if (port->getOppositeShape() != nullptr && static_cast<ShapeBase*>(port->getOppositeShape())->getText() == text)
+        {
+            return static_cast<ModulePort*>(port);
+        }
+    }
+    return nullptr;
 }
 
 void SwitchModule::linkPickerPorts(QList<ModulePort *> ports)
