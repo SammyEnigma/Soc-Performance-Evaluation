@@ -52,6 +52,8 @@ void IPModule::paintEvent(QPaintEvent *event)
         {
             double bandwidth = send_port->getBandwidth().toDouble();
             prop = token_send_count * 100 / rt->total_clock / bandwidth;
+            if (prop > 100)
+                prop = 100;
         }
     }
     painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1 %2%").arg(token_send_count).arg(prop));
