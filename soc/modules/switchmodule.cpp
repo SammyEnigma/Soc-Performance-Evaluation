@@ -98,6 +98,8 @@ void SwitchModule::passOnPackets()
                 ModulePort* pick_port = picker->getPickPort();
                 if (!ports.contains(pick_port)) // 轮询到这个端口
                     continue;
+                if (!pick_port->anotherCanRecive()) // 没有token了
+                    continue;
                 // 发送数据
                 ModuleCable* cable = static_cast<ModuleCable*>(pick_port->getCable());
                 if (cable == nullptr)
@@ -133,11 +135,12 @@ void SwitchModule::passOnPackets()
         // 判断packet的传输目标
         if (packet->getComePort() != nullptr)
         {
-            ModulePort* port = static_cast<ModulePort*>(packet->getReturnPort(this->ports, packet->getComePort()));
+            ModulePort* port = static_cast<ModulePort*>(packet->getReturnPort(this->ports, packet->getComePort())); // 返回的端口
+            if (port == nullptr || !port->anotherCanRecive()) // 端口没有对应的token
+                continue;
             ModuleCable* cable = static_cast<ModuleCable*>(port->getCable());
             if (cable == nullptr)
                 continue;
-
 
             foreach (SwitchPicker *picker, pickers)
             {
