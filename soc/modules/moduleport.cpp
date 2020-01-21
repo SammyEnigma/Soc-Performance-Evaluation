@@ -44,6 +44,7 @@ void ModulePort::clearData()
     return_delay_list.clear();
     receive_update_delay_list.clear();
     send_update_delay_list.clear();
+    bandwidth.resetBuffer();
 }
 
 void ModulePort::passOnPackets()
