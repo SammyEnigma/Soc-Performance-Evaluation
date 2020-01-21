@@ -36,9 +36,10 @@ void MasterSlave::initData()
             else // 多个端口
             {
                 ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
-                if (mp == port && ports.size() > 1)
+                if (mp == port && ports.size() > 1) // 使用另一个端口
                     mp = static_cast<ModulePort *>(ports.at(1));
-                if (getClass() == "Master" && port->getOppositeShape() && static_cast<ShapeBase*>(port->getOppositeShape())->getClass() == "IP") // Master存到data_list里面
+                if (getClass() == "Master" && packet->getDataType() != DATA_RESPONSE
+                    && port->getOppositeShape() && static_cast<ShapeBase*>(port->getOppositeShape())->getClass() == "IP") // Master存到data_list里面
                 {
                     packet->setComePort(port);
                     packet->setTargetPort(mp);
@@ -46,12 +47,15 @@ void MasterSlave::initData()
                     data_list.append(packet); // 等待自己发送
                     rt->runningOut(getText() + "收到" + port->getPortId() + "的数据，放入 data_list 中(当前数量：" + QString::number(data_list.size()) + ")");
                 }
-                else if (mp->anotherCanRecive()) // Slave或者其他的，直接继续下发
+                else if (mp->anotherCanRecive()) // Slave或者其他的端口出来了，直接继续下发（不过要确保能发，否则就只能丢弃了？）
                 {
                     mp->sendData(packet, packet->getDataType());
                     rt->runningOut(getText() + "收到" + port->getPortId() + "数据，开始下发");
                 }
-                
+                else
+                {
+                    rt->runningOut("!!!" + getText() + " " + port->getPortId() + "收到数据，但是无法发送");
+                }
             }
         });
     }

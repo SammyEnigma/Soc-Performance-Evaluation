@@ -48,7 +48,8 @@ void MasterModule::passOnPackets()
         if (oppo != nullptr)
         {
             // 确定是这个连接Slave的端口，开始判断发送事件
-            if (!data_list.isEmpty() && port->isBandwidthBufferFinished() && port->anotherCanRecive((port->getBandwidth().toInt()>1?port->getBandwidth().toInt():0)*port->getLatency() )) // 有数据、有带宽、对方能接收
+            if (!data_list.isEmpty() && port->isBandwidthBufferFinished() 
+                && port->anotherCanRecive((port->getBandwidth().toInt()>1?port->getBandwidth().toInt():1)*port->getLatency() )) // 有数据、有带宽、对方能接收
             {
                 rt->runningOut(getText()+"发送token, "+port->getPortId()+"当前对方能接收："+QString::number(port->another_can_receive)+"-1");
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
@@ -61,7 +62,8 @@ void MasterModule::passOnPackets()
         }
     }
     
-    if (getClass() == "Master") // IPModule也是Master，但是data_list是挨个发的，只有Master自己才需要直接全部发送（只要有token）
+    // Master 的 data_list 发送
+    /* if (getClass() == "Master") // IPModule也是Master，但是data_list是挨个发的（在上面），只有Master自己才需要直接全部发送（只要有token）
     {
         for (int i = 0; i < data_list.size(); i++)
         {
@@ -69,12 +71,12 @@ void MasterModule::passOnPackets()
             if (!packet->isDelayFinished())
                 continue;
             ModulePort *port = static_cast<ModulePort *>(packet->getTargetPort());
-            if (port->anotherCanRecive())
+            if (port->anotherCanRecive(port->send_update_delay_list.size()))
             {
                 port->sendData(packet, DATA_REQUEST);
             }
         }
-    }
+    } */
     
     MasterSlave::passOnPackets();
 }

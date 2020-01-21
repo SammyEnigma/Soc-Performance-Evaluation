@@ -95,9 +95,7 @@ void ModulePort::passOnPackets()
             emit signalReceivedDataDequeueReaded(packet);
             resetBandwidthBuffer();
 //            receive_update_delay_list.append(new DataPacket(receive_update_delay));
-
-            // the delay on the return of the Token
-            sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
+            sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // the delay on the return of the Token
         }
     }
 
