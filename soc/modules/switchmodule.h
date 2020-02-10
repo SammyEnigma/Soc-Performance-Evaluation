@@ -54,6 +54,7 @@ private:
     int token;
     
     QList<SwitchPicker*> pickers;
+    PacketList picked_delay_list;
 };
 
 #endif // SWITCHMODULE_H

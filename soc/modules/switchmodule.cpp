@@ -52,6 +52,7 @@ void SwitchModule::clearData()
 {
     request_queue.clear();
     response_queue.clear();
+    picked_delay_list.clear();
     foreach (PortBase *p, ShapeBase::ports)
     {
         // 连接信号槽
@@ -100,15 +101,20 @@ void SwitchModule::passOnPackets()
                     continue;
                 if (!pick_port->anotherCanRecive()) // 没有token了
                     continue;
-                // 发送数据
+                // 选定要发送的数据
                 ModuleCable* cable = static_cast<ModuleCable*>(pick_port->getCable());
                 if (cable == nullptr)
                     continue;
                 request_queue.removeAt(i--);
-                packet->resetDelay(cable->getData("delay")->i());
-                pick_port->sendData(packet, DATA_REQUEST);
+                /* packet->resetDelay(cable->getData("delay")->i());
+                pick_port->sendData(packet, DATA_REQUEST); */
+                // 不直接发送，先进入pick后的延迟队列
+                packet->setTargetPort(pick_port);
+                packet->resetDelay(getData("picked_delay")->i());
+                picked_delay_list.append(packet);
+                
                 picker->resetBandwidthBuffer();
-                rt->runningOut("Hub 发送：" + packet->toString());
+                rt->runningOut("Hub pick出去（进入延迟）：" + packet->toString());
 
                 // 通过进来的端口，返回发送出去的token（依赖port的return delay）
                 if (packet->getComePort() != nullptr)
@@ -149,8 +155,13 @@ void SwitchModule::passOnPackets()
                     // 发送数据
                     rt->runningOut("Hub response延迟结束，" + port->getPortId() + "返回，对方能接收：" + QString::number(port->getReceiveToken()) + "-1");
                     response_queue.removeAt(i--);
-                    packet->resetDelay(cable->getData("delay")->i());
-                    port->sendData(packet, DATA_RESPONSE);
+                    /* packet->resetDelay(cable->getData("delay")->i());
+                    port->sendData(packet, DATA_RESPONSE); */
+                    // 不直接发送，先进入pick后的延迟队列
+                    packet->setTargetPort(port);
+                    packet->resetDelay(getData("picked_delay")->i());
+                    picked_delay_list.append(packet);
+
                     picker->resetBandwidthBuffer();
 
                     // 通过进来的端口，返回发送出去的token（依赖port的return delay）
@@ -163,6 +174,17 @@ void SwitchModule::passOnPackets()
                 }
             }
         }
+    }
+    
+    // 遍历pick后的延迟
+    for (int i = 0; i < picked_delay_list.size(); i++)
+    {
+        DataPacket *packet = picked_delay_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+        ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
+        packet->resetDelay(port->getCable()->getData("delay")->i());
+        port->sendData(packet, packet->getDataType());
     }
 
     foreach (PortBase* p, ports)
@@ -223,6 +245,14 @@ void SwitchModule::updatePacketPos()
     h += height + 4;
     l = 4;
     foreach (DataPacket *packet, response_queue)
+    {
+        packet->setDrawPos(pos() + QPoint(l, h));
+        l += 4 + PACKET_SIZE;
+    }
+
+    h += height + 4;
+    l = 4;
+    foreach (DataPacket *packet, picked_delay_list)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
         l += 4 + PACKET_SIZE;
