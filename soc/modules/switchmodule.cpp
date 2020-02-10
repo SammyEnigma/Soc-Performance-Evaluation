@@ -106,12 +106,12 @@ void SwitchModule::passOnPackets()
                 if (cable == nullptr)
                     continue;
                 request_queue.removeAt(i--);
-                /* packet->resetDelay(cable->getData("delay")->i());
-                pick_port->sendData(packet, DATA_REQUEST); */
+                packet->resetDelay(cable->getData("delay")->i());
+                pick_port->sendData(packet, DATA_REQUEST);
                 // 不直接发送，先进入pick后的延迟队列
-                packet->setTargetPort(pick_port);
+                /* packet->setTargetPort(pick_port);
                 packet->resetDelay(getData("picked_delay")->i());
-                picked_delay_list.append(packet);
+                picked_delay_list.append(packet); */
                 
                 picker->resetBandwidthBuffer();
                 rt->runningOut("Hub pick出去（进入延迟）：" + packet->toString());
@@ -155,12 +155,12 @@ void SwitchModule::passOnPackets()
                     // 发送数据
                     rt->runningOut("Hub response延迟结束，" + port->getPortId() + "返回，对方能接收：" + QString::number(port->getReceiveToken()) + "-1");
                     response_queue.removeAt(i--);
-                    /* packet->resetDelay(cable->getData("delay")->i());
-                    port->sendData(packet, DATA_RESPONSE); */
+                    packet->resetDelay(cable->getData("delay")->i());
+                    port->sendData(packet, DATA_RESPONSE);
                     // 不直接发送，先进入pick后的延迟队列
-                    packet->setTargetPort(port);
+                    /* packet->setTargetPort(port);
                     packet->resetDelay(getData("picked_delay")->i());
-                    picked_delay_list.append(packet);
+                    picked_delay_list.append(packet); */
 
                     picker->resetBandwidthBuffer();
 
@@ -180,6 +180,7 @@ void SwitchModule::passOnPackets()
     for (int i = 0; i < picked_delay_list.size(); i++)
     {
         DataPacket *packet = picked_delay_list.at(i);
+        qDebug() << packet->toString();
         if (!packet->isDelayFinished())
             continue;
         ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
@@ -196,7 +197,7 @@ void SwitchModule::passOnPackets()
 
 void SwitchModule::delayOneClock()
 {
-    foreach (DataPacket* packet, request_queue + response_queue)
+    foreach (DataPacket* packet, request_queue + response_queue + picked_delay_list)
     {
         packet->delayToNext();
     }

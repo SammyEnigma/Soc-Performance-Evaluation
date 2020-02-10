@@ -65,7 +65,7 @@ double DataPacket::currentProp()
 
 QString DataPacket::toString()
 {
-    return QString("%1: %2/%3").arg(tag).arg(delay_step).arg(delay_max);
+    return QString("%1: %2 / %3").arg(tag).arg(delay_step).arg(delay_max);
 }
 
 QString DataPacket::getTag()
