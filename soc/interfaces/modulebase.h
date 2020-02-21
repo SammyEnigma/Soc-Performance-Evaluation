@@ -68,6 +68,10 @@ public:
             {
                 QString s = port->getShowedString("\n");
                 int w = fm.boundingRect(s).width();
+<<<<<<< HEAD
+=======
+                qDebug() << w;
+>>>>>>> 45694766426ca3d4dadb2ad695897b50922ef39d
                 int h = fm.lineSpacing() * s.split("\n").length();
                 int x = width()*hor - w - 10;
                 int y = qMax(int(height()*ver - h/2), 0);
