@@ -67,11 +67,12 @@ public:
             if (qAbs(min - right) < eps) // 靠右，竖向中间（port左）
             {
                 QString s = port->getShowedString("\n");
-                int w = fm.horizontalAdvance(s);
-                int h = fm.boundingRect(s).height();
-                int x = qMin(int(width()*hor) - w/2, width()-w);
-                int y = qMax(int(height()*ver - font_height), h);
-                painter.drawText(x, y, s);
+                int w = fm.boundingRect(s).width();
+                qDebug() << w;
+                int h = fm.lineSpacing() * s.split("\n").length();
+                int x = width()*hor - w - 10;
+                int y = qMax(int(height()*ver - h/2), 0);
+                painter.drawText(QRect(x, y, w, h), Qt::AlignTop | Qt::AlignRight | Qt::TextWordWrap, s);
             }
             else if (qAbs(min - top) < eps) // 靠下，横向中间（port下）
             {
@@ -89,10 +90,10 @@ public:
             {
                 QString s = port->getShowedString("\n");
                 int w = fm.horizontalAdvance(s);
-                int h = fm.boundingRect(s).height();
-                int x = width() * hor;
-                int y = qMax(int(height() * ver - font_height), h);
-                painter.drawText(x, y, s);
+                int h = fm.lineSpacing() * s.split("\n").length();
+                int x = width() * hor + 10;
+                int y = qMax(int(height() * ver - h/2), 0);
+                painter.drawText(QRect(x, y, w, h), Qt::AlignTop | Qt::AlignLeft | Qt::TextWordWrap, s);
             }
             else if (qAbs(min - bottom) < eps) // 靠底，横向中间（port上）
             {
