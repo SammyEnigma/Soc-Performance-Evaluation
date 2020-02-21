@@ -64,6 +64,11 @@ public:
     {
         auto_reduction = b;
     }
+    
+    bool isZero() const
+    {
+        return numerator == 0;
+    }
 
     Fraction(double d)
     {

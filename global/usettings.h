@@ -19,6 +19,7 @@ public:
 public:
     bool auto_save = getBool("us/auto_save", false);
     bool drag_shape_auto_return = getBool("us/drag_shape_auto_return", true);
+    bool show_port_info = getBool("us/show_port_info", true);
 };
 
 #endif // USETTINGS_H

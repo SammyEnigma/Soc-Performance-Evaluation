@@ -47,6 +47,20 @@ void ModulePort::clearData()
     bandwidth.resetBuffer();
 }
 
+QString ModulePort::getShowedString(QString split)
+{
+    QStringList ss;
+    if (!bandwidth.isZero())
+        ss.append(QString("bandwidth:%1").arg(bandwidth));
+    if (latency != 0)
+        ss.append(QString("latency:%1").arg(latency));
+    if (return_delay != 0)
+        ss.append(QString("return_delay:%1").arg(return_delay));
+    if (token != 0)
+        ss.append(QString("token:%1").arg(token));
+    return ss.join(split);
+}
+
 void ModulePort::passOnPackets()
 {
     // ==== 发送部分（Master） ====
