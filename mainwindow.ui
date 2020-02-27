@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background: white;</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,4">
     <property name="spacing">
@@ -31,10 +34,19 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="ShapeListWidget" name="listWidget"/>
+     <widget class="ShapeListWidget" name="listWidget">
+      <property name="styleSheet">
+       <string notr="true">background: transparent;
+border: 1px solid #6495ED</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QScrollArea" name="scrollArea">
+      <property name="styleSheet">
+       <string notr="true">background: transparent;
+border: 1px solid #6495ED;</string>
+      </property>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
