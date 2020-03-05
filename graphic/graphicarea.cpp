@@ -731,6 +731,11 @@ void GraphicArea::paintEvent(QPaintEvent *event)
         QColor c = this->palette().color(QPalette::Midlight);
         painter.fillRect(_select_rect, c);
     }
+    
+    for (int x = 0; x < width(); x += 40)
+        painter.drawLine(x, 0, x, height());
+    for (int y = 0; y < height(); y += 40)
+        painter.drawLine(0, y, width(), y);
 }
 
 /**
