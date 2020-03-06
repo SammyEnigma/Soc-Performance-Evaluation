@@ -111,6 +111,7 @@ void ShapeListWidget::loadShapes()
     loadCustomShape(new IPModule(this));
     loadCustomShape(new DRAMModule(this));
 
+    loadCustomShape(new ModulePanel(this));
     /*loadCustomShape(new CircleShape(this));
     loadCustomShape(new EllipseShape(this));
     loadCustomShape(new SquareShape(this));

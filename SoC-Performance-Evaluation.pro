@@ -49,6 +49,7 @@ SOURCES += \
     shapes/circleshape.cpp \
     shapes/ellipseshape.cpp \
     shapes/hexagonshape.cpp \
+    shapes/modulepanel.cpp \
     shapes/rectangleshape.cpp \
     shapes/squareshape.cpp \
     soc/flowcontrol/flowcontrol_master1_slave1.cpp \
@@ -89,6 +90,7 @@ HEADERS += \
     shapes/circleshape.h \
     shapes/ellipseshape.h \
     shapes/hexagonshape.h \
+    shapes/modulepanel.h \
     shapes/rectangleshape.h \
     shapes/squareshape.h \
     soc/flowcontrol/flowcontrol_master2_switch_slave2.h \

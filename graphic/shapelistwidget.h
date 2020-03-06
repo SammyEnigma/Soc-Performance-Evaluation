@@ -31,6 +31,7 @@
 #include "switchmodule.h"
 #include "ipmodule.h"
 #include "drammodule.h"
+#include "modulepanel.h"
 
 #define MOVING_CURSOR_NAME tr("指针") // 选择控件的鼠标列表项的名字
 
