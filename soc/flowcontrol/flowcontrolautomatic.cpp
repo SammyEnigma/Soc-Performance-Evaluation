@@ -83,6 +83,8 @@ void FlowControlAutomatic::passOneClock()
         QString _class = shape->getClass();
         QString _text = shape->getText();
         ModuleBase *module = static_cast<ModuleBase *>(shape);
+        
+        /* 定期创建 */
         if (/* _class == "IP" ||  */module->getData("create_token")->value().toBool())
         {
             MasterSlave *IP = static_cast<MasterSlave *>(shape);

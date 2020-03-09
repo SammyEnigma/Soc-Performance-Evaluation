@@ -29,6 +29,11 @@ public:
             denominator = -denominator;
         }
     }
+    
+    bool isValid()
+    {
+        return denominator != 0;
+    }
 
     void setNumerator(int n)
     {

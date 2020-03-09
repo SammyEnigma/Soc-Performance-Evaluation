@@ -293,7 +293,10 @@ bool ModulePort::isBandwidthBufferFinished()
 
 void ModulePort::resetBandwidthBuffer()
 {
-    bandwidth.resetBuffer(bandwidth.getDenominator() * rt->standard_frame / bandwidth.getNumerator());
+    if (bandwidth.getNumerator() != 0)
+        bandwidth.resetBuffer(bandwidth.getDenominator() * rt->standard_frame / bandwidth.getNumerator());
+    else
+        bandwidth.resetBuffer(0);
 }
 
 void ModulePort::initReceiveToken(int x)

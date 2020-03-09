@@ -80,7 +80,7 @@ void TimeFrame::roundBuffer()
 
 bool TimeFrame::isBufferFinished()
 {
-    return curr_buffer >= total_buffer;
+    return isValid() && curr_buffer >= total_buffer;
 }
 
 TimeFrame &TimeFrame::operator--()
