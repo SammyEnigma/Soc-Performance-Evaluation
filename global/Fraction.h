@@ -12,9 +12,9 @@
 class Fraction
 {
 public:
-    Fraction(int n = 0, int d = 1) : numerator(n), denominator(d), auto_reduction(true)
+    Fraction(int n, int d) : numerator(n), denominator(d), auto_reduction(true)
     {
-        if (d == 0)
+        if (n != 0 && d == 0) // 整数/0 => 整数/1，纯0 => 0/0 invalid
             denominator = 1;
 
         // 清理负数，分母的负数转移到分子上（便于计算）
@@ -28,6 +28,23 @@ public:
             numerator = -numerator;
             denominator = -denominator;
         }
+    }
+    
+    Fraction(int i)
+    {
+        if (i == 0)
+        {
+            *this = Fraction(0, 0);
+        }
+        else
+        {
+            *this = Fraction(i, 1);
+        }
+    }
+    
+    Fraction()
+    {
+        *this = Fraction(0, 0);
     }
     
     bool isValid()
@@ -55,16 +72,22 @@ public:
         this->denominator = d;
     }
 
+    /**
+     * 扩展分母到某个特定数值，分子分母同乘
+     */
     void expandDenominator(int d)
     {
         if (d % denominator != 0)
         {
-            qDebug() << "expand denominator 错误：" << denominator << " >> " << d;
+            qDebug() << "expand denominator 错误，大小可能变化：" << denominator << " >> " << d;
         }
         numerator *= (d / denominator);
         denominator = d;
     }
 
+    /**
+     * 设置自动约分（默认false）
+     */
     void setAutoReduction(bool b = false)
     {
         auto_reduction = b;
@@ -246,30 +269,45 @@ public:
 
     int toInt() const // 向下取整
     {
+        Q_ASSERT(numerator == 0 || denominator != 0);
+        if (denominator == 0)
+            return 0;
         return numerator / denominator;
     }
 
     int toInt2() const // 向上取整
     {
+        Q_ASSERT(numerator == 0 || denominator != 0);
+        if (denominator == 0)
+            return 0;
         return (numerator + denominator - 1) / denominator;
     }
 
     int roundInt() const // 四舍五入
     {
+        Q_ASSERT(numerator == 0 || denominator != 0);
+        if (denominator == 0)
+            return 0;
         return (numerator + denominator / 2) / denominator;
     }
 
     double toDouble() const
     {
+        Q_ASSERT(numerator == 0 || denominator != 0);
+        if (denominator == 0)
+            return 0;
         return static_cast<double>(numerator) / static_cast<double>(denominator);
     }
 
     Fraction reciprocal() const // 倒数
     {
+        Q_ASSERT(numerator == 0 || denominator != 0);
+        if (denominator == 0 || numerator == 0)
+            return Fraction(0); // 0的倒数是0
         return Fraction(denominator, numerator);
     }
 
-    Fraction reciprocal(const Fraction &f) const
+    Fraction reciprocal(const Fraction &f) const // 倒数
     {
         return f.reciprocal();
     }
