@@ -732,6 +732,7 @@ void GraphicArea::paintEvent(QPaintEvent *event)
         painter.fillRect(_select_rect, c);
     }
     
+    painter.setPen(QPen(QColor(0x88, 0x88, 0x88, 0x30)));
     for (int x = 0; x < width(); x += 40)
         painter.drawLine(x, 0, x, height());
     for (int y = 0; y < height(); y += 40)
