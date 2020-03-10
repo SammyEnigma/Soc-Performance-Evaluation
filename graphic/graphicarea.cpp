@@ -1194,6 +1194,36 @@ void GraphicArea::actionDelete()
 }
 
 /**
+ * 在监视模块上监控一个端口的数值
+ * 默认监视位置最近的端口
+ */
+void GraphicArea::slotWatchPort(WatchModule* watch)
+{
+    QPoint pos = watch->geometry().center();
+    int min_dis = 0x3f3f3f3f;
+    PortBase* min_port = nullptr;
+    foreach (PortBase* port, ports_map)
+    {
+        int dis = (port->getGlobalPos() - pos).manhattanLength();
+        if (dis < min_dis)
+        {
+            min_dis = dis;
+            min_port = port;
+        }
+    }
+    linkWatchPort(watch, static_cast<ModulePort*>(min_port));
+}
+
+/**
+ * 连接一个监视模块和端口
+ * 可直接调用
+ */
+void GraphicArea::linkWatchPort(WatchModule* watch, ModulePort* port)
+{
+    
+}
+
+/**
  * 图形拖拽进来的事件，只支持本程序的图形
  * 只判断，不进行其他操作
  */

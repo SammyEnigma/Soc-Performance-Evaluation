@@ -28,6 +28,7 @@
 #include "shapedatadialog.h"
 #include "portdatadialog.h"
 #include "cablebase.h"
+#include "watchmodule.h"
 
 #define DEB qDebug()
 
@@ -65,8 +66,9 @@ public:
     void moveShapesPos(int delta_x, int delta_y, ShapeList shapes = QList<ShapeBase *>()); // 调整所选控件的位置
     void remove(ShapeBase *shape = nullptr);                                               // 删除指定形状，或者删除所选形状
 
-    // 视口操作
+    // 视口与监视操作
     void zoomIn(double prop);
+    void linkWatchPort(WatchModule* watch, ModulePort* port);
 
     // 流控操作
     ShapeBase *findShapeByText(QString text);
@@ -106,12 +108,14 @@ public slots:
     void actionCopy();
     void actionPaste();
     void actionDelete();
+    void slotWatchPort(WatchModule* watch);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象
     ShapeList selected_shapes;           // 当前选中的形状
     QList<CableBase *> cable_lists;      // 连接线对象（只用于简单遍历，并且同时包含在 shape_lists 中）
     QMap<QString, PortBase *> ports_map; // 所有的可连接端口
+    // QList<WatchModule*> watch_lists;     // 用来监视的模块
 
 private:
     QPoint _press_pos, _press_global_pos; // 鼠标左键按下的坐标

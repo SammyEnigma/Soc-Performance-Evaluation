@@ -26,6 +26,23 @@ WatchModule *WatchModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
+QString WatchModule::toStringAppend()
+{
+    if (target_port)
+    {
+        return StringUtil::makeXml(target_port->getPortId(), "WATCH_PORT_ID");
+    }
+}
+
+void WatchModule::fromStringAppend(QString s)
+{
+    QString portID = StringUtil::getXml(s, "WATCH_PORT_ID");
+    if (!portID.isEmpty())
+    {
+        emit signalWatchPortID(this, portID);
+    }
+}
+
 QList<QAction*> WatchModule::addinMenuActions()
 {
     QAction* watch_port_action = new QAction("添加监控端口");
@@ -33,6 +50,7 @@ QList<QAction*> WatchModule::addinMenuActions()
     connect(watch_port_action, &QAction::triggered, this, [=]{
         rt->runningOut("插入端口监控");
         // todo: 插入文件监控
+        emit signalWatchPort(this);
     });
     
     return QList<QAction*>{watch_port_action};

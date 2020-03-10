@@ -6,6 +6,7 @@
 
 class WatchModule : public ModuleBase
 {
+    Q_OBJECT
 public:
     WatchModule(QWidget* parent = nullptr);
 
@@ -15,10 +16,17 @@ public:
     virtual void initData() override{}
     virtual void clearData() override{}
     WatchModule *newInstanceBySelf(QWidget *parent) override;
+    
+    virtual QString toStringAppend() override;
+    virtual void fromStringAppend(QString s) override;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    virtual QList<QAction*> addinMenuActions();
+    virtual QList<QAction*> addinMenuActions() override;
+
+signals:
+	void signalWatchPort(WatchModule* watch);
+    void signalWatchPortID(WatchModule* watch, QString portID);
 
 public slots:
     virtual void passOnPackets() override {} // 1、queue中packet延迟满后，传入到下一个queue

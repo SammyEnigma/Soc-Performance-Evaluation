@@ -68,6 +68,7 @@ void MainWindow::readFromFile(QString file_path)
         });
     }
 
+    // 从文件中恢复形状
     QStringList shape_string_list = StringUtil::getXmls(full_string, "SHAPE");
     foreach (QString shape_string, shape_string_list)
     {
@@ -86,11 +87,12 @@ void MainWindow::readFromFile(QString file_path)
         if (StringUtil::getXmlInt(shape_string, "SELECTED") != 0)
             ui->scrollAreaWidgetContents_2->select(shape, true);
     }
-    // 遍历线连接（因为需要等port全部加载完成后）
+    
+    // 遍历连接（因为需要等port全部加载完成后）
     QMap<QString, PortBase *> ports = ui->scrollAreaWidgetContents_2->ports_map;
     foreach (ShapeBase *shape, ui->scrollAreaWidgetContents_2->shape_lists)
     {
-        if (shape->getLargeType() == CableType)
+        if (shape->getLargeType() == CableType) // 线的连接
         {
             CableBase *cable = static_cast<CableBase *>(shape);
             QString portID1 = StringUtil::getXml(cable->readedText(), "FROM_PORT_ID");
@@ -109,7 +111,14 @@ void MainWindow::readFromFile(QString file_path)
             cable->adjustGeometryByPorts();
             ui->scrollAreaWidgetContents_2->cable_lists.append(cable);
         }
+        else if (shape->getClass() == "WatchModule") // 监视控件
+        {
+            // 恢复监视的端口
+            
+        }
     }
+    
+    // 其他操作
     //    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
 
