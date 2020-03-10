@@ -2,13 +2,18 @@
 
 WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), target_port(nullptr)
 {
-    _class = _text = "WatchModule";
+    _class = "WatchModule";
+    _text = "";
+    _border_size = 0;
+    _text_align = Qt::AlignCenter;
+    _pixmap_scale = true;
+    
 
     _pixmap_color = QColor(0x88, 0x88, 0x88, 0x18);
-    QPixmap pixmap(128, 64);
+    QPixmap pixmap(64, 64);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawShapePixmap(painter, QRect(2,2,124,60));
+    drawShapePixmap(painter, QRect(2,2,60,60));
     _pixmap = pixmap;
 }
 
@@ -70,6 +75,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
     {
         painter.drawText(left, height * line++, target_port->getBandwidth());
         painter.drawText(left, height * line++, QString::number(target_port->getToken()));
+        painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
         painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
     }
     else

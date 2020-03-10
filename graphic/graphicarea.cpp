@@ -902,7 +902,6 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     // 连接监视控件
     if (shape->getClass() == "WatchModule")
     {
-        qDebug() << "设置监视端口的信号槽";
         WatchModule* watch = static_cast<WatchModule*>(shape);
         connect(watch, SIGNAL(signalWatchPort(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
         connect(watch, SIGNAL(signalWatchPortID(WatchModule*, QString)), this, SLOT(slotWatchPortID(WatchModule*, QString)));

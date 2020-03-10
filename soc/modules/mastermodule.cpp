@@ -41,7 +41,6 @@ void MasterModule::setDefaultDataList()
 
 void MasterModule::passOnPackets()
 {
-    qDebug() << "Master Module 遍历" << getText() << ports.size();
     // 连接的对方有可接收的buffer时，Master开始发送
     foreach (PortBase* p, ShapeBase::ports)
     {
