@@ -56,5 +56,5 @@ void IPModule::paintEvent(QPaintEvent *event)
                 prop = 100;
         }
     }
-    painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1 %2%").arg(token_send_count).arg(prop));
+   // painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1 %2%").arg(token_send_count).arg(prop));
 }
