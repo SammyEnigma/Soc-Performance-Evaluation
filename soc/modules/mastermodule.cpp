@@ -11,6 +11,12 @@ MasterModule::MasterModule(QWidget *parent) : MasterSlave(parent)
 {
     _class = _text = "Master";
     _pixmap_scale = true;
+
+    QPixmap pixmap(DEFAULT_SIZE, DEFAULT_SIZE);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    drawShapePixmap(painter, QRect(BORDER_SIZE,BORDER_SIZE,DEFAULT_SIZE-BORDER_SIZE*2,DEFAULT_SIZE-BORDER_SIZE*2));
+    _pixmap = pixmap;
 }
 
 MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)

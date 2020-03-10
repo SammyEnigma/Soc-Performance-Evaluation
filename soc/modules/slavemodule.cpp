@@ -12,6 +12,12 @@ SlaveModule::SlaveModule(QWidget *parent) : MasterSlave(parent)
     _class = _text = "Slave";
     _pixmap_scale = true;
     dequeue_signal_buffer = 0;
+
+    QPixmap pixmap(DEFAULT_SIZE, DEFAULT_SIZE);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    drawShapePixmap(painter, QRect(BORDER_SIZE,BORDER_SIZE,DEFAULT_SIZE-BORDER_SIZE*2,DEFAULT_SIZE-BORDER_SIZE*2));
+    _pixmap = pixmap;
 }
 
 SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)

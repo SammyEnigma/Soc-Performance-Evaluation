@@ -64,6 +64,14 @@ void DRAMModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
     painter.setBrush(QBrush(_pixmap_color));
     path.addRoundedRect(draw_rect, 35, 35);
     //painter.drawRect(draw_rect);
-    painter.fillPath(path, _pixmap_color);
+    if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
+    {
+        painter.fillPath(path, _pixmap_color);
+    }
+    if (_border_size > 0 && _border_color != Qt::transparent) // 画边界
+    {
+        painter.setPen(QPen(Qt::gray, _border_size));
+        painter.drawPath(path);
+    }
     painter.restore();
 }

@@ -10,6 +10,12 @@
 SwitchModule::SwitchModule(QWidget *parent) : ModuleBase(parent)
 {
     _class = _text = "Switch";
+
+    QPixmap pixmap(DEFAULT_SIZE, DEFAULT_SIZE);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    drawShapePixmap(painter, QRect(BORDER_SIZE,BORDER_SIZE,DEFAULT_SIZE-BORDER_SIZE*2,DEFAULT_SIZE-BORDER_SIZE*2));
+    _pixmap = pixmap;
 }
 
 SwitchModule *SwitchModule::newInstanceBySelf(QWidget *parent)
