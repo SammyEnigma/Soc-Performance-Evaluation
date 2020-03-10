@@ -54,7 +54,8 @@ void DRAMModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     QFontMetrics fm(this->font());
-    painter.drawText(4, 4+fm.lineSpacing(), QString("接收：%1").arg(token_receive_count));
+
+   // painter.drawText(4, 4+fm.lineSpacing(), QString("接收：%1").arg(token_receive_count));
 }
 
 void DRAMModule::drawShapePixmap(QPainter &painter, QRect draw_rect)

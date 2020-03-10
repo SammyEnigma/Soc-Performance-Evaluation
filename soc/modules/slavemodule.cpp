@@ -93,7 +93,7 @@ void SlaveModule::paintEvent(QPaintEvent *event)
         /* ModulePort* slave_port = static_cast<ModulePort*>(ShapeBase::ports.first());
         painter.drawText(margin, height * 2, QString("buffer: 对方=%1, 自己=%2").arg(slave_port->getReceiveToken()).arg(getToken())); */
     }
-
+/*
     if (getPorts().size() > 0)
     {
         painter.drawText(margin, height*3, QString("进队列:%1").arg(static_cast<ModulePort*>(getPorts().first())->enqueue_list.size()));
@@ -106,6 +106,7 @@ void SlaveModule::paintEvent(QPaintEvent *event)
         w = fm.horizontalAdvance(prcs_s);
         painter.drawText(width() - w-margin, height*3, prcs_s);
     }
+    */
 }
 
 void SlaveModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
