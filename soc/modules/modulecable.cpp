@@ -272,6 +272,8 @@ void ModuleCable::paintEvent(QPaintEvent *event)
     }
     else // 两个都确定了
     {
+        QPen ReqColor(QColor(0, 0, 0), _border_size);
+        QPen RspColor(QColor(220, 20, 60), _border_size);
         if (_line_type == 0) // 直线
         {
             /** 是下面这个形状的
@@ -284,6 +286,14 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
+                    if (i != LINE_COUNT - 1)
+                    {
+                        painter.setPen(ReqColor);
+                    }
+                    else
+                    {
+                        painter.setPen(RspColor);
+                    }
                     paintCableLine(painter, arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() - _breadth_y / 2 + i * _space_y,
                                    arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() - _breadth_y / 2 + i * _space_y, i >= LINE_COUNT - 1);
                 }
@@ -292,6 +302,14 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
+                    if (i != LINE_COUNT - 1)
+                    {
+                        painter.setPen(ReqColor);
+                    }
+                    else
+                    {
+                        painter.setPen(RspColor);
+                    }
                     paintCableLine(painter, arrow_pos1.x() - _breadth_x / 2 + i * _space_x, arrow_pos1.y() + _breadth_y / 2 - i * _space_y,
                                    arrow_pos2.x() - _breadth_x / 2 + i * _space_x, arrow_pos2.y() + _breadth_y / 2 - i * _space_y, i >= LINE_COUNT - 1);
                 }
@@ -303,6 +321,14 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
+                    if (i == LINE_COUNT - 1)
+                    {
+                        painter.setPen(ReqColor);
+                    }
+                    else
+                    {
+                        painter.setPen(RspColor);
+                    }
                     painter.drawLine(PADDING, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING);
                     painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING, width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING);
                     paintLinePort(painter, QPoint(PADDING, i * LINE_SPACE + PADDING), i >= LINE_COUNT - 1);
@@ -310,23 +336,35 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 }
 
                 int i = LINE_COUNT - 1;
+                painter.setPen(ReqColor);
                 paintLineArrow(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING), QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING));
                 i = 0;
+                painter.setPen(RspColor);
                 paintLineArrow(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, i * LINE_SPACE + PADDING), QPoint(PADDING, i * LINE_SPACE + PADDING));
             }
             else // 右上角 - 左下角
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
+                    if (i != LINE_COUNT - 1)
+                    {
+                        painter.setPen(ReqColor);
+                    }
+                    else
+                    {
+                        painter.setPen(RspColor);
+                    }
                     painter.drawLine(width() - PADDING - _border_size, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING);
                     painter.drawLine(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING, height() - PADDING);
                     paintLinePort(painter, QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING), i < LINE_COUNT - 1);
                     paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING), i == LINE_COUNT - 1);
                 }
 
-                int i = LINE_COUNT - 1;
+                int  i = 0;
+                painter.setPen(ReqColor);
                 paintLineArrow(painter, QPoint(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING), QPoint(i * LINE_SPACE + PADDING, height() - PADDING));
-                i = 0;
+                i = LINE_COUNT - 1;
+                painter.setPen(RspColor);
                 paintLineArrow(painter, QPoint(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING), QPoint(width() - PADDING - _border_size, i * LINE_SPACE + PADDING));
             }
         }
@@ -336,6 +374,14 @@ void ModuleCable::paintEvent(QPaintEvent *event)
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
+                    if (i != LINE_COUNT - 1)
+                    {
+                        painter.setPen(ReqColor);
+                    }
+                    else
+                    {
+                        painter.setPen(RspColor);
+                    }
                     painter.drawLine(i * LINE_SPACE + PADDING, PADDING, i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
                     painter.drawLine(i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size, width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
                     paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, PADDING), i < LINE_COUNT - 1);
@@ -343,14 +389,24 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 }
 
                 int i = 0;
+                painter.setPen(ReqColor);
                 paintLineArrow(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size), QPoint(width() - PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
                 i = LINE_COUNT - 1;
+                painter.setPen(RspColor);
                 paintLineArrow(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING - i * LINE_SPACE - _border_size), QPoint(i * LINE_SPACE + PADDING, PADDING));
             }
             else // 右上角 - 左下角
             {
                 for (int i = 0; i < LINE_COUNT; ++i)
                 {
+                    if (i == LINE_COUNT - 1)
+                    {
+                        painter.setPen(ReqColor);
+                    }
+                    else
+                    {
+                        painter.setPen(RspColor);
+                    }
                     painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, PADDING, width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size);
                     painter.drawLine(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size, PADDING, height() - PADDING - i * LINE_SPACE - _border_size);
                     paintLinePort(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, PADDING), i >= LINE_COUNT - 1);
@@ -358,8 +414,10 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                 }
 
                 int i = LINE_COUNT - 1;
+                painter.setPen(ReqColor);
                 paintLineArrow(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size), QPoint(PADDING, height() - PADDING - i * LINE_SPACE - _border_size));
                 i = 0;
+                painter.setPen(RspColor);
                 paintLineArrow(painter, QPoint(width() - PADDING - i * LINE_SPACE - _border_size, height() - PADDING - i * LINE_SPACE - _border_size), QPoint(width() - PADDING - i * LINE_SPACE - _border_size, PADDING));
             }
         }

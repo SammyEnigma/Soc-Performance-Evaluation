@@ -29,7 +29,7 @@ void DRAMModule::initData()
     {
         // 连接信号槽
         ModulePort *port = static_cast<ModulePort *>(p);
-        connect(port, ModulePort::signalDataReceived, this, [=](ModulePort *, DataPacket *){
+        connect(port, &ModulePort::signalDataReceived, this, [=](ModulePort *, DataPacket *){
             token_receive_count++;
         });
     }
@@ -60,7 +60,10 @@ void DRAMModule::paintEvent(QPaintEvent *event)
 void DRAMModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
     painter.save();
-    painter.setPen(QPen(QColor(75,0,128), 3));
-    painter.drawRect(draw_rect);
+    QPainterPath path;
+    painter.setBrush(QBrush(_pixmap_color));
+    path.addRoundedRect(draw_rect, 35, 35);
+    //painter.drawRect(draw_rect);
+    painter.fillPath(path, _pixmap_color);
     painter.restore();
 }

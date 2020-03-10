@@ -10,6 +10,7 @@
 SlaveModule::SlaveModule(QWidget *parent) : MasterSlave(parent)
 {
     _class = _text = "Slave";
+    _pixmap_scale = true;
     dequeue_signal_buffer = 0;
 }
 
@@ -104,7 +105,7 @@ void SlaveModule::paintEvent(QPaintEvent *event)
 void SlaveModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
     QPainterPath path;
-    path.addRect(draw_rect);
+    path.addRoundedRect(draw_rect, 35, 35);
     painter.setRenderHint(QPainter::Antialiasing, true);
     if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
     {

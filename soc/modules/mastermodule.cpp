@@ -10,6 +10,7 @@
 MasterModule::MasterModule(QWidget *parent) : MasterSlave(parent)
 {
     _class = _text = "Master";
+    _pixmap_scale = true;
 }
 
 MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
@@ -157,7 +158,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
 void MasterModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
     QPainterPath path;
-    path.addEllipse(draw_rect);
+    path.addRoundedRect(draw_rect, 35, 35);
     painter.setRenderHint(QPainter::Antialiasing, true);
     if (_pixmap_color != Qt::transparent) // 填充内容非透明，画填充
     {
