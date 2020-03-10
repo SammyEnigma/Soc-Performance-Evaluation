@@ -80,7 +80,7 @@ void ModulePort::passOnPackets()
         DataPacket *packet = send_update_delay_list.at(i);
         if (!packet->isDelayFinished())
             continue;
-
+qDebug() << "send_delay_list";
         send_update_delay_list.removeAt(i--);
         another_can_receive--;
         packet->deleteLater();
