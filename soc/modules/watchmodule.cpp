@@ -50,7 +50,7 @@ void WatchModule::fromStringAppend(QString s)
 
 QList<QAction*> WatchModule::addinMenuActions()
 {
-    QAction* watch_port_action = new QAction("添加监控端口");
+    QAction* watch_port_action = new QAction("watch port");
     
     connect(watch_port_action, &QAction::triggered, this, [=]{
         rt->runningOut("插入端口监控");
