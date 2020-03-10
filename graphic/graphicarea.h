@@ -109,6 +109,7 @@ public slots:
     void actionPaste();
     void actionDelete();
     void slotWatchPort(WatchModule* watch);
+    void slotWatchPortID(WatchModule* watch, QString portID);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象

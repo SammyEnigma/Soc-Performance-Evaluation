@@ -898,6 +898,15 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         // 端口列表中删除端口
         ports_map.remove(port->getPortId());
     });
+    
+    // 连接监视控件
+    if (shape->getClass() == "WatchModule")
+    {
+        qDebug() << "设置监视端口的信号槽";
+        WatchModule* watch = static_cast<WatchModule*>(shape);
+        connect(watch, SIGNAL(signalWatchPort(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
+        connect(watch, SIGNAL(signalWatchPortID(WatchModule*, QString)), this, SLOT(slotWatchPortID(WatchModule*, QString)));
+    }
 }
 
 void GraphicArea::connectPortEvent(PortBase *port)
@@ -1215,12 +1224,28 @@ void GraphicArea::slotWatchPort(WatchModule* watch)
 }
 
 /**
+ * 监视特定的端口
+ * 按照端口ID来选择
+ */
+void GraphicArea::slotWatchPortID(WatchModule* watch, QString portID)
+{
+    foreach (PortBase* port, ports_map)
+    {
+        if (port->getPortId() == portID)
+        {
+            linkWatchPort(watch, static_cast<ModulePort*>(port));
+            break;
+        }
+    }
+}
+
+/**
  * 连接一个监视模块和端口
  * 可直接调用
  */
 void GraphicArea::linkWatchPort(WatchModule* watch, ModulePort* port)
 {
-    
+    watch->setTarget(port);
 }
 
 /**

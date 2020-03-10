@@ -60,10 +60,20 @@ void WatchModule::paintEvent(QPaintEvent *event)
 {
     ModuleBase::paintEvent(event);
     QPainter painter(this);
+    
+    QFontMetrics fm(this->font());
+    int height = fm.lineSpacing();
+    int left = 4, line = 1;
 
     // 添加对绘制内容的监控
     if (target_port)
     {
-        
+        painter.drawText(left, height * line++, target_port->getBandwidth());
+        painter.drawText(left, height * line++, QString::number(target_port->getToken()));
+        painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
+    }
+    else
+    {
+        painter.drawText(4, height, "未添加监控端口");
     }
 }
