@@ -973,7 +973,6 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     menu->addAction(copy_action);
     menu->addAction(paste_action);
     menu->addAction(delete_action);
-    menu->addAction(delete_action);
 
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
@@ -992,6 +991,19 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         add_port_action->setText(add_port_action->text() + " [multi]");
         copy_action->setText(copy_action->text() + " [multi]");
         delete_action->setText(delete_action->text() + " [multi]");
+    }
+    else // 选中了一个
+    {
+        ShapeBase* shape = selected_shapes.first();
+        // 判断对应的操作
+        QList<QAction*> actions = shape->addinMenuActions();
+        if (actions.size())
+        {
+            foreach (QAction* action, actions)
+            {
+                menu->addAction(action);
+            }
+        }
     }
     if (selected_shapes.count() == shape_lists.count())
     {

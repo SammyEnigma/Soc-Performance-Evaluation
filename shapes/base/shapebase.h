@@ -109,6 +109,7 @@ protected:
     virtual QPainterPath getShapePainterPath();                  // 获取绘图区域（基类）
     virtual void initDrawArea();                                 // 设置绘制区域大小
     virtual void resizeDrawArea(QSize old_size, QSize new_size); // 调整控件大小时，调整绘制区域的大小
+    virtual QList<QAction*> addinMenuActions();                  // 添加shape对应的右键菜单
 
 protected:
     void adjustPortsPosition();

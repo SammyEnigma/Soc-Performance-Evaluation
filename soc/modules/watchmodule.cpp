@@ -26,6 +26,18 @@ WatchModule *WatchModule::newInstanceBySelf(QWidget *parent)
     return shape;
 }
 
+QList<QAction*> WatchModule::addinMenuActions()
+{
+    QAction* watch_port_action = new QAction("添加监控端口");
+    
+    connect(watch_port_action, &QAction::triggered, this, [=]{
+        rt->runningOut("插入端口监控");
+        // todo: 插入文件监控
+    });
+    
+    return QList<QAction*>{watch_port_action};
+}
+
 void WatchModule::paintEvent(QPaintEvent *event)
 {
     ModuleBase::paintEvent(event);

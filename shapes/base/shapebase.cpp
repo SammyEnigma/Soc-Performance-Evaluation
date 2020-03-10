@@ -627,6 +627,11 @@ void ShapeBase::resizeDrawArea(QSize old_size, QSize new_size)
     _area = QRect(BORDER_SIZE, BORDER_SIZE, width() - BORDER_SIZE * 2, height() - BORDER_SIZE * 2);
 }
 
+QList<QAction*> ShapeBase::addinMenuActions()
+{
+    return QList<QAction*>{};
+}
+
 void ShapeBase::adjustPortsPosition()
 {
     foreach (PortBase *port, ports)
