@@ -1,0 +1,31 @@
+#ifndef WATCHMODULE_H
+#define WATCHMODULE_H
+
+#include "modulebase.h"
+#include "moduleport.h"
+
+class WatchModule : public ModuleBase
+{
+public:
+    WatchModule(QWidget* parent = nullptr);
+
+    void setTarget(ModulePort* mp);
+    void updateData();
+
+    virtual void initData() override{}
+    virtual void clearData() override{}
+    WatchModule *newInstanceBySelf(QWidget *parent) override;
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
+public slots:
+    virtual void passOnPackets() override {} // 1、queue中packet延迟满后，传入到下一个queue
+    virtual void delayOneClock() override {} // 2、传输/处理/读取延迟到下一个clock
+    virtual void updatePacketPos() override {}
+
+private:
+    ModulePort* target_port; // 目标端口
+};
+
+#endif // WATCHMODULE_H

@@ -34,7 +34,7 @@ public:
     virtual ModulePort *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual QString getClass() override;
     void clearData();
-    virtual QString getShowedString(QString split = ";");
+    virtual QString getShowedString(QString split = "\n");
 
     void passOnPackets();
     void delayOneClock();
