@@ -9,6 +9,11 @@ class WatchModule : public ModuleBase
     Q_OBJECT
 public:
     WatchModule(QWidget* parent = nullptr);
+    
+    enum WatchType {
+        WATCH_CUSTOM,
+        WATCH_SYSTEM
+    };
 
     void setTarget(ModulePort* mp);
     void updateData();
@@ -31,10 +36,13 @@ signals:
 public slots:
     virtual void passOnPackets() override {} // 1、queue中packet延迟满后，传入到下一个queue
     virtual void delayOneClock() override {} // 2、传输/处理/读取延迟到下一个clock
-    virtual void updatePacketPos() override { qDebug() << "updatePP"; update(); }
+    virtual void updatePacketPos() override { }
+    
+    void slotWatchSystem();
 
 private:
     ModulePort* target_port; // 目标端口
+    WatchType watch_type;
 };
 
 #endif // WATCHMODULE_H
