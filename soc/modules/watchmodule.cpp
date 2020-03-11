@@ -102,7 +102,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.drawText(left, height * line++, target_port->getBandwidth());
 
             painter.setPen(LatencyColor);
-            painter.drawText(left, height * line++, QString::number(target_port->getToken()));
+            painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
 
             painter.setPen(TokenColor);
             painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
