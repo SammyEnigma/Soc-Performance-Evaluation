@@ -98,6 +98,8 @@ void WatchModule::paintEvent(QPaintEvent *event)
     {
         if (target_port)
         {
+            painter.drawText(left, height * line++, ((ShapeBase *)(target_port->getShape()))->getText());
+
             painter.setPen(BandWithColor);
             painter.drawText(left, height * line++, target_port->getBandwidth());
 
