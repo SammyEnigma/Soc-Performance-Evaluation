@@ -276,6 +276,11 @@ int ModulePort::getReturnDelay()
     return return_delay;
 }
 
+int ModulePort::getDelaySendCount()
+{
+    return send_delay_list.size();
+}
+
 void ModulePort::initBandwidthBufer()
 {
     bandwidth.resetBuffer();

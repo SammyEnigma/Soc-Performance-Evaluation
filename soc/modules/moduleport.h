@@ -43,6 +43,7 @@ public:
     int getLatency();
     TimeFrame getBandwidth();
     int getReturnDelay();
+    int getDelaySendCount();
 
     void initBandwidthBufer();
     bool nextBandwidthBuffer();

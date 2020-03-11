@@ -56,10 +56,10 @@ void MasterModule::passOnPackets()
         {
             // 确定是这个连接Slave的端口，开始判断发送事件
             if (!data_list.isEmpty() && port->isBandwidthBufferFinished() 
-                && port->anotherCanRecive((port->getBandwidth().toInt()>1?port->getBandwidth().toInt():1)*port->getLatency() )) // 有数据、有带宽、对方能接收
+                && port->anotherCanRecive(port->getDelaySendCount())) // 有数据、有带宽、对方能接收
             {
-//                qDebug() << "port delay --> 发送, bandwidth = " << port->getBandwidth().toString() << port->getBandwidth().isBufferFinished()
-//                         << port->getBandwidth().getNumerator() << "/" << port->getBandwidth().getDenominator();
+               qDebug() << "port delay --> 发送, bandwidth = " << port->getBandwidth().toString() << port->getBandwidth().isBufferFinished()
+                        << port->getBandwidth().getNumerator() << "/" << port->getBandwidth().getDenominator();
                 rt->runningOut(getText()+"发送token, "+port->getPortId()+"当前对方能接收："+QString::number(port->another_can_receive)+"-1");
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
                 packet->setDrawPos(geometry().center());
