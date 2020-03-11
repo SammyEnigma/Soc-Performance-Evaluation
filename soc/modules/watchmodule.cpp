@@ -10,11 +10,16 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), target_port(null
     
 
     _pixmap_color = QColor(0x88, 0x88, 0x88, 0x18);
-    QPixmap pixmap(64, 64);
+    QPixmap pixmap(50, 110);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawShapePixmap(painter, QRect(2,2,60,60));
+    drawShapePixmap(painter, QRect(2,2,46,106));
     _pixmap = pixmap;
+
+    QFont f = font();
+    f.setPointSize(f.pointSize() * 2);
+    setFont(f);
+
 }
 
 void WatchModule::setTarget(ModulePort *mp)
@@ -70,16 +75,24 @@ void WatchModule::paintEvent(QPaintEvent *event)
     int height = fm.lineSpacing();
     int left = 4, line = 1;
 
+    QPen BandWithColor(QColor(0, 191, 255));
+    QPen LatencyColor(QColor(255, 0, 0));
+    QPen TokenColor(QColor(0, 0, 0));
     // 添加对绘制内容的监控
     if (target_port)
     {
+        painter.setPen(BandWithColor);
         painter.drawText(left, height * line++, target_port->getBandwidth());
+
+        painter.setPen(LatencyColor);
         painter.drawText(left, height * line++, QString::number(target_port->getToken()));
-        painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
+        //painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
+
+        painter.setPen(TokenColor);
         painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
     }
     else
     {
-        painter.drawText(4, height, "未添加监控端口");
+        painter.drawText(4, height, "无");
     }
 }
