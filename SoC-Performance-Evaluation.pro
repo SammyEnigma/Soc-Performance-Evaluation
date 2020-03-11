@@ -31,6 +31,7 @@ INCLUDEPATH += \
     soc/tools \
 
 SOURCES += \
+    dialogs/moduledatadialog.cpp \
     dialogs/portdatadialog.cpp \
     dialogs/portpositiondialog.cpp \
     dialogs/shapedatadialog.cpp \
@@ -74,6 +75,7 @@ SOURCES += \
     soc/transmissions/datapacketview.cpp
 
 HEADERS += \
+    dialogs/moduledatadialog.h \
     dialogs/portdatadialog.h \
     dialogs/portpositiondialog.h \
     dialogs/shapedatadialog.h \
@@ -125,6 +127,7 @@ HEADERS += \
     utils/stringutil.h
 
 FORMS += \
+    dialogs/moduledatadialog.ui \
     dialogs/portdatadialog.ui \
     mainwindow.ui \
     shapedatadialog.ui \

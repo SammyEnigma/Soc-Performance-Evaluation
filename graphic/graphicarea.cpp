@@ -972,6 +972,8 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     QAction *copy_action = new QAction("Copy", this);
     QAction *paste_action = new QAction("Paste", this);
     QAction *delete_action = new QAction("Delete", this);
+    QAction *show_data_action = new QAction("Show Data", this);
+
     menu->addAction(property_action);
     menu->addAction(data_action);
     menu->addSeparator();
@@ -981,6 +983,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     menu->addAction(copy_action);
     menu->addAction(paste_action);
     menu->addAction(delete_action);
+    menu->addAction(show_data_action);
 
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
@@ -990,6 +993,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         data_action->setEnabled(false);
         delete_action->setEnabled(false);
         add_port_action->setEnabled(false);
+        show_data_action->setEnabled(false);
     }
     // 如果选中了多个
     else if (selected_shapes.size() > 1)
@@ -999,6 +1003,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         add_port_action->setText(add_port_action->text() + " [multi]");
         copy_action->setText(copy_action->text() + " [multi]");
         delete_action->setText(delete_action->text() + " [multi]");
+        show_data_action->setText(show_data_action->text() + " [multi]");
     }
     else // 选中了一个
     {
@@ -1037,6 +1042,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     // 形状属性
     connect(property_action, &QAction::triggered, this, &GraphicArea::slotShapeProperty);
     connect(data_action, &QAction::triggered, this, &GraphicArea::slotShapeData);
+    connect(show_data_action, &QAction::triggered, this, &GraphicArea::slotShowData);
 
     connect(select_all_action, &QAction::triggered, this, &GraphicArea::actionSelectAll);
     connect(copy_action, &QAction::triggered, this, &GraphicArea::actionCopy);
@@ -1200,6 +1206,19 @@ void GraphicArea::actionDelete()
 {
     remove();
     autoSave();
+}
+
+/**
+  *显示模块内的数据
+**/
+void GraphicArea::slotShowData()
+{
+    log("打开显示数据界面");
+    ModuleDataDialog *mdd = new ModuleDataDialog(selected_shapes);
+    mdd->exec();
+    mdd->deleteLater();
+    autoSave();
+
 }
 
 /**

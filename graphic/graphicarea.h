@@ -29,6 +29,7 @@
 #include "portdatadialog.h"
 #include "cablebase.h"
 #include "watchmodule.h"
+#include "moduledatadialog.h"
 
 #define DEB qDebug()
 
@@ -108,6 +109,7 @@ public slots:
     void actionCopy();
     void actionPaste();
     void actionDelete();
+    void slotShowData();
     void slotWatchPort(WatchModule* watch);
     void slotWatchPortID(WatchModule* watch, QString portID);
 

@@ -9,10 +9,10 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), target_port(null
     _pixmap_scale = true;
 
     _pixmap_color = QColor(0x88, 0x88, 0x88, 0x18);
-    QPixmap pixmap(50, 110);
+    QPixmap pixmap(220, 140);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawShapePixmap(painter, QRect(2,2,46,106));
+    drawShapePixmap(painter, QRect(2,2,216,136));
     _pixmap = pixmap;
 
     QFont f = font();
