@@ -1007,7 +1007,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         QList<QAction*> actions = shape->addinMenuActions();
         if (actions.size())
         {
-            menu->addAction(select_all_action);
+            menu->addSeparator();
             foreach (QAction* action, actions)
             {
                 menu->addAction(action);

@@ -69,12 +69,13 @@ QList<QAction*> WatchModule::addinMenuActions()
     
     connect(watch_port_action, &QAction::triggered, this, [=]{
         rt->runningOut("插入端口监控");
+        watch_type = WATCH_CUSTOM;
         emit signalWatchPort(this);
     });
 
     connect(watch_system_action, &QAction::triggered, this, [=] {
         rt->runningOut("插入运行监控");
-        watch_type = WATCH_SYSTEM;
+        slotWatchSystem();
     });
 
     return QList<QAction*>{watch_port_action, watch_system_action};
@@ -113,7 +114,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
     }
     else if (watch_type == WATCH_SYSTEM)
     {
-        painter.drawText(left, height * line++, QString("%1 / %2 clock").arg(rt->total_frame % rt->standard_frame).arg(rt->total_clock));
+        painter.drawText(left, height * line++, QString("%2.%1 clock").arg(rt->total_frame % rt->standard_frame).arg(rt->total_clock));
     }
     else
     {
