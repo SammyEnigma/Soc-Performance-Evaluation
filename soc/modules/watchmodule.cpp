@@ -1,6 +1,6 @@
 #include "watchmodule.h"
 
-WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), target_port(nullptr), watch_type(WatchType::WATCH_CUSTOM)
+WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), watch_type(WatchType::WATCH_CUSTOM)
 {
     _class = "WatchModule";
     _text = "";
@@ -18,6 +18,11 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), target_port(null
     QFont f = font();
     f.setPointSize(f.pointSize() * 2);
     setFont(f);
+    
+    target_port = nullptr;
+    target_master = nullptr;
+    target_slave = nullptr;
+    target_switch = nullptr;
 }
 
 void WatchModule::setTarget(ModulePort *mp)
@@ -66,6 +71,9 @@ QList<QAction*> WatchModule::addinMenuActions()
 {
     QAction* watch_port_action = new QAction("watch port");
     QAction* watch_system_action = new QAction("watch system");
+    QAction* watch_master_action = new QAction("watch master");
+    QAction* watch_slave_action = new QAction("watch slave");
+    QAction* watch_switch_action = new QAction("watch switch");
     
     connect(watch_port_action, &QAction::triggered, this, [=]{
         rt->runningOut("插入端口监控");
@@ -76,6 +84,21 @@ QList<QAction*> WatchModule::addinMenuActions()
     connect(watch_system_action, &QAction::triggered, this, [=] {
         rt->runningOut("插入运行监控");
         slotWatchSystem();
+    });
+
+    connect(watch_master_action, &QAction::triggered, this, [=] {
+        rt->runningOut("插入Master监控");
+        slotWatchMaster();
+    });
+
+    connect(watch_slave_action, &QAction::triggered, this, [=] {
+        rt->runningOut("插入Slave监控");
+        slotWatchSlave();
+    });
+
+    connect(watch_switch_action, &QAction::triggered, this, [=] {
+        rt->runningOut("插入Switch监控");
+        slotWatchSwitch();
     });
 
     return QList<QAction*>{watch_port_action, watch_system_action};
@@ -125,4 +148,19 @@ void WatchModule::paintEvent(QPaintEvent *event)
 void WatchModule::slotWatchSystem()
 {
     watch_type = WATCH_SYSTEM;
+}
+
+void WatchModule::slotWatchMaster()
+{
+    
+}
+
+void WatchModule::slotWatchSlave()
+{
+    
+}
+
+void WatchModule::slotWatchSwitch()
+{
+    
 }
