@@ -54,6 +54,7 @@ public:
     friend class GraphicArea;
     friend class ShapePropertyDialog;
     friend class ShapeDataDialog;
+    friend class ModuleDataDialog;
 
     virtual ShapeBase *newInstanceBySelf(QWidget *parent = nullptr); // 根据形状类型创建对应的形状实例
     virtual void copyDataFrom(ShapeBase *shape);                     // 从形状实例中拷贝数据
