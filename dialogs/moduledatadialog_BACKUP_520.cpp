@@ -9,6 +9,7 @@ ModuleDataDialog::ModuleDataDialog(ShapeList shapes) : QDialog(shapes.first()), 
 
     //遍历选中模块的数据
     int i = 0;
+
     foreach (ShapeBase *shape, shapes)
     {
         setTableRow(i++, shape);

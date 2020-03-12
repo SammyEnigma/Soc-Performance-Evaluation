@@ -62,6 +62,7 @@ signals:
     void signalModifyPosition();
     void signalDelete();
     void signalDataList();
+    void signalWatch();
 
 public slots:
     void slotMenuShowed(const QPoint&);

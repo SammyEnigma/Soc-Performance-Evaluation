@@ -186,7 +186,7 @@ void PortBase::slotMenuShowed(const QPoint &)
 {
     QMenu* menu = new QMenu(this);
     QAction* data_action = new QAction("data", this);
-    QAction* link_action = new QAction("link", this);
+    QAction* link_action = new QAction("watch", this);
     QAction* position_action = new QAction("position", this);
     QAction* delete_action = new QAction("delete", this);
     menu->addAction(data_action);
@@ -194,8 +194,6 @@ void PortBase::slotMenuShowed(const QPoint &)
     menu->addSeparator();
     menu->addAction(position_action);
     menu->addAction(delete_action);
-    
-    link_action->setEnabled(false);
     
     connect(data_action, SIGNAL(triggered()), this, SLOT(slotDataList()));
 
@@ -205,6 +203,10 @@ void PortBase::slotMenuShowed(const QPoint &)
     
     connect(delete_action, &QAction::triggered, [=]{
         emit signalDelete();
+    });
+    
+    connect(link_action, &QAction::triggered, [=]{
+        emit signalWatch();
     });
 
     menu->exec(QCursor::pos());

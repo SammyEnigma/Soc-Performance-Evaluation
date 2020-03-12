@@ -131,6 +131,7 @@ signals:
     void signalPortPositionModified(PortBase *port);
     void signalPortInserted(PortBase *port);
     void signalPortDeleted(PortBase *port);
+    void signalPortWatch(PortBase *port);
 
 public slots:
 

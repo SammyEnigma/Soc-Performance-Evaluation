@@ -309,6 +309,10 @@ void ShapeBase::addPort(PortBase *port)
         emit signalPortDeleted(port);
         port->deleteLater();
     });
+    connect(port, &PortBase::signalWatch, this, [=] {
+        // 如果已经连线了，则先断开连接
+        emit signalPortWatch(port);
+    });
 
     emit signalPortInserted(port);
 }

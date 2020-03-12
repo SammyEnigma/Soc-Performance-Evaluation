@@ -898,7 +898,14 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         // 端口列表中删除端口
         ports_map.remove(port->getPortId());
     });
-    
+
+    connect(shape, &ShapeBase::signalPortWatch, this, [=](PortBase *port) {
+        qDebug() << "添加端口监视控件";
+        // 为端口添加监视控件
+        ModulePort* mp = static_cast<ModulePort *>(port);
+        
+    });
+
     // 连接监视控件
     if (shape->getClass() == "WatchModule")
     {

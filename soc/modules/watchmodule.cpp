@@ -9,15 +9,14 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), watch_type(Watch
     _pixmap_scale = true;
 
     _pixmap_color = QColor(0x88, 0x88, 0x88, 0x18);
-    QPixmap pixmap(220, 140);
+    QPixmap pixmap(120, 140);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
     drawShapePixmap(painter, QRect(2,2,216,136));
     _pixmap = pixmap;
 
-    QFont f = font();
-    f.setPointSize(f.pointSize() * 2);
-    setFont(f);
+    big_font = normal_font = font();
+    big_font.setPointSize(normal_font.pointSize() * 2);
     
     target_port = nullptr;
     target_module = nullptr;
@@ -29,6 +28,7 @@ void WatchModule::setTarget(ModulePort *mp)
     this->target_port = mp;
     this->target_module = nullptr;
     update();
+    setToolTip(static_cast<ShapeBase *>(target_port->getShape())->getText() + "的port");
 }
 
 void WatchModule::setTarget(ModuleBase *module)
@@ -37,6 +37,7 @@ void WatchModule::setTarget(ModuleBase *module)
     this->target_port = nullptr;
     this->target_module = module;
     update();
+    setToolTip(QString("%1 (%2)").arg(module->getText()).arg(module->getClass()));
 }
 
 WatchModule *WatchModule::newInstanceBySelf(QWidget *parent)
@@ -110,7 +111,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
     ModuleBase::paintEvent(event);
     QPainter painter(this);
     
-    QFontMetrics fm(this->font());
+    QFontMetrics fm(big_font);
     int height = fm.lineSpacing();
     int left = 4, line = 1;
 
@@ -122,20 +123,26 @@ void WatchModule::paintEvent(QPaintEvent *event)
     {
         if (target_port)
         {
-            painter.drawText(left, height * line++, ((ShapeBase *)(target_port->getShape()))->getText());
-
+            painter.setFont(big_font);
             painter.setPen(BandWithColor);
             painter.drawText(left, height * line++, target_port->getBandwidth());
+            painter.setFont(normal_font);
+            painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × 32 Byte");
 
+            painter.setFont(big_font);
             painter.setPen(LatencyColor);
-            painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
+            painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
 
             painter.setPen(TokenColor);
-            painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
+            painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
         }
         else if (target_module)
         {
-            painter.drawText(left, height * line++, target_module->getText());
+            QString cls = target_module->getClass();
+            if (cls == "ModuleCable")
+            {
+                painter.drawText(left, height * line++, target_module->getDataValue("delay").toString());
+            }
         }
         else
         {
