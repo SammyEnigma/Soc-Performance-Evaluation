@@ -11,14 +11,10 @@ ModuleDataDialog::ModuleDataDialog(ShapeList shapes) :
     //遍历选中模块的数据
     int i = 0;
     ui->tableWidget->setRowCount(shapes.size());
-    qDebug()<<shapes.size();
     foreach (ShapeBase* shape, shapes)
     {
        CustomDataList* data_lists = &shape->custom_data_list;
-       qDebug()<<data_lists->size();
-
        setTableRow(i++, shape);
-
     }
 }
 
