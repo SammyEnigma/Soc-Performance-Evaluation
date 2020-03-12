@@ -907,7 +907,8 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         ModuleCable* cable = static_cast<ModuleCable *>(mp->getCable());
         if (!cable)  // 没有连接线，取消监控
             return ;
-        // TODO: 确定线的位置
+        // TODO: 确定线的位置：近的一头，偏向远的一头
+
         
         // 插入 WatchModule
         ShapeBase* temp = new WatchModule(this);
@@ -918,6 +919,9 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         
         // 设置监控连接
         static_cast<WatchModule*>(shape)->setTarget(mp);
+        
+        // 选中新增的 WatchModule
+        select(shape);
     });
 
     // 连接监视控件
