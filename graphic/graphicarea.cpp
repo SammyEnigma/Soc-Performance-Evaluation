@@ -900,10 +900,24 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     });
 
     connect(shape, &ShapeBase::signalPortWatch, this, [=](PortBase *port) {
-        qDebug() << "添加端口监视控件";
         // 为端口添加监视控件
         ModulePort* mp = static_cast<ModulePort *>(port);
         
+        // 获取这个端口的线，用来设置 WatchModule 的位置
+        ModuleCable* cable = static_cast<ModuleCable *>(mp->getCable());
+        if (!cable)  // 没有连接线，取消监控
+            return ;
+        // TODO: 确定线的位置
+        
+        // 插入 WatchModule
+        ShapeBase* temp = new WatchModule(this);
+        ShapeBase* shape = insertShapeByType(temp, QPoint(mp->getGlobalPos()));
+        temp->deleteLater();
+        if (!shape)
+            return ;
+        
+        // 设置监控连接
+        static_cast<WatchModule*>(shape)->setTarget(mp);
     });
 
     // 连接监视控件
