@@ -905,6 +905,8 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         WatchModule* watch = static_cast<WatchModule*>(shape);
         connect(watch, SIGNAL(signalWatchPort(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
         connect(watch, SIGNAL(signalWatchPortID(WatchModule*, QString)), this, SLOT(slotWatchPortID(WatchModule*, QString)));
+        connect(watch, SIGNAL(signalWatchModule(WatchModule*)), this, SLOT(slotWatchModule(WatchModule*)));
+        connect(watch, SIGNAL(signalWatchModuleID(WatchModule*, QString)), this, SLOT(slotWatchModuleID(WatchModule*, QString)));
     }
 }
 
@@ -1258,6 +1260,37 @@ void GraphicArea::slotWatchPortID(WatchModule* watch, QString portID)
     }
 }
 
+void GraphicArea::slotWatchModule(WatchModule *watch)
+{
+    QPoint pos = watch->geometry().center();
+    int min_dis = 0x3f3f3f3f;
+    ModuleBase* min_module = nullptr;
+    foreach(ShapeBase* shape, shape_lists)
+    {
+        if (shape->getClass() == "WatchModule")
+            continue;
+        int dis = (shape->geometry().center() - pos).manhattanLength();
+        if (dis < min_dis)
+        {
+            min_dis = dis;
+            min_module = static_cast<ModuleBase*>(shape);
+        }
+    }
+    linkWatchModule(watch, min_module);
+}
+
+void GraphicArea::slotWatchModuleID(WatchModule *watch, QString text)
+{
+    foreach (ShapeBase* shape, shape_lists)
+    {
+        if (shape->getText() == text)
+        {
+            linkWatchModule(watch, static_cast<ModuleBase*>(shape));
+            break;
+        }
+    }
+}
+
 /**
  * 连接一个监视模块和端口
  * 可直接调用
@@ -1265,6 +1298,12 @@ void GraphicArea::slotWatchPortID(WatchModule* watch, QString portID)
 void GraphicArea::linkWatchPort(WatchModule* watch, ModulePort* port)
 {
     watch->setTarget(port);
+}
+
+void GraphicArea::linkWatchModule(WatchModule* watch, ModuleBase* module)
+{
+    watch->setTarget(module);
+    watch->update();
 }
 
 /**

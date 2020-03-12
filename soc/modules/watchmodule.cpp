@@ -20,14 +20,22 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), watch_type(Watch
     setFont(f);
     
     target_port = nullptr;
-    target_master = nullptr;
-    target_slave = nullptr;
-    target_switch = nullptr;
+    target_module = nullptr;
 }
 
 void WatchModule::setTarget(ModulePort *mp)
 {
+    this->watch_type = WATCH_CUSTOM;
     this->target_port = mp;
+    this->target_module = nullptr;
+    update();
+}
+
+void WatchModule::setTarget(ModuleBase *module)
+{
+    this->watch_type = WATCH_CUSTOM;
+    this->target_port = nullptr;
+    this->target_module = module;
     update();
 }
 
@@ -50,6 +58,10 @@ QString WatchModule::toStringAppend()
         {
             full += indent + StringUtil::makeXml(target_port->getPortId(), "WATCH_PORT_ID");
         }
+        else if (target_module)
+        {
+            full += indent + StringUtil::makeXml(target_module->getText(), "WATCH_MODULE_ID");
+        }
     }
     return full;
 }
@@ -70,38 +82,27 @@ void WatchModule::fromStringAppend(QString s)
 QList<QAction*> WatchModule::addinMenuActions()
 {
     QAction* watch_port_action = new QAction("watch port");
+    QAction* watch_module_action = new QAction("watch module");
     QAction* watch_system_action = new QAction("watch system");
-    QAction* watch_master_action = new QAction("watch master");
-    QAction* watch_slave_action = new QAction("watch slave");
-    QAction* watch_switch_action = new QAction("watch switch");
     
     connect(watch_port_action, &QAction::triggered, this, [=]{
-        rt->runningOut("插入端口监控");
+        log("插入端口监控");
         watch_type = WATCH_CUSTOM;
         emit signalWatchPort(this);
     });
 
+    connect(watch_module_action, &QAction::triggered, this, [=] {
+        log("插入模块监控");
+        watch_type = WATCH_CUSTOM;
+        emit signalWatchModule(this);
+    });
+
     connect(watch_system_action, &QAction::triggered, this, [=] {
-        rt->runningOut("插入运行监控");
+        log("插入运行监控");
         slotWatchSystem();
     });
 
-    connect(watch_master_action, &QAction::triggered, this, [=] {
-        rt->runningOut("插入Master监控");
-        slotWatchMaster();
-    });
-
-    connect(watch_slave_action, &QAction::triggered, this, [=] {
-        rt->runningOut("插入Slave监控");
-        slotWatchSlave();
-    });
-
-    connect(watch_switch_action, &QAction::triggered, this, [=] {
-        rt->runningOut("插入Switch监控");
-        slotWatchSwitch();
-    });
-
-    return QList<QAction*>{watch_port_action, watch_system_action};
+    return QList<QAction*>{watch_port_action, watch_module_action, watch_system_action};
 }
 
 void WatchModule::paintEvent(QPaintEvent *event)
@@ -132,6 +133,10 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.setPen(TokenColor);
             painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
         }
+        else if (target_module)
+        {
+            painter.drawText(left, height * line++, target_module->getText());
+        }
         else
         {
             painter.drawText(4, height, "无");
@@ -150,19 +155,4 @@ void WatchModule::paintEvent(QPaintEvent *event)
 void WatchModule::slotWatchSystem()
 {
     watch_type = WATCH_SYSTEM;
-}
-
-void WatchModule::slotWatchMaster()
-{
-    
-}
-
-void WatchModule::slotWatchSlave()
-{
-    
-}
-
-void WatchModule::slotWatchSwitch()
-{
-    
 }
