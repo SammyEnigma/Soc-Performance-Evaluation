@@ -51,6 +51,8 @@ private:
     ModulePort* target_port; // 目标端口
     ModuleBase* target_module; // 目标模块，请用getClass()获取类型
     WatchType watch_type;
+    
+    QFont big_font, normal_font;
 };
 
 #endif // WATCHMODULE_H
