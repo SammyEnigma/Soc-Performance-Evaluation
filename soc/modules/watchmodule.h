@@ -3,6 +3,9 @@
 
 #include "modulebase.h"
 #include "moduleport.h"
+#include "mastermodule.h"
+#include "slavemodule.h"
+#include "switchmodule.h"
 
 class WatchModule : public ModuleBase
 {
@@ -39,9 +42,15 @@ public slots:
     virtual void updatePacketPos() override { update(); }
     
     void slotWatchSystem();
+    void slotWatchMaster();
+    void slotWatchSlave();
+    void slotWatchSwitch();
 
 private:
     ModulePort* target_port; // 目标端口
+    MasterModule* target_master;
+    SlaveModule* target_slave;
+    SwitchModule* target_switch;
     WatchType watch_type;
 };
 
