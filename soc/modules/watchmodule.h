@@ -6,6 +6,7 @@
 #include "mastermodule.h"
 #include "slavemodule.h"
 #include "switchmodule.h"
+#include "modulecable.h"
 
 class WatchModule : public ModuleBase
 {
@@ -19,6 +20,7 @@ public:
     };
 
     void setTarget(ModulePort* mp);
+    void setTarget(ModuleBase* module);
     void updateData();
 
     virtual void initData() override{}
@@ -35,6 +37,8 @@ protected:
 signals:
 	void signalWatchPort(WatchModule* watch);
     void signalWatchPortID(WatchModule* watch, QString portID);
+    void signalWatchModule(WatchModule* watch);
+    void signalWatchModuleID(WatchModule* watch, QString text);
 
 public slots:
     virtual void passOnPackets() override {} // 1、queue中packet延迟满后，传入到下一个queue
@@ -42,15 +46,10 @@ public slots:
     virtual void updatePacketPos() override { update(); }
     
     void slotWatchSystem();
-    void slotWatchMaster();
-    void slotWatchSlave();
-    void slotWatchSwitch();
 
 private:
     ModulePort* target_port; // 目标端口
-    MasterModule* target_master;
-    SlaveModule* target_slave;
-    SwitchModule* target_switch;
+    ModuleBase* target_module; // 目标模块，请用getClass()获取类型
     WatchType watch_type;
 };
 

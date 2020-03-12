@@ -70,6 +70,7 @@ public:
     // 视口与监视操作
     void zoomIn(double prop);
     void linkWatchPort(WatchModule* watch, ModulePort* port);
+    void linkWatchModule(WatchModule* watch, ModuleBase* module);
 
     // 流控操作
     ShapeBase *findShapeByText(QString text);
@@ -110,8 +111,11 @@ public slots:
     void actionPaste();
     void actionDelete();
     void slotShowData();
+    
     void slotWatchPort(WatchModule* watch);
     void slotWatchPortID(WatchModule* watch, QString portID);
+    void slotWatchModule(WatchModule* watch);
+    void slotWatchModuleID(WatchModule* watch, QString text);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象
