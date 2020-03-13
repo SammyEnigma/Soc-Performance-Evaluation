@@ -15,8 +15,9 @@ public:
     WatchModule(QWidget* parent = nullptr);
     
     enum WatchType {
-        WATCH_CUSTOM,
-        WATCH_SYSTEM
+        WATCH_CUSTOM,//模块和端口
+        WATCH_SYSTEM,//全局
+        WATCH_FREQUENCE//频率
     };
 
     void setTarget(ModulePort* mp);
@@ -39,6 +40,7 @@ signals:
     void signalWatchPortID(WatchModule* watch, QString portID);
     void signalWatchModule(WatchModule* watch);
     void signalWatchModuleID(WatchModule* watch, QString text);
+    void signalWatchFrequence(WatchModule* watch);
 
 public slots:
     virtual void passOnPackets() override {} // 1、queue中packet延迟满后，传入到下一个queue

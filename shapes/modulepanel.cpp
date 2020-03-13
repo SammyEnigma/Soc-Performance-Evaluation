@@ -37,6 +37,13 @@ void ModulePanel::paintEvent(QPaintEvent *event)
     painter.fillRect(QRect(0,0,width(),height()), QBrush(_pixmap_color));
 }
 
+/*QList<QAction *> ModulePanel::addinMenuActions()
+{
+  //  QAction* set_frq_action = new QAction("set frequence");
+
+
+}*/
+
 void ModulePanel::passOnPackets()
 {
 

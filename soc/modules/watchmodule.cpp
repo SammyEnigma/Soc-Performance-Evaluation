@@ -24,7 +24,7 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), watch_type(Watch
 
 void WatchModule::setTarget(ModulePort *mp)
 {
-    this->watch_type = WATCH_CUSTOM;
+    //this->watch_type = WATCH_CUSTOM;
     this->target_port = mp;
     this->target_module = nullptr;
     update();
@@ -33,7 +33,7 @@ void WatchModule::setTarget(ModulePort *mp)
 
 void WatchModule::setTarget(ModuleBase *module)
 {
-    this->watch_type = WATCH_CUSTOM;
+    //this->watch_type = WATCH_CUSTOM;
     this->target_port = nullptr;
     this->target_module = module;
     update();
@@ -85,6 +85,7 @@ QList<QAction*> WatchModule::addinMenuActions()
     QAction* watch_port_action = new QAction("watch port");
     QAction* watch_module_action = new QAction("watch module");
     QAction* watch_system_action = new QAction("watch system");
+    QAction* watch_frq_action = new QAction("watch frequence");
     
     connect(watch_port_action, &QAction::triggered, this, [=]{
         log("插入端口监控");
@@ -103,7 +104,15 @@ QList<QAction*> WatchModule::addinMenuActions()
         slotWatchSystem();
     });
 
-    return QList<QAction*>{watch_port_action, watch_module_action, watch_system_action};
+    connect(watch_frq_action, &QAction::triggered, this, [=]
+    {
+        log("插入频率监控");
+        watch_type = WATCH_FREQUENCE;
+        emit signalWatchFrequence(this);
+
+    });
+
+    return QList<QAction*>{watch_port_action, watch_module_action, watch_system_action, watch_frq_action};
 }
 
 void WatchModule::paintEvent(QPaintEvent *event)
@@ -163,6 +172,14 @@ void WatchModule::paintEvent(QPaintEvent *event)
     else if (watch_type == WATCH_SYSTEM)
     {
         painter.drawText(left, height * line++, QString("%2.%1 clock").arg(rt->total_frame % rt->standard_frame).arg(rt->total_clock));
+    }   
+    else if(watch_type == WATCH_FREQUENCE)
+    {
+        painter.setFont(big_font);
+        painter.setPen(BandWithColor);
+        painter.drawText(left, height * line++, target_port->getBandwidth());
+        painter.setFont(normal_font);
+        painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
     }
     else
     {

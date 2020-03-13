@@ -16,6 +16,8 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+  // virtual QList<QAction*> addinMenuActions() override;
+
 
 public slots:
     virtual void passOnPackets() override; // 1、queue中packet延迟满后，传入到下一个queue

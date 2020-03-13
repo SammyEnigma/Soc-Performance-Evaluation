@@ -932,6 +932,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         connect(watch, SIGNAL(signalWatchPortID(WatchModule*, QString)), this, SLOT(slotWatchPortID(WatchModule*, QString)));
         connect(watch, SIGNAL(signalWatchModule(WatchModule*)), this, SLOT(slotWatchModule(WatchModule*)));
         connect(watch, SIGNAL(signalWatchModuleID(WatchModule*, QString)), this, SLOT(slotWatchModuleID(WatchModule*, QString)));
+        connect(watch,SIGNAL(signalWatchFrequence(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
     }
 }
 
@@ -1315,6 +1316,8 @@ void GraphicArea::slotWatchModuleID(WatchModule *watch, QString text)
         }
     }
 }
+
+
 
 /**
  * 连接一个监视模块和端口
