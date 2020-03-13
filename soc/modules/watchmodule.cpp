@@ -118,6 +118,8 @@ void WatchModule::paintEvent(QPaintEvent *event)
     QPen BandWithColor(QColor(0, 191, 255));
     QPen LatencyColor(QColor(255, 0, 0));
     QPen TokenColor(QColor(0, 0, 0));
+    painter.setFont(big_font);
+
     // 添加对绘制内容的监控
     if (watch_type == WATCH_CUSTOM)
     {
@@ -142,6 +144,15 @@ void WatchModule::paintEvent(QPaintEvent *event)
             if (cls == "ModuleCable")
             {
                 painter.drawText(left, height * line++, target_module->getDataValue("delay").toString());
+            }
+            else if (cls == "IP") // 显示IP的频率
+            {
+                if (target_module->getPorts().size())
+                {
+                    painter.drawText(left, height * line++, static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth());
+                    painter.setFont(normal_font);
+                    painter.drawText(left + fm.horizontalAdvance(static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth()), height * (line - 1), "Ghz × 32 Byte");
+                }
             }
         }
         else
