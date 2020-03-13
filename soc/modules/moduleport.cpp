@@ -304,6 +304,11 @@ void ModulePort::resetBandwidthBuffer()
         bandwidth.resetBuffer(0);
 }
 
+void ModulePort::setBandwidth(TimeFrame bandwidth)
+{
+    this->bandwidth = bandwidth;
+}
+
 void ModulePort::initReceiveToken(int x)
 {
     another_can_receive = x;

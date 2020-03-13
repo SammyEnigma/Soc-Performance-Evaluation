@@ -79,6 +79,29 @@ QString GraphicArea::toString()
     return full_string;
 }
 
+void GraphicArea::slotSetFrequence(ShapeBase *shape)
+{
+  QString bandwidth = QInputDialog::getText(this, "Please input bandwidth", "It can be an integer, fraction, or decimal");
+  TimeFrame t(bandwidth);
+
+  //先获取shape的port
+  //判断是否在modulepanel当中
+  QRect rect = shape->geometry();//获取shape坐标
+  foreach(ShapeBase *shape, shape_lists)
+  {
+      QRect shaperect = shape->geometry();
+
+      if(rect.contains(shaperect))
+      {
+          foreach(PortBase *port, shape->getPorts())
+          {
+              ((ModulePort*)port)->setBandwidth(t);
+          }
+      }
+  }
+
+}
+
 /**
  * 选中某一个形状
  * @param shape 要选中的形状
@@ -934,6 +957,11 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         connect(watch, SIGNAL(signalWatchModuleID(WatchModule*, QString)), this, SLOT(slotWatchModuleID(WatchModule*, QString)));
         connect(watch,SIGNAL(signalWatchFrequence(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
     }
+    else if(shape->getClass() == "ModulePanel")
+    {
+        ModulePanel* panel = static_cast<ModulePanel*>(panel);
+        connect(panel, SIGNAL(signalSetFrequence(ModulePanel*)), this, SLOT(slotSetFrequence(ModulePanel*)));
+    }
 }
 
 void GraphicArea::connectPortEvent(PortBase *port)
@@ -1374,3 +1402,4 @@ void GraphicArea::dropEvent(QDropEvent *event)
 
     return QWidget::dropEvent(event);
 }
+

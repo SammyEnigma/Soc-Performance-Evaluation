@@ -16,13 +16,16 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-  // virtual QList<QAction*> addinMenuActions() override;
+   virtual QList<QAction*> addinMenuActions() override;
 
 
 public slots:
     virtual void passOnPackets() override; // 1、queue中packet延迟满后，传入到下一个queue
     virtual void delayOneClock() override; // 2、传输/处理/读取延迟到下一个clock
     virtual void updatePacketPos() override;
+
+signals:
+    void signalSetFrequence(ModulePanel*);
 };
 
 #endif // PANELMODULE_H

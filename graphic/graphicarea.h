@@ -18,6 +18,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QTimer>
+#include <QInputDialog>
 #include "globalvars.h"
 #include "bytearrayutil.h"
 #include "shapebase.h"
@@ -30,6 +31,7 @@
 #include "cablebase.h"
 #include "watchmodule.h"
 #include "moduledatadialog.h"
+#include "modulepanel.h"
 
 #define DEB qDebug()
 
@@ -56,6 +58,7 @@ public:
     void save();
     void autoSave();
     QString toString();
+    void slotSetFrequence(ShapeBase *shape);
 
     // 形状操作
     void select(ShapeBase *shape, bool ctrl = false);                                      // 选中一个形状，或者取消选中

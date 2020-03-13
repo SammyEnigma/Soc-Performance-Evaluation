@@ -49,6 +49,7 @@ public:
     bool nextBandwidthBuffer();
     bool isBandwidthBufferFinished();
     void resetBandwidthBuffer();
+    void setBandwidth(TimeFrame bandwidth);
 
     void initReceiveToken(int t);
     int getReceiveToken();

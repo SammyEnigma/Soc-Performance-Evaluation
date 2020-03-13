@@ -37,12 +37,16 @@ void ModulePanel::paintEvent(QPaintEvent *event)
     painter.fillRect(QRect(0,0,width(),height()), QBrush(_pixmap_color));
 }
 
-/*QList<QAction *> ModulePanel::addinMenuActions()
+QList<QAction *> ModulePanel::addinMenuActions()
 {
-  //  QAction* set_frq_action = new QAction("set frequence");
+    QAction* set_frq_action = new QAction("set frequence");
 
-
-}*/
+    connect(set_frq_action, &QAction::triggered, this, [=]{
+        log("设置频率");
+        emit signalSetFrequence(this);
+    });
+    return QList<QAction*>{set_frq_action};
+}
 
 void ModulePanel::passOnPackets()
 {
