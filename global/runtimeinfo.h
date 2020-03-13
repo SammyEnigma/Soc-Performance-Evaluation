@@ -27,6 +27,7 @@ public:
         DATA_PATH = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/data/";
 #endif
         SHAPE_PATH = DATA_PATH + "shapes/";
+        DEFAULT_PACKET_BYTE = 32;
 
         current_choosed_shape = nullptr;
         auto_stick_ports = false;
@@ -43,6 +44,7 @@ public:
 
     QString DATA_PATH;
     QString SHAPE_PATH;
+    int DEFAULT_PACKET_BYTE; // 默认一个packet的包的大小，32byte
 
     ShapeBase* current_choosed_shape;
     bool auto_stick_ports;
@@ -51,7 +53,7 @@ public:
     QStringList running_out;
     int standard_frame;
     int total_clock;
-    int total_frame;
+    int total_frame;  
 };
 
 #endif // RUNTIMEINFO_H

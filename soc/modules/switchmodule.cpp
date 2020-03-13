@@ -241,7 +241,7 @@ void SwitchModule::updatePacketPos()
 {
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
-    int h = height * 3 + 4;
+    int h = this->height()/2-PACKET_SIZE;
     int l = 4;
     foreach (DataPacket *packet, request_queue)
     {
