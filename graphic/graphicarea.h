@@ -58,7 +58,6 @@ public:
     void save();
     void autoSave();
     QString toString();
-    void slotSetFrequence(ShapeBase *shape);
 
     // 形状操作
     void select(ShapeBase *shape, bool ctrl = false);                                      // 选中一个形状，或者取消选中
@@ -118,7 +117,8 @@ public slots:
     void slotWatchPort(WatchModule* watch);
     void slotWatchPortID(WatchModule* watch, QString portID);
     void slotWatchModule(WatchModule* watch);
-    void slotWatchModuleID(WatchModule* watch, QString text);
+    void slotWatchModuleID(WatchModule* watch, QString text);    
+    void slotSetFrequence(ModulePanel *panel);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象
