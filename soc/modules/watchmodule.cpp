@@ -129,7 +129,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.setPen(BandWithColor);
             painter.drawText(left, height * line++, target_port->getBandwidth());
             painter.setFont(normal_font);
-            painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × 32 Byte");
+            painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
 
             painter.setFont(big_font);
             painter.setPen(LatencyColor);
@@ -151,7 +151,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
                 {
                     painter.drawText(left, height * line++, static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth());
                     painter.setFont(normal_font);
-                    painter.drawText(left + fm.horizontalAdvance(static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth()), height * (line - 1), "Ghz × 32 Byte");
+                    painter.drawText(left + fm.horizontalAdvance(static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
                 }
             }
         }
