@@ -141,9 +141,9 @@ void WatchModule::paintEvent(QPaintEvent *event)
             // 真实bandwidth
             painter.setFont(big_font);
             painter.setPen(BandWithColor);
-            int passed_frame = qMax(1/*避免除以0*/, rt->total_frame - target_port->getBeginWaited());
+            int passed_clock = qMax(1/*避免除以0*/, rt->total_clock - target_port->getBeginWaited());
             int sended_or_received = qMax(target_port->getTotalSended(), target_port->getTotalReceived());
-            double real_bandwidth = sended_or_received * 32.0 / passed_frame;
+            double real_bandwidth = sended_or_received * 32.0 / passed_clock;
             QString bandwidth_str = QString::number(real_bandwidth, 10, 2);
             if (bandwidth_str.endsWith("0"))
             {
@@ -175,7 +175,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
             
             painter.setFont(normal_font);
-            painter.drawText(left, height*line++, QString("%1/%2-%3").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()));
+            painter.drawText(left, height*line++, QString("%1/%2-%3(%4)").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()).arg(passed_clock));
         }
         else if (target_module)
         {

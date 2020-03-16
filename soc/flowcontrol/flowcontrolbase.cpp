@@ -108,17 +108,22 @@ void FlowControlBase::initData()
 
     // 获取所有bandwidth总和的最小公倍数，然后把帧数设置成这个
     int com_mul = 1;
-    QList<int> denos;
+    QList<int> nums; // 所有分子
     foreach (PortBase* port, graphic->ports_map)
     {
         ModulePort* mp = static_cast<ModulePort*>(port);
-        int deno = qMax(mp->getBandwidth().getNumerator(), 1);
-        denos.append(deno);
+        int num = qMax(mp->getBandwidth().getNumerator(), 1);
+        nums.append(num);
     }
-    com_mul = lcm(denos);
+    com_mul = lcm(nums); // 分子的最小公倍数
     rt->runningOut("最小帧数：1 clock = " + QString::number(com_mul) + " frame");
     current_clock.setDenominator(com_mul);
     rt->standard_frame = com_mul;
+    
+    /* 
+     * 比如：bandwidth = 8，那么 1 clock 发 8 个，则 standar_frame = 8
+     * 反之，bandwidth = 1/8，那么 8 clock 发 1 个，则依旧 standar_frame = 1
+     */
     
     // 初始化所有控件的数据
     foreach (ShapeBase* shape, graphic->shape_lists)

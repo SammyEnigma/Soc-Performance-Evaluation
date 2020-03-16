@@ -46,14 +46,14 @@ public:
     QString SHAPE_PATH;
     int DEFAULT_PACKET_BYTE; // 默认一个packet的包的大小，32byte
 
-    ShapeBase* current_choosed_shape;
+    ShapeBase *current_choosed_shape;
     bool auto_stick_ports;
-    
+
     bool running;
     QStringList running_out;
-    int standard_frame;
-    int total_clock;
-    int total_frame;  
+    int standard_frame; // 一个clock有几个frame
+    int total_clock;    // 从运行开始到现在经过了几个clock（向下取整）
+    int total_frame;    // 经过了几个frame
 };
 
 #endif // RUNTIMEINFO_H
