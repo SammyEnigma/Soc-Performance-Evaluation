@@ -12,7 +12,8 @@ ModulePort::ModulePort(QWidget *parent)
       another_can_receive(0),
       bandwidth(1),
       latency(1), return_delay(0), request_to_queue(true), discard_response(false),
-      send_update_delay(0), receive_update_delay(0), token(1)
+      send_update_delay(0), receive_update_delay(0), token(1), 
+      total_sended(0), total_received(0), begin_waited(0)
 {
 }
 
@@ -45,6 +46,7 @@ void ModulePort::clearData()
     receive_update_delay_list.clear();
     send_update_delay_list.clear();
     bandwidth.resetBuffer();
+    total_sended = total_received = begin_waited = 0;
 }
 
 QString ModulePort::getShowedString(QString split)
@@ -223,6 +225,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     {
     case DATA_REQUEST:
         emit signalSendDelayFinished(this, packet);
+        total_sended++;
         send_update_delay_list.append(new DataPacket(send_update_delay));
         break;
     case DATA_RESPONSE:
@@ -238,25 +241,27 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 void ModulePort::slotDataReceived(DataPacket *packet)
 {
     rt->runningOut(getPortId() + " 收到数据slotDataReceived");
+    total_received++;
     if (request_to_queue)
     {
         if (discard_response && packet->getDataType()==DATA_RESPONSE) // 无视response，master的属性
         {
-            rt->runningOut(getPortId() + ": Master 不进行处理 response");
+            rt->runningOut("  " + getPortId() + ": Master 不进行处理 response");
             packet->deleteLater();
             sendDequeueTokenToComeModule(new DataPacket()); // 让发送方token+1
             return ;
         }
-        else
+        else // 进入模块队列
         {
-            rt->runningOut(getPortId() + ": 开始进队列");
+            rt->runningOut("  " + getPortId() + ": 开始进队列");
             enqueue_list.append(packet);
             packet->resetDelay(getLatency());
         }
     }
     else // Switch直接传送到模块中
     {
-        rt->runningOut(getPortId()+ ": 未设置接收缓冲，发送信号传递至所在模块");
+        rt->runningOut("  " + getPortId() + ": 接收数据，发送信号传递至所在模块");
+        // Switch自己有收到数据的信号槽，所以不用在这里处理
     }
     emit signalDataReceived(this, packet); // 如果是switch，则处理该信号；其余模块要么不理它，要么只计数
 }
@@ -337,6 +342,21 @@ void ModulePort::setToken(int token)
 void ModulePort::setRequestToQueue(bool c)
 {
     request_to_queue = c;
+}
+
+int ModulePort::getTotalSended()
+{
+    return total_sended;
+}
+
+int ModulePort::getTotalReceived()
+{
+    return total_received;
+}
+
+int ModulePort::getBeginWaited()
+{
+    return begin_waited;
 }
 
 void ModulePort::setDiscardResponse(bool d)
