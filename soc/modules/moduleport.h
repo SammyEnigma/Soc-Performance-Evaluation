@@ -105,7 +105,7 @@ private:
 
     int total_sended;   // 运行到现在总共发送多少packet
     int total_received; // 运行到现在总共收到packet
-    int begin_waited;   // 一开始运行的等待时间
+    int begin_waited;   // 一开始运行的等待时间(注意：按帧算，不是clock。clock=begin_waited/rt->standar_frame。在standar_frame=1时两者相等)
 };
 
 #endif // MODULEPORT_H

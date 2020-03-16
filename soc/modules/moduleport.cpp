@@ -241,7 +241,11 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 void ModulePort::slotDataReceived(DataPacket *packet)
 {
     rt->runningOut(getPortId() + " 收到数据slotDataReceived");
-    total_received++;
+    if (packet->getDataType() == DATA_REQUEST) {
+        total_received++;
+        if (begin_waited == 0)
+            begin_waited = rt->total_frame;
+    }
     if (request_to_queue)
     {
         if (discard_response && packet->getDataType()==DATA_RESPONSE) // 无视response，master的属性
