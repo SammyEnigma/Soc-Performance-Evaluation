@@ -263,6 +263,8 @@ public:
             return QString("Invalid Fraction: %1/%2").arg(numerator).arg(denominator);
         else if (denominator == 1) // 分母是1
             return QString::number(numerator);
+        else if (numerator % denominator == 0) // 整数
+            return QString::number(numerator / denominator);
         else
             return QString("%1/%2").arg(numerator).arg(denominator);
     }
