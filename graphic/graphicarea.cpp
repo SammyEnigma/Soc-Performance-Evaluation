@@ -1032,7 +1032,8 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     QAction *copy_action = new QAction("Copy", this);
     QAction *paste_action = new QAction("Paste", this);
     QAction *delete_action = new QAction("Delete", this);
-  //  QAction *show_data_action = new QAction("Show Data", this);
+    QAction *watch_action = new QAction("Watch", this);
+    //  QAction *show_data_action = new QAction("Show Data", this);
 
     menu->addAction(property_action);
     menu->addAction(data_action);
@@ -1043,7 +1044,8 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     menu->addAction(copy_action);
     menu->addAction(paste_action);
     menu->addAction(delete_action);
-   // menu->addAction(show_data_action);
+    // menu->addAction(show_data_action);
+    menu->addAction(watch_action);
 
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
@@ -1053,7 +1055,8 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         data_action->setEnabled(false);
         delete_action->setEnabled(false);
         add_port_action->setEnabled(false);
- //       show_data_action->setEnabled(false);
+        watch_action->setEnabled(false);
+        //show_data_action->setEnabled(false);
     }
     // 如果选中了多个
     else if (selected_shapes.size() > 1)
@@ -1063,7 +1066,8 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         add_port_action->setText(add_port_action->text() + " [multi]");
         copy_action->setText(copy_action->text() + " [multi]");
         delete_action->setText(delete_action->text() + " [multi]");
-//        show_data_action->setText(show_data_action->text() + " [multi]");
+        watch_action->setText(watch_action->text() + "[multi]");
+        //show_data_action->setText(show_data_action->text() + " [multi]");
     }
     else // 选中了一个
     {
@@ -1102,7 +1106,8 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     // 形状属性
     connect(property_action, &QAction::triggered, this, &GraphicArea::slotShapeProperty);
     connect(data_action, &QAction::triggered, this, &GraphicArea::slotShapeData);
-//    connect(show_data_action, &QAction::triggered, this, &GraphicArea::slotShowData);
+    connect(watch_action, &QAction::triggered, this, &GraphicArea::slotWatch);
+    //connect(show_data_action, &QAction::triggered, this, &GraphicArea::slotShowData);
 
     connect(select_all_action, &QAction::triggered, this, &GraphicArea::actionSelectAll);
     connect(copy_action, &QAction::triggered, this, &GraphicArea::actionCopy);
@@ -1278,6 +1283,30 @@ void GraphicArea::slotShowData()
     mdd->exec();
     mdd->deleteLater();
     autoSave();
+
+}
+
+/**
+  *模块右键菜单监控
+  *监控选中模块
+*/
+void GraphicArea::slotWatch()
+{
+    log("监控选中模块");
+    ShapeBase* temp = new WatchModule(this);
+    foreach(ShapeBase* shape, selected_shapes)
+    {//遍历所有选择shape
+        //为模块添加监视控件
+        ModuleBase* mb = static_cast<ModuleBase *>(shape);
+        QPoint pos = shape->geometry().center();
+        ShapeBase* new_watch = insertShapeByType(temp, pos);
+        if(!new_watch)
+            continue;
+        //设置监控连接
+        static_cast<WatchModule*>(new_watch)->setTarget(mb);
+    }
+    temp->deleteLater();
+
 
 }
 

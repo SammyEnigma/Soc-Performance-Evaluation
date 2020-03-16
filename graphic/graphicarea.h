@@ -114,6 +114,7 @@ public slots:
     void actionDelete();
     void slotShowData();
     
+    void slotWatch();
     void slotWatchPort(WatchModule* watch);
     void slotWatchPortID(WatchModule* watch, QString portID);
     void slotWatchModule(WatchModule* watch);
