@@ -230,7 +230,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
         emit signalSendDelayFinished(this, packet);
         total_sended++;
         if (begin_waited == 0)
-            begin_waited = rt->total_clock;
+            begin_waited = rt->total_frame;
         send_update_delay_list.append(new DataPacket(send_update_delay));
         break;
     case DATA_RESPONSE:
