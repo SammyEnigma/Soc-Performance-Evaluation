@@ -103,8 +103,8 @@ private:
     bool request_to_queue; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列(switch)
     bool discard_response; // Master的port收到response，没有实际作用，丢弃数据包
 
-    int total_sended;   // 运行到现在总共发送多少packet
-    int total_received; // 运行到现在总共收到packet
+    int total_sended;   // 运行到现在总共发送多少request
+    int total_received; // 运行到现在总共收到request
     int begin_waited;   // 一开始运行的等待时间(注意：按帧算，不是clock。clock=begin_waited/rt->standar_frame。在standar_frame=1时两者相等)
 };
 

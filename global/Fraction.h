@@ -261,10 +261,15 @@ public:
     {
         if (denominator == 0) // 分母是0
             return QString("Invalid Fraction: %1/%2").arg(numerator).arg(denominator);
-        else if (denominator == 1)
+        else if (denominator == 1) // 分母是1
             return QString::number(numerator);
         else
             return QString("%1/%2").arg(numerator).arg(denominator);
+    }
+
+    QString toFractionString() // 强制分数的字符串
+    {
+        return QString("%1/%2").arg(numerator).arg(denominator);
     }
 
     int toInt() const // 向下取整

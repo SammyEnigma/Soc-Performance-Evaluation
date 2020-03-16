@@ -131,31 +131,52 @@ void WatchModule::paintEvent(QPaintEvent *event)
     QPen LatencyColor(QColor(255, 0, 0));
     QPen TokenColor(QColor(0, 0, 0));
     painter.setFont(big_font);
-    //painter.setFont(bold_font);
 
     // 添加对绘制内容的监控
     if (watch_type == WATCH_CUSTOM)
     {
         if (target_port)
         {
-            //painter.setFont(bold_font);
+            
+            // 真实bandwidth
             painter.setFont(big_font);
             painter.setPen(BandWithColor);
-            painter.drawText(left, height * line++, target_port->getBandwidth());
-            //painter.setFont(bold_font);
-            painter.setFont(normal_font);
-            painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
+            int passed_frame = qMax(1/*避免除以0*/, rt->total_frame - target_port->getBeginWaited());
+            int sended_or_received = qMax(target_port->getTotalSended(), target_port->getTotalReceived());
+            double real_bandwidth = sended_or_received * 32.0 / passed_frame;
+            QString bandwidth_str = QString::number(real_bandwidth, 10, 2);
+            if (bandwidth_str.endsWith("0"))
+            {
+                bandwidth_str = bandwidth_str.left(bandwidth_str.length() - 1);
+                if (bandwidth_str.endsWith("0"))
+                {
+                    bandwidth_str = bandwidth_str.left(bandwidth_str.length() - 1);
+                    if (bandwidth_str.endsWith("."))
+                        bandwidth_str = bandwidth_str.left(bandwidth_str.length() - 1);
+                }
+            }
+            
+            painter.drawText(left, height * line, bandwidth_str);
+            painter.drawText(left + fm.horizontalAdvance(bandwidth_str), height * line, "/");
 
-            //painter.setFont(bold_font);
+            // 总的
+            Fraction fixed_bandwidth = target_port->getBandwidth() * rt->DEFAULT_PACKET_BYTE;
+            qDebug() << fixed_bandwidth << target_port->getBandwidth().toString() << target_port->getBandwidth().toFractionString();
+            painter.drawText(left + fm.horizontalAdvance(bandwidth_str) + fm.horizontalAdvance("/"), height * line, fixed_bandwidth);
+            painter.setFont(normal_font);
+            painter.drawText(left + fm.horizontalAdvance(bandwidth_str) + fm.horizontalAdvance("/") + fm.horizontalAdvance(fixed_bandwidth), height * line++, "GByte");
+
+            // Latency
             painter.setFont(big_font);
             painter.setPen(LatencyColor);
             painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
 
+            // Token
             painter.setPen(TokenColor);
             painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
             
-            painter.setFont(normal_font);
-            painter.drawText(left, height*line++, QString("%1/%2-%3").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()));
+            /* painter.setFont(normal_font);
+            painter.drawText(left, height*line++, QString("%1/%2-%3").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited())); */
         }
         else if (target_module)
         {

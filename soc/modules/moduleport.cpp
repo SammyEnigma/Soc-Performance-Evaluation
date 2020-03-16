@@ -213,6 +213,9 @@ void ModulePort::slotDataList()
     emit signalDataList();
 }
 
+/**
+ * Port发送数据包的总方法
+ */
 void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 {
     rt->runningOut("    "+getPortId()+" 发送数据sendData："+(type==DATA_REQUEST?"request":(type==DATA_RESPONSE?"response":"token")));
@@ -226,6 +229,8 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     case DATA_REQUEST:
         emit signalSendDelayFinished(this, packet);
         total_sended++;
+        if (begin_waited == 0)
+            begin_waited = rt->total_frame;
         send_update_delay_list.append(new DataPacket(send_update_delay));
         break;
     case DATA_RESPONSE:
@@ -238,14 +243,17 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     }
 }
 
+/**
+ * Port接收数据包的总方法
+ */
 void ModulePort::slotDataReceived(DataPacket *packet)
 {
     rt->runningOut(getPortId() + " 收到数据slotDataReceived");
-    if (packet->getDataType() == DATA_REQUEST) {
+    if (packet->getDataType() == DATA_REQUEST)
         total_received++;
-        if (begin_waited == 0)
-            begin_waited = rt->total_frame;
-    }
+    if (begin_waited == 0)
+        begin_waited = rt->total_frame;
+    
     if (request_to_queue)
     {
         if (discard_response && packet->getDataType()==DATA_RESPONSE) // 无视response，master的属性
