@@ -54,7 +54,7 @@ private:
     ModuleBase* target_module; // 目标模块，请用getClass()获取类型
     WatchType watch_type;
     
-    QFont big_font, normal_font;
+    QFont big_font, normal_font, bold_font;
 };
 
 #endif // WATCHMODULE_H

@@ -15,8 +15,9 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), watch_type(Watch
     drawShapePixmap(painter, QRect(2,2,216,136));
     _pixmap = pixmap;
 
-    big_font = normal_font = font();
+    big_font = normal_font = bold_font = font();
     big_font.setPointSize(normal_font.pointSize() * 2);
+    bold_font.setBold(true);
     
     target_port = nullptr;
     target_module = nullptr;
@@ -128,6 +129,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
     QPen LatencyColor(QColor(255, 0, 0));
     QPen TokenColor(QColor(0, 0, 0));
     painter.setFont(big_font);
+    painter.setFont(bold_font);
 
     // 添加对绘制内容的监控
     if (watch_type == WATCH_CUSTOM)
@@ -135,12 +137,15 @@ void WatchModule::paintEvent(QPaintEvent *event)
         if (target_port)
         {
             painter.setFont(big_font);
+            painter.setFont(bold_font);
             painter.setPen(BandWithColor);
             painter.drawText(left, height * line++, target_port->getBandwidth());
             painter.setFont(normal_font);
+            painter.setFont(bold_font);
             painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
 
             painter.setFont(big_font);
+            painter.setFont(bold_font);
             painter.setPen(LatencyColor);
             painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
 
@@ -160,6 +165,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
                 {
                     painter.drawText(left, height * line++, static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth());
                     painter.setFont(normal_font);
+                    painter.setFont(bold_font);
                     painter.drawText(left + fm.horizontalAdvance(static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
                 }
             }
@@ -176,9 +182,11 @@ void WatchModule::paintEvent(QPaintEvent *event)
     else if(watch_type == WATCH_FREQUENCE)
     {
         painter.setFont(big_font);
+        painter.setFont(bold_font);
         painter.setPen(BandWithColor);
         painter.drawText(left, height * line++, target_port->getBandwidth());
         painter.setFont(normal_font);
+        painter.setFont(bold_font);
         painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
     }
     else
