@@ -59,11 +59,15 @@ public:
 
     void setRequestToQueue(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）
     void setDiscardResponse(bool d = true);
+    
+    int getTotalSended();
+    int getTotalReceived();
+    int getBeginWaited();
 
 protected:
     virtual void fromStringAddin(QString s) override;
     virtual QString toStringAddin() override;
-    
+
     void paintEvent(QPaintEvent *event) override;
 
 signals:
@@ -89,15 +93,19 @@ public:
     int another_can_receive; // 端口对面模块的剩余buffer（token）
 
 private:
-    TimeFrame bandwidth;            // 带宽，多少个clock发送1个token（越大越慢）
+    TimeFrame bandwidth;      // 带宽，多少个clock发送1个token（越大越慢）
     int latency;              // the delay of the sending the request/response
     int return_delay;         // the delay on the return of the Token
     int send_update_delay;    // 发送时自己buffer-1的延迟
     int receive_update_delay; // 接收到token时自己buffer+1的延迟
     int token;                // 自己可以接收几个（port内部和模块内部的区别）
 
-    bool request_to_queue; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列
+    bool request_to_queue; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列(switch)
     bool discard_response; // Master的port收到response，没有实际作用，丢弃数据包
+
+    int total_sended;   // 运行到现在总共发送多少packet
+    int total_received; // 运行到现在总共收到packet
+    int begin_waited;   // 一开始运行的等待时间
 };
 
 #endif // MODULEPORT_H
