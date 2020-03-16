@@ -153,6 +153,9 @@ void WatchModule::paintEvent(QPaintEvent *event)
 
             painter.setPen(TokenColor);
             painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
+            
+            painter.setFont(normal_font);
+            painter.drawText(left, height*line++, QString("%1/%2-%3").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()));
         }
         else if (target_module)
         {
