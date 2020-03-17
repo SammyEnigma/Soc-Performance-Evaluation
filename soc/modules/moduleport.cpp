@@ -73,8 +73,8 @@ void ModulePort::uninitOneClock()
     frq_queue.enqueue(sended_count_in_this_frame);
     if (frq_queue.length() > rt->frq_period_length)
         frq_queue.dequeue();
-    if (std::accumulate(frq_queue.begin(), frq_queue.end(), 0) > 0)
-        qDebug() << "-----port：" << std::accumulate(frq_queue.begin(), frq_queue.end(), 0) << frq_queue;
+//    if (std::accumulate(frq_queue.begin(), frq_queue.end(), 0) > 0)
+//        qDebug() << "-----port：" << std::accumulate(frq_queue.begin(), frq_queue.end(), 0) << frq_queue;
 }
 
 void ModulePort::passOnPackets()

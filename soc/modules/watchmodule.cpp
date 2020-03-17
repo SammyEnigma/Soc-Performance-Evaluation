@@ -168,7 +168,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
             // 实时频率
             painter.setFont(big_font);
             painter.setPen(BandWithColor);
-            QString live_frq_str = QString::number(target_port->getLiveFrequence() * rt->DEFAULT_PACKET_BYTE, 10, 2);
+            QString live_frq_str = QString::number(target_port->getLiveFrequence() * rt->DEFAULT_PACKET_BYTE * rt->standard_frame, 10, 2);
             if (live_frq_str.endsWith("0"))
             {
                 live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
