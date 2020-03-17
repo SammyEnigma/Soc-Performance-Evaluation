@@ -183,6 +183,11 @@ void FlowControlBase::passOneClock()
     }
 }
 
+void FlowControlBase::unInitOneClock()
+{
+    
+}
+
 void FlowControlBase::refreshUI()
 {
     foreach (CableBase* cable, graphic->cable_lists)

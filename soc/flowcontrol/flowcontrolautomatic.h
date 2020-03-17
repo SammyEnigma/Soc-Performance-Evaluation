@@ -17,7 +17,11 @@ protected:
     void clearData() override;
     void initOneClock() override;
     void passOneClock() override;
+    void uninitOneClock() override;
     void refreshUI() override;
+
+private:
+	QList<ModuleBase*> getModules();
 
 private:
     ShapeList shapes;

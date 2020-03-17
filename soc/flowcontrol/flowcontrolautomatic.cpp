@@ -78,9 +78,8 @@ void FlowControlAutomatic::initOneClock()
 {
     FlowControlBase::initOneClock();
 
-    foreach (ShapeBase *shape, shapes)
+    foreach (ModuleBase* module, getModules())
     {
-        ModuleBase *module = static_cast<ModuleBase *>(shape);
         module->initOneClock();
     }
 }
@@ -114,6 +113,16 @@ void FlowControlAutomatic::passOneClock()
     }
 }
 
+void FlowControlAutomatic::uninitOneClock()
+{
+    FlowControlBase::uninitOneClock();
+	
+    foreach (ModuleBase *module, getModules())
+    {
+        module->uninitOneClock();
+    }
+}
+
 void FlowControlAutomatic::refreshUI()
 {
     FlowControlBase::refreshUI();
@@ -122,4 +131,12 @@ void FlowControlAutomatic::refreshUI()
     {
         shape->update();
     }
+}
+
+QList<ModuleBase*> getModules()
+{
+    QList<ModuleBase*> modules;
+    foreach (ShapeBase* shape, shapes)
+        modules.append(static_cast<ModuleBase*>(shape));
+    return modules;
 }

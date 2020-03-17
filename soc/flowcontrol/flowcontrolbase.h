@@ -57,6 +57,7 @@ protected:
     virtual void clearData();
     virtual void initOneClock();
     virtual void passOneClock();
+    virtual void uninitOneClock();
     virtual void refreshUI();
 
     DataPacket *createToken(QString tag = "");

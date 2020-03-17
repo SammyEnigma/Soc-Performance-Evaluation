@@ -33,7 +33,8 @@ public:
         auto_stick_ports = false;
         running = false;
         standard_frame = 1;
-        total_clock = 0;
+        total_clock = total_frame = 0;
+        frq_period_length = 16;
     }
 
     void runningOut(QString s)
@@ -54,6 +55,7 @@ public:
     int standard_frame; // 一个clock有几个frame
     int total_clock;    // 从运行开始到现在经过了几个clock（向下取整）
     int total_frame;    // 经过了几个frame
+    int frq_period_length; // 用来计算频率的时间段的长度
 };
 
 #endif // RUNTIMEINFO_H

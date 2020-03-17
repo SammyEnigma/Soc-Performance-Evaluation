@@ -68,6 +68,13 @@ void ModulePort::initOneClock()
     sended_count_in_this_frame = 0;
 }
 
+void ModulePort::uninitOneClock()
+{
+    frq_queue.enqueue(sended_count_in_this_frame);
+    if (frq_queue.length() > rt->frq_period_length)
+        frq_queue.dequeue();
+}
+
 void ModulePort::passOnPackets()
 {
     // ==== 发送部分（Master） ====
@@ -234,6 +241,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     case DATA_REQUEST:
         emit signalSendDelayFinished(this, packet);
         total_sended++;
+        sended_count_in_this_frame++;
         if (begin_waited == 0)
             begin_waited = rt->total_frame;
         send_update_delay_list.append(new DataPacket(send_update_delay));
@@ -379,4 +387,11 @@ int ModulePort::getBeginWaited()
 void ModulePort::setDiscardResponse(bool d)
 {
     discard_response = d;
+}
+
+double ModulePort::getLiveFrequence()
+{
+    if (frq_queue.size())
+        return 0.0;
+    return std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / frq_queue.size();
 }

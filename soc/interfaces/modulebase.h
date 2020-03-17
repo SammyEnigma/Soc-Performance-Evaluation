@@ -52,6 +52,15 @@ public:
             port->initOneClock();
         }
     }
+    
+    void uninitOneClock()
+    {
+        // 所有端口的当前帧数据需要首尾，用来统计临时的发送频率
+        foreach (ModulePort *port, getPorts())
+        {
+            port->uninitOneClock();
+        }
+    }
 
     void drawShapePixmap(QPainter &painter, QRect draw_rect) override
     {
