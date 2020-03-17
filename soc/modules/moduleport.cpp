@@ -46,6 +46,7 @@ void ModulePort::clearData()
     receive_update_delay_list.clear();
     send_update_delay_list.clear();
     bandwidth.resetBuffer();
+    frq_queue.clear();
     total_sended = total_received = begin_waited = 0;
 }
 

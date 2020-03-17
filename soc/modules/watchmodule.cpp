@@ -76,9 +76,18 @@ void WatchModule::fromStringAppend(QString s)
     if (watch_type == WATCH_CUSTOM)
     {
         QString portID = StringUtil::getXml(s, "WATCH_PORT_ID");
+        QString moduleID = StringUtil::getXml(s, "WATCH_MODULE_ID");
         if (!portID.isEmpty())
         {
-            emit signalWatchPortID(this, portID);
+            QTimer::singleShot(0, [=]{
+                emit signalWatchPortID(this, portID);
+            });
+        }
+        if (!moduleID.isEmpty())
+        {
+            QTimer::singleShot(0, [=]{
+                emit signalWatchModuleID(this, moduleID);
+            });
         }
     }
 }

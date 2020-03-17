@@ -1,6 +1,7 @@
 #ifndef WATCHMODULE_H
 #define WATCHMODULE_H
 
+#include <QTimer>
 #include "modulebase.h"
 #include "moduleport.h"
 #include "mastermodule.h"
