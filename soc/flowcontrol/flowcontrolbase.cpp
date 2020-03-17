@@ -90,6 +90,7 @@ void FlowControlBase::nextStep()
 
     initOneClock();
     passOneClock();
+    uninitOneClock();
     refreshUI();
 }
 
@@ -183,7 +184,7 @@ void FlowControlBase::passOneClock()
     }
 }
 
-void FlowControlBase::unInitOneClock()
+void FlowControlBase::uninitOneClock()
 {
     
 }

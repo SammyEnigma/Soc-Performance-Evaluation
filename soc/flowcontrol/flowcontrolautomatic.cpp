@@ -133,7 +133,7 @@ void FlowControlAutomatic::refreshUI()
     }
 }
 
-QList<ModuleBase*> getModules()
+QList<ModuleBase*> FlowControlAutomatic::getModules()
 {
     QList<ModuleBase*> modules;
     foreach (ShapeBase* shape, shapes)

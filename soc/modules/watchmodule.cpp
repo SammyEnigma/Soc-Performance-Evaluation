@@ -139,9 +139,9 @@ void WatchModule::paintEvent(QPaintEvent *event)
         {
             
             // 真实bandwidth
-            painter.setFont(big_font);
+            /* painter.setFont(big_font);
             painter.setPen(BandWithColor);
-            int passed_frame = qMax(1/*避免除以0*/, rt->total_clock - target_port->getBeginWaited());
+            int passed_frame = qMax(1, rt->total_clock - target_port->getBeginWaited()); // 不小于1是避免被除数0
             int sended_or_received = qMax(0, qMax(target_port->getTotalSended(), target_port->getTotalReceived())-1);
             double real_bandwidth = sended_or_received * 32.0 / passed_frame / rt->standard_frame;
             QString bandwidth_str = QString::number(real_bandwidth, 10, 2);
@@ -163,7 +163,26 @@ void WatchModule::paintEvent(QPaintEvent *event)
             Fraction fixed_bandwidth = target_port->getBandwidth() * rt->DEFAULT_PACKET_BYTE;
             painter.drawText(left + fm.horizontalAdvance(bandwidth_str) + fm.horizontalAdvance("/"), height * line, fixed_bandwidth);
             painter.setFont(normal_font);
-            painter.drawText(left + fm.horizontalAdvance(bandwidth_str) + fm.horizontalAdvance("/") + fm.horizontalAdvance(fixed_bandwidth), height * line++, "GByte");
+            painter.drawText(left + fm.horizontalAdvance(bandwidth_str) + fm.horizontalAdvance("/") + fm.horizontalAdvance(fixed_bandwidth), height * line++, "GByte"); */
+            
+            // 实时频率
+            painter.setFont(big_font);
+            painter.setPen(BandWithColor);
+            QString live_frq_str = QString::number(target_port->getLiveFrequence() * rt->DEFAULT_PACKET_BYTE, 10, 2);
+            if (live_frq_str.endsWith("0"))
+            {
+                live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
+                if (live_frq_str.endsWith("0"))
+                {
+                    live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
+                    if (live_frq_str.endsWith("."))
+                        live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
+                }
+            }
+            painter.drawText(left, height * line, live_frq_str);
+            
+            painter.setFont(normal_font);
+            painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + target_port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
 
             // Latency
             painter.setFont(big_font);
@@ -174,8 +193,8 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.setPen(TokenColor);
             painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
             
-            painter.setFont(normal_font);
-            painter.drawText(left, height*line++, QString("%1/%2-%3(%4)").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()).arg(passed_frame));
+//            painter.setFont(normal_font);
+//            painter.drawText(left, height*line++, QString("%1/%2-%3(%4)").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()).arg(passed_frame));
         }
         else if (target_module)
         {
