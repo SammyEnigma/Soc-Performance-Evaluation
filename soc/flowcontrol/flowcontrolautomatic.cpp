@@ -74,6 +74,17 @@ void FlowControlAutomatic::clearData()
     FlowControlBase::clearData();
 }
 
+void FlowControlAutomatic::initOneClock()
+{
+    FlowControlBase::initOneClock();
+
+    foreach (ShapeBase *shape, shapes)
+    {
+        ModuleBase *module = static_cast<ModuleBase *>(shape);
+        module->initOneClock();
+    }
+}
+
 void FlowControlAutomatic::passOneClock()
 {
     FlowControlBase::passOneClock();

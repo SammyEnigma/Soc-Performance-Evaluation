@@ -23,6 +23,14 @@ public:
     {
         return new ModulePort(this);
     }
+    
+    virtual QList<ModulePort*> getPorts()
+    {
+        QList<ModulePort*> mports;
+        foreach (PortBase* port, ports)
+            mports.append(static_cast<ModulePort*>(port));
+        return mports;
+    }
 
     void clearData() override
     {
@@ -31,6 +39,17 @@ public:
         {
             ModulePort *port = static_cast<ModulePort *>(p);
             port->clearData();
+        }
+    }
+    
+    void initOneClock()
+    {
+        // 模块让它自己初始化
+        
+        // 所有端口的当前帧数据需要初始化，用来统计临时的发送频率
+        foreach (ModulePort*port, getPorts())
+        {
+            port->initOneClock();
         }
     }
 

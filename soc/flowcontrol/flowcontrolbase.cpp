@@ -88,6 +88,7 @@ void FlowControlBase::nextStep()
     if (current_clock == -1) // 未初始化
         return;
 
+    initOneClock();
     passOneClock();
     refreshUI();
 }
@@ -150,6 +151,11 @@ void FlowControlBase::clearData()
     watch_widgets.clear();
 }
 
+void FlowControlBase::initOneClock()
+{
+    
+}
+
 void FlowControlBase::passOneClock()
 {
     FCDEB "\n======== Clock:" << ++current_clock;
@@ -157,6 +163,7 @@ void FlowControlBase::passOneClock()
         rt->total_clock++;
     rt->total_frame++;
 
+    // 检查延迟运行的命令
     for (int i = 0; i < delay_runs.size(); i++)
     {
         DelayRunBean* drb = delay_runs[i];
@@ -165,7 +172,7 @@ void FlowControlBase::passOneClock()
         {
             RunType* func = drb->func;
             if (drb->after)
-                QTimer::singleShot(0, [=]{
+                QTimer::singleShot(0, [=]{ // 放到最后运行
                     (*func)();
                     delete drb;
                 });

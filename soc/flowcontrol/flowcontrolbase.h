@@ -55,6 +55,7 @@ protected:
     virtual bool initModules();
     virtual void initData();
     virtual void clearData();
+    virtual void initOneClock();
     virtual void passOneClock();
     virtual void refreshUI();
 

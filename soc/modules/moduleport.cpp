@@ -63,6 +63,11 @@ QString ModulePort::getShowedString(QString split)
     return ss.join(split);
 }
 
+void ModulePort::initOneClock()
+{
+    sended_count_in_this_frame = 0;
+}
+
 void ModulePort::passOnPackets()
 {
     // ==== 发送部分（Master） ====
@@ -82,7 +87,7 @@ void ModulePort::passOnPackets()
         DataPacket *packet = send_update_delay_list.at(i);
         if (!packet->isDelayFinished())
             continue;
-qDebug() << "send_delay_list";
+
         send_update_delay_list.removeAt(i--);
         another_can_receive--;
         packet->deleteLater();

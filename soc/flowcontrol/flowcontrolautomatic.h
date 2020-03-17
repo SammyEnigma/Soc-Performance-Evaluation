@@ -15,7 +15,7 @@ protected:
     bool initModules() override;
     void initData() override;
     void clearData() override;
-
+    void initOneClock() override;
     void passOneClock() override;
     void refreshUI() override;
 
