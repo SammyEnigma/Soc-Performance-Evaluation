@@ -92,8 +92,8 @@ void MasterModule::passOnPackets()
 
 void MasterModule::updatePacketPos()
 {
-    ModulePort* port = nullptr;
-    ModulePort* send_port = nullptr;
+    ModulePort* port = nullptr; // 接收IP的port
+    ModulePort* send_port = nullptr; // 发送下去（给Slave）的port
     foreach (PortBase* p, getPorts())
     {
         if (p->getOppositeShape() == nullptr)
@@ -106,43 +106,82 @@ void MasterModule::updatePacketPos()
     }
 
     QFontMetrics fm(this->font());
-    int height = fm.lineSpacing();
+    int line_height = fm.lineSpacing();
+    int left = width() / 5 + this->pos().x();
+    int right = width() * 3 / 5 + this->pos().x();
+    int one_piece = PACKET_SIZE + 4; // 一小块packet的位置（相对于left）
+    int l = left;
+    int top = line_height + this->pos().y();
     if (port != nullptr)
     {
-        QPoint pos = this->pos() + QPoint(width() / 2 - PACKET_SIZE * 2, height * 2 + 4);
+        l = left;
+        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->enqueue_list.size()));
+        foreach (DataPacket *packet, port->enqueue_list)
+        {
+            packet->setDrawPos(QPoint(l, top));
+            l += one_piece;
+        }
+
+        top += PACKET_SIZE + 4;
+        l = left;
+        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->dequeue_list.size()));
+        foreach (DataPacket *packet, port->dequeue_list)
+        {
+            packet->setDrawPos(QPoint(l, top));
+            l += one_piece;
+        }
+
+        /* QPoint pos = this->pos() + QPoint(width() / 2 - PACKET_SIZE * 2, line_height * 2 + 4);
         foreach (DataPacket *packet, port->enqueue_list)
         {
             packet->setDrawPos(pos);
         }
 
-        int h = height * 2 + 4;
+        int h = line_height * 2 + 4;
         foreach (DataPacket *packet, port->dequeue_list)
         {
             pos = this->pos() + QPoint(width() / 2, h);
             h += 4 + PACKET_SIZE;
             packet->setDrawPos(pos);
-        }
+        } */
     }
 
     if (getClass() == "Master")
     {
-        int h = height * 2 + 4;
+        l = left;
+        top += PACKET_SIZE + 4;
+        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
+        foreach (DataPacket *packet, data_list) {
+            packet->setDrawPos(QPoint(l, top));
+            l += one_piece;
+        }
+        
+        /* int h = line_height * 2 + 4;
         foreach (DataPacket *packet, data_list)
         {
             QPoint pos = this->pos() + QPoint(width() / 2 + PACKET_SIZE * 3, h);
             h += 4 + PACKET_SIZE;
             packet->setDrawPos(pos);
-        }
+        } */
     }
 
     if (send_port != nullptr && getClass() == "Master") {
-        int h = height * 2 + 4;
-        foreach (DataPacket *packet, port->send_delay_list)
+        l = left;
+        top += PACKET_SIZE + 4;
+        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_port->send_delay_list.size()));
+        foreach (DataPacket *packet, send_port->send_delay_list)
+        {
+            packet->setDrawPos(QPoint(l, top));
+            l += one_piece;
+        }
+        
+        /* int h = line_height * 2 + 4;
+        foreach (DataPacket *packet, send_port->send_delay_list)
         {
             QPoint pos = this->pos() + QPoint(width() / 2 + PACKET_SIZE * 5, h);
             h += 4 + PACKET_SIZE;
             packet->setDrawPos(pos);
-        }
+        } */
     }
    
 }
