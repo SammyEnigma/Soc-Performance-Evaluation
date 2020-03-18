@@ -396,5 +396,5 @@ double ModulePort::getLiveFrequence()
 {
     if (!frq_queue.size())
         return 0.0;
-    return std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)frq_queue.size();
+    return std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)rt->frq_period_length/* frq_queue.size() */;
 }
