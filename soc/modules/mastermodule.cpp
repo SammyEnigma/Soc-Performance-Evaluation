@@ -189,15 +189,50 @@ void MasterModule::updatePacketPos()
 void MasterModule::paintEvent(QPaintEvent *event)
 {
     ModuleBase::paintEvent(event);
-    
-    // 画自己的数量
-    /* QPainter painter(this);
-    QFontMetrics fm(this->font());
-    if (ShapeBase::ports.size())
+
+    ModulePort *port = nullptr;      // 接收IP的port
+    ModulePort *send_port = nullptr; // 发送下去（给Slave）的port
+    foreach (PortBase *p, getPorts())
     {
-        ModulePort* slave_port = static_cast<ModulePort*>(ShapeBase::ports.first());
-        painter.drawText(5, fm.lineSpacing(), QString("buffer: 对方=%1, 自己=%2").arg(slave_port->getReceiveToken()).arg(getToken()));
-    } */
+        if (p->getOppositeShape() == nullptr)
+            continue;
+        if (static_cast<ShapeBase *>(p->getOppositeShape())->getClass() == "IP")
+        {
+            port = static_cast<ModulePort *>(p);
+        }
+        else
+        {
+            send_port = static_cast<ModulePort *>(p);
+        }
+    }
+
+    QFontMetrics fm(this->font());
+    int line_height = fm.lineSpacing();
+    int left = width() / 5;
+    int right = width() * 3 / 5;
+    int top = PACKET_SIZE + 4;
+
+    // 画自己的数量
+    QPainter painter(this);
+    if (port != nullptr)
+    {
+        painter.drawText(right, top + PACKET_SIZE, QString("%1").arg(port->enqueue_list.size()));
+
+        top += PACKET_SIZE + 4;
+        painter.drawText(right, top + PACKET_SIZE, QString("%1").arg(port->dequeue_list.size()));
+    }
+
+    if (getClass() == "Master")
+    {
+        top += PACKET_SIZE + 4;
+        painter.drawText(right, top + PACKET_SIZE, QString("%1").arg(data_list.size()));
+    }
+
+    if (send_port != nullptr && getClass() == "Master")
+    {
+        top += PACKET_SIZE + 4;
+        painter.drawText(right, top + PACKET_SIZE, QString("%1").arg(port->dequeue_list.size()));
+    }
 }
 
 void MasterModule::drawShapePixmap(QPainter &painter, QRect draw_rect)

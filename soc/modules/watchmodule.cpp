@@ -66,6 +66,7 @@ QString WatchModule::toStringAppend()
         {
             full += indent + StringUtil::makeXml(target_module->getText(), "WATCH_MODULE_ID");
         }
+
     }
     return full;
 }
