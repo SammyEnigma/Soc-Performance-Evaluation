@@ -7,7 +7,7 @@
  */
 #include "datapacketview.h"
 
-DataPacketView::DataPacketView(DataPacket *packet, QWidget *parent) : QWidget(parent), packet(packet)
+DataPacketView::DataPacketView(DataPacket *packet, QWidget *parent) : QWidget(parent), packet(packet), animation_duration(PACKET_ANIMATION_INTERVAL)
 {
     Q_ASSERT(packet != nullptr);
     connect(packet, SIGNAL(signalPosChanged(QPoint, QPoint)), this, SLOT(updatePosition(QPoint, QPoint)));
@@ -22,6 +22,11 @@ DataPacketView::DataPacketView(DataPacket *packet, QWidget *parent) : QWidget(pa
 DataPacket *DataPacketView::getPacket()
 {
     return packet;
+}
+
+void DataPacketView::setAnimationDuration(int dur)
+{
+    this->animation_duration = dur;
 }
 
 void DataPacketView::paintEvent(QPaintEvent *)
@@ -61,7 +66,7 @@ void DataPacketView::updatePosition(QPoint old_pos, QPoint new_pos)
     QPropertyAnimation *ani = new QPropertyAnimation(this, "pos");
     ani->setStartValue(this->pos());
     ani->setEndValue(new_pos - QPoint(PACKET_SIZE / 2, PACKET_SIZE / 2));
-    ani->setDuration(PACKET_ANIMATION_INTERVAL);
+    ani->setDuration(animation_duration);
 //    ani->setEasingCurve(QEasingCurve::InOutCubic);
     ani->start();
 }

@@ -9,6 +9,7 @@ FlowControlBase::FlowControlBase(GraphicArea *ga, QObject *parent) : QObject(par
     connect(this, &FlowControlBase::signalTokenCreated, this, [=](DataPacket *packet) {
         DataPacketView *view = new DataPacketView(packet, graphic);
         all_packet_view.append(view);
+        view->setAnimationDuration(run_timer->interval());
 
         view->move(-PACKET_SIZE, -PACKET_SIZE);
         view->show();
@@ -24,7 +25,6 @@ FlowControlBase::FlowControlBase(GraphicArea *ga, QObject *parent) : QObject(par
             }
         }
     });
-
 }
 
 /**
@@ -361,4 +361,9 @@ void FlowControlBase::changeSpeed(double ratio)
         interval = 60000;
     us->setVal("us/clock_interval", interval);
     run_timer->setInterval(interval);
+
+    foreach (DataPacketView* view, all_packet_view)
+    {
+        view->setAnimationDuration(interval);
+    }
 }

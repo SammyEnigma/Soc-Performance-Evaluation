@@ -25,6 +25,8 @@ public:
 
     DataPacket* getPacket();
 
+    void setAnimationDuration(int dur);
+
 protected:
     void paintEvent(QPaintEvent *) override;
 
@@ -33,6 +35,7 @@ private slots:
 
 private:
     DataPacket* packet;
+    int animation_duration;
 };
 
 #endif // DATAPACKETVIEW_H
