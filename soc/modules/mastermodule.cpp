@@ -54,14 +54,16 @@ void MasterModule::passOnPackets()
         ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
         if (oppo != nullptr)
         {
-            // 确定是这个连接Slave的端口，开始判断发送事件
-            if (!data_list.isEmpty() && port->isBandwidthBufferFinished() 
-                && port->anotherCanRecive(port->getDelaySendCount())) // 有数据、有带宽、对方能接收
+            // 确定是这个连接Slave的端口，开始向这个端口发送Master内部数据
+            if (oppo->getClass() != "IP"                                    // Slave方向
+                    && !data_list.isEmpty()                                 // 有数据
+                    && port->isBandwidthBufferFinished()                    // 有带宽
+                    && port->anotherCanRecive(port->getDelaySendCount()))   // 对方能接收
             {
-               qDebug() << "port delay --> 发送, bandwidth = " << port->getBandwidth().toString() << port->getBandwidth().isBufferFinished()
-                        << port->getBandwidth().getNumerator() << "/" << port->getBandwidth().getDenominator();
-                rt->runningOut(getText()+"发送token, "+port->getPortId()+"当前对方能接收："+QString::number(port->another_can_receive)+"-1");
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
+                if (packet->getComePort() == port) // 这个就是进来的端口，不能传回去！
+                    rt->runningOut("warning!!!: packet 从进入的端口传回去了");
+                rt->runningOut(getText()+"."+port->getPortId()+"发送token: "+packet->getID()+"，进入延迟队列，"+"当前对方能接收："+QString::number(port->another_can_receive-port->getDelaySendCount())+"-1");
                 packet->setDrawPos(geometry().center());
                 packet->resetDelay(port->getLatency());
                 port->send_delay_list.append(packet);

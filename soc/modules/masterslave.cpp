@@ -19,7 +19,7 @@ void MasterSlave::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut(port->getPortId() + "发送" + packet->getID() + "，对方能接收" + QString::number(port->another_can_receive) + "-1");
+            rt->runningOut(port->getPortId() + ".signalSendDelayFinished槽，发送" + packet->getID() + "至Cable，现对方能接收" + QString::number(port->another_can_receive-port->send_delay_list.size()) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
@@ -27,13 +27,13 @@ void MasterSlave::initData()
 
         // ==== 接收部分（Slave） ====
         connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
-            if (ports.size() <= 1) // 只有一个端口
+            if (ports.size() <= 1) // 只有一个端口，收到后往回发
             {
                 process_list.append(packet);
                 packet->resetDelay(getProcessDelay());
                 rt->runningOut(port->getPortId() + "接收到数据 " + packet->getID() + "，进入处理环节");
             }
-            else // 多个端口
+            else // 多个端口，向另一个端口发送
             {
                 ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
                 if (mp == port && ports.size() > 1) // 使用另一个端口

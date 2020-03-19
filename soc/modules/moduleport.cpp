@@ -89,6 +89,7 @@ void ModulePort::passOnPackets()
             continue;
 
         send_delay_list.removeAt(i--);
+        rt->runningOut("    " + packet->getID() + " 发送延迟结束，准备发送");
         sendData(packet, DATA_REQUEST);
     }
 
@@ -233,7 +234,7 @@ void ModulePort::slotDataList()
  */
 void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 {
-    rt->runningOut("    "+getPortId()+" 发送数据sendData："+(type==DATA_REQUEST?"request":(type==DATA_RESPONSE?"response":"token"))+(packet?(": "+packet->getID()):""));
+    rt->runningOut("    "+getPortId()+" 发出信号，即将发送数据sendData："+(type==DATA_REQUEST?"request":(type==DATA_RESPONSE?"response":"token"))+(packet?(": "+packet->getID()):""));
     CableBase* cable = getCable();
     if (cable == nullptr)
         return ;
