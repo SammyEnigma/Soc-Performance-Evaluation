@@ -111,13 +111,13 @@ void MasterModule::updatePacketPos()
     int line_height = fm.lineSpacing();
     int left = width() / 5 + this->pos().x();
     int right = width() * 3 / 5 + this->pos().x();
-    int one_piece = PACKET_SIZE + 4; // 一小块packet的位置（相对于left）
+    double one_piece = PACKET_SIZE + 4; // 一小块packet的位置（相对于left）
     int l = left;
     int top = line_height + this->pos().y();
     if (port != nullptr)
     {
         l = left;
-        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->enqueue_list.size()));
+        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->enqueue_list.size()));
         foreach (DataPacket *packet, port->enqueue_list)
         {
             packet->setDrawPos(QPoint(l, top));
@@ -126,7 +126,7 @@ void MasterModule::updatePacketPos()
 
         top += PACKET_SIZE + 4;
         l = left;
-        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->dequeue_list.size()));
+        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->dequeue_list.size()));
         foreach (DataPacket *packet, port->dequeue_list)
         {
             packet->setDrawPos(QPoint(l, top));
@@ -152,7 +152,7 @@ void MasterModule::updatePacketPos()
     {
         l = left;
         top += PACKET_SIZE + 4;
-        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
+        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
         foreach (DataPacket *packet, data_list) {
             packet->setDrawPos(QPoint(l, top));
             l += one_piece;
@@ -170,7 +170,7 @@ void MasterModule::updatePacketPos()
     if (send_port != nullptr && getClass() == "Master") {
         l = left;
         top += PACKET_SIZE + 4;
-        one_piece = (int)qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_port->send_delay_list.size()));
+        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_port->send_delay_list.size()));
         foreach (DataPacket *packet, send_port->send_delay_list)
         {
             packet->setDrawPos(QPoint(l, top));

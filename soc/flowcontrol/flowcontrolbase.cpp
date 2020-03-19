@@ -117,6 +117,13 @@ void FlowControlBase::initData()
         int num = qMax(mp->getBandwidth().getNumerator(), 1);
         nums.append(num);
     }
+    foreach (ShapeBase* shape, graphic->shape_lists)
+    {
+        if (shape->getClass() == "Switch") {
+            ModuleBase* module = static_cast<ModuleBase*>(shape);
+            nums.append(TimeFrame(module->getDataValue("picker_bandwidth", 1).toString()).getNumerator());
+        }
+    }
     com_mul = lcm(nums); // 分子的最小公倍数
     rt->runningOut("最小帧数：1 clock = " + QString::number(com_mul) + " frame");
     current_clock.setDenominator(com_mul);
