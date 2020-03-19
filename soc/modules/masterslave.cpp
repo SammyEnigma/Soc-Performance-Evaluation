@@ -19,7 +19,7 @@ void MasterSlave::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut(port->getPortId() + "发送，对方能接收" + QString::number(port->another_can_receive) + "-1");
+            rt->runningOut(port->getPortId() + "发送" + packet->getID() + "，对方能接收" + QString::number(port->another_can_receive) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
@@ -31,7 +31,7 @@ void MasterSlave::initData()
             {
                 process_list.append(packet);
                 packet->resetDelay(getProcessDelay());
-                rt->runningOut(port->getPortId() + "接收到数据，进入处理环节：" + packet->toString());
+                rt->runningOut(port->getPortId() + "接收到数据 " + packet->getID() + "，进入处理环节");
             }
             else // 多个端口
             {
@@ -45,16 +45,16 @@ void MasterSlave::initData()
                     packet->setTargetPort(mp);
                     packet->resetDelay(0);
                     data_list.append(packet); // 等待自己发送
-                    rt->runningOut(getText() + "收到" + port->getPortId() + "的数据，放入 data_list 中(当前数量：" + QString::number(data_list.size()) + ")");
+                    rt->runningOut(getText() + "收到" + port->getPortId() + "的数据 " + packet->getID() + "，放入 data_list 中(当前数量：" + QString::number(data_list.size()) + ")");
                 }
                 else if (mp->anotherCanRecive()) // Slave或者其他的端口出来了，直接继续下发（不过要确保能发，否则就只能丢弃了？）
                 {
                     mp->sendData(packet, packet->getDataType());
-                    rt->runningOut(getText() + "收到" + port->getPortId() + "数据，开始下发");
+                    rt->runningOut(getText() + "收到" + port->getPortId() + "数据 " + packet->getID() + "，开始下发");
                 }
                 else
                 {
-                    rt->runningOut("!!!" + getText() + " " + port->getPortId() + "收到数据，但是无法发送");
+                    rt->runningOut("!!!" + getText() + " " + port->getPortId() + "收到数据 " + packet->getID() + "，但是无法发送");
                 }
             }
         });

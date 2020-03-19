@@ -24,7 +24,7 @@ void MasterSlaveInterface::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut(port->getPortId()+"发送，对方能接收" + QString::number(port->another_can_receive)+"-1");
+            rt->runningOut(port->getPortId() + "发送" + packet->getID() + "，对方能接收" + QString::number(port->another_can_receive) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
@@ -34,7 +34,7 @@ void MasterSlaveInterface::initData()
         connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
             process_list.append(packet);
             packet->resetDelay(getProcessDelay());
-            rt->runningOut(port->getPortId()+"接收到数据，进入处理环节："+packet->toString());
+            rt->runningOut(port->getPortId() + "接收到数据 " + packet->getID() + "，进入处理环节");
         });
     }
 }
