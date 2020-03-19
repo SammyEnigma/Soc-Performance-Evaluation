@@ -115,52 +115,54 @@ void MasterModule::updatePacketPosVertical()
         }
     }
 
+    QFontMetrics fm(this->font());
+    int line_height = fm.lineSpacing();
     int top = height() / 5 + this->pos().y();
-    int bottom = height() * 4 / 5 + this->pos().y();
+    int bottom = height() *  4 / 5 - line_height + this->pos().y();
     int left = width() / 5 + this->pos().x();
     double one_piece = PACKET_SIZE + 4;
-    int t = top;
+    int t = bottom;
     if (port != nullptr)
     {
-        t = top;
+        t = bottom;
         one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, port->enqueue_list.size()));
         foreach (DataPacket *packet, port->enqueue_list)
         {
             packet->setDrawPos(QPoint(left, t));
-            t += one_piece;
+            t -= one_piece;
         }
 
-        left += PACKET_SIZE + 4;
-        t = top;
+        left += width() / 5;
+        t = bottom;
         one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, port->dequeue_list.size()));
         foreach (DataPacket *packet, port->dequeue_list)
         {
             packet->setDrawPos(QPoint(left, t));
-            t += one_piece;
+            t -= one_piece;
         }
     }
 
     if (getClass() == "Master")
     {
-        t = top;
-        left += PACKET_SIZE + 4;
+        t = bottom;
+        left += width() / 5;
         one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, data_list.size()));
         foreach (DataPacket *packet, data_list)
         {
             packet->setDrawPos(QPoint(left, t));
-            t += one_piece;
+            t -= one_piece;
         }
     }
 
     if (send_port != nullptr && getClass() == "Master")
     {
-        t = top;
-        left += PACKET_SIZE + 4;
+        t = bottom;
+        left += width() / 5;
         one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, send_port->send_delay_list.size()));
         foreach (DataPacket *packet, send_port->send_delay_list)
         {
             packet->setDrawPos(QPoint(left, t));
-            t += one_piece;
+            t -= one_piece;
         }
     }
 }
@@ -290,26 +292,26 @@ void MasterModule::paintEvent(QPaintEvent *event)
     int line_height = fm.height();
     
     // 竖向的进度条
-    int top = line_height;
+    int top = height()-line_height * 3 / 2;
     int left = width() / 5-PACKET_SIZE/2;
     
     if (port != nullptr)
     {
         painter.drawText(left, top, QString("%1").arg(port->enqueue_list.size()));
 
-        left += PACKET_SIZE + 4;
+        left += width() / 5;
         painter.drawText(left, top, QString("%1").arg(port->dequeue_list.size()));
     }
 
     if (getClass() == "Master")
     {
-        left += PACKET_SIZE + 4;
+        left += width() / 5;
         painter.drawText(left, top, QString("%1").arg(data_list.size()));
     }
 
     if (send_port != nullptr && getClass() == "Master")
     {
-        left += PACKET_SIZE + 4;
+        left += width() / 5;
         painter.drawText(left, top, QString("%1").arg(port->dequeue_list.size()));
     }
 
