@@ -15,7 +15,7 @@ MasterModule::MasterModule(QWidget *parent) : MasterSlave(parent)
     QPixmap pixmap(DEFAULT_SIZE, DEFAULT_SIZE);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawShapePixmap(painter, QRect(BORDER_SIZE,BORDER_SIZE,DEFAULT_SIZE-BORDER_SIZE*2,DEFAULT_SIZE-BORDER_SIZE*2));
+    drawShapePixmap(painter, QRect(BORDER_SIZE, BORDER_SIZE, DEFAULT_SIZE - BORDER_SIZE * 2, DEFAULT_SIZE - BORDER_SIZE * 2));
     _pixmap = pixmap;
 }
 
@@ -33,9 +33,9 @@ void MasterModule::initData()
 
     if (ports.size() <= 1)
     {
-        foreach (PortBase* port, ShapeBase::ports)
+        foreach (PortBase *port, ShapeBase::ports)
         {
-            static_cast<ModulePort*>(port)->setDiscardResponse(true); // 不处理response
+            static_cast<ModulePort *>(port)->setDiscardResponse(true); // 不处理response
         }
     }
 }
@@ -48,22 +48,22 @@ void MasterModule::setDefaultDataList()
 void MasterModule::passOnPackets()
 {
     // 连接的对方有可接收的buffer时，Master开始发送
-    foreach (PortBase* p, ShapeBase::ports)
+    foreach (PortBase *p, ShapeBase::ports)
     {
-        ModulePort* port = static_cast<ModulePort*>(p);
-        ShapeBase* oppo = static_cast<ShapeBase*>(port->getOppositeShape());
+        ModulePort *port = static_cast<ModulePort *>(p);
+        ShapeBase *oppo = static_cast<ShapeBase *>(port->getOppositeShape());
         if (oppo != nullptr)
         {
             // 确定是这个连接Slave的端口，开始向这个端口发送Master内部数据
-            if (oppo->getClass() != "IP"                                    // Slave方向
-                    && !data_list.isEmpty()                                 // 有数据
-                    && port->isBandwidthBufferFinished()                    // 有带宽
-                    && port->anotherCanRecive(port->getDelaySendCount()))   // 对方能接收
+            if (oppo->getClass() != "IP"                              // Slave方向
+                && !data_list.isEmpty()                               // 有数据
+                && port->isBandwidthBufferFinished()                  // 有带宽
+                && port->anotherCanRecive(port->getDelaySendCount())) // 对方能接收
             {
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
-                if (packet->getComePort() == port) // 这个就是进来的端口，不能传回去！
+                if (packet->getComePort() == port)          // 这个就是进来的端口，不能传回去！
                     rt->runningOut("warning!!!: packet 从进入的端口传回去了");
-                rt->runningOut(getText()+"."+port->getPortId()+"发送token: "+packet->getID()+"，进入延迟队列，"+"当前对方能接收："+QString::number(port->another_can_receive-port->getDelaySendCount())+"-1");
+                rt->runningOut(getText() + "." + port->getPortId() + "发送token: " + packet->getID() + "，进入延迟队列，" + "当前对方能接收：" + QString::number(port->another_can_receive - port->getDelaySendCount()) + "-1");
                 packet->setDrawPos(geometry().center());
                 packet->resetDelay(port->getLatency());
                 port->send_delay_list.append(packet);
@@ -72,7 +72,7 @@ void MasterModule::passOnPackets()
             }
         }
     }
-    
+
     // Master 的 data_list 发送
     /* if (getClass() == "Master") // IPModule也是Master，但是data_list是挨个发的（在上面），只有Master自己才需要直接全部发送（只要有token）
     {
@@ -88,7 +88,7 @@ void MasterModule::passOnPackets()
             }
         }
     } */
-    
+
     MasterSlave::passOnPackets();
 }
 
@@ -99,7 +99,70 @@ void MasterModule::updatePacketPos()
 
 void MasterModule::updatePacketPosVertical()
 {
-    
+    ModulePort *port = nullptr;      // 接收IP的port
+    ModulePort *send_port = nullptr; // 发送下去（给Slave）的port
+    foreach (PortBase *p, getPorts())
+    {
+        if (p->getOppositeShape() == nullptr)
+            continue;
+        if (static_cast<ShapeBase *>(p->getOppositeShape())->getClass() == "IP")
+        {
+            port = static_cast<ModulePort *>(p);
+        }
+        else
+        {
+            send_port = static_cast<ModulePort *>(p);
+        }
+    }
+
+    int top = height() / 5 + this->pos().y();
+    int bottom = height() * 4 / 5 + this->pos().y();
+    int left = width() / 5 + this->pos().x();
+    double one_piece = PACKET_SIZE + 4;
+    int t = top;
+    if (port != nullptr)
+    {
+        t = top;
+        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, port->enqueue_list.size()));
+        foreach (DataPacket *packet, port->enqueue_list)
+        {
+            packet->setDrawPos(QPoint(left, t));
+            t += one_piece;
+        }
+
+        left += PACKET_SIZE + 4;
+        t = top;
+        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, port->dequeue_list.size()));
+        foreach (DataPacket *packet, port->dequeue_list)
+        {
+            packet->setDrawPos(QPoint(left, t));
+            t += one_piece;
+        }
+    }
+
+    if (getClass() == "Master")
+    {
+        t = top;
+        left += PACKET_SIZE + 4;
+        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, data_list.size()));
+        foreach (DataPacket *packet, data_list)
+        {
+            packet->setDrawPos(QPoint(left, t));
+            t += one_piece;
+        }
+    }
+
+    if (send_port != nullptr && getClass() == "Master")
+    {
+        t = top;
+        left += PACKET_SIZE + 4;
+        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, send_port->send_delay_list.size()));
+        foreach (DataPacket *packet, send_port->send_delay_list)
+        {
+            packet->setDrawPos(QPoint(left, t));
+            t += one_piece;
+        }
+    }
 }
 
 void MasterModule::updatePacketPosHorizone()
