@@ -257,8 +257,10 @@ int FlowControlBase::lcm(QList<int> numbers)
  */
 DataPacket *FlowControlBase::createToken(QString tag)
 {
-    static int token_id = 0;
-    DataPacket *packet = new DataPacket(tag.isEmpty() ? "编号" + QString::number(++token_id) : tag, this);
+    static int token_index = 0;
+    QString token_id = "token_" + QString::number(++token_index);
+    DataPacket *packet = new DataPacket(tag.isEmpty() ? token_id : tag, this);
+    packet->setID(token_id);
     packet->setDrawPos(QPoint(-1, -1));
     packet->resetDelay(0);
     all_packets.append(packet);

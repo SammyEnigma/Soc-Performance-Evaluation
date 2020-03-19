@@ -68,6 +68,16 @@ QString DataPacket::toString()
     return QString("%1: %2 / %3").arg(tag).arg(delay_step).arg(delay_max);
 }
 
+void DataPacket::setID(QString id)
+{
+    this->token_id = id;
+}
+
+QString DataPacket::getID()
+{
+    return token_id;
+}
+
 QString DataPacket::getTag()
 {
     return tag;

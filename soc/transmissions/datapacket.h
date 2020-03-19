@@ -39,6 +39,9 @@ public:
     void delayToNext();                            // 延迟到下一个阶段
     bool isDelayFinished();                        // 延迟是否已经结束了
     double currentProp();
+    
+    void setID(QString id);
+    QString getID();
 
     QString toString();
     QString getTag();
@@ -65,6 +68,7 @@ public slots:
     void deleteLater();
 
 protected:
+    QString token_id;
     bool valid;      // 是否有效
     QString tag;     // 编号ID
     DataFormat data; // 数据（复杂格式）

@@ -138,7 +138,7 @@ void ModulePort::passOnPackets()
             continue;
 
         receive_update_delay_list.removeAt(i--);
-        rt->runningOut(getPortId()+"接收token的update延迟结束，对方能接受："+QString::number(another_can_receive)+"+1");
+        rt->runningOut(getPortId() + "接收token:" + packet->getID() + " 的update延迟结束，对方能接受：" + QString::number(another_can_receive) + "+1");
         another_can_receive++;
         packet->deleteLater();
     }
@@ -150,7 +150,7 @@ void ModulePort::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
 
-        rt->runningOut(getPortId()+"的return delay结束，发出token");
+        rt->runningOut(getPortId() + "的return delay结束，发出token:" + packet->getID());
         return_delay_list.removeAt(i--);
         sendData(nullptr, DATA_TOKEN);
     }
@@ -233,7 +233,7 @@ void ModulePort::slotDataList()
  */
 void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 {
-    rt->runningOut("    "+getPortId()+" 发送数据sendData："+(type==DATA_REQUEST?"request":(type==DATA_RESPONSE?"response":"token")));
+    rt->runningOut("    "+getPortId()+" 发送数据sendData："+(type==DATA_REQUEST?"request":(type==DATA_RESPONSE?"response":"token"))+(packet?(": "+packet->getID()):""));
     CableBase* cable = getCable();
     if (cable == nullptr)
         return ;
@@ -264,7 +264,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
  */
 void ModulePort::slotDataReceived(DataPacket *packet)
 {
-    rt->runningOut(getPortId() + " 收到数据slotDataReceived");
+    rt->runningOut(getPortId() + " 收到数据slotDataReceived: " + packet->getID());
     if (packet->getDataType() == DATA_REQUEST)
         total_received++;
     if (begin_waited == 0)
@@ -281,14 +281,14 @@ void ModulePort::slotDataReceived(DataPacket *packet)
         }
         else // 进入模块队列
         {
-            rt->runningOut("  " + getPortId() + ": 开始进队列");
+            rt->runningOut("  " + getPortId() + ": 开始进队列 " + packet->getID());
             enqueue_list.append(packet);
             packet->resetDelay(getLatency());
         }
     }
     else // Switch直接传送到模块中
     {
-        rt->runningOut("  " + getPortId() + ": 接收数据，发送信号传递至所在模块");
+        rt->runningOut("  " + getPortId() + ": 接收数据 " + packet->getID() + "，发送信号传递至所在模块");
         // Switch自己有收到数据的信号槽，所以不用在这里处理
     }
     emit signalDataReceived(this, packet); // 如果是switch，则处理该信号；其余模块要么不理它，要么只计数

@@ -217,10 +217,24 @@ void WatchModule::paintEvent(QPaintEvent *event)
             {
                 if (target_module->getPorts().size())
                 {
-                    painter.drawText(left, height * line++, static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth());
-                    //painter.setFont(bold_font);
+                    ModulePort* port = target_module->getPorts().first();
+                    painter.setFont(big_font);
+                    painter.setPen(BandWithColor);
+                    QString live_frq_str = QString::number(port->getLiveFrequence() * rt->DEFAULT_PACKET_BYTE * rt->standard_frame, 10, 2);
+                    if (live_frq_str.endsWith("0"))
+                    {
+                        live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
+                        if (live_frq_str.endsWith("0"))
+                        {
+                            live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
+                            if (live_frq_str.endsWith("."))
+                                live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
+                        }
+                    }
+                    painter.drawText(left, height * line, live_frq_str);
+
                     painter.setFont(normal_font);
-                    painter.drawText(left + fm.horizontalAdvance(static_cast<ModulePort*>(target_module->getPorts().first())->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
+                    painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
                 }
             }
         }
