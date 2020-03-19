@@ -101,11 +101,12 @@ void FlowControlBase::gotoClock(int c)
     if (c < 0 || c > 0x3f3f3f3f)
         return ;
 
+    bool paused = !run_timer->isActive();
     _flag_ignore_view_after_clock = true;
     int current = current_clock.toInt();
-    if (current_clock<=0 || c <= current) // 未开始或在过去，重新运行到这里
+    /* 如果是未开始，在MainWindow里面已经判断了 */
+    if (c <= current) // 在过去，重新运行到这里
     {
-        qDebug() << "11111111";
         stopRun();
         startRun();
         current = current_clock.toInt();
@@ -116,6 +117,8 @@ void FlowControlBase::gotoClock(int c)
     {
         nextStep();
     }
+    if (paused)
+        run_timer->stop();
     _flag_ignore_view_after_clock = false;
     refreshUI();
 }
