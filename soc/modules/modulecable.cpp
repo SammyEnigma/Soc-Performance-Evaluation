@@ -491,8 +491,15 @@ void ModuleCable::paintLineArrow(QPainter &painter, QPoint pos1, QPoint pos2)
     QPoint arr2(
         pos2.x() + ARROW_LENGTH * cos(angle + ARROW_DEGREES),
         pos2.y() + ARROW_LENGTH * sin(angle + ARROW_DEGREES));
-    painter.drawLine(pos2, arr1);
-    painter.drawLine(pos2, arr2);
+//    painter.drawLine(pos2, arr1);
+//    painter.drawLine(pos2, arr2);
+    QPainterPath path;
+    path.moveTo(pos2);
+    path.lineTo(arr1);
+    path.lineTo(arr2);
+    path.lineTo(pos2);
+    painter.fillPath(path, painter.pen().color());
+
 }
 
 void ModuleCable::adjustGeometryByPorts()
