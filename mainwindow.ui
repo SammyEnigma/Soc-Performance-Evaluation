@@ -177,6 +177,8 @@ border: 1px solid #6495ED</string>
     <addaction name="separator"/>
     <addaction name="actionOne_Clock_C"/>
     <addaction name="actionTen_Clock_E"/>
+    <addaction name="separator"/>
+    <addaction name="actionGo_To"/>
    </widget>
    <widget class="QMenu" name="menu_8">
     <property name="title">
@@ -242,6 +244,7 @@ border: 1px solid #6495ED</string>
    <addaction name="actionResume_S"/>
    <addaction name="actionStep"/>
    <addaction name="actionTen_Step_T"/>
+   <addaction name="actionGo_To"/>
   </widget>
   <action name="actionSave">
    <property name="icon">
@@ -777,6 +780,18 @@ border: 1px solid #6495ED</string>
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionGo_To">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/future</normaloff>:/icons/future</iconset>
+   </property>
+   <property name="text">
+    <string>Go To Clock (&amp;G)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>

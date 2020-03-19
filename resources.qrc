@@ -8,6 +8,7 @@
         <file alias="stop">resources/icons/stop.png</file>
         <file alias="save">resources/icons/save.png</file>
         <file alias="one_step">resources/icons/one_step.png</file>
+        <file alias="future">resources/icons/future.png</file>
     </qresource>
     <qresource prefix="/thumbs"/>
 </RCC>

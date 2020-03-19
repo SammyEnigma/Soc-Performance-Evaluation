@@ -241,6 +241,7 @@ void MainWindow::on_actionRun_triggered()
     ui->actionResume_S->setVisible(false);
     ui->actionStep->setEnabled(true);
     ui->actionTen_Step_T->setEnabled(true);
+    ui->actionGo_To->setEnabled(true);
 }
 
 void MainWindow::on_actionPause_P_triggered()
@@ -277,6 +278,7 @@ void MainWindow::on_actionStop_triggered()
     ui->actionResume_S->setVisible(false);
     ui->actionStep->setEnabled(false);
     ui->actionTen_Step_T->setEnabled(false);
+    ui->actionGo_To->setEnabled(false);
 
     flow_control->deleteLater();
     flow_control = nullptr;
@@ -311,4 +313,21 @@ void MainWindow::on_actionTen_Step_T_triggered()
 {
     for (int i = 0; i < 10; i ++)
         flow_control->nextStep();
+}
+
+void MainWindow::on_actionGo_To_triggered()
+{
+    QString rst = QInputDialog::getText(this, "跳转", "请输入要跳转到的clock（int）\n若小于当前clock，将重新开始运行", QLineEdit::Normal, us->getStr("recent/go_to_clock"));
+    if (rst.trimmed().isEmpty())
+        return ;
+    bool ok;
+    int i = rst.toInt(&ok);
+    if (!ok)
+        return ;
+    us->setVal("recent/go_to_clock", rst);
+
+    // 跳转到这个clock
+    if (!flow_control)
+        on_actionRun_triggered();
+    flow_control->gotoClock(i);
 }
