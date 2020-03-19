@@ -25,6 +25,8 @@ public:
 
     void passOnPackets() override;
     void updatePacketPos() override;
+    void updatePacketPosVertical();
+    void updatePacketPosHorizone();
 
 protected:
 	void paintEvent(QPaintEvent *event) override;

@@ -94,16 +94,29 @@ void MasterModule::passOnPackets()
 
 void MasterModule::updatePacketPos()
 {
-    ModulePort* port = nullptr; // 接收IP的port
-    ModulePort* send_port = nullptr; // 发送下去（给Slave）的port
-    foreach (PortBase* p, getPorts())
+    return updatePacketPosVertical();
+}
+
+void MasterModule::updatePacketPosVertical()
+{
+    
+}
+
+void MasterModule::updatePacketPosHorizone()
+{
+    ModulePort *port = nullptr;      // 接收IP的port
+    ModulePort *send_port = nullptr; // 发送下去（给Slave）的port
+    foreach (PortBase *p, getPorts())
     {
         if (p->getOppositeShape() == nullptr)
             continue;
-        if (static_cast<ShapeBase*>(p->getOppositeShape())->getClass() == "IP") {
+        if (static_cast<ShapeBase *>(p->getOppositeShape())->getClass() == "IP")
+        {
             port = static_cast<ModulePort *>(p);
-        } else {
-            send_port = static_cast<ModulePort*>(p);
+        }
+        else
+        {
+            send_port = static_cast<ModulePort *>(p);
         }
     }
 
@@ -153,11 +166,12 @@ void MasterModule::updatePacketPos()
         l = left;
         top += PACKET_SIZE + 4;
         one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
-        foreach (DataPacket *packet, data_list) {
+        foreach (DataPacket *packet, data_list)
+        {
             packet->setDrawPos(QPoint(l, top));
             l += one_piece;
         }
-        
+
         /* int h = line_height * 2 + 4;
         foreach (DataPacket *packet, data_list)
         {
@@ -167,7 +181,8 @@ void MasterModule::updatePacketPos()
         } */
     }
 
-    if (send_port != nullptr && getClass() == "Master") {
+    if (send_port != nullptr && getClass() == "Master")
+    {
         l = left;
         top += PACKET_SIZE + 4;
         one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_port->send_delay_list.size()));
@@ -176,7 +191,7 @@ void MasterModule::updatePacketPos()
             packet->setDrawPos(QPoint(l, top));
             l += one_piece;
         }
-        
+
         /* int h = line_height * 2 + 4;
         foreach (DataPacket *packet, send_port->send_delay_list)
         {
@@ -185,7 +200,6 @@ void MasterModule::updatePacketPos()
             packet->setDrawPos(pos);
         } */
     }
-   
 }
 
 void MasterModule::paintEvent(QPaintEvent *event)
