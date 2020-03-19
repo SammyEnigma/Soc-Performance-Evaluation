@@ -319,6 +319,26 @@ void MasterModule::paintEvent(QPaintEvent *event)
     int top = PACKET_SIZE + 4;
     if (port != nullptr)
     {
+        painter.drawText(left, top, QString("%1").arg(port->enqueue_list.size()));
+
+        left += PACKET_SIZE + 4;
+        painter.drawText(left, top, QString("%1").arg(port->dequeue_list.size()));
+    }
+
+    if (getClass() == "Master")
+    {
+        left += PACKET_SIZE + 4;
+        painter.drawText(left, top, QString("%1").arg(data_list.size()));
+    }
+
+    if (send_port != nullptr && getClass() == "Master")
+    {
+        left += PACKET_SIZE + 4;
+        painter.drawText(left, top, QString("%1").arg(port->dequeue_list.size()));
+    }
+
+    /* if (port != nullptr)
+    {
         painter.drawText(right, top + PACKET_SIZE, QString("%1").arg(port->enqueue_list.size()));
 
         top += PACKET_SIZE + 4;
