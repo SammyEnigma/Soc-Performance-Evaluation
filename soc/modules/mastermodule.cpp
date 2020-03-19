@@ -286,14 +286,36 @@ void MasterModule::paintEvent(QPaintEvent *event)
     }
 
     QFontMetrics fm(this->font());
-    int line_height = fm.lineSpacing();
-    int left = width() / 5;
+    int line_height = fm.height();
+    /* int left = width() / 5;
     int right = width() * 3 / 5;
-    int top = PACKET_SIZE + 4;
+    int top = PACKET_SIZE + 4; */
+    int top = line_height;
+    int left = width() / 5-PACKET_SIZE/2;
 
     // 画自己的数量
     QPainter painter(this);
     if (port != nullptr)
+    {
+        painter.drawText(left, top, QString("%1").arg(port->enqueue_list.size()));
+
+        left += PACKET_SIZE + 4;
+        painter.drawText(left, top, QString("%1").arg(port->dequeue_list.size()));
+    }
+
+    if (getClass() == "Master")
+    {
+        left += PACKET_SIZE + 4;
+        painter.drawText(left, top, QString("%1").arg(data_list.size()));
+    }
+
+    if (send_port != nullptr && getClass() == "Master")
+    {
+        left += PACKET_SIZE + 4;
+        painter.drawText(left, top, QString("%1").arg(port->dequeue_list.size()));
+    }
+
+    /* if (port != nullptr)
     {
         painter.drawText(right, top + PACKET_SIZE, QString("%1").arg(port->enqueue_list.size()));
 
@@ -311,7 +333,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
     {
         top += PACKET_SIZE + 4;
         painter.drawText(right, top + PACKET_SIZE, QString("%1").arg(port->dequeue_list.size()));
-    }
+    } */
 }
 
 void MasterModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
