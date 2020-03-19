@@ -242,6 +242,8 @@ void MainWindow::on_actionRun_triggered()
     ui->actionStep->setEnabled(true);
     ui->actionTen_Step_T->setEnabled(true);
     ui->actionGo_To->setEnabled(true);
+    ui->actionFaster->setEnabled(true);
+    ui->actionSlower->setEnabled(true);
 }
 
 void MainWindow::on_actionPause_P_triggered()
@@ -279,6 +281,8 @@ void MainWindow::on_actionStop_triggered()
     ui->actionStep->setEnabled(false);
     ui->actionTen_Step_T->setEnabled(false);
     ui->actionGo_To->setEnabled(false);
+    ui->actionFaster->setEnabled(false);
+    ui->actionSlower->setEnabled(false);
 
     flow_control->deleteLater();
     flow_control = nullptr;
@@ -330,4 +334,14 @@ void MainWindow::on_actionGo_To_triggered()
     if (!flow_control)
         on_actionRun_triggered();
     flow_control->gotoClock(i);
+}
+
+void MainWindow::on_actionFaster_triggered()
+{
+    flow_control->changeSpeed(0.8);
+}
+
+void MainWindow::on_actionSlower_triggered()
+{
+    flow_control->changeSpeed(1.25);
 }

@@ -3,7 +3,7 @@
 FlowControlBase::FlowControlBase(GraphicArea *ga, QObject *parent) : QObject(parent), graphic(ga), run_timer(new QTimer(this)), current_clock(-1), _flag_ignore_view_after_clock(false)
 {
     log("FlowControlBase::FlowControlBase1");
-    run_timer->setInterval(ONE_CLOCK_INTERVAL); // 定时执行一次 clock
+    run_timer->setInterval(us->getInt("us/clock_interval", ONE_CLOCK_INTERVAL)); // 定时执行一次 clock
     connect(run_timer, SIGNAL(timeout()), this, SLOT(nextStep()));
 
     connect(this, &FlowControlBase::signalTokenCreated, this, [=](DataPacket *packet) {
@@ -349,4 +349,16 @@ void FlowControlBase::delayRun(int delay, RunType &f)
     RunType* func = new RunType(f);
     DelayRunBean* drb = new DelayRunBean(delay, func);
     delay_runs.append(drb);
+}
+
+void FlowControlBase::changeSpeed(double ratio)
+{
+    int interval = run_timer->interval();
+    interval *= ratio;
+    if (interval < 1)
+        interval = 1;
+    if (interval > 60000)
+        interval = 60000;
+    us->setVal("us/clock_interval", interval);
+    run_timer->setInterval(interval);
 }

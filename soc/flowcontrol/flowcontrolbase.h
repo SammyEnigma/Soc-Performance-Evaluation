@@ -51,6 +51,7 @@ public slots:
 
     void printfAllData(); // 调试输出
     void delayRun(int delay, RunType& f);
+    void changeSpeed(double ratio = 2);
 
 protected:
     virtual bool initModules();
