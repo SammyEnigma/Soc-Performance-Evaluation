@@ -33,7 +33,10 @@ public slots:
     virtual void updatePacketPos() override;
 
 public:
+    PacketList enqueue_list;
     PacketList data_list;
+    PacketList dequeue_list;
+    PacketList send_delay_list;
     PacketList process_list;
 
 protected:
