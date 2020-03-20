@@ -11,8 +11,9 @@ ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       another_can_receive(0),
       bandwidth(1),
-      latency(1), return_delay(0), request_to_queue(true), discard_response(false),
-      send_update_delay(0), receive_update_delay(0), token(1), 
+      latency(1), into_port_delay(0), outo_port_delay(0),
+      return_delay(0), request_to_queue(true), discard_response(false),
+      send_update_delay(0), receive_update_delay(0), token(1),
       total_sended(0), total_received(0), begin_waited(0)
 {
 }
@@ -24,6 +25,8 @@ ModulePort *ModulePort::newInstanceBySelf(QWidget *parent)
     port->_prop_pos = this->_prop_pos;
     port->bandwidth = this->bandwidth;
     port->latency = this->latency;
+    port->into_port_delay = this->into_port_delay;
+    port->outo_port_delay = this->outo_port_delay;
     port->return_delay = this->return_delay;
     port->send_update_delay = this->send_update_delay;
     port->receive_update_delay = this->receive_update_delay;
@@ -38,10 +41,8 @@ QString ModulePort::getClass()
 
 void ModulePort::clearData()
 {
-    send_delay_list.clear();
-    enqueue_list.clear();
-    data_queue.clear();
-    dequeue_list.clear();
+    into_port_list.clear();
+    outo_port_list.clear();
     return_delay_list.clear();
     receive_update_delay_list.clear();
     send_update_delay_list.clear();
@@ -74,65 +75,48 @@ void ModulePort::uninitOneClock()
     frq_queue.enqueue(sended_count_in_this_frame);
     if (frq_queue.length() > rt->frq_period_length)
         frq_queue.dequeue();
-//    if (std::accumulate(frq_queue.begin(), frq_queue.end(), 0) > 0)
-//        qDebug() << "-----port：" << std::accumulate(frq_queue.begin(), frq_queue.end(), 0) << frq_queue;
+    //    if (std::accumulate(frq_queue.begin(), frq_queue.end(), 0) > 0)
+    //        qDebug() << "-----port：" << std::accumulate(frq_queue.begin(), frq_queue.end(), 0) << frq_queue;
 }
 
 void ModulePort::passOnPackets()
 {
     // ==== 发送部分（Master） ====
-    // 发送延迟结束，开始准备发送
-    for (int i = 0; i < send_delay_list.size(); i++)
-    {
-        DataPacket *packet = send_delay_list.at(i);
-        if (!packet->isDelayFinished())
-            continue;
-
-        send_delay_list.removeAt(i--);
-        rt->runningOut("    " + packet->getID() + " 发送延迟结束，准备发送");
-        sendData(packet, DATA_REQUEST);
-    }
-
-    for(int i = 0; i < send_update_delay_list.size(); i++)
-    {
-        DataPacket *packet = send_update_delay_list.at(i);
-        if (!packet->isDelayFinished())
-            continue;
-
-        send_update_delay_list.removeAt(i--);
-        another_can_receive--;
-        packet->deleteLater();
-    }
 
     // ==== 接收部分（Slave） ====
     // Slave进队列（latency=1 clock）
-    for (int i = 0; i < enqueue_list.size(); i++)
+    for (int i = 0; i < into_port_list.size(); i++)
     {
-        DataPacket *packet = enqueue_list.at(i);
+        DataPacket *packet = into_port_list.at(i);
         if (!packet->isDelayFinished())
             continue;
-        enqueue_list.removeAt(i--);
-        dequeue_list.append(packet);
-        packet->resetDelay(getBandwidth().toInt());
+        into_port_list.removeAt(i--);
+        outo_port_list.append(packet);
+        packet->resetDelay(outo_port_delay);
     }
 
     // Slave出队列（1/bandwidth clock）-->处理数据
-    for (int i = 0; i < dequeue_list.size(); i++)
+    for (int i = 0; i < outo_port_list.size(); i++)
     {
-        DataPacket *packet = dequeue_list.at(i);
+        DataPacket *packet = outo_port_list.at(i);
         if (!packet->isDelayFinished())
             continue;
-        if (isBandwidthBufferFinished())
+        outo_port_list.removeAt(i--);
+        rt->runningOut(getPortId() + " 出来packet，进入模块内部");
+        if (packet->getComePort() == this) // 是从当前这个端口进来的，则进入模块
         {
-            dequeue_list.removeAt(i--);
-            emit signalReceivedDataDequeueReaded(packet);
-            resetBandwidthBuffer();
-//            receive_update_delay_list.append(new DataPacket(receive_update_delay));
+            emit signalOutPortReceived(packet);
             sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // the delay on the return of the Token
+        }
+        else
+        {
+            emit signalOutPortToSend(packet);
         }
     }
 
-    for(int i = 0; i < receive_update_delay_list.size(); i++)
+    // 收到对方token-1的信号后再延迟一段时间
+    // TODO: 这是什么
+    for (int i = 0; i < receive_update_delay_list.size(); i++)
     {
         DataPacket *packet = receive_update_delay_list.at(i);
         if (!packet->isDelayFinished())
@@ -144,7 +128,8 @@ void ModulePort::passOnPackets()
         packet->deleteLater();
     }
 
-    // Slave pick queue时return token 给Master
+    // Slave pick queue 时 return token 给 Master
+    // TODO: 这是什么
     for (int i = 0; i < return_delay_list.size(); i++)
     {
         DataPacket *packet = return_delay_list.at(i);
@@ -159,7 +144,8 @@ void ModulePort::passOnPackets()
 
 void ModulePort::delayOneClock()
 {
-    foreach (DataPacket* packet, send_delay_list + send_update_delay_list + enqueue_list + dequeue_list + receive_update_delay_list + return_delay_list) {
+    foreach (DataPacket *packet, send_update_delay_list + into_port_list + outo_port_list + receive_update_delay_list + return_delay_list)
+    {
         packet->delayToNext();
     }
 
@@ -180,6 +166,8 @@ void ModulePort::fromStringAddin(QString s)
 {
     QString bandwidth = StringUtil::getXml(s, "BANDWIDTH");
     QString latency = StringUtil::getXml(s, "LATENCY");
+    QString into_port_delay = StringUtil::getXml(s, "INTO_DELAY");
+    QString outo_port_delay = StringUtil::getXml(s, "OUTO_DELAY");
     QString return_delay = StringUtil::getXml(s, "RETURN_DELAY");
     QString send_update_delay = StringUtil::getXml(s, "SEND_UPDATE_DELAY");
     QString receive_update_delay = StringUtil::getXml(s, "RECEIVE_UPDATE_DELAY");
@@ -190,6 +178,10 @@ void ModulePort::fromStringAddin(QString s)
     }
     if (!latency.isEmpty())
         this->latency = latency.toInt();
+    if (!into_port_delay.isEmpty())
+        this->into_port_delay = into_port_delay.toInt();
+    if (!outo_port_delay.isEmpty())
+        this->outo_port_delay = outo_port_delay.toInt();
     if (!return_delay.isEmpty())
         this->return_delay = return_delay.toInt();
     if (!send_update_delay.isEmpty())
@@ -206,6 +198,8 @@ QString ModulePort::toStringAddin()
     QString indent = "\n\t\t";
     full += indent + StringUtil::makeXml(bandwidth, "BANDWIDTH");
     full += indent + StringUtil::makeXml(latency, "LATENCY");
+    full += indent + StringUtil::makeXml(into_port_delay, "INTO_DELAY");
+    full += indent + StringUtil::makeXml(outo_port_delay, "OUTO_DELAY");
     full += indent + StringUtil::makeXml(return_delay, "RETURN_DELAY");
     full += indent + StringUtil::makeXml(send_update_delay, "SEND_UPDATE_DELAY");
     full += indent + StringUtil::makeXml(receive_update_delay, "RECEIVE_UPDATE_DELAY");
@@ -216,12 +210,12 @@ QString ModulePort::toStringAddin()
 void ModulePort::paintEvent(QPaintEvent *event)
 {
     PortBase::paintEvent(event);
-    
+
     // 显示数字
     QPainter painter(this);
     QFontMetrics fm(this->font());
     int w = fm.horizontalAdvance(QString::number(another_can_receive));
-    painter.drawText((width()-w)/2, (height()+fm.height())/2, QString::number(another_can_receive));
+    painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));
 }
 
 void ModulePort::slotDataList()
@@ -231,19 +225,20 @@ void ModulePort::slotDataList()
 
 /**
  * Port发送数据包的总方法
+ * 真正从port出去的时候
  */
 void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 {
-    rt->runningOut("    "+getPortId()+" 发出信号，即将发送数据sendData："+(type==DATA_REQUEST?"request":(type==DATA_RESPONSE?"response":"token"))+(packet?(": "+packet->getID()):""));
-    CableBase* cable = getCable();
+    rt->runningOut("    " + getPortId() + " 发出信号，即将发送数据sendData：" + (type == DATA_REQUEST ? "request" : (type == DATA_RESPONSE ? "response" : "token")) + (packet ? (": " + packet->getID()) : ""));
+    CableBase *cable = getCable();
     if (cable == nullptr)
-        return ;
+        return;
     if (packet != nullptr)
         packet->setDataType(type);
     switch (type)
     {
     case DATA_REQUEST:
-        emit signalSendDelayFinished(this, packet);
+        emit signalOutPortToSend(packet);
         total_sended++;
         sended_count_in_this_frame++;
         if (begin_waited == 0)
@@ -270,29 +265,26 @@ void ModulePort::slotDataReceived(DataPacket *packet)
         total_received++;
     if (begin_waited == 0)
         begin_waited = rt->total_frame;
-    
-    if (request_to_queue)
+
+    packet->setComePort(this);                                      // 出port后，如果 come_port == this_port，则判定为进入
+    if (discard_response && packet->getDataType() == DATA_RESPONSE) // 无视response，master的属性
     {
-        if (discard_response && packet->getDataType()==DATA_RESPONSE) // 无视response，master的属性
-        {
-            rt->runningOut("  " + getPortId() + ": Master 不进行处理 response");
-            packet->deleteLater();
-            sendDequeueTokenToComeModule(new DataPacket()); // 让发送方token+1
-            return ;
-        }
-        else // 进入模块队列
-        {
-            rt->runningOut("  " + getPortId() + ": 开始进队列 " + packet->getID());
-            enqueue_list.append(packet);
-            packet->resetDelay(getLatency());
-        }
+        rt->runningOut("  " + getPortId() + ": Master 不进行处理 response");
+        packet->deleteLater();
+        sendDequeueTokenToComeModule(new DataPacket()); // 让发送方token+1
+        return;
     }
-    else // Switch直接传送到模块中
-    {
-        rt->runningOut("  " + getPortId() + ": 接收数据 " + packet->getID() + "，发送信号传递至所在模块");
-        // Switch自己有收到数据的信号槽，所以不用在这里处理
-    }
-    emit signalDataReceived(this, packet); // 如果是switch，则处理该信号；其余模块要么不理它，要么只计数
+    // 开始进入模块
+    rt->runningOut("  " + getPortId() + ": 开始进队列 " + packet->getID());
+    into_port_list.append(packet);
+    packet->resetDelay(into_port_delay);
+    emit signalDataReceived(this, packet); // TODO: 干掉这个信号：如果是switch，则处理该信号；其余模块要么不理它，要么只计数
+}
+
+void ModulePort::prepareSendData(DataPacket *packet)
+{
+    into_port_list.append(packet);
+    packet->resetDelay(into_port_delay);
 }
 
 int ModulePort::getLatency()
@@ -308,11 +300,6 @@ TimeFrame ModulePort::getBandwidth()
 int ModulePort::getReturnDelay()
 {
     return return_delay;
-}
-
-int ModulePort::getDelaySendCount()
-{
-    return send_delay_list.size();
 }
 
 void ModulePort::initBandwidthBufer()
@@ -397,5 +384,5 @@ double ModulePort::getLiveFrequence()
 {
     if (!frq_queue.size())
         return 0.0;
-    return std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)rt->frq_period_length/* frq_queue.size() */;
+    return std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
 }

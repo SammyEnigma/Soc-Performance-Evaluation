@@ -69,7 +69,7 @@ void FlowControl_Master1_Slave1::passOneClock0()
 {
     FlowControlBase::passOneClock();
 
-    // ==== Master request ====
+    /*// ==== Master request ====
     // Slave有可接收的buffer时，Master开始延迟（0clock）
     if (master_port->anotherCanRecive())
     {
@@ -215,7 +215,7 @@ void FlowControl_Master1_Slave1::passOneClock0()
         {
             packet->delayToNext();
         }
-    }
+    }*/
 
     // ==== 时钟结束后首尾 ====
     current_clock++;

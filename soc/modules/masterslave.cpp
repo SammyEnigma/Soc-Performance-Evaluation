@@ -8,26 +8,36 @@ MasterSlave::MasterSlave(QWidget *parent)
 
 void MasterSlave::initData()
 {
-	token = getData("token");
+    token = getData("token");
     foreach (PortBase *p, ports)
     {
         ModulePort *port = static_cast<ModulePort *>(p);
         port->setToken(token->i());
 
         // ==== 发送部分（Master） ====
-        connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {
+        connect(port, &ModulePort::signalOutPortToSend, this, [=](DataPacket *packet) {
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut(port->getPortId() + ".signalSendDelayFinished槽，发送" + packet->getID() + "至Cable，现对方能接收" + QString::number(port->another_can_receive-port->send_delay_list.size()) + "-1");
+            rt->runningOut(port->getPortId() + ".signalOutPortToSend槽，发送" + packet->getID() + "至Cable，现对方能接收" + QString::number(port->another_can_receive - send_delay_list.size()) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
         });
 
         // ==== 接收部分（Slave） ====
-        connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
-            if (ports.size() <= 1) // 只有一个端口，收到后往回发
+        connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet) {
+            if (data_list.size() >= getToken()) // 已经满了，不让发了
+            {
+                rt->runningOut(getText() + " data queue 已经满了，无法收取更多");
+                return;
+            }
+
+            // 接收到数据，进入 queue 的延迟
+            packet->resetDelay(getDataValue("enqueue_delay", 1).toInt());
+            enqueue_list.append(packet);
+
+            /* if (ports.size() <= 1) // 只有一个端口，收到后往回发
             {
                 process_list.append(packet);
                 packet->resetDelay(getProcessDelay());
@@ -54,9 +64,10 @@ void MasterSlave::initData()
                 }
                 else
                 {
+                    // packet->deleteLater();
                     rt->runningOut("!!!" + getText() + " " + port->getPortId() + "收到数据 " + packet->getID() + "，但是无法发送");
                 }
-            }
+            } */
         });
     }
 }
@@ -68,12 +79,12 @@ void MasterSlave::clearData()
         ModulePort *port = static_cast<ModulePort *>(p);
 
         // ==== 发送部分（Master） ====
-        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalOutPortToSend(DataPacket *)), nullptr, nullptr);
 
         // ==== 接收部分（Slave） ====
-        disconnect(port, SIGNAL(signalReceivedDataDequeueReaded(DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalOutPortReceived(DataPacket *)), nullptr, nullptr);
     }
-    
+
     data_list.clear();
     process_list.clear();
     ModuleBase::clearData();
@@ -113,6 +124,64 @@ void MasterSlave::passOnPackets()
     {
         ModulePort *mp = static_cast<ModulePort *>(port);
         mp->passOnPackets();
+    }
+
+    // 进队列
+    for (int i = 0; i < enqueue_list.size(); i++)
+    {
+        DataPacket *packet = enqueue_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+
+        enqueue_list.removeAt(i--);
+        data_list.append(packet);
+    }
+
+    // 队列中的数据出来
+    for (int i = 0; i < data_list.size(); i++)
+    {
+    }
+
+    // 出队列
+    for (int i = 0; i < dequeue_list.size(); i++)
+    {
+        DataPacket *packet = dequeue_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+
+        // 知道进来的端口，由此获取出来的端口，发送
+        ModulePort *out_port = nullptr;
+        if (ports.size() == 0) // 应该不会没有端口吧？（但是也不排除添加了模块但是没有连接的形状，免得导致崩溃）
+        {
+            break;
+        }
+        if (ports.size() == 1) // 只有一个端口，原路返回
+        {
+            packet->setComePort(nullptr);
+            out_port = static_cast<ModulePort *>(ports.first());
+        }
+        else // 多个端口（至少要两个吧）
+        {
+            if (ports.first() == packet->getComePort())
+                out_port = static_cast<ModulePort *>(ports.at(1)); // 从第二个port出去，要是有多个也不管
+            else
+                out_port = static_cast<ModulePort *>(ports.first());
+        }
+        packet->setTargetPort(out_port);
+        dequeue_list.removeAt(i--);
+        send_delay_list.append(packet);
+        packet->resetDelay(getDataValue("latency", 1).toInt());
+    }
+    
+    // 延迟发送
+    for (int i = 0; i < send_delay_list.size(); i++)
+    {
+        DataPacket *packet = send_delay_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+        
+        static_cast<ModulePort *>(packet->getTargetPort())->prepareSendData(packet);
+        send_delay_list.removeAt(i--);
     }
 
     // 模块内处理（Slave）

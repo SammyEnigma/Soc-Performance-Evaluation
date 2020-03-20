@@ -55,13 +55,13 @@ void SlaveModule::updatePacketPos()
     int height = fm.lineSpacing();
 
     QPoint pos = this->pos() + QPoint(4, height*3 + 4);
-    foreach (DataPacket *packet, static_cast<ModulePort *>(getPorts().first())->enqueue_list)
+    foreach (DataPacket *packet, static_cast<ModulePort *>(getPorts().first())->into_port_list)
     {
         packet->setDrawPos(pos);
     }
 
     int h = height*3+4;
-    foreach (DataPacket *packet, static_cast<ModulePort *>(getPorts().first())->dequeue_list)
+    foreach (DataPacket *packet, static_cast<ModulePort *>(getPorts().first())->outo_port_list)
     {
         pos = this->pos() + QPoint(width() / 2, h);
         h += 4 + PACKET_SIZE;

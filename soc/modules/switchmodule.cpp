@@ -42,7 +42,7 @@ void SwitchModule::initData()
         connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
 
         // ==== 发送部分（Master） ====
-        connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {
+        connect(port, &ModulePort::signalOutPortToSend, this, [=](DataPacket *packet) {
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
@@ -64,7 +64,7 @@ void SwitchModule::clearData()
         // 连接信号槽
         ModulePort *port = static_cast<ModulePort *>(p);
         disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
-        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalOutPortToSend(DataPacket *)), nullptr, nullptr);
     }
     foreach (SwitchPicker* picker, pickers)
     {

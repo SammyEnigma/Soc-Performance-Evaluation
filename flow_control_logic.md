@@ -54,6 +54,8 @@ Master ≈ Slave
 
 发送速度受 bandwidth 影响
 
+
+
 ## Port
 
 ### 发送 & 接收
@@ -95,8 +97,6 @@ Master ≈ Slave
 | 延迟 | 默认 |
 | ---- | ---- |
 |      |      |
-
-
 
 ### Picker
 

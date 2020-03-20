@@ -20,7 +20,7 @@ void MasterSlaveInterface::initData()
         // port->setToken(token->i());
 
         // ==== 发送部分（Master） ====
-        connect(port, &ModulePort::signalSendDelayFinished, this, [=](ModulePort *port, DataPacket *packet) {
+        connect(port, &ModulePort::signalOutPortToSend, this, [=](DataPacket *packet) {
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
@@ -31,7 +31,7 @@ void MasterSlaveInterface::initData()
         });
 
         // ==== 接收部分（Slave） ====
-        connect(port, &ModulePort::signalReceivedDataDequeueReaded, this, [=](DataPacket *packet) {
+        connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet) {
             process_list.append(packet);
             packet->resetDelay(getProcessDelay());
             rt->runningOut(port->getPortId() + "接收到数据 " + packet->getID() + "，进入处理环节");
@@ -46,10 +46,10 @@ void MasterSlaveInterface::clearData()
         ModulePort *port = static_cast<ModulePort *>(p);
 
         // ==== 发送部分（Master） ====
-        disconnect(port, SIGNAL(signalSendDelayFinished(ModulePort *, DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalOutPortToSend(DataPacket *)), nullptr, nullptr);
 
         // ==== 接收部分（Slave） ====
-        disconnect(port, SIGNAL(signalReceivedDataDequeueReaded(DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalOutPortReceived(DataPacket *)), nullptr, nullptr);
     }
 }
 

@@ -46,7 +46,6 @@ public:
     int getLatency();
     TimeFrame getBandwidth();
     int getReturnDelay();
-    int getDelaySendCount();
 
     void initBandwidthBufer();
     bool nextBandwidthBuffer();
@@ -75,22 +74,21 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 signals:
-    void signalSendDelayFinished(ModulePort *port, DataPacket *packet); // 发送延迟结束（发送request）
-    void signalReceivedDataDequeueReaded(DataPacket *packet);           // 出queue时，进入处理队列
-    void signalDequeueTokenDelayFinished();                             // 出queue后延迟返回给Master的token延迟结束（发送token）
-    void signalResponseSended(DataPacket *packet);                      // 处理结束后返回给某个端口（发送response）
-    void signalDataReceived(ModulePort *port, DataPacket *packet);      // 收到信号的槽函数触发的接收信号，发送给父控件
+    void signalDequeueTokenDelayFinished();                        // TODO: 父控件出queue后发送此信号，延迟返回给Master的token延迟结束（发送token）
+    void signalOutPortReceived(DataPacket *packet);                // 队列延迟结束，进入父控件
+    void signalOutPortToSend(DataPacket *packet);                  // 队列延迟结束，发送至cable
+    void signalResponseSended(DataPacket *packet);                 // 处理结束后返回给某个端口（发送response）
+    void signalDataReceived(ModulePort *port, DataPacket *packet); // 收到信号的槽函数触发的接收信号，发送给父控件(Switch)
 
 public slots:
     void slotDataList() override;                      // 请求编辑数据列表
     void sendData(DataPacket *packet, DATA_TYPE type); // 发送特定数据
     void slotDataReceived(DataPacket *packet);         // 接收到数据（包括request和response）
+    void prepareSendData(DataPacket *packet);          // 准备发送数据（进入port的延迟）
 
 public:
-    QQueue<DataPacket *> data_queue;
-    PacketList send_delay_list;
-    PacketList enqueue_list;
-    PacketList dequeue_list;
+    PacketList into_port_list;
+    PacketList outo_port_list;
     PacketList return_delay_list;
     PacketList receive_update_delay_list;
     PacketList send_update_delay_list;
@@ -100,6 +98,8 @@ private:
     // 属性配置
     TimeFrame bandwidth;      // 带宽，多少个clock发送1个token（越大越慢）
     int latency;              // the delay of the sending the request/response
+    int into_port_delay;      // 进入port的delay
+    int outo_port_delay;      // 从port出去的delay
     int return_delay;         // the delay on the return of the Token
     int send_update_delay;    // 发送时自己buffer-1的延迟
     int receive_update_delay; // 接收到token时自己buffer+1的延迟
