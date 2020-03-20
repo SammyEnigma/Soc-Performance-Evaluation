@@ -23,6 +23,8 @@ public:
     int getDefaultToken();
 
     int getProcessDelay();
+    
+    ModulePort* getOutPort(DataPacket* packet);
 
 signals:
 	void signalTokenSendStarted(DataPacket* packet); // token开始发送（刚从模块进入延迟发送队列，还未发送出去）

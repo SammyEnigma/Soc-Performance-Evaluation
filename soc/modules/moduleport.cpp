@@ -345,6 +345,20 @@ bool ModulePort::anotherCanRecive(int cut)
     return another_can_receive - send_update_delay_list.size() > cut;
 }
 
+bool ModulePort::anotherCanReceiveAndDecrease(int cut)
+{
+    if (another_can_receive <= cut)
+        return false;
+    
+    another_can_receive--;
+    return true;
+}
+
+void ModulePort::increaseAnotherCanReceive()
+{
+    another_can_receive++;
+}
+
 int ModulePort::getToken()
 {
     return token;

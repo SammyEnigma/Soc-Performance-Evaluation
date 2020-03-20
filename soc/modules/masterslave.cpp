@@ -138,8 +138,23 @@ void MasterSlave::passOnPackets()
     }
 
     // 队列中的数据出来
+    // TODO: 分别计算 send_delay_list+dequeue_list 中 request 和 response 的数量，anotherCanReceive 中减掉
     for (int i = 0; i < data_list.size(); i++)
     {
+        DataPacket *packet = data_list.at(i);
+        ModulePort* port = getOutPort(packet);
+        if (!port)
+        {
+            rt->runningOut(getText() + " 由于没有可发送的端口，无法发送 " + packet->getID());
+            continue;
+        }
+        
+        if (port->anotherCanRecive(send_delay_list.size() + dequeue_list.size()))
+        {
+            data_list.removeAt(i--);
+            dequeue_list.append(packet);
+            packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
+        }
     }
 
     // 出队列
@@ -150,23 +165,9 @@ void MasterSlave::passOnPackets()
             continue;
 
         // 知道进来的端口，由此获取出来的端口，发送
-        ModulePort *out_port = nullptr;
-        if (ports.size() == 0) // 应该不会没有端口吧？（但是也不排除添加了模块但是没有连接的形状，免得导致崩溃）
-        {
+        ModulePort *out_port = getOutPort(packet);
+        if (!out_port)
             break;
-        }
-        if (ports.size() == 1) // 只有一个端口，原路返回
-        {
-            packet->setComePort(nullptr);
-            out_port = static_cast<ModulePort *>(ports.first());
-        }
-        else // 多个端口（至少要两个吧）
-        {
-            if (ports.first() == packet->getComePort())
-                out_port = static_cast<ModulePort *>(ports.at(1)); // 从第二个port出去，要是有多个也不管
-            else
-                out_port = static_cast<ModulePort *>(ports.first());
-        }
         packet->setTargetPort(out_port);
         dequeue_list.removeAt(i--);
         send_delay_list.append(packet);
@@ -232,4 +233,27 @@ void MasterSlave::delayOneClock()
  */
 void MasterSlave::updatePacketPos()
 {
+}
+
+/**
+ * 根据 packet 进来的端口，获取这个 packet 出去的端口
+ */
+ModulePort* MasterSlave::getOutPort(DataPacket* packet)
+{
+    if (ports.size() == 0) // 应该不会没有端口吧？（但是也不排除添加了模块但是没有连接的形状，免得导致崩溃）
+    {
+        return nullptr;
+    }
+    if (ports.size() == 1) // 只有一个端口，原路返回
+    {
+        packet->setComePort(nullptr);
+        return static_cast<ModulePort *>(ports.first());
+    }
+    else // 多个端口（至少要两个吧）
+    {
+        if (ports.first() == packet->getComePort())
+            return static_cast<ModulePort *>(ports.at(1)); // 从第二个port出去，要是有多个也不管
+        else
+            return static_cast<ModulePort *>(ports.first());
+    }
 }
