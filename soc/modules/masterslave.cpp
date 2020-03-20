@@ -142,13 +142,14 @@ void MasterSlave::passOnPackets()
     for (int i = 0; i < data_list.size(); i++)
     {
         DataPacket *packet = data_list.at(i);
-        ModulePort* port = getOutPort(packet);
+        ModulePort *port = getOutPort(packet);
+        qDebug() << "遍历" << getText() << packet->getID();
         if (!port)
         {
             rt->runningOut(getText() + " 由于没有可发送的端口，无法发送 " + packet->getID());
             continue;
         }
-        
+        qDebug() << port << port->anotherCanRecive(send_delay_list.size() + dequeue_list.size());
         if (port->anotherCanRecive(send_delay_list.size() + dequeue_list.size()))
         {
             data_list.removeAt(i--);
@@ -173,15 +174,20 @@ void MasterSlave::passOnPackets()
         send_delay_list.append(packet);
         packet->resetDelay(getDataValue("latency", 1).toInt());
     }
-    
+
     // 延迟发送
     for (int i = 0; i < send_delay_list.size(); i++)
     {
         DataPacket *packet = send_delay_list.at(i);
         if (!packet->isDelayFinished())
             continue;
-        
-        static_cast<ModulePort *>(packet->getTargetPort())->prepareSendData(packet);
+
+        ModulePort* port = static_cast<ModulePort *>(packet->getTargetPort());
+        if (!port) // 没有设置发送的端口，默认选第一个
+            port = static_cast<ModulePort*>(ports.first());
+        if (!port)
+            break;
+        port->prepareSendData(packet);
         send_delay_list.removeAt(i--);
     }
 
@@ -213,7 +219,7 @@ void MasterSlave::passOnPackets()
 
 void MasterSlave::delayOneClock()
 {
-    foreach (DataPacket *packet, process_list)
+    foreach (DataPacket *packet, process_list + enqueue_list + dequeue_list + send_delay_list)
     {
         packet->delayToNext();
     }
@@ -238,7 +244,7 @@ void MasterSlave::updatePacketPos()
 /**
  * 根据 packet 进来的端口，获取这个 packet 出去的端口
  */
-ModulePort* MasterSlave::getOutPort(DataPacket* packet)
+ModulePort *MasterSlave::getOutPort(DataPacket *packet)
 {
     if (ports.size() == 0) // 应该不会没有端口吧？（但是也不排除添加了模块但是没有连接的形状，免得导致崩溃）
     {
