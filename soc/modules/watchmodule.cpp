@@ -192,7 +192,9 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.drawText(left, height * line, live_frq_str);
             
             painter.setFont(normal_font);
-            painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + target_port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
+            painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + target_port->getBandwidth() * rt->DEFAULT_PACKET_BYTE /*+ "GByte"*/);
+
+            painter.drawText(left /*+ fm.horizontalAdvance(live_frq_str)*/, height * 4/5 * line++, "GByte");
 
             // Latency
             painter.setFont(big_font);
