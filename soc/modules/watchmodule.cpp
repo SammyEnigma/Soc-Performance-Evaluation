@@ -199,11 +199,11 @@ void WatchModule::paintEvent(QPaintEvent *event)
             // Latency
             painter.setFont(big_font);
             painter.setPen(LatencyColor);
-            painter.drawText(left, height * line++, QString::number(target_port->getLatency()));
+            painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getLatency()));
 
             // Token
             painter.setPen(TokenColor);
-            painter.drawText(left, height * line++, QString::number(target_port->getReceiveToken()));
+            painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getReceiveToken()));
             
 //            painter.setFont(normal_font);
 //            painter.drawText(left, height*line++, QString("%1/%2-%3(%4)").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()).arg(passed_frame));
