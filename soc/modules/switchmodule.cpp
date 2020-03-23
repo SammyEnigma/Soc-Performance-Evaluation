@@ -46,7 +46,7 @@ void SwitchModule::initData()
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
                 return;
-            rt->runningOut("switch " + port->getPortId() + " 发送完毕，对方能接收" + QString::number(port->another_can_receive) + "-1");
+            rt->runningOut("switch " + port->getPortId() + " 发送"+packet->getID()+"完毕，对方能接收" + QString::number(port->another_can_receive) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
             packet->resetDelay(cable->getTransferDelay());
@@ -120,7 +120,7 @@ void SwitchModule::passOnPackets()
                 picked_delay_list.append(packet); */
                 
                 picker->resetBandwidthBuffer();
-                rt->runningOut("Hub pick出去（进入延迟）：" + packet->toString());
+                rt->runningOut("Hub pick出去（进入延迟）：" + packet->getID());
 
                 // 通过进来的端口，返回发送出去的token（依赖port的return delay）
                 if (packet->getComePort() != nullptr)

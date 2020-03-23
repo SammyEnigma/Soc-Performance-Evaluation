@@ -170,6 +170,7 @@ border: 1px solid #6495ED</string>
     <addaction name="actionPause_P"/>
     <addaction name="actionResume_S"/>
     <addaction name="actionDebug"/>
+    <addaction name="actionSet_Log_Filter"/>
     <addaction name="actionRun_To_Break_B"/>
     <addaction name="separator"/>
     <addaction name="actionStep"/>
@@ -250,6 +251,8 @@ border: 1px solid #6495ED</string>
    <addaction name="actionGo_To"/>
    <addaction name="actionSlower"/>
    <addaction name="actionFaster"/>
+   <addaction name="separator"/>
+   <addaction name="actionSet_Log_Filter"/>
   </widget>
   <action name="actionSave">
    <property name="icon">
@@ -857,6 +860,15 @@ border: 1px solid #6495ED</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+[</string>
+   </property>
+  </action>
+  <action name="actionSet_Log_Filter">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/filter</normaloff>:/icons/filter</iconset>
+   </property>
+   <property name="text">
+    <string>Set Log Filter</string>
    </property>
   </action>
  </widget>

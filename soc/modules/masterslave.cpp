@@ -139,7 +139,7 @@ void MasterSlave::passOnPackets()
     }
 
     // 队列中的数据出来
-    // TODO: 这个算法是错的。分别计算 send_delay_list+dequeue_list 中 request 和 response 的数量，anotherCanReceive 中减掉
+    // warning: 如果port的bandwidth足够，那么当packet刚进入data_list的时候，就会dequeue，并不在data_list停留（除非加一个clock的延迟）
     for (int i = 0; i < data_list.size(); i++)
     {
         DataPacket *packet = data_list.at(i);

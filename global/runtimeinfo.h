@@ -40,7 +40,14 @@ public:
     void runningOut(QString s)
     {
         running_out.append(s);
-        qDebug().noquote() << s;
+        if (log_filter.isEmpty() || s.contains(QRegExp(log_filter)))
+            qDebug().noquote() << s;
+    }
+    
+    void runningOut2(QString s) // 更加具体的log，只在设置了过滤词生效
+    {
+        if (!log_filter.isEmpty() && s.contains(QRegExp(log_filter)))
+            qDebug().noquote() << s;
     }
 
     QString DATA_PATH;
@@ -49,6 +56,7 @@ public:
 
     ShapeBase *current_choosed_shape;
     bool auto_stick_ports;
+    QString log_filter;
 
     bool running;
     QStringList running_out;

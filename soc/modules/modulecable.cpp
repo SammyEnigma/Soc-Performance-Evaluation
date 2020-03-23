@@ -108,7 +108,7 @@ void ModuleCable::passOnPackets()
             continue;
 
         request_list.removeAt(i--);
-        rt->runningOut("    cable request 结束：" + packet->toString() + " >> 下一步");
+        rt->runningOut("    cable request 结束：" + packet->getID() + " >> 下一步");
         emit signalRequestDelayFinished(packet);
     }
 
@@ -119,7 +119,7 @@ void ModuleCable::passOnPackets()
             continue;
 
         response_list.removeAt(i--);
-        rt->runningOut("    cable response 结束：" + packet->toString() + " >> 下一步");
+        rt->runningOut("    cable response 结束：" + packet->getID() + " >> 下一步");
         emit signalResponseDelayFinished(packet);
     }
 }
@@ -129,6 +129,7 @@ void ModuleCable::delayOneClock()
     foreach (DataPacket *packet, request_list + response_list)
     {
         packet->delayToNext();
+        rt->runningOut2(packet->getID() + "进入下一个Cable延迟 " + packet->toString());
     }
 
     updatePacketPos();

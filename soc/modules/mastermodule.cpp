@@ -99,6 +99,7 @@ void MasterModule::updatePacketPosVertical()
         }
     }
 
+//if (port) qDebug() << getText() << port->into_port_list.size() << port->outo_port_list.size() << enqueue_list.size() << data_list.size() << dequeue_list.size() << send_delay_list.size();
     QFontMetrics fm(this->font());
     int line_height = fm.lineSpacing();
     int top = height() / 5 + this->pos().y();
@@ -109,17 +110,8 @@ void MasterModule::updatePacketPosVertical()
     if (port != nullptr)
     {
         t = bottom;
-        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, port->into_port_list.size()));
-        foreach (DataPacket *packet, port->into_port_list)
-        {
-            packet->setDrawPos(QPoint(left, t));
-            t -= one_piece;
-        }
-
-        left += width() / 5;
-        t = bottom;
-        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, port->outo_port_list.size()));
-        foreach (DataPacket *packet, port->outo_port_list)
+        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, enqueue_list.size()));
+        foreach (DataPacket *packet, enqueue_list)
         {
             packet->setDrawPos(QPoint(left, t));
             t -= one_piece;
@@ -132,6 +124,18 @@ void MasterModule::updatePacketPosVertical()
         left += width() / 5;
         one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, data_list.size()));
         foreach (DataPacket *packet, data_list)
+        {
+            packet->setDrawPos(QPoint(left, t));
+            t -= one_piece;
+        }
+    }
+
+    if (port)
+    {
+        left += width() / 5;
+        t = bottom;
+        one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, dequeue_list.size()));
+        foreach (DataPacket *packet, dequeue_list)
         {
             packet->setDrawPos(QPoint(left, t));
             t -= one_piece;
@@ -179,17 +183,8 @@ void MasterModule::updatePacketPosHorizone()
     if (port != nullptr)
     {
         l = left;
-        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->into_port_list.size()));
-        foreach (DataPacket *packet, port->into_port_list)
-        {
-            packet->setDrawPos(QPoint(l, top));
-            l += one_piece;
-        }
-
-        top += PACKET_SIZE + 4;
-        l = left;
-        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, port->outo_port_list.size()));
-        foreach (DataPacket *packet, port->outo_port_list)
+        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, enqueue_list.size()));
+        foreach (DataPacket *packet, enqueue_list)
         {
             packet->setDrawPos(QPoint(l, top));
             l += one_piece;
@@ -228,6 +223,18 @@ void MasterModule::updatePacketPosHorizone()
             h += 4 + PACKET_SIZE;
             packet->setDrawPos(pos);
         } */
+    }
+
+    if (port)
+    {
+        top += PACKET_SIZE + 4;
+        l = left;
+        one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, dequeue_list.size()));
+        foreach (DataPacket *packet, dequeue_list)
+        {
+            packet->setDrawPos(QPoint(l, top));
+            l += one_piece;
+        }
     }
 
     if (send_port != nullptr && getClass() == "Master")
