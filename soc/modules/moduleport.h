@@ -91,7 +91,7 @@ public slots:
 public:
     PacketList into_port_list;
     PacketList outo_port_list;
-    PacketList return_delay_list;
+    PacketList return_delay_list; // 收到的packet出队列后，延迟往回发送token，表示自己发出了这个packet，对方token+1
     PacketList receive_update_delay_list;
     PacketList send_update_delay_list;
     int another_can_receive; // 端口对面模块的剩余buffer（token）

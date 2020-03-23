@@ -106,7 +106,7 @@ void ModulePort::passOnPackets()
         {
             rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：模块内部");
             emit signalOutPortReceived(packet);
-            sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // the delay on the return of the Token
+            // sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // the delay on the return of the Token
         }
         else // 从这个端口出去
         {
@@ -135,7 +135,7 @@ void ModulePort::passOnPackets()
         packet->deleteLater();
     }
 
-    // Slave pick queue 时 return token 给 Master
+    // Slave pick queue 时 return token 给上一个模块，对方token + 1
     // TODO: 这是什么
     for (int i = 0; i < return_delay_list.size(); i++)
     {
@@ -237,7 +237,7 @@ void ModulePort::slotDataList()
  */
 void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
 {
-    rt->runningOut("    " + getPortId() + " 发出信号，即将发送数据sendData：" + (type == DATA_REQUEST ? "request" : (type == DATA_RESPONSE ? "response" : "token")) + (packet ? (": " + packet->getID()) : ""));
+    rt->runningOut("    " + getPortId() + " 发出信号，即将sendData：" + (type == DATA_REQUEST ? "request" : (type == DATA_RESPONSE ? "response" : "token")) + (packet ? (": " + packet->getID()) : ""));
     CableBase *cable = getCable();
     if (cable == nullptr)
         return;
@@ -275,7 +275,7 @@ void ModulePort::slotDataReceived(DataPacket *packet)
         begin_waited = rt->total_frame;
 
     packet->setComePort(this);                                      // 出port后，如果 come_port == this_port，则判定为进入
-    if (discard_response && packet->getDataType() == DATA_RESPONSE) // 无视response，master的属性
+    if (discard_response && packet->getDataType() == DATA_RESPONSE) // 无视response，IP收到后直接删掉（当做处理掉）
     {
         rt->runningOut("  " + getPortId() + ": Master 不进行处理 response");
         packet->deleteLater();

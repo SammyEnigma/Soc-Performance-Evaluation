@@ -136,13 +136,13 @@ void MasterSlave::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
 
-        rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 enqueue >> data_list");
+        rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 enqueue >> data_list");
         enqueue_list.removeAt(i--);
         data_list.append(packet);
     }
 
     // 队列中的数据出来
-    // warning: 如果port的bandwidth足够，那么当packet刚进入data_list的时候，就会dequeue，并不在data_list停留（除非加一个clock的延迟）
+    // warning: 如果port的bandwidth足够，那么当packet刚进入data_list的时候，就会dequeue，并不在data_list停留（除非加延迟）
     for (int i = 0; i < data_list.size(); i++)
     {
         DataPacket *packet = data_list.at(i);
@@ -154,12 +154,21 @@ void MasterSlave::passOnPackets()
         }
         if (port->isBandwidthBufferFinished() && port->anotherCanRecive())
         {
-            rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 data_list >> dequeue");
+            rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 data_list >> dequeue");
             data_list.removeAt(i--);
             dequeue_list.append(packet);
             packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
             port->resetBandwidthBuffer();
             port->anotherCanReceiveAndDecrease(); // 在这里就把port的token减掉
+
+            if (getClass() == "IP" && packet->getDataType() == DATA_REQUEST) // IP发送的request不需要返回给后一个模块token
+                ;
+            else
+            {
+                port = static_cast<ModulePort *>(packet->getComePort());
+                if (port)
+                    port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
+            }
         }
     }
 
@@ -174,7 +183,7 @@ void MasterSlave::passOnPackets()
         ModulePort *out_port = getOutPort(packet);
         if (!out_port)
             break;
-        rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 dequeue >> send_delay_list");
+        rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 dequeue >> send_delay_list");
         packet->setTargetPort(out_port);
         dequeue_list.removeAt(i--);
         send_delay_list.append(packet);
@@ -188,12 +197,12 @@ void MasterSlave::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
 
-        ModulePort* port = static_cast<ModulePort *>(packet->getTargetPort());
+        ModulePort *port = static_cast<ModulePort *>(packet->getTargetPort());
         if (!port) // 没有设置发送的端口，默认选第一个
-            port = static_cast<ModulePort*>(ports.first());
+            port = static_cast<ModulePort *>(ports.first());
         if (!port)
             break;
-        rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 send_delay_list >> port");
+        rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 send_delay_list >> port");
         port->prepareSendData(packet);
         send_delay_list.removeAt(i--);
     }
