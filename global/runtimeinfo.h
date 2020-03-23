@@ -40,7 +40,7 @@ public:
     void runningOut(QString s)
     {
         running_out.append(s);
-        if (log_filter.isEmpty() || s.contains(QRegExp(log_filter)))
+        if (log_filter.isEmpty() || s.contains(QRegExp(log_filter)) || s.contains("warning") || s.contains("error"))
             qDebug().noquote() << s;
     }
     

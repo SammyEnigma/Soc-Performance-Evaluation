@@ -43,7 +43,7 @@ void DRAMModule::clearData()
     {
         // 连接信号槽
         ModulePort *port = static_cast<ModulePort *>(p);
-        disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalOutPortReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
     }
 }
 

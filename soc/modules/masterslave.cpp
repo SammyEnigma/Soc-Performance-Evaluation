@@ -88,6 +88,7 @@ void MasterSlave::clearData()
     enqueue_list.clear();
     data_list.clear();
     dequeue_list.clear();
+    send_delay_list.clear();
     process_list.clear();
     ModuleBase::clearData();
 }

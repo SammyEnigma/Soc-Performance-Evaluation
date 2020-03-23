@@ -52,11 +52,13 @@ void ModuleCable::initData()
         });
 
         connect(from, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
+            rt->runningOut("from:" + from->getPortId() + " signalResponseSended " + packet->getID());
             response_list.append(packet);
             packet->setTargetPort(to);
             packet->resetDelay(getTransferDelay());
         });
         connect(to, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
+            rt->runningOut("to:" + from->getPortId() + " signalResponseSended " + packet->getID());
             response_list.append(packet);
             packet->setTargetPort(from);
             packet->resetDelay(getTransferDelay());

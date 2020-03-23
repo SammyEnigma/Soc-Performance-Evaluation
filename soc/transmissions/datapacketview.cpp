@@ -34,7 +34,7 @@ void DataPacketView::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QColor c = Qt::red;
-    if (packet != nullptr)
+    if (packet != nullptr) // 固定
     {
         QString text = packet->getTag();
         if (text.endsWith("1"))
@@ -52,6 +52,9 @@ void DataPacketView::paintEvent(QPaintEvent *)
         else if (text.endsWith("7"))
             c = QColor(102, 51, 204);
     }
+    // 特判
+    if (packet->getID() == "token_1")
+        c = Qt::red;
     painter.fillRect(0,0,width(),height(),c);
 }
 

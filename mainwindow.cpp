@@ -351,7 +351,7 @@ void MainWindow::on_actionSlower_triggered()
 void MainWindow::on_actionSet_Log_Filter_triggered()
 {
     bool ok;
-    QString text = QInputDialog::getText(this, "日志过滤", "请输入过滤词，仅显示包含过滤词的日志", QLineEdit::Normal, us->getStr("recent/log_filter", ""), &ok);
+    QString text = QInputDialog::getText(this, "日志过滤器", "请输入过滤内容，支持正则表达式", QLineEdit::Normal, us->getStr("recent/log_filter", ""), &ok);
     if (ok)
     {
         rt->log_filter = text;

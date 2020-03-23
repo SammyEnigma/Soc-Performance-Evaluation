@@ -108,10 +108,16 @@ void ModulePort::passOnPackets()
             emit signalOutPortReceived(packet);
             sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // the delay on the return of the Token
         }
-        else
+        else // 从这个端口出去
         {
             rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：发送至线");
-            emit signalOutPortToSend(packet);
+            sendData(packet, packet->getDataType());
+            /* if (packet->getDataType() == DATA_REQUEST)
+                emit signalOutPortToSend(packet);
+            else if (packet->getDataType() == DATA_RESPONSE)
+                emit signalResponseSended(packet);
+            else
+                sendData(packet, DATA_TOKEN); */
         }
     }
 
@@ -280,7 +286,7 @@ void ModulePort::slotDataReceived(DataPacket *packet)
     rt->runningOut("  " + getPortId() + ": 开始进port " + packet->getID());
     into_port_list.append(packet);
     packet->resetDelay(into_port_delay);
-//    emit signalDataReceived(this, packet); // TODO: 干掉这个信号（即增加switch的延迟）：之前写的是，如果是switch，则处理该信号；其余模块要么不理它，要么只计数
+//    emit signalDataReceived(this, packet);
 }
 
 void ModulePort::prepareSendData(DataPacket *packet)

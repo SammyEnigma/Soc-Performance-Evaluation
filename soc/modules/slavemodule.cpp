@@ -42,7 +42,12 @@ void SlaveModule::setDefaultDataList()
 
 void SlaveModule::passOnPackets()
 {
-    
+    // 设置成 response
+    foreach (DataPacket* packet, send_delay_list)
+    {
+        packet->setDataType(DATA_TYPE::DATA_RESPONSE);
+        rt->runningOut(getText() + " 设置 " + packet->getID() + " 为 response，并返回");
+    }
 
     MasterSlave::passOnPackets();
 }
