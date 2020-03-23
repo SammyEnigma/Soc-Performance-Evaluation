@@ -42,11 +42,14 @@ void SlaveModule::setDefaultDataList()
 
 void SlaveModule::passOnPackets()
 {
-    // 设置成 response
-    foreach (DataPacket* packet, send_delay_list)
+    // 如果只有一个端口，表示自己是最后一个module，则设置成 response
+    if (getPorts().size() == 1)
     {
-        packet->setDataType(DATA_TYPE::DATA_RESPONSE);
-        rt->runningOut(getText() + " 设置 " + packet->getID() + " 为 response，并返回");
+        foreach (DataPacket* packet, send_delay_list)
+        {
+            packet->setDataType(DATA_TYPE::DATA_RESPONSE);
+            rt->runningOut(getText() + " 设置 " + packet->getID() + " 为 response，并返回");
+        }
     }
 
     MasterSlave::passOnPackets();
