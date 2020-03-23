@@ -85,7 +85,9 @@ void MasterSlave::clearData()
         disconnect(port, SIGNAL(signalOutPortReceived(DataPacket *)), nullptr, nullptr);
     }
 
+    enqueue_list.clear();
     data_list.clear();
+    dequeue_list.clear();
     process_list.clear();
     ModuleBase::clearData();
 }
@@ -226,6 +228,7 @@ void MasterSlave::delayOneClock()
     foreach (DataPacket *packet, process_list + enqueue_list + dequeue_list + send_delay_list)
     {
         packet->delayToNext();
+        rt->runningOut2(getText() + " 中 " + packet->getID() + " 进入下一个Master/Slave延迟 " + packet->toString());
     }
 
     foreach (PortBase *p, ShapeBase::ports)

@@ -130,6 +130,8 @@ void MainWindow::initSystem()
 {
     FileUtil::ensureDirExist(rt->DATA_PATH);
     FileUtil::ensureDirExist(rt->SHAPE_PATH);
+
+    rt->log_filter = us->getStr("recent/log_filter", "");
 }
 
 /**

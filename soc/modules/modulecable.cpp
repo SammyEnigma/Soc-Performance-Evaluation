@@ -129,7 +129,7 @@ void ModuleCable::delayOneClock()
     foreach (DataPacket *packet, request_list + response_list)
     {
         packet->delayToNext();
-        rt->runningOut2(packet->getID() + " 进入下一个Cable延迟 " + packet->toString());
+        rt->runningOut2(getText() + " 中 " + packet->getID() + " 进入下一个Cable延迟 " + packet->toString());
     }
 
     updatePacketPos();

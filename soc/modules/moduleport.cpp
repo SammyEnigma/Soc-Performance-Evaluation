@@ -148,6 +148,7 @@ void ModulePort::delayOneClock()
     foreach (DataPacket *packet, send_update_delay_list + into_port_list + outo_port_list + receive_update_delay_list + return_delay_list)
     {
         packet->delayToNext();
+        rt->runningOut2(getPortId() + " 中 " + packet->getID() + " 进入下一个Port延迟 " + packet->toString());
     }
 
     nextBandwidthBuffer(); // Master发送、Slave出队列

@@ -206,6 +206,7 @@ void SwitchModule::delayOneClock()
     foreach (DataPacket* packet, request_queue + response_queue + picked_delay_list)
     {
         packet->delayToNext();
+        rt->runningOut2(getText() + " 中 " + packet->getID() + " 进入下一个Switch延迟 " + packet->toString());
     }
 
     foreach (PortBase* p, ports)
