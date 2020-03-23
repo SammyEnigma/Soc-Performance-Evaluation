@@ -29,7 +29,7 @@ void DRAMModule::initData()
     {
         // 连接信号槽
         ModulePort *port = static_cast<ModulePort *>(p);
-        connect(port, &ModulePort::signalDataReceived, this, [=](ModulePort *, DataPacket *){
+        connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *){
             token_receive_count++;
         });
     }
