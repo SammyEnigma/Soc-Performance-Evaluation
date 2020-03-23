@@ -80,7 +80,7 @@ signals:
     void signalOutPortReceived(DataPacket *packet);                // 队列延迟结束，进入父控件
     void signalOutPortToSend(DataPacket *packet);                  // 队列延迟结束，发送至cable
     void signalResponseSended(DataPacket *packet);                 // 处理结束后返回给某个端口（发送response）
-    void signalDataReceived(ModulePort *port, DataPacket *packet); // 收到信号的槽函数触发的接收信号，发送给父控件(Switch)
+//    void signalDataReceived(ModulePort *port, DataPacket *packet); // 收到信号的槽函数触发的接收信号，发送给父控件(Switch)
 
 public slots:
     void slotDataList() override;                      // 请求编辑数据列表

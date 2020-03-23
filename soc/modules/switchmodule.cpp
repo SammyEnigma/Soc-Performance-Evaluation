@@ -36,12 +36,15 @@ void SwitchModule::initData()
         if (p->getCable() == nullptr) // 没有连接线
             continue;
 
-        // 连接信号槽
+        // ==== 接收部分 ====
         ModulePort *port = static_cast<ModulePort *>(p);
         port->setRequestToQueue(false);
-        connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
+//        connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
+        connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet){
+            slotDataReceived(port, packet);
+        });
 
-        // ==== 发送部分（Master） ====
+        // ==== 发送部分 ====
         connect(port, &ModulePort::signalOutPortToSend, this, [=](DataPacket *packet) {
             ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
             if (cable == nullptr)
@@ -63,7 +66,8 @@ void SwitchModule::clearData()
     {
         // 连接信号槽
         ModulePort *port = static_cast<ModulePort *>(p);
-        disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
+//        disconnect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), nullptr, nullptr);
+        disconnect(port, SIGNAL(signalOutPortReceived(DataPacket *)), nullptr, nullptr);
         disconnect(port, SIGNAL(signalOutPortToSend(DataPacket *)), nullptr, nullptr);
     }
     foreach (SwitchPicker* picker, pickers)
