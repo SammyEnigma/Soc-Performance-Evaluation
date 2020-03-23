@@ -187,7 +187,7 @@ void MasterSlave::passOnPackets()
         packet->setTargetPort(out_port);
         dequeue_list.removeAt(i--);
         send_delay_list.append(packet);
-        packet->resetDelay(getDataValue("latency", 1).toInt());
+        packet->resetDelay(getDataValue("latency", 0).toInt());
     }
 
     // 延迟发送

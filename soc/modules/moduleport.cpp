@@ -247,6 +247,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     {
     case DATA_REQUEST:
         emit signalOutPortToSend(packet);
+        /* 理论上这里要把token-1，但是实际上为了方便判断，已经移动到了模块内部-1 */
         total_sended++;
         sended_count_in_this_frame++;
         if (begin_waited == 0)
