@@ -62,6 +62,7 @@ public:
 signals:
     void signalDelayFinished();
     void signalPosChanged(QPoint old_pos, QPoint new_pos);
+    void signalContentChanged();
     void signalDeleted();
 
 public slots:

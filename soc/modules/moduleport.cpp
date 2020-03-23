@@ -84,7 +84,7 @@ void ModulePort::passOnPackets()
     // ==== 发送部分（Master） ====
 
     // ==== 接收部分（Slave） ====
-    // Slave进队列（latency=1 clock）
+    // 进队列（into_port_delay clock）
     for (int i = 0; i < into_port_list.size(); i++)
     {
         DataPacket *packet = into_port_list.at(i);
@@ -95,21 +95,22 @@ void ModulePort::passOnPackets()
         packet->resetDelay(outo_port_delay);
     }
 
-    // Slave出队列（1/bandwidth clock）-->处理数据
+    // 出队列（outo_port_delay clock）
     for (int i = 0; i < outo_port_list.size(); i++)
     {
         DataPacket *packet = outo_port_list.at(i);
         if (!packet->isDelayFinished())
             continue;
         outo_port_list.removeAt(i--);
-        rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入模块内部");
         if (packet->getComePort() == this) // 是从当前这个端口进来的，则进入模块
         {
+            rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：模块内部");
             emit signalOutPortReceived(packet);
             sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // the delay on the return of the Token
         }
         else
         {
+            rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：发送至线");
             emit signalOutPortToSend(packet);
         }
     }
@@ -278,7 +279,7 @@ void ModulePort::slotDataReceived(DataPacket *packet)
     rt->runningOut("  " + getPortId() + ": 开始进port " + packet->getID());
     into_port_list.append(packet);
     packet->resetDelay(into_port_delay);
-    emit signalDataReceived(this, packet); // TODO: 干掉这个信号：如果是switch，则处理该信号；其余模块要么不理它，要么只计数
+    emit signalDataReceived(this, packet); // TODO: 干掉这个信号（即增加switch的延迟）：之前写的是，如果是switch，则处理该信号；其余模块要么不理它，要么只计数
 }
 
 void ModulePort::prepareSendData(DataPacket *packet)

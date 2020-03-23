@@ -11,6 +11,7 @@ DataPacketView::DataPacketView(DataPacket *packet, QWidget *parent) : QWidget(pa
 {
     Q_ASSERT(packet != nullptr);
     connect(packet, SIGNAL(signalPosChanged(QPoint, QPoint)), this, SLOT(updatePosition(QPoint, QPoint)));
+    connect(packet, SIGNAL(signalContentChanged()), this, SLOT(updateToolTip()));
     connect(packet, SIGNAL(signalDeleted()), this, SLOT(deleteLater()));
     connect(packet, &DataPacket::signalDeleted, this, [&]{
 //        packet = nullptr;
@@ -69,4 +70,16 @@ void DataPacketView::updatePosition(QPoint old_pos, QPoint new_pos)
     ani->setDuration(animation_duration);
 //    ani->setEasingCurve(QEasingCurve::InOutCubic);
     ani->start();
+}
+
+void DataPacketView::updateToolTip()
+{
+	if (!packet)
+    {
+        setToolTip(tr("没有 packet"));
+        return ;
+    }
+    QString s = packet->getID();
+    s += " " + packet->toString();
+    setToolTip(s);
 }

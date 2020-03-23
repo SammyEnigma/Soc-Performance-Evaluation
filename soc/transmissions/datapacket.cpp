@@ -34,6 +34,7 @@ void DataPacket::resetDelay(int max, bool ignore)
 {
     delay_step = (ignore ? -1 : 0);
     delay_max = max;
+    emit signalContentChanged();
 }
 
 /**
@@ -44,6 +45,7 @@ void DataPacket::delayToNext()
     delay_step++;
     if (delay_max >= 0 && delay_step >= delay_max)
         emit signalDelayFinished();
+    emit signalContentChanged();
 }
 
 /**

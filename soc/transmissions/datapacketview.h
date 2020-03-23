@@ -32,6 +32,7 @@ protected:
 
 private slots:
     void updatePosition(QPoint old_pos, QPoint new_pos);
+    void updateToolTip();
 
 private:
     DataPacket* packet;
