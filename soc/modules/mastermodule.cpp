@@ -48,7 +48,7 @@ void MasterModule::setDefaultDataList()
 void MasterModule::passOnPackets()
 {
     // 连接的对方有可接收的buffer时，Master开始发送
-    foreach (PortBase *p, ShapeBase::ports)
+    /*foreach (PortBase *p, ShapeBase::ports)
     {
         ModulePort *port = static_cast<ModulePort *>(p);
         ShapeBase *oppo = static_cast<ShapeBase *>(port->getOppositeShape());
@@ -58,7 +58,7 @@ void MasterModule::passOnPackets()
             if (oppo->getClass() != "IP"                              // Slave方向
                 && !data_list.isEmpty()                               // 有数据
                 && port->isBandwidthBufferFinished()                  // 有带宽
-                && port->anotherCanRecive(send_delay_list.size())) // 对方能接收
+                && port->anotherCanRecive()) // 对方能接收
             {
                 DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
                 if (packet->getComePort() == port)          // 这个就是进来的端口，不能传回去！
@@ -71,7 +71,7 @@ void MasterModule::passOnPackets()
                 emit signalTokenSendStarted(packet);
             }
         }
-    }
+    }*/
 
     MasterSlave::passOnPackets();
 }

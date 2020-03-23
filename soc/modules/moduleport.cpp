@@ -102,7 +102,7 @@ void ModulePort::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
         outo_port_list.removeAt(i--);
-        rt->runningOut(getPortId() + " 出来packet，进入模块内部");
+        rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入模块内部");
         if (packet->getComePort() == this) // 是从当前这个端口进来的，则进入模块
         {
             emit signalOutPortReceived(packet);
@@ -275,7 +275,7 @@ void ModulePort::slotDataReceived(DataPacket *packet)
         return;
     }
     // 开始进入模块
-    rt->runningOut("  " + getPortId() + ": 开始进队列 " + packet->getID());
+    rt->runningOut("  " + getPortId() + ": 开始进port " + packet->getID());
     into_port_list.append(packet);
     packet->resetDelay(into_port_delay);
     emit signalDataReceived(this, packet); // TODO: 干掉这个信号：如果是switch，则处理该信号；其余模块要么不理它，要么只计数
@@ -354,7 +354,7 @@ bool ModulePort::anotherCanReceiveAndDecrease(int cut)
     return true;
 }
 
-void ModulePort::increaseAnotherCanReceive()
+void ModulePort::anotherCanReceiveIncrease()
 {
     another_can_receive++;
 }

@@ -133,28 +133,30 @@ void MasterSlave::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
 
+        rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 enqueue >> data_list");
         enqueue_list.removeAt(i--);
         data_list.append(packet);
     }
 
     // 队列中的数据出来
-    // TODO: 分别计算 send_delay_list+dequeue_list 中 request 和 response 的数量，anotherCanReceive 中减掉
+    // TODO: 这个算法是错的。分别计算 send_delay_list+dequeue_list 中 request 和 response 的数量，anotherCanReceive 中减掉
     for (int i = 0; i < data_list.size(); i++)
     {
         DataPacket *packet = data_list.at(i);
         ModulePort *port = getOutPort(packet);
-        qDebug() << "遍历" << getText() << packet->getID();
         if (!port)
         {
             rt->runningOut(getText() + " 由于没有可发送的端口，无法发送 " + packet->getID());
             continue;
         }
-        qDebug() << port << port->anotherCanRecive(send_delay_list.size() + dequeue_list.size());
-        if (port->anotherCanRecive(send_delay_list.size() + dequeue_list.size()))
+        if (port->isBandwidthBufferFinished() && port->anotherCanRecive())
         {
+            rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 data_list >> dequeue");
             data_list.removeAt(i--);
             dequeue_list.append(packet);
             packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
+            port->resetBandwidthBuffer();
+            port->anotherCanReceiveAndDecrease(); // 在这里就把port的token减掉
         }
     }
 
@@ -169,6 +171,7 @@ void MasterSlave::passOnPackets()
         ModulePort *out_port = getOutPort(packet);
         if (!out_port)
             break;
+        rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 dequeue >> send_delay_list");
         packet->setTargetPort(out_port);
         dequeue_list.removeAt(i--);
         send_delay_list.append(packet);
@@ -187,6 +190,7 @@ void MasterSlave::passOnPackets()
             port = static_cast<ModulePort*>(ports.first());
         if (!port)
             break;
+        rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 send_delay_list >> port");
         port->prepareSendData(packet);
         send_delay_list.removeAt(i--);
     }

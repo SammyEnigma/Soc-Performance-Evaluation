@@ -57,7 +57,7 @@ public:
     int getReceiveToken();
     bool anotherCanRecive(int cut = 0);
     bool anotherCanReceiveAndDecrease(int cut = 0); // 判断这个端口能否发送，如果可以发送的话，就token--，并且返回true
-    void increaseAnotherCanReceive(); // 对方可以接收的token++
+    void anotherCanReceiveIncrease(); // 对方可以接收的token++
     int getToken();
     void setToken(int token);
 
