@@ -122,7 +122,6 @@ void ModulePort::passOnPackets()
     }
 
     // 收到对方token-1的信号后再延迟一段时间
-    // TODO: 这是什么
     for (int i = 0; i < receive_update_delay_list.size(); i++)
     {
         DataPacket *packet = receive_update_delay_list.at(i);
@@ -135,8 +134,7 @@ void ModulePort::passOnPackets()
         packet->deleteLater();
     }
 
-    // Slave pick queue 时 return token 给上一个模块，对方token + 1
-    // TODO: 这是什么
+    // pick queue 时 return token 给上一个模块的delay，对方token + 1
     for (int i = 0; i < return_delay_list.size(); i++)
     {
         DataPacket *packet = return_delay_list.at(i);

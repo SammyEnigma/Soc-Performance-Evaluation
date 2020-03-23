@@ -29,6 +29,10 @@ private slots:
 
     void on_lineEdit_2_editingFinished();
 
+    void on_spinBox_valueChanged(int arg1);
+
+    void on_spinBox_7_valueChanged(int arg1);
+
 private:
     Ui::PortDataDialog *ui;
     ModulePort* port;

@@ -23,6 +23,8 @@ PortDataDialog::PortDataDialog(ModulePort *port) :
     ui->spinBox_4->setValue(port->send_update_delay);
     ui->spinBox_5->setValue(port->receive_update_delay);
     ui->spinBox_6->setValue(port->token);
+    ui->spinBox->setValue(port->into_port_delay);
+    ui->spinBox_7->setValue(port->outo_port_delay);
 }
 
 PortDataDialog::~PortDataDialog()
@@ -58,4 +60,14 @@ void PortDataDialog::on_spinBox_6_valueChanged(int)
 void PortDataDialog::on_lineEdit_2_editingFinished()
 {
     port->bandwidth.loadString(ui->lineEdit_2->text());
+}
+
+void PortDataDialog::on_spinBox_valueChanged(int)
+{
+    port->into_port_delay = ui->spinBox->value();
+}
+
+void PortDataDialog::on_spinBox_7_valueChanged(int)
+{
+    port->outo_port_delay = ui->spinBox_7->value();
 }
