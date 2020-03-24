@@ -102,9 +102,9 @@ private:
     int latency;              // the delay of the sending the request/response
     int into_port_delay;      // 进入port的delay
     int outo_port_delay;      // 从port出去的delay
-    int return_delay;         // the delay on the return of the Token
-    int send_update_delay;    // 发送时自己buffer-1的延迟
-    int receive_update_delay; // 接收到token时自己buffer+1的延迟
+    int return_delay;         // the delay on the return of the Token-Picker_To_Token_Delay
+    int send_update_delay;    // 发送时自己buffer-1的延迟-Token-1_Delay
+    int receive_update_delay; // 接收到token时自己buffer+1的延迟-RCV_To_Token_Dalay
     int token;                // 自己可以接收几个（port内部和模块内部的区别）
 
     // 开关配置

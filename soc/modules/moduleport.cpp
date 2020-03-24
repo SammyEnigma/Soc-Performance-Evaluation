@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-16 18:12:32
- * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 14:11:02
+ * @LastEditors: XyLan
+ * @LastEditTime: 2020-03-24 10:19:55
  * @Description: 模块端口，在端口基类PortBase的基础上添加了数据部分
  */
 #include "moduleport.h"
@@ -123,7 +123,8 @@ void ModulePort::passOnPackets()
         rt->need_passOn_this_clock = true;
     }
 
-    // 收到对方token-1的信号后再延迟一段时间
+    // 收到对方token-1的信号后再延迟一段时间(自己token+1)
+    // delay4:RCV_To_Token_Delay
     for (int i = 0; i < receive_update_delay_list.size(); i++)
     {
         DataPacket *packet = receive_update_delay_list.at(i);
@@ -138,10 +139,10 @@ void ModulePort::passOnPackets()
     }
 
     // pick queue 时 return token 给上一个模块的delay，对方token + 1
+    // Slave pick queue 时 return token 给 Master
     for (int i = 0; i < return_delay_list.size(); i++)
     {
         DataPacket *packet = return_delay_list.at(i);
-        if (!packet->isDelayFinished())
             continue;
 
         rt->runningOut(getPortId() + "的return delay结束，发出token:" + packet->getID());
@@ -330,7 +331,7 @@ bool ModulePort::isBandwidthBufferFinished()
 
 void ModulePort::resetBandwidthBuffer()
 {
-    if (bandwidth.getNumerator() != 0)
+    if (bandwidth.getNumerator() != 0)//如果分子不等于0，那么输出分母/分子
         bandwidth.resetBuffer(bandwidth.getDenominator() * rt->standard_frame / bandwidth.getNumerator());
     else
         bandwidth.resetBuffer(0);

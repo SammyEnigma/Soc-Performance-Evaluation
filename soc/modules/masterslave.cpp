@@ -22,6 +22,7 @@ void MasterSlave::initData()
             rt->runningOut(port->getPortId() + ".signalOutPortToSend槽，发送" + packet->getID() + "至Cable，现对方能接收" + QString::number(port->another_can_receive - send_delay_list.size()) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
+            //delay1:Fix&Send_To_Receive
             packet->resetDelay(cable->getTransferDelay());
         });
 
@@ -34,6 +35,7 @@ void MasterSlave::initData()
             }
 
             // 接收到数据，进入 queue 的延迟
+            //delay2:Input_To_Queue_Delay
             packet->resetDelay(getDataValue("enqueue_delay", 1).toInt());
             enqueue_list.append(packet);
 
@@ -154,12 +156,13 @@ void MasterSlave::passOnPackets()
             continue;
         }
         if (port->isBandwidthBufferFinished() && port->anotherCanRecive())
-        {
-            rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 data_list >> dequeue");
-            data_list.removeAt(i--);
-            dequeue_list.append(packet);
-            packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
-            port->resetBandwidthBuffer();
+        {//bandwidth还可以发，这个port连着的模块可以接受
+            rt->runningOut("  "+getText()+" 中 "+packet->getID() + " 从 data_list >> dequeue");
+            data_list.removeAt(i--);//下一个数据
+            dequeue_list.append(packet);//出队列
+            //delay3:Queue_To_Out_Delay
+            packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());//出队列延迟
+            port->resetBandwidthBuffer();//port重置buffer
             port->anotherCanReceiveAndDecrease(); // 在这里就把port的token减掉
 
             if (getClass() == "IP" && packet->getDataType() == DATA_REQUEST) // IP发送的request不需要返回给后一个模块token
