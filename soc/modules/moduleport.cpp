@@ -121,8 +121,8 @@ void ModulePort::passOnPackets()
         }
     }
 
-    // 收到对方token-1的信号后再延迟一段时间
-    // TODO: 这是什么
+    // 收到对方token-1的信号后再延迟一段时间(自己token+1)
+    // delay4:RCV_To_Token_Delay
     for (int i = 0; i < receive_update_delay_list.size(); i++)
     {
         DataPacket *packet = receive_update_delay_list.at(i);
@@ -136,7 +136,7 @@ void ModulePort::passOnPackets()
     }
 
     // Slave pick queue 时 return token 给 Master
-    // TODO: 这是什么
+    // TODO: 确定picker_to_token_delay等于delay_token-1 + send_to_rcv + input_to_queue_delay + fix(1)
     for (int i = 0; i < return_delay_list.size(); i++)
     {
         DataPacket *packet = return_delay_list.at(i);
@@ -327,7 +327,7 @@ bool ModulePort::isBandwidthBufferFinished()
 
 void ModulePort::resetBandwidthBuffer()
 {
-    if (bandwidth.getNumerator() != 0)
+    if (bandwidth.getNumerator() != 0)//如果分子不等于0，那么输出分母/分子
         bandwidth.resetBuffer(bandwidth.getDenominator() * rt->standard_frame / bandwidth.getNumerator());
     else
         bandwidth.resetBuffer(0);
