@@ -88,26 +88,31 @@ void FlowControlAutomatic::passOneClock()
 {
     FlowControlBase::passOneClock();
 
-    foreach (ShapeBase* shape, shapes)
-    {
-        QString _class = shape->getClass();
-        QString _text = shape->getText();
-        ModuleBase *module = static_cast<ModuleBase *>(shape);
-        
-        // 定期创建数据，保证IP有东西可以发
-        static int create_count = 0;
-        if (module->getData("create_token")->value().toBool())
+    // 如果这个clock一直有数据包在传送，反复循环
+    // 直到所有数据包都已经延迟结束
+    do {
+        rt->need_passOn_this_clock = false;
+        foreach (ShapeBase *shape, shapes)
         {
-            MasterSlave *IP = static_cast<MasterSlave *>(shape);
-            while (IP->data_list.size() < 5 && create_count < 1)
+            QString _class = shape->getClass();
+            QString _text = shape->getText();
+            ModuleBase *module = static_cast<ModuleBase *>(shape);
+
+            // 定期创建数据，保证IP有东西可以发
+            static int create_count = 0;
+            if (module->getData("create_token")->value().toBool())
             {
-                rt->runningOut(IP->getText() + " 凭空创建数据以便于发送");
-                IP->data_list.append(createToken(IP->getText()));
-                create_count++;
+                MasterSlave *IP = static_cast<MasterSlave *>(shape);
+                while (IP->data_list.size() < 5 && create_count < 1)
+                {
+                    rt->runningOut(IP->getText() + " 凭空创建数据以便于发送");
+                    IP->data_list.append(createToken(IP->getText()));
+                    create_count++;
+                }
             }
+            module->passOnPackets();
         }
-        module->passOnPackets();
-    }
+    } while (rt->need_passOn_this_clock);
 
     foreach (ShapeBase* shape, shapes)
     {

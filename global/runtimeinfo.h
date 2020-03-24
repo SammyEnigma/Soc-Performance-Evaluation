@@ -35,6 +35,8 @@ public:
         standard_frame = 1;
         total_clock = total_frame = 0;
         frq_period_length = 16;
+        
+        need_passOn_this_clock = false;
     }
 
     void runningOut(QString s)
@@ -64,6 +66,8 @@ public:
     int total_clock;    // 从运行开始到现在经过了几个clock（向下取整）
     int total_frame;    // 经过了几个frame
     int frq_period_length; // 用来计算频率的时间段的长度
+    
+    bool need_passOn_this_clock;
 };
 
 #endif // RUNTIMEINFO_H

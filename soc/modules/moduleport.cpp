@@ -93,6 +93,7 @@ void ModulePort::passOnPackets()
         into_port_list.removeAt(i--);
         outo_port_list.append(packet);
         packet->resetDelay(outo_port_delay);
+        rt->need_passOn_this_clock = true;
     }
 
     // 出队列（outo_port_delay clock）
@@ -119,6 +120,7 @@ void ModulePort::passOnPackets()
             else
                 sendData(packet, DATA_TOKEN); */
         }
+        rt->need_passOn_this_clock = true;
     }
 
     // 收到对方token-1的信号后再延迟一段时间
@@ -132,6 +134,7 @@ void ModulePort::passOnPackets()
         rt->runningOut(getPortId() + "接收token:" + packet->getID() + " 的update延迟结束，对方能接受：" + QString::number(another_can_receive) + "+1");
         another_can_receive++;
         packet->deleteLater();
+        rt->need_passOn_this_clock = true;
     }
 
     // pick queue 时 return token 给上一个模块的delay，对方token + 1
@@ -144,6 +147,7 @@ void ModulePort::passOnPackets()
         rt->runningOut(getPortId() + "的return delay结束，发出token:" + packet->getID());
         return_delay_list.removeAt(i--);
         sendData(nullptr, DATA_TOKEN);
+        rt->need_passOn_this_clock = true;
     }
 }
 

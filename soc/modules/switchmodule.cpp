@@ -134,6 +134,7 @@ void SwitchModule::passOnPackets()
                     from_port->sendDequeueTokenToComeModule(new DataPacket());
                     break;
                 }
+                rt->need_passOn_this_clock = true;
             }
         }
         else
@@ -182,6 +183,7 @@ void SwitchModule::passOnPackets()
                         port->sendDequeueTokenToComeModule(new DataPacket());
                         break;
                     }
+                    rt->need_passOn_this_clock = true;
                 }
             }
         }
@@ -197,6 +199,7 @@ void SwitchModule::passOnPackets()
         ModulePort* port = static_cast<ModulePort*>(packet->getTargetPort());
         packet->resetDelay(port->getCable()->getData("delay")->i());
         port->sendData(packet, packet->getDataType());
+        rt->need_passOn_this_clock = true;
     }
 
     foreach (PortBase* p, ports)

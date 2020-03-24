@@ -139,6 +139,7 @@ void MasterSlave::passOnPackets()
         rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 enqueue >> data_list");
         enqueue_list.removeAt(i--);
         data_list.append(packet);
+        rt->need_passOn_this_clock = true;
     }
 
     // 队列中的数据出来
@@ -169,6 +170,7 @@ void MasterSlave::passOnPackets()
                 if (port)
                     port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
             }
+            rt->need_passOn_this_clock = true;
         }
     }
 
@@ -188,6 +190,7 @@ void MasterSlave::passOnPackets()
         dequeue_list.removeAt(i--);
         send_delay_list.append(packet);
         packet->resetDelay(getDataValue("latency", 0).toInt());
+        rt->need_passOn_this_clock = true;
     }
 
     // 延迟发送
@@ -205,6 +208,7 @@ void MasterSlave::passOnPackets()
         rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 send_delay_list >> port");
         port->prepareSendData(packet);
         send_delay_list.removeAt(i--);
+        rt->need_passOn_this_clock = true;
     }
 
     // 模块内处理（Slave）
@@ -230,6 +234,7 @@ void MasterSlave::passOnPackets()
             process_list.removeAt(i--);
             mp->sendData(packet, DATA_RESPONSE);
         }
+        rt->need_passOn_this_clock = true;
     }
 }
 
