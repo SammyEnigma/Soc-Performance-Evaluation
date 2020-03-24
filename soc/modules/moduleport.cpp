@@ -366,16 +366,6 @@ bool ModulePort::anotherCanRecive(int cut)
     return another_can_receive - send_update_delay_list.size() > cut;
 }
 
-bool ModulePort::anotherCanReceiveAndDecrease(int cut)
-{
-    if (another_can_receive <= cut)
-        return false;
-    
-    // another_can_receive--;
-    // send_update_delay_list.append(new DataPacket(send_update_delay));
-    return true;
-}
-
 void ModulePort::anotherCanReceiveIncrease()
 {
     another_can_receive++;
