@@ -129,6 +129,7 @@ void ModulePort::passOnPackets()
         DataPacket *packet = send_update_delay_list.at(i);
         if (!packet->isDelayFinished())
             continue;
+        rt->runningOut(getPortId() + " send token-1 延迟结束，当前token = " + QString::number(another_can_receive) + "-1");
         another_can_receive--;
         send_update_delay_list.removeAt(i--);
     }

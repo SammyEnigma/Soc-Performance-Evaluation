@@ -40,51 +40,29 @@ void SlaveModule::setDefaultDataList()
     custom_data_list.append(new CustomDataType("process_delay", 3, 3));
 }
 
-void SlaveModule::passOnPackets()
+void SlaveModule::changeRequestsToResponse()
 {
-    // 如果只有一个端口，表示自己是最后一个module，则设置成 response
-    if (getPorts().size() == 1)
+    if (ports.size() == 1)
     {
-        foreach (DataPacket* packet, send_delay_list + dequeue_list)
+        foreach (DataPacket *packet, send_delay_list)
         {
             if (packet->getDataType() == DATA_RESPONSE)
                 continue;
             packet->setDataType(DATA_TYPE::DATA_RESPONSE);
+            packet->setComePort(nullptr);
             rt->runningOut(getText() + " 设置 " + packet->getID() + " 为 response，并返回");
         }
     }
+}
 
+void SlaveModule::passOnPackets()
+{
     MasterSlave::passOnPackets();
 }
 
 void SlaveModule::updatePacketPos()
 {
-    if (getPorts().size() == 0)
-        return;
-    QFontMetrics fm(this->font());
-    int height = fm.lineSpacing();
-
-    QPoint pos = this->pos() + QPoint(4, height*3 + 4);
-    foreach (DataPacket *packet, static_cast<ModulePort *>(getPorts().first())->into_port_list)
-    {
-        packet->setDrawPos(pos);
-    }
-
-    int h = height*3+4;
-    foreach (DataPacket *packet, static_cast<ModulePort *>(getPorts().first())->outo_port_list)
-    {
-        pos = this->pos() + QPoint(width() / 2, h);
-        h += 4 + PACKET_SIZE;
-        packet->setDrawPos(pos);
-    }
-
-    h = height*3+4;
-    foreach (DataPacket *packet, process_list)
-    {
-        pos = this->pos() + QPoint(width() - 4, h);
-        h += 4 + PACKET_SIZE;
-        packet->setDrawPos(pos);
-    }
+    return MasterSlave::updatePacketPos();
 }
 
 void SlaveModule::paintEvent(QPaintEvent *event)
