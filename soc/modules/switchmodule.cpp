@@ -38,7 +38,6 @@ void SwitchModule::initData()
 
         // ==== 接收部分 ====
         ModulePort *port = static_cast<ModulePort *>(p);
-        port->setRequestToQueue(false);
 //        connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
         connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet){
             slotDataReceived(port, packet);

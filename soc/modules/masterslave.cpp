@@ -27,6 +27,14 @@ void MasterSlave::initData()
 
         // ==== 接收部分（Slave） ====
         connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet) {
+            // 如果是IP收到了response，则走完一个完整的流程，计算latency，然后丢弃这个数据包
+            if (getClass() == "IP" && packet->getDataType() == DATA_RESPONSE)
+            {
+                rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = 待计算");
+                packet->deleteLater();
+                return ;
+            }
+            
             if (data_list.size() >= getToken()) // 已经满了，不让发了
             {
                 rt->runningOut(getText() + " data queue 已经满了，无法收取更多");
@@ -36,38 +44,6 @@ void MasterSlave::initData()
             // 接收到数据，进入 queue 的延迟
             packet->resetDelay(getDataValue("enqueue_delay", 1).toInt());
             enqueue_list.append(packet);
-
-            /* if (ports.size() <= 1) // 只有一个端口，收到后往回发
-            {
-                process_list.append(packet);
-                packet->resetDelay(getProcessDelay());
-                rt->runningOut(port->getPortId() + "接收到数据 " + packet->getID() + "，进入处理环节");
-            }
-            else // 多个端口，向另一个端口发送
-            {
-                ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
-                if (mp == port && ports.size() > 1) // 使用另一个端口
-                    mp = static_cast<ModulePort *>(ports.at(1));
-                if (getClass() == "Master" && packet->getDataType() != DATA_RESPONSE
-                    && port->getOppositeShape() && static_cast<ShapeBase*>(port->getOppositeShape())->getClass() == "IP") // Master存到data_list里面
-                {
-                    packet->setComePort(port);
-                    packet->setTargetPort(mp);
-                    packet->resetDelay(0);
-                    data_list.append(packet); // 等待自己发送
-                    rt->runningOut(getText() + "收到" + port->getPortId() + "的数据 " + packet->getID() + "，放入 data_list 中(当前数量：" + QString::number(data_list.size()) + ")");
-                }
-                else if (mp->anotherCanRecive()) // Slave或者其他的端口出来了，直接继续下发（不过要确保能发，否则就只能丢弃了？）
-                {
-                    mp->sendData(packet, packet->getDataType());
-                    rt->runningOut(getText() + "收到" + port->getPortId() + "数据 " + packet->getID() + "，开始下发");
-                }
-                else
-                {
-                    // packet->deleteLater();
-                    rt->runningOut("!!!" + getText() + " " + port->getPortId() + "收到数据 " + packet->getID() + "，但是无法发送");
-                }
-            } */
         });
     }
 }

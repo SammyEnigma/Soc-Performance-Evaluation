@@ -30,14 +30,6 @@ MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
 void MasterModule::initData()
 {
     MasterSlave::initData();
-
-    if (ports.size() <= 1)
-    {
-        foreach (PortBase *port, ShapeBase::ports)
-        {
-            static_cast<ModulePort *>(port)->setDiscardResponse(true); // 不处理response
-        }
-    }
 }
 
 void MasterModule::setDefaultDataList()

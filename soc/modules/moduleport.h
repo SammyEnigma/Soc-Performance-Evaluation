@@ -60,9 +60,6 @@ public:
     int getToken();
     void setToken(int token);
 
-    void setRequestToQueue(bool c = false); // 是否进入模块内部的队列（即进出队列的延迟）
-    void setDiscardResponse(bool d = true);
-
     int getTotalSended();
     int getTotalReceived();
     int getBeginWaited();
@@ -107,8 +104,8 @@ private:
     int token;                // 自己可以接收几个（port内部和模块内部的区别）
 
     // 开关配置
-    bool request_to_queue; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列(switch)
-    bool discard_response; // Master的port收到response，没有实际作用，丢弃数据包
+    // bool request_to_queue; // 收到数据后是否进入port内部的队列（默认true），还是模块内部的队列(switch)
+    // bool discard_response; // Master的port收到response，没有实际作用，丢弃数据包
 
     // 运行统计
     int total_sended;               // 运行到现在总共发送多少request

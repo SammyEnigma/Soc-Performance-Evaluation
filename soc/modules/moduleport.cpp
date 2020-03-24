@@ -12,7 +12,7 @@ ModulePort::ModulePort(QWidget *parent)
       another_can_receive(0),
       bandwidth(1),
       latency(1), into_port_delay(0), outo_port_delay(0),
-      return_delay(0), request_to_queue(true), discard_response(false),
+      return_delay(0), 
       send_update_delay(0), receive_update_delay(0), token(1),
       total_sended(0), total_received(0), begin_waited(0)
 {
@@ -288,13 +288,7 @@ void ModulePort::slotDataReceived(DataPacket *packet)
         begin_waited = rt->total_frame;
 
     packet->setComePort(this);                                      // 出port后，如果 come_port == this_port，则判定为进入
-    if (discard_response && packet->getDataType() == DATA_RESPONSE) // 无视response，IP收到后直接删掉（当做处理掉）
-    {
-        rt->runningOut("  " + getPortId() + ": Master 不进行处理 response");
-        packet->deleteLater();
-        sendDequeueTokenToComeModule(new DataPacket()); // 让发送方token+1
-        return;
-    }
+    
     // 开始进入模块
     rt->runningOut("  " + getPortId() + ": 开始进port " + packet->getID());
     into_port_list.append(packet);
@@ -381,11 +375,6 @@ void ModulePort::setToken(int token)
     this->token = token;
 }
 
-void ModulePort::setRequestToQueue(bool c)
-{
-    request_to_queue = c;
-}
-
 int ModulePort::getTotalSended()
 {
     return total_sended;
@@ -399,11 +388,6 @@ int ModulePort::getTotalReceived()
 int ModulePort::getBeginWaited()
 {
     return begin_waited;
-}
-
-void ModulePort::setDiscardResponse(bool d)
-{
-    discard_response = d;
 }
 
 double ModulePort::getLiveFrequence()
