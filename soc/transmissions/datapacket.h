@@ -61,6 +61,8 @@ public:
 
     void setDataType(DATA_TYPE type);
     DATA_TYPE getDataType();
+    bool isRequest();
+    bool isResponse();
 
 signals:
     void signalDelayFinished();
