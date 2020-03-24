@@ -44,3 +44,4 @@ GTAGS
 *.Release
 Makefile
 *.opt
+.history/

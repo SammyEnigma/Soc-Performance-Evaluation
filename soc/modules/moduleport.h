@@ -112,7 +112,9 @@ private:
     int total_received;             // 运行到现在总共收到request
     int begin_waited;               // 一开始运行的等待时间 (注意：按帧算，不是clock。clock=begin_waited/rt->standar_frame。在standar_frame=1(即没有1clock发多个时)时两者相等)
     int sended_count_in_this_frame; // 每一帧发送的数量，默认为0
+    int received_count_in_this_frame; // 每一帧收到的数量，默认为0
     QQueue<int> frq_queue;          // 运行的频率实时计算。按frame来，如果当前frame未发送，则传入一个0，有发送则传入一个1；计算方式为：frq=sum(queue.items)/queue.length
+    QQueue<int> frq2_queue;
 };
 
 #endif // MODULEPORT_H

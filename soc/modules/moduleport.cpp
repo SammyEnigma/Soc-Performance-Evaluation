@@ -48,6 +48,7 @@ void ModulePort::clearData()
     send_update_delay_list.clear();
     bandwidth.resetBuffer();
     frq_queue.clear();
+    frq2_queue.clear();
     total_sended = total_received = begin_waited = 0;
 }
 
@@ -68,6 +69,7 @@ QString ModulePort::getShowedString(QString split)
 void ModulePort::initOneClock()
 {
     sended_count_in_this_frame = 0;
+    received_count_in_this_frame = 0;
 }
 
 void ModulePort::uninitOneClock()
@@ -75,8 +77,10 @@ void ModulePort::uninitOneClock()
     frq_queue.enqueue(sended_count_in_this_frame);
     if (frq_queue.length() > rt->frq_period_length)
         frq_queue.dequeue();
-    //    if (std::accumulate(frq_queue.begin(), frq_queue.end(), 0) > 0)
-    //        qDebug() << "-----port：" << std::accumulate(frq_queue.begin(), frq_queue.end(), 0) << frq_queue;
+    
+    frq2_queue.enqueue(received_count_in_this_frame);
+    if (frq2_queue.length() > rt->frq_period_length)
+        frq2_queue.dequeue();
 }
 
 void ModulePort::passOnPackets()
@@ -257,16 +261,18 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     {
     case DATA_REQUEST:
         emit signalOutPortToSend(packet);
-        /* 理论上这里要把token-1，但是实际上为了方便判断，已经移动到了模块内部-1 */
+        send_update_delay_list.append(new DataPacket(send_update_delay));
+        
         total_sended++;
         sended_count_in_this_frame++;
         if (begin_waited == 0)
             begin_waited = rt->total_frame;
-        send_update_delay_list.append(new DataPacket(send_update_delay));
         break;
     case DATA_RESPONSE:
         emit signalResponseSended(packet);
         send_update_delay_list.append(new DataPacket(send_update_delay));
+        
+        sended_count_in_this_frame++;
         break;
     case DATA_TOKEN:
         emit signalDequeueTokenDelayFinished();
@@ -284,6 +290,7 @@ void ModulePort::slotDataReceived(DataPacket *packet)
         total_received++;
     if (begin_waited == 0)
         begin_waited = rt->total_frame;
+    received_count_in_this_frame++;
 
     packet->setComePort(this);                                      // 出port后，如果 come_port == this_port，则判定为进入
     
@@ -390,7 +397,9 @@ int ModulePort::getBeginWaited()
 
 double ModulePort::getLiveFrequence()
 {
-    if (!frq_queue.size())
+    if (!frq_queue.size() && !frq2_queue.size())
         return 0.0;
-    return std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
+    double frq1 = std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
+    double frq2 = std::accumulate(frq2_queue.begin(), frq2_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
+    return qMax(frq1, frq2);
 }
