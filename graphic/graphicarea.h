@@ -115,6 +115,7 @@ public slots:
     void slotShowData();
     
     void slotWatch();
+//    void slotWatchClock();
     void slotWatchPort(WatchModule* watch);
     void slotWatchPortID(WatchModule* watch, QString portID);
     void slotWatchModule(WatchModule* watch);

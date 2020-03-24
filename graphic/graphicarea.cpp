@@ -960,6 +960,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         connect(watch, SIGNAL(signalWatchModule(WatchModule*)), this, SLOT(slotWatchModule(WatchModule*)));
         connect(watch, SIGNAL(signalWatchModuleID(WatchModule*, QString)), this, SLOT(slotWatchModuleID(WatchModule*, QString)));
         connect(watch,SIGNAL(signalWatchFrequence(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
+        connect(watch,SIGNAL(signalWatchClock(WatchModule*)), this,SLOT(slotWatchPort(WatchModule*)));
     }
     else if(shape->getClass() == "ModulePanel")
     {
@@ -1033,6 +1034,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     QAction *paste_action = new QAction("Paste", this);
     QAction *delete_action = new QAction("Delete", this);
     QAction *watch_action = new QAction("Watch", this);
+    //   QAction *watch_clock_action = new QAction("Watch Clock", this);
     //  QAction *show_data_action = new QAction("Show Data", this);
 
     menu->addAction(property_action);
@@ -1046,6 +1048,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     menu->addAction(delete_action);
     // menu->addAction(show_data_action);
     menu->addAction(watch_action);
+    // menu->addAction(watch_clock_action);
 
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
@@ -1057,6 +1060,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         add_port_action->setEnabled(false);
         watch_action->setEnabled(false);
         //show_data_action->setEnabled(false);
+       // watch_clock_action->setEnabled(false);
     }
     // 如果选中了多个
     else if (selected_shapes.size() > 1)
@@ -1067,6 +1071,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         copy_action->setText(copy_action->text() + " [multi]");
         delete_action->setText(delete_action->text() + " [multi]");
         watch_action->setText(watch_action->text() + "[multi]");
+       // watch_clock_action->setText(watch_clock_action->text() + "[multi]");
         //show_data_action->setText(show_data_action->text() + " [multi]");
     }
     else // 选中了一个
@@ -1108,6 +1113,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     connect(data_action, &QAction::triggered, this, &GraphicArea::slotShapeData);
     connect(watch_action, &QAction::triggered, this, &GraphicArea::slotWatch);
     //connect(show_data_action, &QAction::triggered, this, &GraphicArea::slotShowData);
+    //connect(watch_clock_action, &QAction::triggered, this, &GraphicArea::slotWatchClock);
 
     connect(select_all_action, &QAction::triggered, this, &GraphicArea::actionSelectAll);
     connect(copy_action, &QAction::triggered, this, &GraphicArea::actionCopy);
@@ -1309,6 +1315,29 @@ void GraphicArea::slotWatch()
 
 
 }
+
+/**
+  *模块右键菜单clock监控
+  *监控选中模块
+*/
+/*void GraphicArea::slotWatchClock()
+{
+    log("监控模块clock");
+    ShapeBase* temp = new WatchModule(this);
+    foreach(ShapeBase* shape, selected_shapes)
+    {//遍历所有选择shape
+        //为模块添加监视控件
+        ModuleBase* mb = static_cast<ModuleBase *>(shape);
+        QPoint pos = shape->geometry().center();
+        ShapeBase* new_watch = insertShapeByType(temp, pos);
+        if(!new_watch)
+            continue;
+        //设置监控连接
+        static_cast<WatchModule*>(new_watch)->setTarget(mb);
+    }
+    temp->deleteLater();
+
+}*/
 
 /**
  * 在监视模块上监控一个端口的数值

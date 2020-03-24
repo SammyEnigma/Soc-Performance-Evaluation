@@ -99,6 +99,7 @@ QList<QAction*> WatchModule::addinMenuActions()
     QAction* watch_module_action = new QAction("watch module");
     QAction* watch_system_action = new QAction("watch system");
     QAction* watch_frq_action = new QAction("watch frequence");
+    QAction* watch_clock_action = new QAction("watch clock");
     
     connect(watch_port_action, &QAction::triggered, this, [=]{
         log("插入端口监控");
@@ -125,7 +126,14 @@ QList<QAction*> WatchModule::addinMenuActions()
 
     });
 
-    return QList<QAction*>{watch_port_action, watch_module_action, watch_system_action, watch_frq_action};
+    connect(watch_clock_action, &QAction::triggered, this, [=]
+    {
+       log("插入时钟周期监控");
+       watch_type = WATCH_CLOCK;
+       emit signalWatchClock(this);
+    });
+
+    return QList<QAction*>{watch_port_action, watch_module_action, watch_system_action, watch_frq_action, watch_clock_action};
 }
 
 void WatchModule::paintEvent(QPaintEvent *event)
@@ -265,6 +273,16 @@ void WatchModule::paintEvent(QPaintEvent *event)
         //painter.setFont(bold_font);
         painter.setFont(normal_font);
         painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
+    }
+    else if(watch_type == WATCH_CLOCK)
+    {
+        //painter.setFont(bold_font);
+        painter.setFont(big_font);
+        painter.setPen(BandWithColor);
+        painter.drawText(left, height * line++, target_port->getBandwidth());
+        //painter.setFont(bold_font);
+        painter.setFont(normal_font);
+        painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz"/*+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte"*/);
     }
     else
     {

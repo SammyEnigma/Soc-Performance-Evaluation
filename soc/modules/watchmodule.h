@@ -18,7 +18,8 @@ public:
     enum WatchType {
         WATCH_CUSTOM,//模块和端口
         WATCH_SYSTEM,//全局
-        WATCH_FREQUENCE//频率
+        WATCH_FREQUENCE,//频率
+        WATCH_CLOCK//时钟周期
     };
 
     void setTarget(ModulePort* mp);
@@ -42,6 +43,7 @@ signals:
     void signalWatchModule(WatchModule* watch);
     void signalWatchModuleID(WatchModule* watch, QString text);
     void signalWatchFrequence(WatchModule* watch);
+    void signalWatchClock(WatchModule* watch);
 
 public slots:
     virtual void passOnPackets() override {} // 1、queue中packet延迟满后，传入到下一个queue
