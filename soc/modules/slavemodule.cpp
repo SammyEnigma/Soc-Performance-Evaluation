@@ -45,8 +45,10 @@ void SlaveModule::passOnPackets()
     // 如果只有一个端口，表示自己是最后一个module，则设置成 response
     if (getPorts().size() == 1)
     {
-        foreach (DataPacket* packet, send_delay_list)
+        foreach (DataPacket* packet, send_delay_list + dequeue_list)
         {
+            if (packet->getDataType() == DATA_RESPONSE)
+                continue;
             packet->setDataType(DATA_TYPE::DATA_RESPONSE);
             rt->runningOut(getText() + " 设置 " + packet->getID() + " 为 response，并返回");
         }

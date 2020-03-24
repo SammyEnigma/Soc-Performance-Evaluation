@@ -42,6 +42,9 @@ public:
     
     void setID(QString id);
     QString getID();
+    
+    void setFirstPickedCLock(int frame);
+    int getFirstPickedClock();
 
     QString toString();
     QString getTag();
@@ -75,6 +78,7 @@ protected:
     DataFormat data; // 数据（复杂格式）
     char par;        // 忘了是什么了
     DATA_TYPE data_type; // 数据类型：request/response/token
+    int first_picked_clock; // 第一次发送的clock，用来计算最终回去后经过了多久的时间（latency）
     
     PortBase* come_port;   // 来的端口
     PortBase* target_port; // 要发送的端口方向

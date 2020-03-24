@@ -22,7 +22,6 @@ void MasterSlave::initData()
             rt->runningOut(port->getPortId() + ".signalOutPortToSend槽，发送" + packet->getID() + "至Cable，现对方能接收" + QString::number(port->another_can_receive - send_delay_list.size()) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
-            //delay1:Fix&Send_To_Receive
             packet->resetDelay(cable->getTransferDelay());
         });
 
@@ -45,7 +44,6 @@ void MasterSlave::initData()
             }
 
             // 接收到数据，进入 queue 的延迟
-            //delay2:Input_To_Queue_Delay
             packet->resetDelay(getDataValue("enqueue_delay", 1).toInt());
             enqueue_list.append(packet);
         });

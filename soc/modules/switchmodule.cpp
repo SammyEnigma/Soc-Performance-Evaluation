@@ -38,7 +38,6 @@ void SwitchModule::initData()
 
         // ==== 接收部分 ====
         ModulePort *port = static_cast<ModulePort *>(p);
-        port->setRequestToQueue(false);
 //        connect(port, SIGNAL(signalDataReceived(ModulePort *, DataPacket *)), this, SLOT(slotDataReceived(ModulePort *, DataPacket *)));
         connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet){
             slotDataReceived(port, packet);
@@ -118,7 +117,7 @@ void SwitchModule::passOnPackets()
                 request_queue.removeAt(i--);
                 packet->resetDelay(cable->getData("delay")->i());
                 pick_port->sendData(packet, DATA_REQUEST);
-                pick_port->anotherCanReceiveAndDecrease();
+                
                 // 不直接发送，先进入pick后的延迟队列
                 /* packet->setTargetPort(pick_port);
                 packet->resetDelay(getData("picked_delay")->i());

@@ -22,22 +22,11 @@ void MasterSlave::initData()
             rt->runningOut(port->getPortId() + ".signalOutPortToSend槽，发送" + packet->getID() + "至Cable，现对方能接收" + QString::number(port->another_can_receive - send_delay_list.size()) + "-1");
             packet->setTargetPort(cable->getToPort());
             cable->request_list.append(packet);
-            //delay1:Fix&Send_To_Receive
             packet->resetDelay(cable->getTransferDelay());
         });
 
         // ==== 接收部分（Slave） ====
         connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet) {
-            // 如果是IP收到了response，则走完一个完整的流程，计算latency，然后丢弃这个数据包
-            if (getClass() == "IP" && packet->getDataType() == DATA_RESPONSE)
-            {
-                int passed = rt->total_frame - packet->getFirstPickedClock();
-                passed /= rt->standard_frame;
-                rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = " + QString::number(passed) + " clock");
-                packet->deleteLater();
-                return ;
-            }
-            
             if (data_list.size() >= getToken()) // 已经满了，不让发了
             {
                 rt->runningOut(getText() + " data queue 已经满了，无法收取更多");
@@ -45,9 +34,40 @@ void MasterSlave::initData()
             }
 
             // 接收到数据，进入 queue 的延迟
-            //delay2:Input_To_Queue_Delay
             packet->resetDelay(getDataValue("enqueue_delay", 1).toInt());
             enqueue_list.append(packet);
+
+            /* if (ports.size() <= 1) // 只有一个端口，收到后往回发
+            {
+                process_list.append(packet);
+                packet->resetDelay(getProcessDelay());
+                rt->runningOut(port->getPortId() + "接收到数据 " + packet->getID() + "，进入处理环节");
+            }
+            else // 多个端口，向另一个端口发送
+            {
+                ModulePort* mp = static_cast<ModulePort *>(ports.at(0));
+                if (mp == port && ports.size() > 1) // 使用另一个端口
+                    mp = static_cast<ModulePort *>(ports.at(1));
+                if (getClass() == "Master" && packet->getDataType() != DATA_RESPONSE
+                    && port->getOppositeShape() && static_cast<ShapeBase*>(port->getOppositeShape())->getClass() == "IP") // Master存到data_list里面
+                {
+                    packet->setComePort(port);
+                    packet->setTargetPort(mp);
+                    packet->resetDelay(0);
+                    data_list.append(packet); // 等待自己发送
+                    rt->runningOut(getText() + "收到" + port->getPortId() + "的数据 " + packet->getID() + "，放入 data_list 中(当前数量：" + QString::number(data_list.size()) + ")");
+                }
+                else if (mp->anotherCanRecive()) // Slave或者其他的端口出来了，直接继续下发（不过要确保能发，否则就只能丢弃了？）
+                {
+                    mp->sendData(packet, packet->getDataType());
+                    rt->runningOut(getText() + "收到" + port->getPortId() + "数据 " + packet->getID() + "，开始下发");
+                }
+                else
+                {
+                    // packet->deleteLater();
+                    rt->runningOut("!!!" + getText() + " " + port->getPortId() + "收到数据 " + packet->getID() + "，但是无法发送");
+                }
+            } */
         });
     }
 }
@@ -123,7 +143,6 @@ void MasterSlave::passOnPackets()
     }
 
     // 队列中的数据出来
-    // 这是数据一开始Pick出来的clock和position
     // warning: 如果port的bandwidth足够，那么当packet刚进入data_list的时候，就会dequeue，并不在data_list停留（除非加延迟）
     for (int i = 0; i < data_list.size(); i++)
     {
@@ -141,13 +160,7 @@ void MasterSlave::passOnPackets()
             dequeue_list.append(packet);
             packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
             port->resetBandwidthBuffer();
-            
-            // 如果是从IP真正下发的
-            if (packet->getFirstPickedClock() == -1)
-            {
-                qDebug() << "记录开始发送的时间：" << rt->total_frame;
-                packet->setFirstPickedCLock(rt->total_frame);
-            }
+            port->anotherCanReceiveAndDecrease(); // 在这里就把port的token减掉
 
             if (getClass() == "IP" && packet->getDataType() == DATA_REQUEST) // IP发送的request不需要返回给后一个模块token
                 ;
