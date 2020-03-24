@@ -112,13 +112,9 @@ void ModulePort::passOnPackets()
         else // 从这个端口出去
         {
             rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：发送至线");
-            sendData(packet, packet->getDataType());
-            /* if (packet->getDataType() == DATA_REQUEST)
-                emit signalOutPortToSend(packet);
-            else if (packet->getDataType() == DATA_RESPONSE)
-                emit signalResponseSended(packet);
-            else
-                sendData(packet, DATA_TOKEN); */
+            // 先判断对方能不能接受（模块一对一的时候问题不大，但是一对多时延迟结束后对方不一定能接收）
+            if (anotherCanRecive())
+                sendData(packet, packet->getDataType());
         }
         rt->need_passOn_this_clock = true;
     }
