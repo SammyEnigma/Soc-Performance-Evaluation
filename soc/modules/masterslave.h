@@ -37,6 +37,7 @@ public slots:
 public:
     PacketList enqueue_list;
     PacketList data_list;
+    PacketList response_list;
     PacketList dequeue_list;
     PacketList send_delay_list;
     PacketList process_list;

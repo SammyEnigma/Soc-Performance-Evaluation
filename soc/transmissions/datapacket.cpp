@@ -166,3 +166,13 @@ void DataPacket::deleteLater()
     emit signalDeleted();
     QObject::deleteLater();
 }
+
+bool DataPacket::isRequest()
+{
+    return data_type == DATA_REQUEST;
+}
+
+bool DataPacket::isResponse()
+{
+    return data_type == DATA_RESPONSE;
+}

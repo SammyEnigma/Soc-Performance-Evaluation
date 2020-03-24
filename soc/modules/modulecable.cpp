@@ -42,23 +42,21 @@ void ModuleCable::initData()
         // 初始化途中互相调整token
         connect(from, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {
             rt->runningOut(to->getPortId() + "(to)接收到对方的 return token, 开始update延迟。对方能接收：" + QString::number(to->getReceiveToken()) + "+1");
-            //            to->another_can_receive++;
             to->receive_update_delay_list.append(new DataPacket(to->receive_update_delay));
         });
         connect(to, &ModulePort::signalDequeueTokenDelayFinished, this, [=] {
             rt->runningOut(from->getPortId() + "(from)接收到对方的 return token, 开始update延迟。对方能接收：" + QString::number(from->getReceiveToken()) + "+1");
-            //            from->another_can_receive++;
             from->receive_update_delay_list.append(new DataPacket(from->receive_update_delay));
         });
 
         connect(from, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
-            rt->runningOut("from:" + from->getPortId() + " signalResponseSended " + packet->getID());
+            rt->runningOut("(response) from:" + from->getPortId() + " signalResponseSended " + packet->getID());
             response_list.append(packet);
             packet->setTargetPort(to);
             packet->resetDelay(getTransferDelay());
         });
         connect(to, &ModulePort::signalResponseSended, this, [=](DataPacket *packet) {
-            rt->runningOut("to:" + from->getPortId() + " signalResponseSended " + packet->getID());
+            rt->runningOut("(response) to:" + from->getPortId() + " signalResponseSended " + packet->getID());
             response_list.append(packet);
             packet->setTargetPort(from);
             packet->resetDelay(getTransferDelay());

@@ -67,6 +67,7 @@ void MasterSlave::clearData()
 
     enqueue_list.clear();
     data_list.clear();
+    response_list.clear();
     dequeue_list.clear();
     send_delay_list.clear();
     process_list.clear();
@@ -118,7 +119,10 @@ void MasterSlave::passOnPackets()
 
         rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 enqueue >> data_list");
         enqueue_list.removeAt(i--);
-        data_list.append(packet);
+        if (packet->isRequest())
+            data_list.append(packet);
+        else if (packet->isResponse())
+            response_list.append(packet);
         rt->need_passOn_this_clock = true;
     }
 
@@ -149,7 +153,7 @@ void MasterSlave::passOnPackets()
                 packet->setFirstPickedCLock(rt->total_frame);
             }
 
-            if (getClass() == "IP" && packet->getDataType() == DATA_REQUEST) // IP发送的request不需要返回给后一个模块token
+            if (getClass() == "IP" && packet->isResponse()) // IP发送的request不需要返回给下一个模块token
                 ;
             else
             {
@@ -157,6 +161,30 @@ void MasterSlave::passOnPackets()
                 if (port)
                     port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
             }
+            rt->need_passOn_this_clock = true;
+        }
+    }
+    for (int i = 0; i < response_list.size(); i++)
+    {
+        DataPacket *packet = response_list.at(i);
+        ModulePort *port = getOutPort(packet);
+        if (!port)
+        {
+            rt->runningOut(getText() + " 由于没有可发送的端口，无法发送 " + packet->getID());
+            continue;
+        }
+        if (port->isBandwidthBufferFinished() && port->anotherCanRecive())
+        {
+            rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 response_list >> dequeue");
+            response_list.removeAt(i--);
+            dequeue_list.append(packet);
+            packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
+            port->resetBandwidthBuffer();
+
+            port = static_cast<ModulePort *>(packet->getComePort());
+            if (port)
+                port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
+            
             rt->need_passOn_this_clock = true;
         }
     }
