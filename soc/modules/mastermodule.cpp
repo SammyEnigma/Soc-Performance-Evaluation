@@ -39,32 +39,6 @@ void MasterModule::setDefaultDataList()
 
 void MasterModule::passOnPackets()
 {
-    // 连接的对方有可接收的buffer时，Master开始发送
-    /*foreach (PortBase *p, ShapeBase::ports)
-    {
-        ModulePort *port = static_cast<ModulePort *>(p);
-        ShapeBase *oppo = static_cast<ShapeBase *>(port->getOppositeShape());
-        if (oppo != nullptr)
-        {
-            // 确定是这个连接Slave的端口，开始向这个端口发送Master内部数据
-            if (oppo->getClass() != "IP"                              // Slave方向
-                && !data_list.isEmpty()                               // 有数据
-                && port->isBandwidthBufferFinished()                  // 有带宽
-                && port->anotherCanRecive()) // 对方能接收
-            {
-                DataPacket *packet = data_list.takeFirst(); // 来自Master内部request队列
-                if (packet->getComePort() == port)          // 这个就是进来的端口，不能传回去！
-                    rt->runningOut("warning!!!: packet 从进入的端口传回去了");
-                rt->runningOut(getText() + "." + port->getPortId() + "发送token: " + packet->getID() + "，进入延迟队列，" + "当前对方能接收：" + QString::number(port->another_can_receive - send_delay_list.size()) + "-1");
-                packet->setDrawPos(geometry().center());
-                packet->resetDelay(port->getLatency());
-                send_delay_list.append(packet);
-                port->resetBandwidthBuffer();
-                emit signalTokenSendStarted(packet);
-            }
-        }
-    }*/
-
     MasterSlave::passOnPackets();
 }
 
@@ -91,7 +65,6 @@ void MasterModule::updatePacketPosVertical()
         }
     }
 
-//if (port) qDebug() << getText() << port->into_port_list.size() << port->outo_port_list.size() << enqueue_list.size() << data_list.size() << dequeue_list.size() << send_delay_list.size();
     QFontMetrics fm(this->font());
     int line_height = fm.lineSpacing();
     int top = height() / 5 + this->pos().y();
@@ -280,22 +253,22 @@ void MasterModule::paintEvent(QPaintEvent *event)
     
     if (port != nullptr)
     {
-        painter.drawText(left, top, QString("%1").arg(port->into_port_list.size()));
+        painter.drawText(left, top, QString("%1").arg(enqueue_list.size()));
 
         left += width() / 5;
-        painter.drawText(left, top, QString("%1").arg(port->outo_port_list.size()));
+        painter.drawText(left, top, QString("%1").arg(data_list.size()));
     }
 
     if (getClass() == "Master")
     {
         left += width() / 5;
-        painter.drawText(left, top, QString("%1").arg(data_list.size()));
+        painter.drawText(left, top, QString("%1").arg(dequeue_list.size()));
     }
 
     if (send_port != nullptr && getClass() == "Master")
     {
         left += width() / 5;
-        painter.drawText(left, top, QString("%1").arg(port->outo_port_list.size()));
+        painter.drawText(left, top, QString("%1").arg(send_delay_list.size()));
     }
 
     /* // 横向的进度条

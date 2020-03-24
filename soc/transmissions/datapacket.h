@@ -68,7 +68,7 @@ signals:
     void signalContentChanged();
     void signalDeleted();
 
-public slots:
+public slots: 
     void deleteLater();
 
 protected:
