@@ -160,7 +160,6 @@ void MasterSlave::passOnPackets()
             dequeue_list.append(packet);
             packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
             port->resetBandwidthBuffer();
-            port->anotherCanReceiveAndDecrease(); // 在这里就把port的token减掉
 
             if (getClass() == "IP" && packet->getDataType() == DATA_REQUEST) // IP发送的request不需要返回给后一个模块token
                 ;

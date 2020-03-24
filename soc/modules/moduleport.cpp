@@ -122,8 +122,18 @@ void ModulePort::passOnPackets()
         }
         rt->need_passOn_this_clock = true;
     }
+    
+    // 发送后自己token-1
+    for (int i = 0; i < send_update_delay_list.size(); i++)
+    {
+        DataPacket *packet = send_update_delay_list.at(i);
+        if (!packet->isDelayFinished())
+            continue;
+        another_can_receive--;
+        send_update_delay_list.removeAt(i--);
+    }
 
-    // 收到对方token-1的信号后再延迟一段时间
+    // 收到对方(接收方)token-1的信号后再延迟一段时间
     for (int i = 0; i < receive_update_delay_list.size(); i++)
     {
         DataPacket *packet = receive_update_delay_list.at(i);
@@ -361,7 +371,8 @@ bool ModulePort::anotherCanReceiveAndDecrease(int cut)
     if (another_can_receive <= cut)
         return false;
     
-    another_can_receive--;
+    // another_can_receive--;
+    // send_update_delay_list.append(new DataPacket(send_update_delay));
     return true;
 }
 
