@@ -12,7 +12,7 @@
 #include <QPoint>
 #include "timeframe.h"
 
-#define PACKET_SIZE 8
+#define PACKET_SIZE 6
 
 enum DATA_TYPE
 {

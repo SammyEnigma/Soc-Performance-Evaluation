@@ -1,8 +1,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-12-19 09:08:59
- * @LastEditors  : MRXY001
- * @LastEditTime : 2019-12-23 14:24:53
+ * @LastEditors: XyLan
+ * @LastEditTime: 2020-03-24 17:02:44
  * @Description: Switch
  */
 #include "switchmodule.h"
@@ -250,27 +250,27 @@ void SwitchModule::updatePacketPos()
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
     int h = this->height()/2-PACKET_SIZE;
-    int l = 4;
+    int l = 2;
     foreach (DataPacket *packet, request_queue)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-        l += 4 + PACKET_SIZE;
+        l += 2 + PACKET_SIZE;
     }
 
-    h += height + 4;
-    l = 4;
+    h += height + 2;
+    l = 2;
     foreach (DataPacket *packet, response_queue)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-        l += 4 + PACKET_SIZE;
+        l += 2 + PACKET_SIZE;
     }
 
-    h += height + 4;
-    l = 4;
+    h += height + 2;
+    l = 2;
     foreach (DataPacket *packet, picked_delay_list)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-        l += 4 + PACKET_SIZE;
+        l += 2 + PACKET_SIZE;
     }
 }
 

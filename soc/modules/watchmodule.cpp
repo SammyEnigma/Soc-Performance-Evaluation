@@ -215,29 +215,36 @@ void WatchModule::paintEvent(QPaintEvent *event)
             {
                 painter.drawText(left, height * line++, target_module->getDataValue("delay").toString());
             }
-            else if (cls == "IP") // 显示IP的频率
+            else if (cls == "IP" || cls == "Master" || cls == "Slave") // 显示IP的频率
             {
-                if (target_module->getPorts().size())
+                double maxFrequence = 0;
+                foreach(ModulePort *port, target_module->getPorts())
                 {
-                    ModulePort* port = target_module->getPorts().first();
-                    painter.setFont(big_font);
-                    painter.setPen(BandWithColor);
-                    QString live_frq_str = QString::number(port->getLiveFrequence() * rt->DEFAULT_PACKET_BYTE * rt->standard_frame, 10, 2);
+                    if(port->getLiveFrequence() > maxFrequence)
+                    {
+                        maxFrequence = port->getLiveFrequence();
+                    }
+                }
+                ModulePort* port = target_module->getPorts().first();
+                painter.setFont(big_font);
+                painter.setPen(BandWithColor);
+
+
+                QString live_frq_str = QString::number(/*port->getLiveFrequence()*/maxFrequence * rt->DEFAULT_PACKET_BYTE * rt->standard_frame, 10, 2);
+                if (live_frq_str.endsWith("0"))
+                {
+                    live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
                     if (live_frq_str.endsWith("0"))
                     {
                         live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
-                        if (live_frq_str.endsWith("0"))
-                        {
+                        if (live_frq_str.endsWith("."))
                             live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
-                            if (live_frq_str.endsWith("."))
-                                live_frq_str = live_frq_str.left(live_frq_str.length() - 1);
-                        }
                     }
-                    painter.drawText(left, height * line, live_frq_str);
-
-                    painter.setFont(normal_font);
-                    painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
                 }
+                painter.drawText(left, height * line, live_frq_str);
+
+                painter.setFont(normal_font);
+                painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
             }
         }
         else
