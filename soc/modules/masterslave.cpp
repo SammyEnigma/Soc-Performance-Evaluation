@@ -30,7 +30,9 @@ void MasterSlave::initData()
             // 如果是IP收到了response，则走完一个完整的流程，计算latency，然后丢弃这个数据包
             if (getClass() == "IP" && packet->getDataType() == DATA_RESPONSE)
             {
-                rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = 待计算");
+                int passed = rt->total_frame - packet->getFirstPickedClock();
+                passed /= rt->standard_frame;
+                rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = " + QString::number(passed) + " clock");
                 packet->deleteLater();
                 return ;
             }
@@ -119,6 +121,7 @@ void MasterSlave::passOnPackets()
     }
 
     // 队列中的数据出来
+    // 这是数据一开始Pick出来的clock和position
     // warning: 如果port的bandwidth足够，那么当packet刚进入data_list的时候，就会dequeue，并不在data_list停留（除非加延迟）
     for (int i = 0; i < data_list.size(); i++)
     {
@@ -136,6 +139,13 @@ void MasterSlave::passOnPackets()
             dequeue_list.append(packet);
             packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
             port->resetBandwidthBuffer();
+            
+            // 如果是从IP真正下发的
+            if (packet->getFirstPickedClock() == -1)
+            {
+                qDebug() << "记录开始发送的时间：" << rt->total_frame;
+                packet->setFirstPickedCLock(rt->total_frame);
+            }
 
             if (getClass() == "IP" && packet->getDataType() == DATA_REQUEST) // IP发送的request不需要返回给后一个模块token
                 ;

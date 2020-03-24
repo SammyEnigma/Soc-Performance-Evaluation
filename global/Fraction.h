@@ -513,6 +513,16 @@ public:
         return *this != Fraction::fromDecimal(d);
     }
 
+    bool operator==(const int &d)
+    {
+        return *this == Fraction(d);
+    }
+
+    bool operator!=(const int &d)
+    {
+        return *this != Fraction(d);
+    }
+
     bool operator>(const Fraction &f) const
     {
         return this->numerator * f.denominator > f.numerator * this->denominator;

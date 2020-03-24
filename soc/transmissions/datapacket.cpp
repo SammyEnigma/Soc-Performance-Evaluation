@@ -10,6 +10,7 @@
 DataPacket::DataPacket(QObject *parent)
     : QObject(parent),
       valid(false), data(0), par(0), data_type(DATA_REQUEST),
+      first_picked_clock(-1),
       come_port(nullptr), target_port(nullptr),
       delay_step(0), delay_max(0)
 {
@@ -78,6 +79,16 @@ void DataPacket::setID(QString id)
 QString DataPacket::getID()
 {
     return token_id;
+}
+
+void DataPacket::setFirstPickedCLock(int frame)
+{
+    first_picked_clock = frame;
+}
+
+int DataPacket::getFirstPickedClock()
+{
+    return first_picked_clock;
 }
 
 QString DataPacket::getTag()
