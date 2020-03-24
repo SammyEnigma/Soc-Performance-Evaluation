@@ -102,7 +102,6 @@ void ModulePort::passOnPackets()
         DataPacket *packet = outo_port_list.at(i);
         if (!packet->isDelayFinished())
             continue;
-        outo_port_list.removeAt(i--);
         if (packet->getComePort() == this) // 是从当前这个端口进来的，则进入模块
         {
             rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：模块内部");
@@ -112,14 +111,12 @@ void ModulePort::passOnPackets()
         else // 从这个端口出去
         {
             rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：发送至线");
+            // 先判断对方能不能接收（模块一对一的时候问题不大，但是一对多时延迟结束后对方不一定能接收）
+            if (!anotherCanRecive()) // 对方不能接收，取消发送和remove
+                continue;
             sendData(packet, packet->getDataType());
-            /* if (packet->getDataType() == DATA_REQUEST)
-                emit signalOutPortToSend(packet);
-            else if (packet->getDataType() == DATA_RESPONSE)
-                emit signalResponseSended(packet);
-            else
-                sendData(packet, DATA_TOKEN); */
         }
+        outo_port_list.removeAt(i--);
         rt->need_passOn_this_clock = true;
     }
     
@@ -129,6 +126,7 @@ void ModulePort::passOnPackets()
         DataPacket *packet = send_update_delay_list.at(i);
         if (!packet->isDelayFinished())
             continue;
+        rt->runningOut(getPortId() + " send token-1 延迟结束，当前token = " + QString::number(another_can_receive) + "-1");
         another_can_receive--;
         send_update_delay_list.removeAt(i--);
     }

@@ -99,11 +99,13 @@ void FlowControlAutomatic::passOneClock()
             ModuleBase *module = static_cast<ModuleBase *>(shape);
 
             // 定期创建数据，保证IP有东西可以发
-            // static int create_count = 0; // 创建少量数据进行逐一调试
+            bool debug_one_packet = false;
+            static int create_count = 0; // 创建少量数据进行逐一调试
+            // debug_one_packet = true;
             if (module->getData("create_token")->value().toBool())
             {
                 MasterSlave *IP = static_cast<MasterSlave *>(shape);
-                while (IP->data_list.size() < 5 /* && create_count++ < 1 */)
+                while (IP->data_list.size() < 5 && (!debug_one_packet || create_count++ < 1))
                 {
                     rt->runningOut(IP->getText() + " 凭空创建数据以便于发送");
                     IP->data_list.append(createToken(IP->getText()));

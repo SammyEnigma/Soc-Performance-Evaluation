@@ -26,6 +26,9 @@ public:
     
     ModulePort* getOutPort(DataPacket* packet);
 
+protected:
+	virtual void changeRequestsToResponse();
+
 signals:
 	void signalTokenSendStarted(DataPacket* packet); // token开始发送（刚从模块进入延迟发送队列，还未发送出去）
 

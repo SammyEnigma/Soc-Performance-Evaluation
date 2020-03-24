@@ -35,6 +35,7 @@ void MasterSlave::initData()
                 passed /= rt->standard_frame;
                 rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = " + QString::number(passed) + " clock");
                 packet->deleteLater();
+                port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
                 return ;
             }
             
@@ -207,6 +208,8 @@ void MasterSlave::passOnPackets()
         packet->resetDelay(getDataValue("latency", 0).toInt());
         rt->need_passOn_this_clock = true;
     }
+    
+    changeRequestsToResponse(); // 如果是只有一个端口的Slave，则将要发送的数据都变成response
 
     // 延迟发送
     for (int i = 0; i < send_delay_list.size(); i++)
@@ -276,6 +279,64 @@ void MasterSlave::delayOneClock()
  */
 void MasterSlave::updatePacketPos()
 {
+    ModulePort *port = nullptr;      // 接收IP的port
+    ModulePort *send_port = nullptr; // 发送下去（给Slave）的port
+    foreach (PortBase *p, getPorts())
+    {
+        if (p->getOppositeShape() == nullptr)
+            continue;
+        if (static_cast<ShapeBase *>(p->getOppositeShape())->getClass() == "IP")
+        {
+            port = static_cast<ModulePort *>(p);
+        }
+        else
+        {
+            send_port = static_cast<ModulePort *>(p);
+        }
+    }
+
+    QFontMetrics fm(this->font());
+    int line_height = fm.lineSpacing();
+    int left = width() / 5 + this->pos().x();
+    int right = width() * 3 / 5 + this->pos().x();
+    double one_piece = PACKET_SIZE + 4; // 一小块packet的位置（相对于left）
+    int l = left;
+    int top = line_height + this->pos().y();
+    
+    l = left;
+    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, enqueue_list.size()));
+    foreach (DataPacket *packet, enqueue_list)
+    {
+        packet->setDrawPos(QPoint(l, top));
+        l += one_piece;
+    }
+
+    l = left;
+    top += PACKET_SIZE + 4;
+    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
+    foreach (DataPacket *packet, data_list)
+    {
+        packet->setDrawPos(QPoint(l, top));
+        l += one_piece;
+    }
+
+    top += PACKET_SIZE + 4;
+    l = left;
+    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, dequeue_list.size()));
+    foreach (DataPacket *packet, dequeue_list)
+    {
+        packet->setDrawPos(QPoint(l, top));
+        l += one_piece;
+    }
+
+    l = left;
+    top += PACKET_SIZE + 4;
+    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_delay_list.size()));
+    foreach (DataPacket *packet, send_delay_list)
+    {
+        packet->setDrawPos(QPoint(l, top));
+        l += one_piece;
+    }
 }
 
 /**
@@ -289,7 +350,7 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
     }
     if (ports.size() == 1) // 只有一个端口，原路返回
     {
-        packet->setComePort(nullptr);
+        // packet->setComePort(nullptr);
         return static_cast<ModulePort *>(ports.first());
     }
     else // 多个端口（至少要两个吧）
@@ -299,4 +360,13 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
         else
             return static_cast<ModulePort *>(ports.first());
     }
+}
+
+/**
+ * 将send_delay_list中的request变成response
+ * 由子类（Slave）判断
+ */
+void MasterSlave::changeRequestsToResponse()
+{
+    
 }
