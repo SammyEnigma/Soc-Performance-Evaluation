@@ -121,6 +121,7 @@ public slots:
     void slotWatchModule(WatchModule* watch);
     void slotWatchModuleID(WatchModule* watch, QString text);    
     void slotSetFrequence(ModulePanel *panel);
+    void slotGetFrequence(ModulePanel *panel, double *bandwidth);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象

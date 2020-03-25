@@ -245,6 +245,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     QFontMetrics fm(this->font());
+    painter.setPen(_text_color);
     int line_height = fm.height();
     
     // 竖向的进度条

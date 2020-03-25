@@ -68,6 +68,17 @@ QString WatchModule::toStringAppend()
         }
 
     }
+    else if(watch_type == WATCH_CLOCK)
+    {
+        if(target_port)
+        {
+            full += indent + StringUtil::makeXml(target_port->getPortId(), "WATCH_PORT_ID");
+        }
+        else if(target_module)
+        {
+            full += indent + StringUtil::makeXml(target_module->getText(), "WATCH_MODULE_ID");
+        }
+    }
     return full;
 }
 
@@ -88,6 +99,16 @@ void WatchModule::fromStringAppend(QString s)
         {
             QTimer::singleShot(0, [=]{
                 emit signalWatchModuleID(this, moduleID);
+            });
+        }
+    }
+    else if(watch_type == WATCH_CLOCK)
+    {
+        QString portID = StringUtil::getXml(s, "WATCH_PORT_ID");
+        if(!portID.isEmpty())
+            {
+            QTimer::singleShot(0, [=]{
+               emit signalWatchPortID(this, portID);
             });
         }
     }
@@ -276,13 +297,17 @@ void WatchModule::paintEvent(QPaintEvent *event)
     }
     else if(watch_type == WATCH_CLOCK)
     {
-        //painter.setFont(bold_font);
-        painter.setFont(big_font);
-        painter.setPen(BandWithColor);
-        painter.drawText(left, height * line++, target_port->getBandwidth());
-        //painter.setFont(bold_font);
-        painter.setFont(normal_font);
-        painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz"/*+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte"*/);
+        if(target_port)
+        {
+            //painter.setFont(bold_font);
+            painter.setFont(big_font);
+            painter.setPen(BandWithColor);
+            painter.drawText(left, height * line++, target_port->getBandwidth());
+            //painter.setFont(bold_font);
+            painter.setFont(normal_font);
+            painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz"/*+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte"*/);
+        }
+
     }
     else
     {
