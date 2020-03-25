@@ -416,34 +416,28 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
     QPainterPath path;
     switch (count)
     {
-    case 3:
-    {
-        // 画三角形
-        /* path.moveTo(w/2, r.top());
-        path.lineTo(r.left(), r.bottom());
-        path.lineTo(r.right(), r.bottom()); */
-        QPoint pos1 = ports.at(0)->geometry().center(), 
-            pos2 = ports.at(1)->geometry().center(), 
-            pos3 = ports.at(2)->geometry().center();
-        path.moveTo(pos1.x(), pos1.y());
-        path.lineTo(pos2.x(), pos2.y());
-        path.lineTo(pos3.x(), pos3.y());
-        break;
-    }
     case 2:
-    case 4:
     {
-        // 画四边形
+        // 固定四边形
         path.addRect(r);
         break;
     }
+    case 3:
+    case 4:
     case 5:
+    case 6:
+    case 7:
+    case 8:
     {
-        // 画五边形
-        
+        // 根据端口画形状
+        path.moveTo(ports.first()->geometry().center());
+        for (int i = 1; i < ports.size(); i++)
+        {
+            path.lineTo(ports.at(i)->geometry().center());
+        }
+        path.lineTo(ports.first()->geometry().center());
         break;
     }
-    case 6:
     default:
     {
         // 画六边形
