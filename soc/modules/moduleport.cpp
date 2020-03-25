@@ -135,7 +135,7 @@ void ModulePort::passOnPackets()
         
         if (us->show_animation)
         {
-            showTokenChangeAnimation("-1", Qt::green);
+            showTokenChangeAnimation("-1", Qt::red);
         }
         send_update_delay_list.removeAt(i--);
     }
@@ -150,6 +150,8 @@ void ModulePort::passOnPackets()
         receive_update_delay_list.removeAt(i--);
         rt->runningOut(getPortId() + "接收token:" + packet->getID() + " 的update延迟结束，对方能接受：" + QString::number(another_can_receive) + "+1");
         another_can_receive++;
+        if (us->show_animation)
+            showTokenChangeAnimation("+1", Qt::green);
         packet->deleteLater();
         rt->need_passOn_this_clock = true;
     }
@@ -406,7 +408,9 @@ double ModulePort::getLiveFrequence()
 
 void ModulePort::showTokenChangeAnimation(QString text, QColor color)
 {
+	if (rt->ignore_view_changed)
+    	return ;
     NumberAnimation* animation = new NumberAnimation(text, color, parentWidget()->parentWidget());
-    animation->move(getGlobalPos());
+    animation->setCenter(getGlobalPos() + QPoint(rand() % 32-16, rand()%32-16));
     animation->startAnimation();
 }
