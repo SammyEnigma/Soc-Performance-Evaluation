@@ -13,6 +13,7 @@
 #include "portbase.h"
 #include "datapacket.h"
 #include "timeframe.h"
+#include "numberanimation.h"
 
 enum PASS_ONE_CLOCK_FLAG_PORT
 {
@@ -56,7 +57,6 @@ public:
     void initReceiveToken(int t);
     int getReceiveToken();
     bool anotherCanRecive(int cut = 0);
-    void anotherCanReceiveIncrease(); // 对方可以接收的token++
     int getToken();
     void setToken(int token);
 
@@ -64,6 +64,8 @@ public:
     int getTotalReceived();
     int getBeginWaited();
     double getLiveFrequence();
+    
+    void showTokenChangeAnimation(QString text, QColor color);
 
 protected:
     virtual void fromStringAddin(QString s) override;
