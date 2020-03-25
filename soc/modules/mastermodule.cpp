@@ -72,7 +72,7 @@ void MasterModule::updatePacketPosVertical()
     int left = width() / 5 + this->pos().x();
     double one_piece = PACKET_SIZE + 4;
     int t = bottom;
-    if (port != nullptr)
+    /*if (port != nullptr)
     {
         t = bottom;
         one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, enqueue_list.size()));
@@ -81,7 +81,7 @@ void MasterModule::updatePacketPosVertical()
             packet->setDrawPos(QPoint(left, t));
             t -= one_piece;
         }
-    }
+    }*/
 
     if (getClass() == "Master")
     {
@@ -91,11 +91,11 @@ void MasterModule::updatePacketPosVertical()
         foreach (DataPacket *packet, data_list)
         {
             packet->setDrawPos(QPoint(left, t));
-            t -= one_piece;
+            t = bottom;
         }
     }
 
-    if (port)
+   /* if (port)
     {
         left += width() / 5;
         t = bottom;
@@ -117,7 +117,7 @@ void MasterModule::updatePacketPosVertical()
             packet->setDrawPos(QPoint(left, t));
             t -= one_piece;
         }
-    }
+    }*/
 }
 
 void MasterModule::updatePacketPosHorizone()
@@ -245,14 +245,80 @@ void MasterModule::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     QFontMetrics fm(this->font());
-    painter.setPen(_text_color);
+    painter.setPen(QColor(211, 211, 211) );
     int line_height = fm.height();
+    painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
     
     // 竖向的进度条
     int top = height()-line_height * 3 / 2;
     int left = width() / 5-PACKET_SIZE/2;
-    
-    if (port != nullptr)
+    if(getClass() == "Master")
+    {
+    painter.save();
+    QPainterPath path;
+    //画整个进度条
+    int bar_x = (width() - PACKET_SIZE) / 2;
+    int bar_y = height() / 5;
+    path.addRoundedRect(bar_x, bar_y,
+                        PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
+    painter.fillPath(path,QColor(211, 211, 211));//填充
+    painter.setPen(QColor(105, 105, 105));
+    path.addRoundedRect(bar_x - 2, bar_y - 2,
+                        PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+    int token = getToken();//总的data
+    int current_token = data_list.size() + dequeue_list.size();
+    int per = 4;
+    int count = (current_token * per + token / per / 2.0) / token;
+
+    //动画
+    path.addRoundedRect(bar_x, bar_y + height() * 3 * ( per - count) / per / 5 ,
+                        PACKET_SIZE * 2, height() * 3 * count / per / 5 , 3, 3);
+    painter.fillPath(path,QColor(85, 107, 47));//填充
+    /*if(count == 0)//0-12.5%=0%
+    {
+
+    }
+    else if(count == 1)//12.6%-37.5%=25%
+    {
+
+    }
+    else if(count == 2)//37.6%-62.5%=50%
+    {
+
+    }
+    else if(count == 3)//62.6%-87.5%=75%
+    {
+
+    }
+    else if(count == 4)//87.6%-100%= 100%
+    {
+
+    }*/
+    painter.restore();
+    painter.drawPath(path);
+    }
+   /*
+    //画进度条整体
+    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() / 5);
+    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() / 5);
+    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() * 4 / 5);
+    path.lineTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() * 4 / 5);
+    path.lineTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() / 5);
+
+    //画进度条1/4
+    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() * 13 / 20);
+    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() * 13 / 20);
+
+    //画进度条2/4
+    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() / 2);
+    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() / 2);
+
+    //画进度条3/4
+    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() * 7 / 20);
+    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() * 7 / 20);
+*/
+
+  /*  if (port != nullptr)
     {
         painter.drawText(left, top, QString("%1").arg(enqueue_list.size()));
 
@@ -271,6 +337,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
         left += width() / 5;
         painter.drawText(left, top, QString("%1").arg(send_delay_list.size()));
     }
+*/
 
     /* // 横向的进度条
     int left = width() / 5;
