@@ -10,6 +10,11 @@ ModulePanel::ModulePanel(QWidget *parent) : ModuleBase(parent)
     QPainter painter(&pixmap);
     drawShapePixmap(painter, QRect(2,2,124,60));
     _pixmap = pixmap;
+    big_font = normal_font = bold_font = font();
+    big_font.setPointSize(normal_font.pointSize() * 2);
+    bold_font.setBold(true);
+    big_font.setBold(true);
+    normal_font.setBold(true);
 }
 
 ModulePanel *ModulePanel::newInstanceBySelf(QWidget *parent)
@@ -33,8 +38,14 @@ void ModulePanel::clearData()
 void ModulePanel::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.setPen(QPen(_border_color, _border_size));
+    painter.setPen(QPen(_text_color, _border_size));
     painter.fillRect(QRect(0,0,width(),height()), QBrush(_pixmap_color));
+    QFontMetrics fm(big_font);
+    int height = fm.lineSpacing();
+    painter.setFont(big_font);
+    double bandwidth;
+    emit signalGetFrequence(this, &bandwidth);
+    painter.drawText(width()-fm.horizontalAdvance(QString("%1Ghz").arg(bandwidth)), height, QString("%1Ghz").arg(bandwidth));
 }
 
 QList<QAction *> ModulePanel::addinMenuActions()

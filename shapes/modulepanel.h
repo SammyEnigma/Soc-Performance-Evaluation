@@ -26,6 +26,11 @@ public slots:
 
 signals:
     void signalSetFrequence(ModulePanel*);
+    void signalGetFrequence(ModulePanel*, double *);
+
+private:
+    QFont big_font, normal_font, bold_font;
+
 };
 
 #endif // PANELMODULE_H

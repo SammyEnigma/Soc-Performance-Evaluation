@@ -105,6 +105,21 @@ void GraphicArea::slotSetFrequence(ModulePanel *panel)
   }
 
 }
+//获取每个在modulepanel里的port的bandwidth
+void GraphicArea::slotGetFrequence(ModulePanel *panel, double *bandwidth)
+{
+ QRect rect = panel->geometry();
+ foreach(ShapeBase *shape, shape_lists)
+ {
+     QRect shaperect = shape->geometry();
+
+     if(rect.contains(shaperect))
+         foreach(PortBase *port, shape->getPorts())
+         {
+            *bandwidth = ((ModulePort*)port)->getBandwidth().toDouble();
+         }
+ }
+}
 
 /**
  * 选中某一个形状
@@ -966,6 +981,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     {
         ModulePanel* panel = static_cast<ModulePanel*>(shape);
         connect(panel, SIGNAL(signalSetFrequence(ModulePanel*)), this, SLOT(slotSetFrequence(ModulePanel*)));
+        connect(panel, SIGNAL(signalGetFrequence(ModulePanel*, double*)), this, SLOT(slotGetFrequence(ModulePanel*, double*)));
     }
 }
 
