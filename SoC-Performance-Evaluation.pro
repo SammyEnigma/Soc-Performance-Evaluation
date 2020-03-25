@@ -29,8 +29,10 @@ INCLUDEPATH += \
     soc/interfaces \
     soc/flowcontrol \
     soc/tools \
+    animation \
 
 SOURCES += \
+    animation/numberanimation.cpp \
     dialogs/moduledatadialog.cpp \
     dialogs/portdatadialog.cpp \
     dialogs/portpositiondialog.cpp \
@@ -75,6 +77,7 @@ SOURCES += \
     soc/transmissions/datapacketview.cpp
 
 HEADERS += \
+    animation/numberanimation.h \
     dialogs/moduledatadialog.h \
     dialogs/portdatadialog.h \
     dialogs/portpositiondialog.h \

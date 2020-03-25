@@ -132,6 +132,11 @@ void ModulePort::passOnPackets()
             continue;
         rt->runningOut(getPortId() + " send token-1 延迟结束，当前token = " + QString::number(another_can_receive) + "-1");
         another_can_receive--;
+        
+        if (us->show_animation)
+        {
+            showTokenChangeAnimation("-1", Qt::red);
+        }
         send_update_delay_list.removeAt(i--);
     }
 
@@ -145,6 +150,8 @@ void ModulePort::passOnPackets()
         receive_update_delay_list.removeAt(i--);
         rt->runningOut(getPortId() + "接收token:" + packet->getID() + " 的update延迟结束，对方能接受：" + QString::number(another_can_receive) + "+1");
         another_can_receive++;
+        if (us->show_animation)
+            showTokenChangeAnimation("+1", Qt::green);
         packet->deleteLater();
         rt->need_passOn_this_clock = true;
     }
@@ -365,11 +372,6 @@ bool ModulePort::anotherCanRecive(int cut)
     return another_can_receive - send_update_delay_list.size() > cut;
 }
 
-void ModulePort::anotherCanReceiveIncrease()
-{
-    another_can_receive++;
-}
-
 int ModulePort::getToken()
 {
     return token;
@@ -402,4 +404,13 @@ double ModulePort::getLiveFrequence()
     double frq1 = std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
     double frq2 = std::accumulate(frq2_queue.begin(), frq2_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
     return qMax(frq1, frq2);
+}
+
+void ModulePort::showTokenChangeAnimation(QString text, QColor color)
+{
+	if (rt->ignore_view_changed)
+    	return ;
+    NumberAnimation* animation = new NumberAnimation(text, color, parentWidget()->parentWidget());
+    animation->setCenter(getGlobalPos() + QPoint(rand() % 32-16, rand()%32-16));
+    animation->startAnimation();
 }

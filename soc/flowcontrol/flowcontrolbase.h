@@ -83,8 +83,6 @@ protected:
     PacketList all_packets; // 所有数据包（指针）的列表
     QList<DataPacketView *> all_packet_view;
     QList<WatchWidget *> watch_widgets;
-
-    bool _flag_ignore_view_after_clock; // 一个clock后是否修改界面
 };
 
 #endif // FLOWCONTROLBASE_H

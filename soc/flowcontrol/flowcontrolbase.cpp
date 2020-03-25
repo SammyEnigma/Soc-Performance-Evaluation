@@ -1,6 +1,6 @@
 #include "flowcontrolbase.h"
 
-FlowControlBase::FlowControlBase(GraphicArea *ga, QObject *parent) : QObject(parent), graphic(ga), run_timer(new QTimer(this)), current_clock(-1), _flag_ignore_view_after_clock(false)
+FlowControlBase::FlowControlBase(GraphicArea *ga, QObject *parent) : QObject(parent), graphic(ga), run_timer(new QTimer(this)), current_clock(-1)
 {
     log("FlowControlBase::FlowControlBase1");
     run_timer->setInterval(us->getInt("us/clock_interval", ONE_CLOCK_INTERVAL)); // 定时执行一次 clock
@@ -92,7 +92,7 @@ void FlowControlBase::nextStep()
     passOneClock();
     uninitOneClock();
 
-    if (!_flag_ignore_view_after_clock)
+    if (!rt->ignore_view_changed)
         refreshUI();
 }
 
@@ -102,7 +102,7 @@ void FlowControlBase::gotoClock(int c)
         return ;
 
     bool paused = !run_timer->isActive();
-    _flag_ignore_view_after_clock = true;
+    rt->ignore_view_changed = true;
     int current = current_clock.toInt();
     /* 如果是未开始，在MainWindow里面已经判断了 */
     if (c <= current) // 在过去，重新运行到这里
@@ -119,7 +119,7 @@ void FlowControlBase::gotoClock(int c)
     }
     if (paused)
         run_timer->stop();
-    _flag_ignore_view_after_clock = false;
+    rt->ignore_view_changed = false;
     refreshUI();
 }
 
