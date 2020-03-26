@@ -250,30 +250,62 @@ void MasterModule::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
     
     // 竖向的进度条
-    int top = height()-line_height * 3 / 2;
-    int left = width() / 5-PACKET_SIZE/2;
     if(getClass() == "Master")
     {
     painter.save();
     QPainterPath path;
     //画整个进度条
-    int bar_x = (width() - PACKET_SIZE) / 2;
+    int bar_x_req = (width() - PACKET_SIZE) / 2 - PORT_SIZE * 2;//request的进度条
     int bar_y = height() / 5;
-    path.addRoundedRect(bar_x, bar_y,
+    int bar_x_rsp = (width() + PACKET_SIZE) / 2 + PORT_SIZE / 2;//response的进度条
+//画request
+    path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
     painter.fillPath(path,QColor(211, 211, 211));//填充
     painter.setPen(QColor(105, 105, 105));
-    path.addRoundedRect(bar_x - 2, bar_y - 2,
+    path.addRoundedRect(bar_x_req - 2, bar_y - 2,
                         PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+    int req_count = 0, rsp_count = 0;
+    foreach(DataPacket *packet, dequeue_list + enqueue_list)
+    {
+        if(packet->isRequest())
+        {
+            req_count++;
+        }
+        else
+        {
+            rsp_count++;
+        }
+    }
+//request数据
     int token = getToken();//总的data
-    int current_token = data_list.size() + dequeue_list.size();
-    int per = 4;
-    int count = (current_token * per + token / per / 2.0) / token;
+    int current_token_req = data_list.size() + req_count;
+    int per = 64;
+    int count_req = (current_token_req * per + token / per / 2.0) / token;
+//画response
+    path.addRoundedRect(bar_x_rsp, bar_y,
+                        PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
+    painter.fillPath(path,QColor(211, 211, 211));//填充
+    painter.setPen(QColor(105, 105, 105));
+    path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
+                        PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+//response数据
+    int current_token_rsp = response_list.size() + rsp_count;
+    int count_rsp = (current_token_rsp * per + token / per / 2.0) / token;
 
-    //动画
-    path.addRoundedRect(bar_x, bar_y + height() * 3 * ( per - count) / per / 5 ,
-                        PACKET_SIZE * 2, height() * 3 * count / per / 5 , 3, 3);
+    //req动画
+    path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5 ,
+                        PACKET_SIZE * 2, height() * 3 * count_req / per / 5 , 3, 3);
     painter.fillPath(path,QColor(85, 107, 47));//填充
+
+    //rsp动画
+    path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
+                        PACKET_SIZE * 2, height() * 3 * count_rsp / per / 5 , 3, 3);
+    painter.fillPath(path,QColor(85, 107, 47));//填充
+
+    painter.restore();
+    painter.drawPath(path);
+    }
     /*if(count == 0)//0-12.5%=0%
     {
 
@@ -294,9 +326,8 @@ void MasterModule::paintEvent(QPaintEvent *event)
     {
 
     }*/
-    painter.restore();
-    painter.drawPath(path);
-    }
+
+
    /*
     //画进度条整体
     path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() / 5);
