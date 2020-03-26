@@ -28,6 +28,7 @@ public:
 
 protected:
 	virtual void changeRequestsToResponse();
+    void paintEvent(QPaintEvent *event) override;
 
 signals:
 	void signalTokenSendStarted(DataPacket* packet); // token开始发送（刚从模块进入延迟发送队列，还未发送出去）

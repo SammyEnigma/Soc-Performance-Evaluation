@@ -250,27 +250,27 @@ void SwitchModule::updatePacketPos()
     QFontMetrics fm(this->font());
     int height = fm.lineSpacing();
     int h = this->height() / 2 - PACKET_SIZE;
-    int l = 2;
+    int l = (width() + PACKET_SIZE) / 2;
     foreach (DataPacket *packet, request_queue)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-        l += 2 + PACKET_SIZE;
+        //l = 2 + PACKET_SIZE;
     }
 
-    h += height + 2;
-    l = 2;
+   // h += height + 2;
+   // l = 2;
     foreach (DataPacket *packet, response_queue)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-        l += 2 + PACKET_SIZE;
+       // l = 2 + PACKET_SIZE;
     }
 
-    h += height + 2;
-    l = 2;
+  //  h += height + 2;
+   // l = 2;
     foreach (DataPacket *packet, picked_delay_list)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-        l += 2 + PACKET_SIZE;
+       // l = 2 + PACKET_SIZE;
     }
 }
 
@@ -286,9 +286,9 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     painter.save();
     QPainterPath path;
 
-    int bar_x_req = (width() - PACKET_SIZE) / 2 - PORT_SIZE * 3;
+    int bar_x_req = (width() - PACKET_SIZE * 8) / 2;
     int bar_y = height() / 5;
-    int bar_x_rsp = (width() - PACKET_SIZE) / 2 + PORT_SIZE * 3;
+    int bar_x_rsp = (width() + PACKET_SIZE * 8) / 2;
 //画req
     path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE, height() * 3/ 5, 3, 3);
@@ -310,12 +310,10 @@ void SwitchModule::paintEvent(QPaintEvent *event)
         if(packet->isRequest())
         {
             req_count++;
-            qDebug()<<"req_count:"<<req_count;
         }
         else if(packet->isResponse())
         {
             rsp_count++;
-            qDebug()<<"rsp_count:"<<rsp_count;
         }
     }
 //req数据

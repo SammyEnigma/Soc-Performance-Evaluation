@@ -67,7 +67,7 @@ void SlaveModule::updatePacketPos()
 
 void SlaveModule::paintEvent(QPaintEvent *event)
 {
-    ModuleBase::paintEvent(event);
+    MasterSlave::paintEvent(event);
 
     // 画自己的数量
     QPainter painter(this);
@@ -81,7 +81,7 @@ void SlaveModule::paintEvent(QPaintEvent *event)
         /* ModulePort* slave_port = static_cast<ModulePort*>(ShapeBase::ports.first());
         painter.drawText(margin, height * 2, QString("buffer: 对方=%1, 自己=%2").arg(slave_port->getReceiveToken()).arg(getToken())); */
     }
-/*
+    /*
     if (getPorts().size() > 0)
     {
         painter.drawText(margin, height*3, QString("进队列:%1").arg(static_cast<ModulePort*>(getPorts().first())->enqueue_list.size()));

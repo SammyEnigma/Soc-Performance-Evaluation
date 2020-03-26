@@ -68,8 +68,8 @@ void MasterModule::updatePacketPosVertical()
     QFontMetrics fm(this->font());
     int line_height = fm.lineSpacing();
     int top = height() / 5 + this->pos().y();
-    int bottom = height() *  4 / 5 - line_height + this->pos().y();
-    int left = width() / 5 + this->pos().x();
+    int bottom = height() / 2 - line_height + this->pos().y();
+    int left = width() / 2 + this->pos().x();
     double one_piece = PACKET_SIZE + 4;
     int t = bottom;
     /*if (port != nullptr)
@@ -86,7 +86,7 @@ void MasterModule::updatePacketPosVertical()
     if (getClass() == "Master")
     {
         t = bottom;
-        left += width() / 5;
+        //left += width() / 5;
         one_piece = qMin((double)PACKET_SIZE, (bottom - top - PACKET_SIZE) / (double)qMax(1, data_list.size()));
         foreach (DataPacket *packet, data_list)
         {
@@ -254,9 +254,9 @@ void MasterModule::paintEvent(QPaintEvent *event)
     painter.save();
     QPainterPath path;
     //画整个进度条
-    int bar_x_req = (width() - PACKET_SIZE) / 2 - PORT_SIZE * 2;//request的进度条
+    int bar_x_req = (width() - PACKET_SIZE * 16) / 2;//request的进度条
     int bar_y = height() / 5;
-    int bar_x_rsp = (width() + PACKET_SIZE) / 2 + PORT_SIZE * 2;//response的进度条
+    int bar_x_rsp = (width() + PACKET_SIZE * 16) / 2;//response的进度条
 //画request
     path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE * 2, height() * 3 / 5, 3, 3);

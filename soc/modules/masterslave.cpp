@@ -294,46 +294,46 @@ void MasterSlave::updatePacketPos()
     }
 
     QFontMetrics fm(this->font());
-    int line_height = fm.lineSpacing();
-    int left = width() / 5 + this->pos().x();
-    int right = width() * 3 / 5 + this->pos().x();
-    double one_piece = PACKET_SIZE + 4; // 一小块packet的位置（相对于left）
+    int left = width() / 2 + this->pos().x();
     int l = left;
-    int top = line_height + this->pos().y();
+    int top = height() / 2 + this->pos().y();
+    //int line_height = fm.lineSpacing();
+    //int right = width() / 2 + this->pos().x();
+    //double one_piece = PACKET_SIZE + 4; // 一小块packet的位置（相对于left）
     
-    l = left;
-    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, enqueue_list.size()));
+   // l = left;
+    //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, enqueue_list.size()));
     foreach (DataPacket *packet, enqueue_list)
     {
         packet->setDrawPos(QPoint(l, top));
-        l += one_piece;
+      //  l += one_piece;
     }
 
-    l = left;
-    top += PACKET_SIZE + 4;
-    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
+   // l = left;
+   // top += PACKET_SIZE + 4;
+    //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
     foreach (DataPacket *packet, data_list)
     {
         packet->setDrawPos(QPoint(l, top));
-        l += one_piece;
+        //l += one_piece;
     }
 
-    top += PACKET_SIZE + 4;
-    l = left;
-    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, dequeue_list.size()));
+   // top += PACKET_SIZE + 4;
+   // l = left;
+    //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, dequeue_list.size()));
     foreach (DataPacket *packet, dequeue_list)
     {
         packet->setDrawPos(QPoint(l, top));
-        l += one_piece;
+     //   l += one_piece;
     }
 
-    l = left;
-    top += PACKET_SIZE + 4;
-    one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_delay_list.size()));
+  //  l = left;
+    //top += PACKET_SIZE + 4;
+    //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_delay_list.size()));
     foreach (DataPacket *packet, send_delay_list)
     {
         packet->setDrawPos(QPoint(l, top));
-        l += one_piece;
+       // l += one_piece;
     }
 }
 
@@ -367,4 +367,72 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
 void MasterSlave::changeRequestsToResponse()
 {
     
+}
+
+void MasterSlave::paintEvent(QPaintEvent *event)
+{
+    ModuleBase::paintEvent(event);
+
+    QPainter painter(this);
+    QFontMetrics fm(this->font());
+    painter.setPen(QColor(211, 211, 211) );
+    painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
+
+    // 竖向的进度条
+    if(getClass() == "Master" || getClass() == "Slave")
+    {
+        painter.save();
+        QPainterPath path;
+        //画整个进度条
+        int bar_x_req = (width() - PACKET_SIZE * 16) / 2;//request的进度条
+        int bar_y = height() / 5;
+        int bar_x_rsp = (width() + PACKET_SIZE * 16) / 2;//response的进度条
+        //画request
+        path.addRoundedRect(bar_x_req, bar_y,
+                            PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
+        painter.fillPath(path,QColor(211, 211, 211));//填充
+        painter.setPen(QColor(105, 105, 105));
+        path.addRoundedRect(bar_x_req - 2, bar_y - 2,
+                            PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+        int req_count = 0, rsp_count = 0;
+        foreach(DataPacket *packet, dequeue_list + enqueue_list)
+        {
+            if(packet->isRequest())
+            {
+                req_count++;
+            }
+            else if(packet->isResponse())
+            {
+                rsp_count++;
+            }
+        }
+        //request数据
+        int token = getToken();//总的data
+        int current_token_req = data_list.size() + req_count;
+        int per = 64;
+        int count_req = (current_token_req * per + token / per / 2.0) / token;
+        //画response
+        path.addRoundedRect(bar_x_rsp, bar_y,
+                            PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
+        painter.fillPath(path,QColor(211, 211, 211));//填充
+        painter.setPen(QColor(105, 105, 105));
+        path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
+                            PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+        //response数据
+        int current_token_rsp = response_list.size() + rsp_count;
+        int count_rsp = (current_token_rsp * per + token / per / 2.0) / token;
+
+        //req动画
+        path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5 ,
+                            PACKET_SIZE * 2, height() * 3 * count_req / per / 5 , 3, 3);
+        painter.fillPath(path,QColor(85, 107, 47));//填充
+
+        //rsp动画
+        path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
+                            PACKET_SIZE * 2, height() * 3 * count_rsp / per / 5 , 3, 3);
+        painter.fillPath(path,QColor(85, 107, 47));//填充
+
+        painter.drawPath(path);
+        painter.restore();
+    }
 }
