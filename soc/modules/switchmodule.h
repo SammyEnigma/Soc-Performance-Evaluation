@@ -51,7 +51,6 @@ public slots:
 private:
     QQueue<DataPacket*> request_queue;
     QQueue<DataPacket*> response_queue;
-    int token;
     
     QList<SwitchPicker*> pickers;
     PacketList picked_delay_list;

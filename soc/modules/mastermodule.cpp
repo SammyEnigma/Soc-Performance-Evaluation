@@ -256,7 +256,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
     //画整个进度条
     int bar_x_req = (width() - PACKET_SIZE) / 2 - PORT_SIZE * 2;//request的进度条
     int bar_y = height() / 5;
-    int bar_x_rsp = (width() + PACKET_SIZE) / 2 + PORT_SIZE / 2;//response的进度条
+    int bar_x_rsp = (width() + PACKET_SIZE) / 2 + PORT_SIZE * 2;//response的进度条
 //画request
     path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
@@ -302,8 +302,8 @@ void MasterModule::paintEvent(QPaintEvent *event)
                         PACKET_SIZE * 2, height() * 3 * count_rsp / per / 5 , 3, 3);
     painter.fillPath(path,QColor(85, 107, 47));//填充
 
-    painter.restore();
     painter.drawPath(path);
+    painter.restore();
     }
   /*  if (port != nullptr)
     {

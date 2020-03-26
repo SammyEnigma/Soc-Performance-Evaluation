@@ -85,7 +85,7 @@ void SwitchModule::setDefaultDataList()
 
 int SwitchModule::getToken()
 {
-    return token;
+    return getDataValue("token").toInt();
 }
 
 void SwitchModule::passOnPackets()
@@ -286,18 +286,58 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     painter.save();
     QPainterPath path;
 
-    int bar_x_req = (width()-PACKET_SIZE) / 2;
+    int bar_x_req = (width() - PACKET_SIZE) / 2 - PORT_SIZE * 3;
     int bar_y = height() / 5;
-
+    int bar_x_rsp = (width() - PACKET_SIZE) / 2 + PORT_SIZE * 3;
+//画req
     path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE, height() * 3/ 5, 3, 3);
     painter.fillPath(path,QColor(211, 211, 211));//填充
     painter.setPen(QColor(105, 105, 105));
     path.addRoundedRect(bar_x_req - 2, bar_y - 2,
                         PACKET_SIZE + 4, height() * 3 / 5 + 4, 3, 3);//边界
+//画rsp
+    path.addRoundedRect(bar_x_rsp, bar_y,
+                        PACKET_SIZE, height() * 3 / 5, 3, 3);
+    painter.fillPath(path,QColor(211, 211, 211));//填充
+    painter.setPen(QColor(105, 105, 105));
+    path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
+                        PACKET_SIZE + 4, height() * 3 / 5 + 4, 3, 3);//边界
 
-    painter.restore();
+    int req_count = 0, rsp_count = 0;
+    foreach(DataPacket *packet, response_queue + request_queue)
+    {
+        if(packet->isRequest())
+        {
+            req_count++;
+            qDebug()<<"req_count:"<<req_count;
+        }
+        else if(packet->isResponse())
+        {
+            rsp_count++;
+            qDebug()<<"rsp_count:"<<rsp_count;
+        }
+    }
+//req数据
+    int token = getDataValue("token").toInt();
+    int current_token_req = req_count;
+    int per = 64;
+    int count_req = (current_token_req * per + token / per / 2.0) / token;
+//rsp数据
+    int current_token_rsp = rsp_count;
+    int count_rsp = (current_token_rsp * per + token / per / 2.0) / token;
+//req动画
+    path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5,
+                        PACKET_SIZE, height() * 3 * count_req / per / 5 , 3, 3);
+    painter.fillPath(path,QColor(85, 107, 47));//填充
+//rsp动画
+    path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
+                        PACKET_SIZE, height() * 3 * count_rsp / per / 5 , 3, 3);
+    painter.fillPath(path,QColor(85, 107, 47));//填充
+
+
     painter.drawPath(path);
+    painter.restore();
   /*
     ModulePort *port1 = nullptr, *port2 = nullptr;
     foreach (PortBase *port, ports)
