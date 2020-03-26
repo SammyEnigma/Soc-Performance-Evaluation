@@ -414,32 +414,22 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
     int w = draw_rect.width(), h = draw_rect.height();
 
     QPainterPath path;
-    switch (count)
-    {
-    case 2:
+    if (count <= 4)
     {
         // 固定四边形
         path.addRect(r);
-        break;
     }
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
+    else
     {
-        // 根据端口画形状
         path.moveTo(ports.first()->geometry().center());
         for (int i = 1; i < ports.size(); i++)
         {
             path.lineTo(ports.at(i)->geometry().center());
         }
         path.lineTo(ports.first()->geometry().center());
-        break;
     }
-    default:
-    {
+
+    if (0){
         // 画六边形
         // 3a^2 + 2wa - w^2 - h^2 = 0
         double delta = (2 * w) * (2 * w) - 4 * 3 * (-w * w - h * h);
@@ -452,7 +442,6 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
         path.lineTo((w - jie) / 2, h);
         path.lineTo(0, h / 2);
         path.lineTo((w - jie) / 2, 0);
-    }
     }
 
     painter.setRenderHint(QPainter::Antialiasing, true);
