@@ -281,6 +281,24 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     // 画自己的数量
     QPainter painter(this);
     QFontMetrics fm(this->font());
+    painter.setPen(QColor(211, 211, 211));
+    painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
+    painter.save();
+    QPainterPath path;
+
+    int bar_x_req = (width()-PACKET_SIZE) / 2;
+    int bar_y = height() / 5;
+
+    path.addRoundedRect(bar_x_req, bar_y,
+                        PACKET_SIZE, height() * 3/ 5, 3, 3);
+    painter.fillPath(path,QColor(211, 211, 211));//填充
+    painter.setPen(QColor(105, 105, 105));
+    path.addRoundedRect(bar_x_req - 2, bar_y - 2,
+                        PACKET_SIZE + 4, height() * 3 / 5 + 4, 3, 3);//边界
+
+    painter.restore();
+    painter.drawPath(path);
+  /*
     ModulePort *port1 = nullptr, *port2 = nullptr;
     foreach (PortBase *port, ports)
     {
@@ -291,9 +309,10 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     }
     if (port1 != nullptr && port2 != nullptr)
     {
-        /* painter.drawText(QPoint(4, 4 + fm.lineSpacing()), "M1可接收:" + QString::number(port1->getReceiveToken()));
-        painter.drawText(QPoint(4, 4 + fm.lineSpacing() * 2), "M2可接收:" + QString::number(port2->getReceiveToken())); */
+        painter.drawText(QPoint(4, 4 + fm.lineSpacing()), "M1可接收:" + QString::number(port1->getReceiveToken()));
+        painter.drawText(QPoint(4, 4 + fm.lineSpacing() * 2), "M2可接收:" + QString::number(port2->getReceiveToken()));
     }
+     */
 }
 
 /**

@@ -246,7 +246,6 @@ void MasterModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QFontMetrics fm(this->font());
     painter.setPen(QColor(211, 211, 211) );
-    int line_height = fm.height();
     painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
     
     // 竖向的进度条
@@ -272,7 +271,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
         {
             req_count++;
         }
-        else
+        else if(packet->isResponse())
         {
             rsp_count++;
         }
@@ -306,49 +305,6 @@ void MasterModule::paintEvent(QPaintEvent *event)
     painter.restore();
     painter.drawPath(path);
     }
-    /*if(count == 0)//0-12.5%=0%
-    {
-
-    }
-    else if(count == 1)//12.6%-37.5%=25%
-    {
-
-    }
-    else if(count == 2)//37.6%-62.5%=50%
-    {
-
-    }
-    else if(count == 3)//62.6%-87.5%=75%
-    {
-
-    }
-    else if(count == 4)//87.6%-100%= 100%
-    {
-
-    }*/
-
-
-   /*
-    //画进度条整体
-    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() / 5);
-    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() / 5);
-    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() * 4 / 5);
-    path.lineTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() * 4 / 5);
-    path.lineTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() / 5);
-
-    //画进度条1/4
-    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() * 13 / 20);
-    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() * 13 / 20);
-
-    //画进度条2/4
-    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() / 2);
-    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() / 2);
-
-    //画进度条3/4
-    path.moveTo((width() * 2 / 5 - PACKET_SIZE) / 2, height() * 7 / 20);
-    path.lineTo((width() * 2 / 5 + PACKET_SIZE) / 2, height() * 7 / 20);
-*/
-
   /*  if (port != nullptr)
     {
         painter.drawText(left, top, QString("%1").arg(enqueue_list.size()));
