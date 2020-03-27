@@ -666,7 +666,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                 {
                     ShapeBase *s = shape_lists.at(i);
                     QPoint p = pos - s->geometry().topLeft();          // 相对于内部
-                    if (s->geometry().contains(pos) && s->hasColor(p)) // 先判断点是否在里面，则会快速很多；否则每次都要渲染一大堆的，严重影响效率
+                    if (s->geometry().contains(pos) && s->hasColor(p) && s->getClass() != "ModulePanel") // 先判断点是否在里面，则会快速很多；否则每次都要渲染一大堆的，严重影响效率
                     {
                         log("!press_moved, 鼠标穿透至选中目标" + s->getClass());
                         select(s, QApplication::keyboardModifiers() == Qt::ControlModifier);

@@ -59,6 +59,15 @@ QList<QAction *> ModulePanel::addinMenuActions()
     return QList<QAction*>{set_frq_action};
 }
 
+void ModulePanel::mousePressEvent(QMouseEvent *event)
+{
+    if(rt->current_choosed_shape == 0)
+    {
+        return ModuleBase::mousePressEvent(event);
+    }
+    event->ignore();
+}
+
 void ModulePanel::passOnPackets()
 {
 

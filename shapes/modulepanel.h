@@ -17,6 +17,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
    virtual QList<QAction*> addinMenuActions() override;
+    void mousePressEvent(QMouseEvent* event) override;
 
 
 public slots:
