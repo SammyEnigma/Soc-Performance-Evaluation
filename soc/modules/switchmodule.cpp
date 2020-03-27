@@ -293,17 +293,22 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE, height() * 3/ 5, 3, 3);
     painter.fillPath(path,QColor(211, 211, 211));//填充
-    painter.setPen(QColor(105, 105, 105));
+    //
+    painter.setPen(QColor(85, 107, 47));
     path.addRoundedRect(bar_x_req - 2, bar_y - 2,
-                        PACKET_SIZE + 4, height() * 3 / 5 + 4, 3, 3);//边界
+                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3);//边界
+    painter.drawPath(path);
+   // path.clear();
 //画rsp
     path.addRoundedRect(bar_x_rsp, bar_y,
                         PACKET_SIZE, height() * 3 / 5, 3, 3);
     painter.fillPath(path,QColor(211, 211, 211));//填充
-    painter.setPen(QColor(105, 105, 105));
+   //
+    painter.setPen(QColor(85, 107, 47));
     path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
-                        PACKET_SIZE + 4, height() * 3 / 5 + 4, 3, 3);//边界
-
+                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3);//边界
+    painter.drawPath(path);
+    //path.clear();
     int req_count = 0, rsp_count = 0;
     foreach(DataPacket *packet, response_queue + request_queue)
     {
@@ -328,10 +333,11 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5,
                         PACKET_SIZE, height() * 3 * count_req / per / 5 , 3, 3);
     painter.fillPath(path,QColor(85, 107, 47));//填充
+    path.clear();
 //rsp动画
     path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
                         PACKET_SIZE, height() * 3 * count_rsp / per / 5 , 3, 3);
-    painter.fillPath(path,QColor(85, 107, 47));//填充
+    painter.fillPath(path,QColor(220, 20, 60/*85, 107, 47*/));//填充
 
 
     painter.drawPath(path);

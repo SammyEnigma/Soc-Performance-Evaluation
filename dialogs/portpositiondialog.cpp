@@ -19,7 +19,7 @@ void PortPositionDialog::initView()
 {
     bg_btn = new QPushButton(this);
     po_btn = new QPushButton(this);
-    bg_btn->setStyleSheet("background-color:rgb(200,200,200, 30); border:none;");
+    bg_btn->setStyleSheet("background-color:rgba(200,200,200,30); border:none;");
     po_btn->setStyleSheet("background-color:rgb(50,100,200);");
     po_btn->setFixedSize(5, 5);
 
