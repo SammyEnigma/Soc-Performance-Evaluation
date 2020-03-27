@@ -72,6 +72,7 @@ SOURCES += \
     soc/modules/switchmodule.cpp \
     soc/modules/switchpicker.cpp \
     soc/modules/watchmodule.cpp \
+    soc/tools/convexhull.cpp \
     soc/tools/watchwidget.cpp \
     soc/transmissions/datapacket.cpp \
     soc/transmissions/datapacketview.cpp
@@ -118,6 +119,7 @@ HEADERS += \
     soc/modules/switchmodule.h \
     soc/modules/switchpicker.h \
     soc/modules/watchmodule.h \
+    soc/tools/convexhull.h \
     soc/tools/watchwidget.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \

@@ -11,6 +11,7 @@
 #include "modulebase.h"
 #include "modulecable.h"
 #include "switchpicker.h"
+#include "convexhull.h"
 
 class SwitchModule : public ModuleBase
 {

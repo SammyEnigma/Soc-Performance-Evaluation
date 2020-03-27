@@ -478,12 +478,24 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
     }
     else
     {
+        ConvexHull convex;
+        convex.setPort(getPorts());
+        convex.startconvex();
+        //获取到凸包算法以后的点坐标
+        QList<QPoint> position = convex.getPoints();
+        path.moveTo(position.first());
+        for(int i = 1; i < position.size(); i++)
+        {
+            path.lineTo(position.at(i));
+        }
+        path.lineTo(position.first());
+       /*
         path.moveTo(ports.first()->geometry().center());
         for (int i = 1; i < ports.size(); i++)
         {
             path.lineTo(ports.at(i)->geometry().center());
         }
-        path.lineTo(ports.first()->geometry().center());
+        path.lineTo(ports.first()->geometry().center());*/
     }
 
     if (0){
