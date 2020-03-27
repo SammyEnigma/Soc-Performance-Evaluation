@@ -469,13 +469,24 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
     int count = ports.size();
     QRect& r = draw_rect;
     int w = draw_rect.width(), h = draw_rect.height();
-
+    //const double pi = 3.14;
     QPainterPath path;
     if (count <= 4)
     {
         // 固定四边形
         path.addRect(r);
     }
+   /* else if (count == 5)//五边形
+    {
+       double radius = qMin(r.width() / 2 / cos(9 / pi), r.height() / (1 + cos(18 / pi)));
+       path.moveTo(r.center() - QPoint(0, radius));
+       int angle = 90;
+       for(int i = 0; i < 5; i++)
+       {
+       path.lineTo(r.center() + QPoint(radius * cos(angle / 2 / pi), - radius * sin(angle / 2 / pi)));
+       angle -= 72;
+       }
+    }*/
     else
     {
         ConvexHull convex;

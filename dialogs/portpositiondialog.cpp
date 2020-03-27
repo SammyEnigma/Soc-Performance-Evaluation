@@ -19,7 +19,7 @@ void PortPositionDialog::initView()
 {
     bg_btn = new QPushButton(this);
     po_btn = new QPushButton(this);
-    bg_btn->setStyleSheet("background-color:rgb(200,200,200); border:none;");
+    bg_btn->setStyleSheet("background-color:rgb(200,200,200, 30); border:none;");
     po_btn->setStyleSheet("background-color:rgb(50,100,200);");
     po_btn->setFixedSize(5, 5);
 
@@ -50,4 +50,16 @@ void PortPositionDialog::resizeEvent(QResizeEvent *event)
 
     bg_btn->setGeometry(10, 10, width()-20, height()-20);
     adjustPortShowed();
+}
+
+void PortPositionDialog::paintEvent(QPaintEvent *event)
+{
+    QWidget::paintEvent(event);
+
+    QPainter painter(this);
+    painter.setPen(QPen(QColor(0x88, 0x88, 0x88, 0x40)));
+    for (int x = 0; x < width(); x += 30)
+        painter.drawLine(x, 0, x, height());
+    for (int y = 0; y < height(); y += 30)
+        painter.drawLine(0, y, width(), y);
 }
