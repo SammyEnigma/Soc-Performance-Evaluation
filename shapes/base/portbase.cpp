@@ -132,7 +132,7 @@ void PortBase::fromString(QString s)
     double y = StringUtil::getXml(s, "PROP_POS_Y").toDouble();
     _prop_pos = QPointF(x, y);
     _port_id = StringUtil::getXml(s, "PORT_ID");
-    routing_id = StringUtil::getXmlInt(s, "ROUNTING_ID", 0);
+    routing_id = StringUtil::getXmlInt(s, "ROUNTING_ID");
     fromStringAddin(s);
     setText(text);
 }
