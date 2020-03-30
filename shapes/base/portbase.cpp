@@ -207,7 +207,7 @@ void PortBase::slotMenuShowed(const QPoint &)
     menu->addSeparator();
     menu->addAction(position_action);
     menu->addAction(delete_action);
-    menu->addAction(token_action);
+   // menu->addAction(token_action);
     
     connect(data_action, SIGNAL(triggered()), this, SLOT(slotDataList()));
 
