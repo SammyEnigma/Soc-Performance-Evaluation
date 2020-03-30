@@ -50,6 +50,16 @@ QWidget *PortBase::getShape()
     return widget;
 }
 
+void PortBase::setRoutingID(int id)
+{
+    routing_id = id;
+}
+
+int PortBase::getRoutingID()
+{
+    return routing_id;
+}
+
 void PortBase::setOppositePort(PortBase *port)
 {
     this->opposite = port;
@@ -122,6 +132,7 @@ void PortBase::fromString(QString s)
     double y = StringUtil::getXml(s, "PROP_POS_Y").toDouble();
     _prop_pos = QPointF(x, y);
     _port_id = StringUtil::getXml(s, "PORT_ID");
+    routing_id = StringUtil::getXmlInt(s, "ROUNTING_ID", 0);
     fromStringAddin(s);
     setText(text);
 }
@@ -131,6 +142,7 @@ QString PortBase::toString()
     QString port_string;
     QString indent = "\n\t\t";
     port_string += indent + StringUtil::makeXml(_port_id, "PORT_ID");
+    port_string += indent + StringUtil::makeXml(routing_id, "ROUTING_ID");
     if (!_text.isEmpty())
         port_string += indent + StringUtil::makeXml(_text, "TEXT");
     port_string += indent + StringUtil::makeXml(QString::number(_prop_pos.x()), "PROP_POS_X");

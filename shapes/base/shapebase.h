@@ -90,6 +90,8 @@ public:
     QString readedText();
 
     // 数据
+    void setRoutingID(int id);
+    int getRoutingID();
     CustomDataType* getData(QString name);
     bool containsData(QString name);
     QVariant getDataValue(QString name, QVariant def = 0);
@@ -139,7 +141,8 @@ public slots:
 protected:
 	// 形状属性
     QString _class;            // 形状类名（默认设为前景文字）
-    QString _text;             // 前景文字
+    QString _text;             // 前景文字（也当做ID，必须唯一）
+    int routing_id;            // 用户自定义路由ID
     Qt::Alignment _text_align; // 文字对齐
     QColor _text_color;        // 文字颜色
     QPixmap _pixmap;           // 前景图标

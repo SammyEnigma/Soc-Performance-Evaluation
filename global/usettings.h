@@ -21,6 +21,8 @@ public:
     bool drag_shape_auto_return = getBool("us/drag_shape_auto_return", true);
     bool show_port_info = getBool("us/show_port_info", true);
     bool show_animation = getBool("us/show_animation", true);
+    
+    
 };
 
 #endif // USETTINGS_H

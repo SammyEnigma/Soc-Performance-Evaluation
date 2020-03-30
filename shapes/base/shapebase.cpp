@@ -95,6 +95,7 @@ void ShapeBase::fromString(QString s)
 
     setGeometry(left, top, width, height);
     setText(text);
+    routing_id = StringUtil::getXmlInt(s, "ROUTING_ID");
     if (!text_align.isEmpty())
         _text_align = static_cast<Qt::Alignment>(text_align.toInt());
     if (text_color != Qt::transparent)
@@ -141,6 +142,7 @@ QString ShapeBase::toString()
     shape_string += indent + StringUtil::makeXml(geometry().height(), "HEIGHT");
     shape_string += indent + StringUtil::makeXml(getClass(), "CLASS");
     shape_string += indent + StringUtil::makeXml(getText(), "TEXT");
+    shape_string += indent + StringUtil::makeXml(getRoutingID(), "ROUTING_ID");
     if (_text_align != DEFAULT_TEXT_ALIGN && _text_align != 0)
         shape_string += indent + StringUtil::makeXml(static_cast<int>(_text_align), "TEXT_ALIGN");
     if (_text_color != DEFAULT_TEXT_COLOR)
@@ -178,6 +180,16 @@ QString ShapeBase::toStringAppend()
 QString ShapeBase::readedText()
 {
     return _readed_text;
+}
+
+void ShapeBase::setRoutingID(int id)
+{
+    routing_id = id;
+}
+
+int ShapeBase::getRoutingID()
+{
+    return routing_id;
 }
 
 CustomDataType *ShapeBase::getData(QString name)
