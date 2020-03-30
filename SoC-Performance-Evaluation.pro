@@ -36,6 +36,7 @@ SOURCES += \
     dialogs/moduledatadialog.cpp \
     dialogs/portdatadialog.cpp \
     dialogs/portpositiondialog.cpp \
+    dialogs/routingtabledialog.cpp \
     dialogs/shapedatadialog.cpp \
     dialogs/shapepropertydialog.cpp \
     global/globalvars.cpp \
@@ -82,6 +83,7 @@ HEADERS += \
     dialogs/moduledatadialog.h \
     dialogs/portdatadialog.h \
     dialogs/portpositiondialog.h \
+    dialogs/routingtabledialog.h \
     dialogs/shapedatadialog.h \
     dialogs/shapepropertydialog.h \
     global/Fraction.h \
@@ -134,6 +136,7 @@ HEADERS += \
 FORMS += \
     dialogs/moduledatadialog.ui \
     dialogs/portdatadialog.ui \
+    dialogs/routingtabledialog.ui \
     mainwindow.ui \
     shapedatadialog.ui \
     shapepropertydialog.ui

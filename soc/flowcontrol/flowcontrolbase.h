@@ -52,6 +52,7 @@ public slots:
     void printfAllData(); // 调试输出
     void delayRun(int delay, RunType& f);
     void changeSpeed(double ratio = 2);
+    void modifyRoutingTable(); // 设置routing
 
 protected:
     virtual bool initModules();

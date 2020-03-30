@@ -367,3 +367,8 @@ void FlowControlBase::changeSpeed(double ratio)
         view->setAnimationDuration(interval);
     }
 }
+
+void FlowControlBase::modifyRoutingTable()
+{
+
+}

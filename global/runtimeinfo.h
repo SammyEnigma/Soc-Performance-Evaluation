@@ -71,6 +71,7 @@ public:
             routing_table = nullptr;
         }
         
+        // 创建固定大小的table
         routing_table_size = x;
         routing_table = new int*[routing_table_size];
         for (int i = 0; i < routing_table_size; i++)
