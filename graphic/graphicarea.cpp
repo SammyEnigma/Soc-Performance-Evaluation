@@ -1065,7 +1065,19 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     // menu->addAction(show_data_action);
     menu->addAction(watch_action);
     // menu->addAction(watch_clock_action);
-
+    foreach(auto shape, selected_shapes)
+    {
+        if (shape->getClass() == "WatchModule")
+        {
+            property_action->setVisible(false);
+            data_action->setVisible(false);
+            add_port_action->setVisible(false);
+            select_all_action->setVisible(false);
+            copy_action->setVisible(false);
+            paste_action->setVisible(false);
+            watch_action->setVisible(false);
+        }
+    }
     // 没有选中形状，禁用删除等菜单
     if (selected_shapes.size() == 0)
     {

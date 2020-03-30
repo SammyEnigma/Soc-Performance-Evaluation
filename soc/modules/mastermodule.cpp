@@ -264,6 +264,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
     painter.setPen(QColor(105, 105, 105));
     path.addRoundedRect(bar_x_req - 2, bar_y - 2,
                         PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+    painter.drawPath(path);
     int req_count = 0, rsp_count = 0;
     foreach(DataPacket *packet, dequeue_list + enqueue_list)
     {
@@ -288,6 +289,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
     painter.setPen(QColor(105, 105, 105));
     path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
                         PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+    painter.drawPath(path);
 //response数据
     int current_token_rsp = response_list.size() + rsp_count;
     int count_rsp = (current_token_rsp * per + token / per / 2.0) / token;
@@ -296,11 +298,12 @@ void MasterModule::paintEvent(QPaintEvent *event)
     path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5 ,
                         PACKET_SIZE * 2, height() * 3 * count_req / per / 5 , 3, 3);
     painter.fillPath(path,QColor(85, 107, 47));//填充
+    path.clear();
 
     //rsp动画
     path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
                         PACKET_SIZE * 2, height() * 3 * count_rsp / per / 5 , 3, 3);
-    painter.fillPath(path,QColor(85, 107, 47));//填充
+    painter.fillPath(path,QColor(220, 20, 60));//填充
 
     painter.drawPath(path);
     painter.restore();
