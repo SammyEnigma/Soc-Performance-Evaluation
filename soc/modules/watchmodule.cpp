@@ -252,7 +252,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
             }
             painter.setFont(big_font);
             painter.setPen(TokenColor);
-            painter.drawText(left, height * line++, QString::number(master->getDataValue("token").toInt() - req_count));
+            painter.drawText(left, height * line++, QString::number(master->getDataValue("token").toInt() - req_count) + "/" + QString::number(master->getDataValue("token").toInt()));
             //painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getReceiveToken()));
             
 //            painter.setFont(normal_font);
