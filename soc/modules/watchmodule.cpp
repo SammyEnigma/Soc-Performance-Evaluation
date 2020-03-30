@@ -294,11 +294,13 @@ void WatchModule::paintEvent(QPaintEvent *event)
                 painter.drawText(left, height * line, live_frq_str);
                 painter.setFont(normal_font);
                 painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
+                /*
                 painter.setFont(big_font);
                 painter.setPen(TokenColor);
-                painter.drawText(left, height * line++, QString::number(target_module->getDataValue("token").toInt() - static_cast<MasterSlave *>(target_module)->getReqCount()));
+                painter.drawText(left, height * line++, QString::number(target_module->getDataValue("token").toInt() - static_cast<MasterSlave *>(target_module)->getReqCount()));*/
             }
         }
+
         else
         {
             painter.drawText(4, height, "无");
