@@ -19,7 +19,8 @@ public:
         WATCH_CUSTOM,//模块和端口
         WATCH_SYSTEM,//全局
         WATCH_FREQUENCE,//频率
-        WATCH_CLOCK//时钟周期
+        WATCH_CLOCK,//时钟周期
+        WATCH_TOKEN//TOKEN
     };
 
     void setTarget(ModulePort* mp);
@@ -32,6 +33,7 @@ public:
     
     virtual QString toStringAppend() override;
     virtual void fromStringAppend(QString s) override;
+    void setWatchType(WatchType type);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -44,6 +46,7 @@ signals:
     void signalWatchModuleID(WatchModule* watch, QString text);
     void signalWatchFrequence(WatchModule* watch);
     void signalWatchClock(WatchModule* watch);
+   // void signalWatchToken(WatchModule* watch);
 
 public slots:
     virtual void passOnPackets() override {} // 1、queue中packet延迟满后，传入到下一个queue

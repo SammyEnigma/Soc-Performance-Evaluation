@@ -23,6 +23,9 @@ public:
     int getDefaultToken();
 
     int getProcessDelay();
+
+    int getReqCount();
+    int getRspCount();
     
     ModulePort* getOutPort(DataPacket* packet);
 

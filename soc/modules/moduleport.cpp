@@ -241,10 +241,10 @@ void ModulePort::paintEvent(QPaintEvent *event)
     PortBase::paintEvent(event);
 
     // 显示数字
-    QPainter painter(this);
+   /* QPainter painter(this);
     QFontMetrics fm(this->font());
     int w = fm.horizontalAdvance(QString::number(another_can_receive));
-    painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));
+    painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));*/
 }
 
 void ModulePort::slotDataList()

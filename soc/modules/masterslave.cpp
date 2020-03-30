@@ -101,6 +101,8 @@ int MasterSlave::getProcessDelay()
     return process_delay->i();
 }
 
+
+
 void MasterSlave::passOnPackets()
 {
     foreach (PortBase *port, ShapeBase::ports)
@@ -369,6 +371,31 @@ void MasterSlave::changeRequestsToResponse()
     
 }
 
+int MasterSlave::getReqCount()
+{
+    int req_count = 0;
+    foreach(DataPacket *packet, data_list + dequeue_list + enqueue_list)
+    {
+        if(packet->isRequest())
+        {
+            req_count++;
+        }
+    }
+    return req_count;
+}
+
+int MasterSlave::getRspCount()
+{
+    int rsp_count = 0;
+    foreach(DataPacket *packet, data_list + dequeue_list + enqueue_list)
+    {
+      if(packet->isResponse())
+        {
+            rsp_count++;
+        }
+    }
+    return rsp_count;
+}
 void MasterSlave::paintEvent(QPaintEvent *event)
 {
     ModuleBase::paintEvent(event);

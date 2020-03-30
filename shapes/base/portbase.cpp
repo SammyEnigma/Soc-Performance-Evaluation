@@ -154,11 +154,11 @@ void PortBase::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
     QPainter painter(this);
-    painter.fillRect(0,0,width(),width(),QColor(128,128,128,64));
+    painter.fillRect(0,0,width(),width(),QColor(128,128,128,16));
 
     QPainterPath path;
     path.addRect(0,0,width()-1,height()-1);
-    painter.setPen(QColor(0,0,0,64));
+    painter.setPen(QColor(0,0,0,16));
     painter.drawPath(path);
 }
 
@@ -189,11 +189,13 @@ void PortBase::slotMenuShowed(const QPoint &)
     QAction* link_action = new QAction("watch", this);
     QAction* position_action = new QAction("position", this);
     QAction* delete_action = new QAction("delete", this);
+    QAction* token_action = new QAction("token", this);
     menu->addAction(data_action);
     menu->addAction(link_action);
     menu->addSeparator();
     menu->addAction(position_action);
     menu->addAction(delete_action);
+    menu->addAction(token_action);
     
     connect(data_action, SIGNAL(triggered()), this, SLOT(slotDataList()));
 
@@ -209,6 +211,9 @@ void PortBase::slotMenuShowed(const QPoint &)
         emit signalWatch();
     });
 
+    connect(token_action, &QAction::triggered, [=]{
+        emit signalToken();
+    });
     menu->exec(QCursor::pos());
     delete menu;
 }
