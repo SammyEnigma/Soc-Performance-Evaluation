@@ -325,6 +325,10 @@ void ShapeBase::addPort(PortBase *port)
         emit signalPortWatch(port);
     });
 
+    connect(port, &PortBase::signalToken, this, [=]{
+        emit signalPortToken(port);
+    });
+
     emit signalPortInserted(port);
 }
 

@@ -9,10 +9,10 @@ WatchModule::WatchModule(QWidget *parent) : ModuleBase(parent), watch_type(Watch
     _pixmap_scale = true;
 
     _pixmap_color = QColor(0x88, 0x88, 0x88, 0x18);
-    QPixmap pixmap(120, 140);
+    QPixmap pixmap(112, 140);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawShapePixmap(painter, QRect(2,2,216,136));
+    drawShapePixmap(painter, QRect(2,2,108,136));
     _pixmap = pixmap;
 
     big_font = normal_font = bold_font = font();
@@ -114,6 +114,11 @@ void WatchModule::fromStringAppend(QString s)
     }
 }
 
+void WatchModule::setWatchType(WatchModule::WatchType type)
+{
+    watch_type = type;
+}
+
 QList<QAction*> WatchModule::addinMenuActions()
 {
     QAction* watch_port_action = new QAction("watch port");
@@ -154,6 +159,8 @@ QList<QAction*> WatchModule::addinMenuActions()
        emit signalWatchClock(this);
     });
 
+
+
     return QList<QAction*>{watch_port_action, watch_module_action, watch_system_action, watch_frq_action, watch_clock_action};
 }
 
@@ -174,7 +181,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
     // 添加对绘制内容的监控
     if (watch_type == WATCH_CUSTOM)
     {
-        if (target_port)
+        if (target_port)//监控端口
         {
             
             // 真实bandwidth
@@ -232,12 +239,26 @@ void WatchModule::paintEvent(QPaintEvent *event)
 
             // Token
             painter.setPen(TokenColor);
-            painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getReceiveToken()));
+            int req_count = 0;
+            MasterModule* master = static_cast<MasterModule *>(target_port->parentWidget());
+            if(master == nullptr)
+                return;
+            foreach(DataPacket *packet, master->enqueue_list + master->dequeue_list + master->data_list)
+            {
+                if(packet->isRequest())
+                {
+                    req_count++;
+                }
+            }
+            painter.setFont(big_font);
+            painter.setPen(TokenColor);
+            painter.drawText(left, height * line++, QString::number(master->getDataValue("token").toInt() - req_count));
+            //painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getReceiveToken()));
             
 //            painter.setFont(normal_font);
 //            painter.drawText(left, height*line++, QString("%1/%2-%3(%4)").arg(target_port->getTotalSended()).arg(target_port->getTotalReceived()).arg(target_port->getBeginWaited()).arg(passed_frame));
         }
-        else if (target_module)
+        else if (target_module)//模块
         {
             QString cls = target_module->getClass();
             if (cls == "ModuleCable")
@@ -271,9 +292,11 @@ void WatchModule::paintEvent(QPaintEvent *event)
                     }
                 }
                 painter.drawText(left, height * line, live_frq_str);
-
                 painter.setFont(normal_font);
                 painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
+                painter.setFont(big_font);
+                painter.setPen(TokenColor);
+                painter.drawText(left, height * line++, QString::number(target_module->getDataValue("token").toInt() - static_cast<MasterSlave *>(target_module)->getReqCount()));
             }
         }
         else
@@ -308,6 +331,23 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz"/*+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte"*/);
         }
 
+    }
+    else if(watch_type == WATCH_TOKEN)
+    {
+        int req_count = 0;
+        MasterModule* master = static_cast<MasterModule *>(target_port->parentWidget());
+        if(master == nullptr)
+            return;
+        foreach(DataPacket *packet, master->enqueue_list + master->dequeue_list + master->data_list)
+        {
+            if(packet->isRequest())
+            {
+                req_count++;
+            }
+        }
+        painter.setFont(big_font);
+        painter.setPen(TokenColor);
+        painter.drawText(left, height * line++, QString::number(master->getDataValue("token").toInt() - req_count));
     }
     else
     {
