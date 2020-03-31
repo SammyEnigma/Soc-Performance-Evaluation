@@ -52,6 +52,8 @@ public:
 protected:
     CustomDataType *token;
     CustomDataType *process_delay;
+private:
+    QFont big_font, normal_font, bold_font;
 };
 
 #endif // MASTERSLAVE_H

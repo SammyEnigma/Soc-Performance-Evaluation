@@ -10,6 +10,11 @@
 SwitchModule::SwitchModule(QWidget *parent) : ModuleBase(parent)
 {
     _class = _text = "Switch";
+    big_font = normal_font = bold_font = font();
+    big_font.setPointSize(normal_font.pointSize() * 2);
+    bold_font.setBold(true);
+    big_font.setBold(true);
+    normal_font.setBold(true);
 
     QPixmap pixmap(DEFAULT_SIZE, DEFAULT_SIZE);
     pixmap.fill(Qt::transparent);
@@ -282,6 +287,7 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QFontMetrics fm(this->font());
     painter.setPen(QColor(211, 211, 211));
+    QFont font = this->font();
     painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
     painter.save();
     QPainterPath path;
@@ -333,12 +339,19 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5,
                         PACKET_SIZE, height() * 3 * count_req / per / 5 , 3, 3);
     painter.fillPath(path,QColor(85, 107, 47));//填充
+    painter.setPen(QColor(0, 0, 0));
+    painter.setFont(normal_font);
+    painter.drawText((width() - PACKET_SIZE * 16 - (fm.horizontalAdvance(_text))* 3) / 2, height()/2,
+                     QString("%1/%2").arg(current_token_req).arg(getDataValue("token").toInt()));
     path.clear();
 //rsp动画
     path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
                         PACKET_SIZE, height() * 3 * count_rsp / per / 5 , 3, 3);
     painter.fillPath(path,QColor(220, 20, 60/*85, 107, 47*/));//填充
-
+    painter.setPen(QColor(220, 20, 60));
+    painter.setFont(normal_font);
+    painter.drawText((width() + PACKET_SIZE * 16 - fm.horizontalAdvance(_text)) / 2, height()/2,
+                     QString("%1/%2").arg(current_token_rsp).arg(getDataValue("token").toInt()));
 
     painter.drawPath(path);
     painter.restore();

@@ -307,7 +307,8 @@ void MasterModule::paintEvent(QPaintEvent *event)
     //req文字
     painter.setPen(QColor(0, 0, 0));
     painter.setFont(normal_font);
-    painter.drawText((width() - PACKET_SIZE * 16 - (fm.horizontalAdvance(_text))* 2) / 2, height()/2, QString("%1/%2").arg(current_token_req).arg(getToken()));
+    painter.drawText((width() - PACKET_SIZE * 16 - (fm.horizontalAdvance(_text))* 2) / 2, height()/2,
+                     QString("%1/%2").arg(current_token_req).arg(getToken()));
     path.clear();
 
     //rsp动画
@@ -317,8 +318,9 @@ void MasterModule::paintEvent(QPaintEvent *event)
     //rsp文字
     painter.setPen(QColor(220, 20, 60));
     painter.setFont(normal_font);
-    painter.drawText((width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2, height()/2, QString("%1/%2").arg(current_token_rsp).arg(getToken()));
-    path.clear();
+    painter.drawText((width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2, height()/2,
+                     QString("%1/%2").arg(current_token_rsp).arg(getToken()));
+    //path.clear();
     painter.drawPath(path);
     painter.restore();
     }
