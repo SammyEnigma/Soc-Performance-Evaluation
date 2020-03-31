@@ -415,7 +415,7 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 
     // 根据是否有文字判断是否要缩减图标区域
     QRect draw_rect(_area);
-    QRect text_rect = _area;
+    //QRect text_rect = _area;
     if (!_text.isEmpty())
     {
         if ((_text_align & Qt::AlignTop) || (_text_align & Qt::AlignBottom))
@@ -450,7 +450,9 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     if (!_text.isEmpty())
     {
         painter.setPen(_text_color);
-        painter.drawText(text_rect, _text_align, _text);
+        //painter.drawText(text_rect, _text_align, _text);
+        painter.drawText((width() - fm.horizontalAdvance(_text)) / 8, (height() - spacing) / 4, _text);
+
     }
 
     return QWidget::paintEvent(event);
