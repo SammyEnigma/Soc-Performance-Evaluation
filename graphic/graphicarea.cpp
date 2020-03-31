@@ -81,44 +81,52 @@ QString GraphicArea::toString()
 
 void GraphicArea::slotSetFrequence(ModulePanel *panel)
 {
-  QString bandwidth = QInputDialog::getText(this, "Please input bandwidth", "It can be an integer, fraction, or decimal");
-  TimeFrame t(bandwidth);
-  if(!t.isValid())
-  {
-      return;
-  }
+    QString bandwidth = QInputDialog::getText(this, "Please input bandwidth", "It can be an integer, fraction, or decimal");
+    TimeFrame t(bandwidth);
+    if (!t.isValid())
+    {
+        return;
+    }
 
-  //先获取shape的port
-  //判断是否在modulepanel当中
-  QRect rect = panel->geometry();//获取shape坐标
-  foreach(ShapeBase *shape, shape_lists)
-  {
-      QRect shaperect = shape->geometry();
+    //先获取shape的port
+    //判断是否在modulepanel当中
+    QRect rect = panel->geometry(); //获取shape坐标
+    foreach (ShapeBase *shape, shape_lists)
+    {
+        QRect shaperect = shape->geometry();
 
-      if(rect.contains(shaperect))
-      {
-          foreach(PortBase *port, shape->getPorts())
-          {
-              ((ModulePort*)port)->setBandwidth(t);
-          }
-      }
-  }
-
+        if (rect.contains(shaperect))
+        {
+            foreach (PortBase *port, shape->getPorts())
+            {
+                ((ModulePort *)port)->setBandwidth(t);
+            }
+        }
+    }
 }
 //获取每个在modulepanel里的port的bandwidth
 void GraphicArea::slotGetFrequence(ModulePanel *panel, double *bandwidth)
 {
- QRect rect = panel->geometry();
- foreach(ShapeBase *shape, shape_lists)
- {
-     QRect shaperect = shape->geometry();
+    QRect rect = panel->geometry();
+    foreach (ShapeBase *shape, shape_lists)
+    {
+        QRect shaperect = shape->geometry();
 
-     if(rect.contains(shaperect))
-         foreach(PortBase *port, shape->getPorts())
-         {
-            *bandwidth = ((ModulePort*)port)->getBandwidth().toDouble();
-         }
- }
+        if (rect.contains(shaperect))
+            foreach (PortBase *port, shape->getPorts())
+            {
+                *bandwidth = ((ModulePort *)port)->getBandwidth().toDouble();
+            }
+    }
+}
+
+/**
+ * 打开routing
+ */
+void GraphicArea::slotOpenRouting(SwitchModule* switch)
+{
+	RoutingTableDialog* rtd = new RoutingTableDialog(switch);
+    rtd->exec();
 }
 
 /**
@@ -307,9 +315,9 @@ void GraphicArea::remove(ShapeBase *shape)
     if (rt->running)
     {
         QMessageBox::critical(this, "错误", "运行期间不可删除控件");
-        return ;
+        return;
     }
-	
+
     if (shape == nullptr) // 删除所选形状
     {
         foreach (ShapeBase *shape, selected_shapes)
@@ -323,19 +331,19 @@ void GraphicArea::remove(ShapeBase *shape)
     selected_shapes.removeOne(shape);
     shape_lists.removeOne(shape);
     clip_board.removeOne(shape);
-    
+
     // 删除形状的端口
     if (shape->getLargeType() != CableType) // 本身不是连接线
     {
         log("删除形状的连接线");
-        QMap<QString, PortBase*>::iterator it = ports_map.begin();
+        QMap<QString, PortBase *>::iterator it = ports_map.begin();
         while (it != ports_map.end())
         {
             if ((*it)->getShape() == shape)
             {
                 // 删除连接线
-                PortBase* port = (*it);
-                log("delete shape's port"+port->getPortId());
+                PortBase *port = (*it);
+                log("delete shape's port" + port->getPortId());
                 removePortCable(port);
 
                 // 删除后自动移到下一个，不需要自增
@@ -352,7 +360,7 @@ void GraphicArea::remove(ShapeBase *shape)
     }
     else // 连接线，删除端口信息
     {
-        CableBase* cable = static_cast<CableBase*>(shape);
+        CableBase *cable = static_cast<CableBase *>(shape);
         if (cable->getFromPort() != nullptr)
             cable->getFromPort()->clearCable();
         if (cable->getToPort() != nullptr)
@@ -360,7 +368,7 @@ void GraphicArea::remove(ShapeBase *shape)
         cable_lists.removeOne(cable);
     }
     shape->deleteLater();
-//    shape->hide();
+    //    shape->hide();
 }
 
 void GraphicArea::zoomIn(double prop)
@@ -374,10 +382,10 @@ void GraphicArea::zoomIn(double prop)
     setFixedSize(new_width, new_height);
 
     // TODO: 移动控件位置和大小
-    foreach (ShapeBase* shape, shape_lists)
+    foreach (ShapeBase *shape, shape_lists)
     {
-        int w = shape->width()*prop;
-        int h = shape->height()*prop;
+        int w = shape->width() * prop;
+        int h = shape->height() * prop;
         // 调整形状位置以及端口位置
         int x = shape->pos().x() * prop; // - shape->width() * (prop-1) / 2;
         int y = shape->pos().y() * prop; // - shape->height() * (prop-1) / 2;
@@ -385,7 +393,7 @@ void GraphicArea::zoomIn(double prop)
     }
 
     // 调整连接线的位置
-    foreach (CableBase* cable, cable_lists)
+    foreach (CableBase *cable, cable_lists)
     {
         cable->adjustGeometryByPorts();
     }
@@ -393,7 +401,7 @@ void GraphicArea::zoomIn(double prop)
 
 ShapeBase *GraphicArea::findShapeByText(QString text)
 {
-    foreach (ShapeBase* shape, shape_lists)
+    foreach (ShapeBase *shape, shape_lists)
     {
         if (shape->getText() == text)
             return shape;
@@ -403,7 +411,7 @@ ShapeBase *GraphicArea::findShapeByText(QString text)
 
 ShapeBase *GraphicArea::findShapeByClass(QString text)
 {
-    foreach (ShapeBase* shape, shape_lists)
+    foreach (ShapeBase *shape, shape_lists)
     {
         if (shape->getClass() == text)
             return shape;
@@ -510,13 +518,13 @@ void GraphicArea::mouseMoveEvent(QMouseEvent *event)
 
                     // 遍历寻找最近的端口
                     int min_dis = 200;
-                    PortBase* nearest_port = nullptr;
+                    PortBase *nearest_port = nullptr;
                     QPoint mouse_pos = event->pos();
-                    CableBase* cable = static_cast<CableBase*>(_drag_prev_shape);
-                    foreach (PortBase* port, ports_map)
+                    CableBase *cable = static_cast<CableBase *>(_drag_prev_shape);
+                    foreach (PortBase *port, ports_map)
                     {
                         QPoint port_pos = port->getGlobalPos();
-                        int dis = (port_pos-mouse_pos).manhattanLength();
+                        int dis = (port_pos - mouse_pos).manhattanLength();
                         if (dis < min_dis)
                         {
                             min_dis = dis;
@@ -599,15 +607,15 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                 {
                     // 遍历寻找最近的端口
                     int min_dis = 200;
-                    PortBase* nearest_port = nullptr;
+                    PortBase *nearest_port = nullptr;
                     QPoint mouse_pos = event->pos();
-                    CableBase* cable = static_cast<CableBase*>(_drag_prev_shape);
-                    foreach (PortBase* port, ports_map)
+                    CableBase *cable = static_cast<CableBase *>(_drag_prev_shape);
+                    foreach (PortBase *port, ports_map)
                     {
                         if (port == _stick_from_port) // 是和from同一个的端口，取消创建
                             continue;
                         QPoint port_pos = port->getGlobalPos();
-                        int dis = (port_pos-mouse_pos).manhattanLength();
+                        int dis = (port_pos - mouse_pos).manhattanLength();
                         if (dis < min_dis)
                         {
                             min_dis = dis;
@@ -619,10 +627,9 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                     {
                         // 判断是否已经有已存在的
                         bool had = false;
-                        foreach (CableBase* cable, cable_lists)
+                        foreach (CableBase *cable, cable_lists)
                         {
-                            if ((cable->getFromPort() == _stick_from_port && cable->getToPort() == nearest_port)
-                                || (cable->getFromPort() == nearest_port && cable->getToPort() == _stick_from_port))
+                            if ((cable->getFromPort() == _stick_from_port && cable->getToPort() == nearest_port) || (cable->getFromPort() == nearest_port && cable->getToPort() == _stick_from_port))
                             {
                                 had = true;
                             }
@@ -665,7 +672,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                 for (int i = shape_lists.size() - 1; i >= 0; --i) // 逆序遍历，找到能够传递点击事件的控件
                 {
                     ShapeBase *s = shape_lists.at(i);
-                    QPoint p = pos - s->geometry().topLeft();          // 相对于内部
+                    QPoint p = pos - s->geometry().topLeft();                                            // 相对于内部
                     if (s->geometry().contains(pos) && s->hasColor(p) && s->getClass() != "ModulePanel") // 先判断点是否在里面，则会快速很多；否则每次都要渲染一大堆的，严重影响效率
                     {
                         log("!press_moved, 鼠标穿透至选中目标" + s->getClass());
@@ -773,7 +780,7 @@ void GraphicArea::paintEvent(QPaintEvent *event)
         QColor c = this->palette().color(QPalette::Midlight);
         painter.fillRect(_select_rect, c);
     }
-    
+
     painter.setPen(QPen(QColor(0x88, 0x88, 0x88, 0x30)));
     for (int x = 0; x < width(); x += 40)
         painter.drawLine(x, 0, x, height());
@@ -861,8 +868,8 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             }
         }
         // 移动所有端口连接线
-        QList<PortBase*>shape_ports = shape->getPorts();
-        foreach (CableBase* cable, cable_lists)
+        QList<PortBase *> shape_ports = shape->getPorts();
+        foreach (CableBase *cable, cable_lists)
         {
             if (cable->usedPort(shape_ports))
                 cable->adjustGeometryByPorts();
@@ -871,8 +878,8 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
 
     connect(shape, &ShapeBase::signalResized, this, [=](QSize) {
         // 移动所有端口连接线
-        QList<PortBase*>shape_ports = shape->getPorts();
-        foreach (CableBase* cable, cable_lists)
+        QList<PortBase *> shape_ports = shape->getPorts();
+        foreach (CableBase *cable, cable_lists)
         {
             if (cable->usedPort(shape_ports))
                 cable->adjustGeometryByPorts();
@@ -883,7 +890,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         autoSave();
     });
 
-    connect(shape, &ShapeBase::signalDoubleClicked, this, [=]{
+    connect(shape, &ShapeBase::signalDoubleClicked, this, [=] {
         if (selected_shapes.isEmpty())
             select(shape);
 #ifdef Q_OS_ANDROID
@@ -916,9 +923,9 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
             select(shape);
     });
 
-    connect(shape, &ShapeBase::signalPortPositionModified, this, [=](PortBase* port){
+    connect(shape, &ShapeBase::signalPortPositionModified, this, [=](PortBase *port) {
         // 重新调整连接线的位置
-        foreach (CableBase* cable, cable_lists)
+        foreach (CableBase *cable, cable_lists)
         {
             if (cable->usedPort(port))
                 cable->adjustGeometryByPorts();
@@ -943,70 +950,76 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
 
     connect(shape, &ShapeBase::signalPortWatch, this, [=](PortBase *port) {
         // 为端口添加监视控件
-        ModulePort* mp = static_cast<ModulePort *>(port);
-        
+        ModulePort *mp = static_cast<ModulePort *>(port);
+
         // 获取这个端口的线，用来设置 WatchModule 的位置
-        ModuleCable* cable = static_cast<ModuleCable *>(mp->getCable());
-        if (!cable)  // 没有连接线，取消监控
-            return ;
+        ModuleCable *cable = static_cast<ModuleCable *>(mp->getCable());
+        if (!cable) // 没有连接线，取消监控
+            return;
         // TODO: 确定线的位置：近的一头，偏向远的一头
 
-        
         // 插入 WatchModule
-        ShapeBase* temp = new WatchModule(this);
-        ShapeBase* shape = insertShapeByType(temp, QPoint(mp->getGlobalPos()));
+        ShapeBase *temp = new WatchModule(this);
+        ShapeBase *shape = insertShapeByType(temp, QPoint(mp->getGlobalPos()));
         temp->deleteLater();
         if (!shape)
-            return ;
-        
+            return;
+
         // 设置监控连接
-        static_cast<WatchModule*>(shape)->setTarget(mp);
-        
+        static_cast<WatchModule *>(shape)->setTarget(mp);
+
         // 选中新增的 WatchModule
         select(shape);
     });
 
-    connect(shape, &ShapeBase::signalPortToken, this, [=](PortBase *port){
+    connect(shape, &ShapeBase::signalPortToken, this, [=](PortBase *port) {
         //为端口添加监视控件
-        ModulePort* mp = static_cast<ModulePort *>(port);
+        ModulePort *mp = static_cast<ModulePort *>(port);
 
         //获取这个端口的线，用来设置WatchModule的位置
-        ModuleCable* cable = static_cast<ModuleCable *>(mp->getCable());
-        if(!cable)
+        ModuleCable *cable = static_cast<ModuleCable *>(mp->getCable());
+        if (!cable)
             return;
 
         //插入WatchModule
-        ShapeBase* temp = new WatchModule(this);
-        ShapeBase* shape = insertShapeByType(temp, QPoint(mp->getGlobalPos()));
+        ShapeBase *temp = new WatchModule(this);
+        ShapeBase *shape = insertShapeByType(temp, QPoint(mp->getGlobalPos()));
         temp->deleteLater();
         if (!shape)
-            return ;
+            return;
 
         // 设置监控连接
-        static_cast<WatchModule*>(shape)->setTarget(mp);
-        static_cast<WatchModule*>(shape)->setWatchType(WatchModule::WATCH_TOKEN);
+        static_cast<WatchModule *>(shape)->setTarget(mp);
+        static_cast<WatchModule *>(shape)->setWatchType(WatchModule::WATCH_TOKEN);
 
         // 选中新增的 WatchModule
         select(shape);
-
     });
 
     // 连接监视控件
-    if (shape->getClass() == "WatchModule")
+    if (shape->getClass() == "SwitchModule")
     {
-        WatchModule* watch = static_cast<WatchModule*>(shape);
-        connect(watch, SIGNAL(signalWatchPort(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
-        connect(watch, SIGNAL(signalWatchPortID(WatchModule*, QString)), this, SLOT(slotWatchPortID(WatchModule*, QString)));
-        connect(watch, SIGNAL(signalWatchModule(WatchModule*)), this, SLOT(slotWatchModule(WatchModule*)));
-        connect(watch, SIGNAL(signalWatchModuleID(WatchModule*, QString)), this, SLOT(slotWatchModuleID(WatchModule*, QString)));
-        connect(watch,SIGNAL(signalWatchFrequence(WatchModule*)), this, SLOT(slotWatchPort(WatchModule*)));
-        connect(watch,SIGNAL(signalWatchClock(WatchModule*)), this,SLOT(slotWatchPort(WatchModule*)));
+        // Routing
+        SwitchModule *switch = static_cast<SwitchModule *>(shape);
+        connect(switch, &SwitchModule::signalOpenRouting, this, [=]{
+            slotOpenRouting(switch);
+        });
     }
-    else if(shape->getClass() == "ModulePanel")
+    else if (shape->getClass() == "WatchModule")
     {
-        ModulePanel* panel = static_cast<ModulePanel*>(shape);
-        connect(panel, SIGNAL(signalSetFrequence(ModulePanel*)), this, SLOT(slotSetFrequence(ModulePanel*)));
-        connect(panel, SIGNAL(signalGetFrequence(ModulePanel*, double*)), this, SLOT(slotGetFrequence(ModulePanel*, double*)));
+        WatchModule *watch = static_cast<WatchModule *>(shape);
+        connect(watch, SIGNAL(signalWatchPort(WatchModule *)), this, SLOT(slotWatchPort(WatchModule *)));
+        connect(watch, SIGNAL(signalWatchPortID(WatchModule *, QString)), this, SLOT(slotWatchPortID(WatchModule *, QString)));
+        connect(watch, SIGNAL(signalWatchModule(WatchModule *)), this, SLOT(slotWatchModule(WatchModule *)));
+        connect(watch, SIGNAL(signalWatchModuleID(WatchModule *, QString)), this, SLOT(slotWatchModuleID(WatchModule *, QString)));
+        connect(watch, SIGNAL(signalWatchFrequence(WatchModule *)), this, SLOT(slotWatchPort(WatchModule *)));
+        connect(watch, SIGNAL(signalWatchClock(WatchModule *)), this, SLOT(slotWatchPort(WatchModule *)));
+    }
+    else if (shape->getClass() == "ModulePanel")
+    {
+        ModulePanel *panel = static_cast<ModulePanel *>(shape);
+        connect(panel, SIGNAL(signalSetFrequence(ModulePanel *)), this, SLOT(slotSetFrequence(ModulePanel *)));
+        connect(panel, SIGNAL(signalGetFrequence(ModulePanel *, double *)), this, SLOT(slotGetFrequence(ModulePanel *, double *)));
     }
 }
 
@@ -1014,9 +1027,9 @@ void GraphicArea::connectPortEvent(PortBase *port)
 {
     if (port->getClass() == "ModulePort") // 模块的端口才有带宽
     {
-        ModulePort* mp = static_cast<ModulePort*>(port);
-        connect(mp, &PortBase::signalDataList, this, [=]{
-            PortDataDialog* pdd = new PortDataDialog(mp);
+        ModulePort *mp = static_cast<ModulePort *>(port);
+        connect(mp, &PortBase::signalDataList, this, [=] {
+            PortDataDialog *pdd = new PortDataDialog(mp);
             pdd->exec();
             pdd->deleteLater();
             autoSave();
@@ -1040,13 +1053,13 @@ QString GraphicArea::getRandomPortId()
 
 void GraphicArea::removePortCable(PortBase *port)
 {
-    log("GraphicArea::removePortCable"+port->getPortId());
+    log("GraphicArea::removePortCable" + port->getPortId());
     // 连接线列表中删除连接线
     for (int i = 0; i < cable_lists.count(); i++)
     {
         if (cable_lists.at(i)->usedPort(port))
         {
-            CableBase* cable = cable_lists.at(i);
+            CableBase *cable = cable_lists.at(i);
             // 删除连接关系
             if (cable->getFromPort() != nullptr && cable->getFromPort() != port)
                 cable->getFromPort()->clearCable();
@@ -1090,7 +1103,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     // menu->addAction(show_data_action);
     menu->addAction(watch_action);
     // menu->addAction(watch_clock_action);
-    foreach(auto shape, selected_shapes)
+    foreach (auto shape, selected_shapes)
     {
         if (shape->getClass() == "WatchModule")
         {
@@ -1113,7 +1126,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         add_port_action->setEnabled(false);
         watch_action->setEnabled(false);
         //show_data_action->setEnabled(false);
-       // watch_clock_action->setEnabled(false);
+        // watch_clock_action->setEnabled(false);
     }
     // 如果选中了多个
     else if (selected_shapes.size() > 1)
@@ -1124,18 +1137,18 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         copy_action->setText(copy_action->text() + " [multi]");
         delete_action->setText(delete_action->text() + " [multi]");
         watch_action->setText(watch_action->text() + "[multi]");
-       // watch_clock_action->setText(watch_clock_action->text() + "[multi]");
+        // watch_clock_action->setText(watch_clock_action->text() + "[multi]");
         //show_data_action->setText(show_data_action->text() + " [multi]");
     }
     else // 选中了一个
     {
-        ShapeBase* shape = selected_shapes.first();
+        ShapeBase *shape = selected_shapes.first();
         // 判断对应的操作
-        QList<QAction*> actions = shape->addinMenuActions();
+        QList<QAction *> actions = shape->addinMenuActions();
         if (actions.size())
         {
             menu->addSeparator();
-            foreach (QAction* action, actions)
+            foreach (QAction *action, actions)
             {
                 menu->addAction(action);
             }
@@ -1154,7 +1167,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
     {
         paste_action->setText(paste_action->text() + " (" + QString::number(clip_board.count()) + ")");
     }
-    
+
     // 如果正在运行
     if (rt->running)
     {
@@ -1217,7 +1230,7 @@ void GraphicArea::actionInsertPort()
     // 添加port，支持批量添加，所以放到了外面
     foreach (ShapeBase *shape, selected_shapes)
     {
-        PortBase* p = port->newInstanceBySelf(shape);
+        PortBase *p = port->newInstanceBySelf(shape);
         shape->addPort(p);
         connectPortEvent(p);
     }
@@ -1267,7 +1280,7 @@ void GraphicArea::actionPaste()
     QPoint offset = mouse_pos - copied_topLeft;
 
     // 开始粘贴
-    unselect(); // 取消全选，后续选中粘贴的
+    unselect();            // 取消全选，后续选中粘贴的
     ShapeList paste_board; // 复制后的新列表，一一对应 clip_board
     foreach (ShapeBase *shape, clip_board)
     {
@@ -1280,7 +1293,7 @@ void GraphicArea::actionPaste()
         select(copied_shape, true);
 
         // 添加全局的端口
-        foreach (PortBase* port, copied_shape->getPorts())
+        foreach (PortBase *port, copied_shape->getPorts())
         {
             port->setPortId(getRandomPortId());
             connectPortEvent(port);
@@ -1292,22 +1305,22 @@ void GraphicArea::actionPaste()
     for (int i = 0; i < clip_board.size(); i++) // 遍历每一个形状
     {
         // 旧的形状
-        ShapeBase* shape = clip_board.at(i);
+        ShapeBase *shape = clip_board.at(i);
         if (shape->getLargeType() != CableType)
             continue;
-        CableBase* cable = static_cast<CableBase*>(shape);
-        CableBase* new_cable = static_cast<CableBase*>(paste_board.at(i));
+        CableBase *cable = static_cast<CableBase *>(shape);
+        CableBase *new_cable = static_cast<CableBase *>(paste_board.at(i));
         cable_lists.append(new_cable); // 添加到全局连接线
 
         // 线连接的两个端口
-        PortBase* old_from = cable->getFromPort();
-        PortBase* old_to = cable->getToPort();
+        PortBase *old_from = cable->getFromPort();
+        PortBase *old_to = cable->getToPort();
         if (old_from == nullptr || old_to == nullptr)
             continue;
 
         // 线连接的两头形状，获取形状所在的索引、两个端口的索引
-        ShapeBase* old_from_shape = static_cast<ShapeBase*>(old_from->getShape());
-        ShapeBase* old_to_shape = static_cast<ShapeBase*>(old_to->getShape());
+        ShapeBase *old_from_shape = static_cast<ShapeBase *>(old_from->getShape());
+        ShapeBase *old_to_shape = static_cast<ShapeBase *>(old_to->getShape());
         int from_index = clip_board.indexOf(old_from_shape);
         int to_index = clip_board.indexOf(old_to_shape);
         if (from_index == -1 || to_index == -1)
@@ -1318,8 +1331,8 @@ void GraphicArea::actionPaste()
             continue;
 
         // 根据两个二级索引，获取对应的端口，并设置到新的连接线上
-        PortBase* new_from = paste_board.at(from_index)->getPorts().at(from_port_index);
-        PortBase* new_to = paste_board.at(to_index)->getPorts().at(to_port_index);
+        PortBase *new_from = paste_board.at(from_index)->getPorts().at(from_port_index);
+        PortBase *new_to = paste_board.at(to_index)->getPorts().at(to_port_index);
         new_cable->setPorts(new_from, new_to);
     }
 
@@ -1342,7 +1355,6 @@ void GraphicArea::slotShowData()
     mdd->exec();
     mdd->deleteLater();
     autoSave();
-
 }
 
 /**
@@ -1352,21 +1364,19 @@ void GraphicArea::slotShowData()
 void GraphicArea::slotWatch()
 {
     log("监控选中模块");
-    ShapeBase* temp = new WatchModule(this);
-    foreach(ShapeBase* shape, selected_shapes)
-    {//遍历所有选择shape
+    ShapeBase *temp = new WatchModule(this);
+    foreach (ShapeBase *shape, selected_shapes)
+    { //遍历所有选择shape
         //为模块添加监视控件
-        ModuleBase* mb = static_cast<ModuleBase *>(shape);
+        ModuleBase *mb = static_cast<ModuleBase *>(shape);
         QPoint pos = shape->geometry().center();
-        ShapeBase* new_watch = insertShapeByType(temp, pos);
-        if(!new_watch)
+        ShapeBase *new_watch = insertShapeByType(temp, pos);
+        if (!new_watch)
             continue;
         //设置监控连接
-        static_cast<WatchModule*>(new_watch)->setTarget(mb);
+        static_cast<WatchModule *>(new_watch)->setTarget(mb);
     }
     temp->deleteLater();
-
-
 }
 
 /**
@@ -1396,12 +1406,12 @@ void GraphicArea::slotWatch()
  * 在监视模块上监控一个端口的数值
  * 默认监视位置最近的端口
  */
-void GraphicArea::slotWatchPort(WatchModule* watch)
+void GraphicArea::slotWatchPort(WatchModule *watch)
 {
     QPoint pos = watch->geometry().center();
     int min_dis = 0x3f3f3f3f;
-    PortBase* min_port = nullptr;
-    foreach (PortBase* port, ports_map)
+    PortBase *min_port = nullptr;
+    foreach (PortBase *port, ports_map)
     {
         int dis = (port->getGlobalPos() - pos).manhattanLength();
         if (dis < min_dis)
@@ -1410,20 +1420,20 @@ void GraphicArea::slotWatchPort(WatchModule* watch)
             min_port = port;
         }
     }
-    linkWatchPort(watch, static_cast<ModulePort*>(min_port));
+    linkWatchPort(watch, static_cast<ModulePort *>(min_port));
 }
 
 /**
  * 监视特定的端口
  * 按照端口ID来选择
  */
-void GraphicArea::slotWatchPortID(WatchModule* watch, QString portID)
+void GraphicArea::slotWatchPortID(WatchModule *watch, QString portID)
 {
-    foreach (PortBase* port, ports_map)
+    foreach (PortBase *port, ports_map)
     {
         if (port->getPortId() == portID)
         {
-            linkWatchPort(watch, static_cast<ModulePort*>(port));
+            linkWatchPort(watch, static_cast<ModulePort *>(port));
             break;
         }
     }
@@ -1433,8 +1443,8 @@ void GraphicArea::slotWatchModule(WatchModule *watch)
 {
     QPoint pos = watch->geometry().center();
     int min_dis = 0x3f3f3f3f;
-    ModuleBase* min_module = nullptr;
-    foreach(ShapeBase* shape, shape_lists)
+    ModuleBase *min_module = nullptr;
+    foreach (ShapeBase *shape, shape_lists)
     {
         if (shape->getClass() == "WatchModule")
             continue;
@@ -1442,7 +1452,7 @@ void GraphicArea::slotWatchModule(WatchModule *watch)
         if (dis < min_dis)
         {
             min_dis = dis;
-            min_module = static_cast<ModuleBase*>(shape);
+            min_module = static_cast<ModuleBase *>(shape);
         }
     }
     linkWatchModule(watch, min_module);
@@ -1450,28 +1460,26 @@ void GraphicArea::slotWatchModule(WatchModule *watch)
 
 void GraphicArea::slotWatchModuleID(WatchModule *watch, QString text)
 {
-    foreach (ShapeBase* shape, shape_lists)
+    foreach (ShapeBase *shape, shape_lists)
     {
         if (shape->getText() == text)
         {
-            linkWatchModule(watch, static_cast<ModuleBase*>(shape));
+            linkWatchModule(watch, static_cast<ModuleBase *>(shape));
             break;
         }
     }
 }
 
-
-
 /**
  * 连接一个监视模块和端口
  * 可直接调用
  */
-void GraphicArea::linkWatchPort(WatchModule* watch, ModulePort* port)
+void GraphicArea::linkWatchPort(WatchModule *watch, ModulePort *port)
 {
     watch->setTarget(port);
 }
 
-void GraphicArea::linkWatchModule(WatchModule* watch, ModuleBase* module)
+void GraphicArea::linkWatchModule(WatchModule *watch, ModuleBase *module)
 {
     watch->setTarget(module);
     watch->update();
@@ -1517,4 +1525,3 @@ void GraphicArea::dropEvent(QDropEvent *event)
 
     return QWidget::dropEvent(event);
 }
-

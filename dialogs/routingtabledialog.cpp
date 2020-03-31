@@ -1,11 +1,12 @@
 #include "routingtabledialog.h"
 #include "ui_routingtabledialog.h"
 
-RoutingTableDialog::RoutingTableDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::RoutingTableDialog)
+RoutingTableDialog::RoutingTableDialog(SwitchModule* switch) :
+    QDialog(switch),
+    ui(new Ui::RoutingTableDialog), switch(switch)
 {
     ui->setupUi(this);
+    setAttribute(WA_DeleteOnClose, true);
 }
 
 RoutingTableDialog::~RoutingTableDialog()

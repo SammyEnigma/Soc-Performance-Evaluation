@@ -32,6 +32,7 @@
 #include "watchmodule.h"
 #include "moduledatadialog.h"
 #include "modulepanel.h"
+#include "routingtabledialog.h"
 
 #define DEB qDebug()
 
@@ -122,6 +123,7 @@ public slots:
     void slotWatchModuleID(WatchModule* watch, QString text);    
     void slotSetFrequence(ModulePanel *panel);
     void slotGetFrequence(ModulePanel *panel, double *bandwidth);
+    void slotOpenRouting(SwitchModule* switch);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象

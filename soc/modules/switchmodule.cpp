@@ -274,6 +274,22 @@ void SwitchModule::updatePacketPos()
     }
 }
 
+
+void SwitchModule::setRoutingTable(RoutingTable table)
+{
+    routing_table = table;
+}
+
+RoutingTable SwitchModule::getRoutingTable()
+{
+    return routing_table;
+}
+
+PID SwitchModule::getRouting(MID destination)
+{
+    return routing_table.value(destination);
+}
+
 void SwitchModule::paintEvent(QPaintEvent *event)
 {
     ModuleBase::paintEvent(event);

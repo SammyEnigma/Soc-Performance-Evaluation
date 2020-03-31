@@ -2,6 +2,7 @@
 #define ROUTINGTABLEDIALOG_H
 
 #include <QDialog>
+#include "switchmodule.h"
 
 namespace Ui {
 class RoutingTableDialog;
@@ -12,7 +13,7 @@ class RoutingTableDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit RoutingTableDialog(QWidget *parent = nullptr);
+    explicit RoutingTableDialog(SwitchModule* switch);
     ~RoutingTableDialog();
 
 private slots:
@@ -22,6 +23,7 @@ private slots:
 
 private:
     Ui::RoutingTableDialog *ui;
+    SwitchModule* switch;
 };
 
 #endif // ROUTINGTABLEDIALOG_H
