@@ -13,7 +13,7 @@ class RoutingTableDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit RoutingTableDialog(SwitchModule* switch);
+    explicit RoutingTableDialog(SwitchModule* swch);
     ~RoutingTableDialog();
 
 private slots:
@@ -23,7 +23,7 @@ private slots:
 
 private:
     Ui::RoutingTableDialog *ui;
-    SwitchModule* switch;
+    SwitchModule* swch;
 };
 
 #endif // ROUTINGTABLEDIALOG_H

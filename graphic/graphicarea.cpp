@@ -123,9 +123,9 @@ void GraphicArea::slotGetFrequence(ModulePanel *panel, double *bandwidth)
 /**
  * 打开routing
  */
-void GraphicArea::slotOpenRouting(SwitchModule* switch)
+void GraphicArea::slotOpenRouting(SwitchModule* swch)
 {
-	RoutingTableDialog* rtd = new RoutingTableDialog(switch);
+    RoutingTableDialog* rtd = new RoutingTableDialog(swch);
     rtd->exec();
 }
 
@@ -1011,12 +1011,12 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     });
 
     // 连接监视控件
-    if (shape->getClass() == "SwitchModule")
+    if (shape->getClass() == "Switch")
     {
         // Routing
-        SwitchModule *switch = static_cast<SwitchModule *>(shape);
-        connect(switch, &SwitchModule::signalOpenRouting, this, [=]{
-            slotOpenRouting(switch);
+        SwitchModule *swch = static_cast<SwitchModule *>(shape);
+        connect(swch, &SwitchModule::signalOpenRouting, this, [=]{
+            slotOpenRouting(swch);
         });
     }
     else if (shape->getClass() == "WatchModule")

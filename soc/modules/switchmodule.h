@@ -53,6 +53,8 @@ private:
     QList<ModulePort *> getToPorts(PortBase* from_port);
     QList<ModulePort *> getReturnPorts(PortBase* to_port);
     ModulePort* getPortByShapeName(QString text);
+
+signals:
     void signalOpenRouting();
 
 public slots:

@@ -587,3 +587,12 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
         painter.drawPath(path);
     }
 }
+
+QList<QAction *> SwitchModule::addinMenuActions()
+{
+    QAction* routing_action = new QAction("routing table", this);
+    connect(routing_action, &QAction::triggered, this, [=]{
+        emit signalOpenRouting();
+    });
+    return QList<QAction*>{routing_action};
+}
