@@ -634,6 +634,40 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                             _select_rect = cable->geometry();
                             ShapeBase *c = insertShapeByRect(_drag_prev_shape, cable->geometry());
                             cable_lists.append(static_cast<CableBase *>(c));
+                            //添加端口监控
+                            //判断是否已经存在监控
+                            bool watched = false;
+                            foreach(ShapeBase *base, shape_lists)
+                            {
+                                if(base->getClass() == "WatchModule")
+                                {
+                                    if(static_cast<WatchModule *>(base)->getTargetPort() == _stick_from_port)
+                                    {
+                                        watched = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(!watched)
+                            {
+                                setWatchModule(_stick_from_port);
+                            }
+                            watched = false;
+                            foreach(ShapeBase *base, shape_lists)
+                            {
+                                if(base->getClass() == "WatchModule")
+                                {
+                                    if(static_cast<WatchModule *>(base)->getTargetPort() == nearest_port)
+                                    {
+                                        watched = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(!watched)
+                            {
+                                setWatchModule(nearest_port);
+                            }
                         }
                         else // 已经被占用了
                         {
@@ -942,28 +976,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     });
 
     connect(shape, &ShapeBase::signalPortWatch, this, [=](PortBase *port) {
-        // 为端口添加监视控件
-        ModulePort* mp = static_cast<ModulePort *>(port);
-        
-        // 获取这个端口的线，用来设置 WatchModule 的位置
-        ModuleCable* cable = static_cast<ModuleCable *>(mp->getCable());
-        if (!cable)  // 没有连接线，取消监控
-            return ;
-        // TODO: 确定线的位置：近的一头，偏向远的一头
-
-        
-        // 插入 WatchModule
-        ShapeBase* temp = new WatchModule(this);
-        ShapeBase* shape = insertShapeByType(temp, QPoint(mp->getGlobalPos()));
-        temp->deleteLater();
-        if (!shape)
-            return ;
-        
-        // 设置监控连接
-        static_cast<WatchModule*>(shape)->setTarget(mp);
-        
-        // 选中新增的 WatchModule
-        select(shape);
+        setWatchModule(port);
     });
 
     connect(shape, &ShapeBase::signalPortToken, this, [=](PortBase *port){
@@ -1475,6 +1488,32 @@ void GraphicArea::linkWatchModule(WatchModule* watch, ModuleBase* module)
 {
     watch->setTarget(module);
     watch->update();
+}
+
+void GraphicArea::setWatchModule(PortBase *port)
+{
+    // 为端口添加监视控件
+    ModulePort* mp = static_cast<ModulePort *>(port);
+
+    // 获取这个端口的线，用来设置 WatchModule 的位置
+    ModuleCable* cable = static_cast<ModuleCable *>(mp->getCable());
+    if (!cable)  // 没有连接线，取消监控
+        return ;
+    // TODO: 确定线的位置：近的一头，偏向远的一头
+
+
+    // 插入 WatchModule
+    ShapeBase* temp = new WatchModule(this);
+    ShapeBase* shape = insertShapeByType(temp, QPoint(mp->getGlobalPos()));
+    temp->deleteLater();
+    if (!shape)
+        return ;
+
+    // 设置监控连接
+    static_cast<WatchModule*>(shape)->setTarget(mp);
+
+    // 选中新增的 WatchModule
+    select(shape);
 }
 
 /**

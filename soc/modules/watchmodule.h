@@ -24,6 +24,7 @@ public:
     };
 
     void setTarget(ModulePort* mp);
+    ModulePort* getTargetPort();
     void setTarget(ModuleBase* module);
     void updateData();
 
