@@ -34,6 +34,11 @@ void WatchModule::setTarget(ModulePort *mp)
     setToolTip(static_cast<ShapeBase *>(target_port->getShape())->getText() + "的port");
 }
 
+ModulePort *WatchModule::getTargetPort()
+{
+    return target_port;
+}
+
 void WatchModule::setTarget(ModuleBase *module)
 {
     //this->watch_type = WATCH_CUSTOM;

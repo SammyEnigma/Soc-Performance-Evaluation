@@ -263,6 +263,7 @@ void MasterModule::paintEvent(QPaintEvent *event)
     int bar_x_req = (width() - PACKET_SIZE * 16) / 2;//request的进度条
     int bar_y = height() / 5;
     int bar_x_rsp = (width() + PACKET_SIZE * 16) / 2;//response的进度条
+    int line_height = fm.lineSpacing();
 //画request
     path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
@@ -305,9 +306,21 @@ void MasterModule::paintEvent(QPaintEvent *event)
                         PACKET_SIZE * 2, height() * 3 * count_req / per / 5 , 3, 3);
     painter.fillPath(path,QColor(85, 107, 47));//填充
     //req文字
-    painter.setPen(QColor(0, 0, 0));
+    painter.setPen(QColor(255, 255, 77));
     painter.setFont(normal_font);
-    painter.drawText((width() - PACKET_SIZE * 16 - (fm.horizontalAdvance(_text))* 2) / 2, height()/2, QString("%1/%2").arg(current_token_req).arg(getToken()));
+    int line = 0;
+    int word_req_x = (width() - PACKET_SIZE * 16 - fm.horizontalAdvance(_text)) / 2;
+    int word_rsp_x = (width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2;
+    int word_y = height() / 2;
+    painter.drawText(word_req_x, word_y + line_height / 2 * line++,
+                     QString("%1").arg(current_token_req));
+    //painter.drawText(word_x, word_y + line_height / 2 * line++,
+    //                 QString("%1").arg("——"));
+
+    painter.drawLine(word_req_x, word_y  + line_height / 4.5 * line++ ,
+                    word_req_x + fm.horizontalAdvance(QString("%1").arg(getToken())), word_y + line_height /4.5 * line );
+    painter.drawText(word_req_x, word_y + line_height / 2 * line++,
+                     QString("%1").arg(getToken()));
     path.clear();
 
     //rsp动画
@@ -315,9 +328,19 @@ void MasterModule::paintEvent(QPaintEvent *event)
                         PACKET_SIZE * 2, height() * 3 * count_rsp / per / 5 , 3, 3);
     painter.fillPath(path,QColor(220, 20, 60));//填充
     //rsp文字
-    painter.setPen(QColor(220, 20, 60));
+    painter.setPen(QColor(102, 255, 0));
     painter.setFont(normal_font);
-    painter.drawText((width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2, height()/2, QString("%1/%2").arg(current_token_rsp).arg(getToken()));
+    line = 0;
+    painter.drawText(word_rsp_x,
+                     word_y + line_height / 2 * line++,
+                     QString("%1").arg(current_token_rsp));
+    //painter.drawText((width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2, height() / 2 + line_height / 2 * line++,
+    //                 QString("%1").arg("-"));
+    painter.drawLine(word_rsp_x, word_y  + line_height /4.5 * line++ ,
+                    word_rsp_x + fm.horizontalAdvance(QString("%1").arg(getToken())), word_y + line_height /4.5 * line );
+    painter.drawText(word_rsp_x,
+                     word_y + line_height / 2 * line++,
+                     QString("%1").arg(getToken()));
     path.clear();
     painter.drawPath(path);
     painter.restore();

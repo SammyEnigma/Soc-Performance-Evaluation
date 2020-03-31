@@ -10,6 +10,11 @@
 SwitchModule::SwitchModule(QWidget *parent) : ModuleBase(parent)
 {
     _class = _text = "Switch";
+    big_font = normal_font = bold_font = font();
+    big_font.setPointSize(normal_font.pointSize() * 2);
+    bold_font.setBold(true);
+    big_font.setBold(true);
+    normal_font.setBold(true);
 
     QPixmap pixmap(DEFAULT_SIZE, DEFAULT_SIZE);
     pixmap.fill(Qt::transparent);
@@ -298,6 +303,7 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QFontMetrics fm(this->font());
     painter.setPen(QColor(211, 211, 211));
+    QFont font = this->font();
     painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
     painter.save();
     QPainterPath path;
@@ -305,6 +311,7 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     int bar_x_req = (width() - PACKET_SIZE * 8) / 2;
     int bar_y = height() / 5;
     int bar_x_rsp = (width() + PACKET_SIZE * 8) / 2;
+    int line_height = fm.lineSpacing();
 //画req
     path.addRoundedRect(bar_x_req, bar_y,
                         PACKET_SIZE, height() * 3/ 5, 3, 3);
@@ -349,13 +356,36 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5,
                         PACKET_SIZE, height() * 3 * count_req / per / 5 , 3, 3);
     painter.fillPath(path,QColor(85, 107, 47));//填充
+    painter.setPen(QColor(0, 0, 0));
+    painter.setFont(normal_font);
+    int line = 0;
+    int word_req_x = (width() - PACKET_SIZE * 16 - fm.horizontalAdvance(_text)) / 2;
+    int word_rsp_x = (width() + PACKET_SIZE * 16 - fm.horizontalAdvance(_text)/**/) / 2;
+    int word_y = height() / 2;
+    painter.drawText(word_req_x, word_y + line_height / 2* line++,
+                     QString("%1").arg(current_token_req));
+    //painter.drawText(word_req_x, word_y + line_height / 2 * line++,
+    //                 QString("%1").arg("-"));
+    painter.drawLine(word_req_x, word_y  + line_height / 4.5 * line++ ,
+                    word_req_x + fm.horizontalAdvance(QString("%1").arg(getDataValue("token").toInt())), word_y + line_height /4.5 * line );
+    painter.drawText(word_req_x, word_y + line_height / 2 * line++,
+                     QString("%1").arg(getDataValue("token").toInt()));
     path.clear();
 //rsp动画
     path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
                         PACKET_SIZE, height() * 3 * count_rsp / per / 5 , 3, 3);
     painter.fillPath(path,QColor(220, 20, 60/*85, 107, 47*/));//填充
-
-
+    painter.setPen(QColor(220, 20, 60));
+    painter.setFont(normal_font);
+    line = 0;
+    painter.drawText(word_rsp_x, word_y + line_height / 2* line++,
+                     QString("%1").arg(current_token_rsp));
+    //painter.drawText((width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2, height() / 2 + line_height / 2 * line++,
+    //                 QString("%1").arg("-"));
+    painter.drawLine(word_rsp_x, word_y  + line_height /4.5 * line++ ,
+                    word_rsp_x + fm.horizontalAdvance(QString("%1").arg(getDataValue("token").toInt())), word_y + line_height /4.5 * line );
+    painter.drawText(word_rsp_x, word_y + line_height / 2 * line++,
+                     QString("%1").arg(getDataValue("token").toInt()));
     painter.drawPath(path);
     painter.restore();
   /*

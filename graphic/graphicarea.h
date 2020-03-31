@@ -74,6 +74,7 @@ public:
     void zoomIn(double prop);
     void linkWatchPort(WatchModule* watch, ModulePort* port);
     void linkWatchModule(WatchModule* watch, ModuleBase* module);
+    void setWatchModule(PortBase *port);
 
     // 流控操作
     ShapeBase *findShapeByText(QString text);

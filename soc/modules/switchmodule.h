@@ -65,6 +65,8 @@ private:
     QList<SwitchPicker*> pickers;
     PacketList picked_delay_list;
     RoutingTable routing_table;
+
+    QFont big_font, normal_font, bold_font;
 };
 
 #endif // SWITCHMODULE_H
