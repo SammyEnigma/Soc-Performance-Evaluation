@@ -18,7 +18,7 @@
 #define LINE_SPACE 20
 #define PADDING 10
 #define PORT_SIZE 8
-#define ARROW_LENGTH 12
+#define ARROW_LENGTH 24
 #define ARROW_DEGREES PI/6
 #define PI 3.1415926
 #define DEF_VAL -0x3f3f3f3f
