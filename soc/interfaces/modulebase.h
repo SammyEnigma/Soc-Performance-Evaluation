@@ -5,8 +5,6 @@
 #include "moduleinterface.h"
 #include "moduleport.h"
 
-typedef int MID;
-
 class ModuleBase : public ShapeBase, public ModuleInterface
 {
 public:

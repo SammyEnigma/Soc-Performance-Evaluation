@@ -8,8 +8,8 @@
 #include "datapacket.h"
 
 DataPacket::DataPacket(QObject *parent)
-    : QObject(parent),
-      valid(false), data(0), par(0), data_type(DATA_REQUEST),
+    : QObject(parent), data_type(DATA_REQUEST), data(0),
+      valid(false), par(0),
       first_picked_clock(-1),
       come_port(nullptr), target_port(nullptr),
       delay_step(0), delay_max(0)

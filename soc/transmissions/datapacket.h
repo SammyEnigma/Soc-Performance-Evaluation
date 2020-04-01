@@ -19,6 +19,16 @@ enum DATA_TYPE
     DATA_REQUEST,
     DATA_RESPONSE,
     DATA_TOKEN, // 1bit的数据
+    DATA_DATA,
+    DATA_ACK
+};
+
+enum PriorityLevel
+{
+    LOW,
+    NORMAL,
+    HIGH,
+    URGENT
 };
 
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
@@ -26,6 +36,8 @@ typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 class PortBase;
 class DataPacket;                       // typedef 之前需要预先声明变量
 typedef QList<DataPacket *> PacketList; // 常用的列表，直接重定义了
+
+typedef int MID;
 
 class DataPacket : public QObject
 {
@@ -73,13 +85,23 @@ signals:
 public slots: 
     void deleteLater();
 
+public:
+    QString tag;         // 例如 0~511 循环使用（和srcID一起要保证全局唯一）
+    DATA_TYPE data_type; // 数据类型：request/response/token
+    DataFormat data;     // 数据（复杂格式）
+    MID srcID;           // 发出来的ID
+    MID dstID;           // 目的地的ID
+    PriorityLevel pri;   // 优先级：low, normal, high, urgent
+    int vc;              // visual channel
+    int order_road;
+    int chain;
+    bool isAck;
+
+
 protected:
     QString token_id;
     bool valid;      // 是否有效
-    QString tag;     // 编号ID
-    DataFormat data; // 数据（复杂格式）
     char par;        // 忘了是什么了
-    DATA_TYPE data_type; // 数据类型：request/response/token
     int first_picked_clock; // 第一次发送的clock，用来计算最终回去后经过了多久的时间（latency）
     
     PortBase* come_port;   // 来的端口
