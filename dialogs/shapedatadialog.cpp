@@ -28,9 +28,12 @@ ShapeDataDialog::~ShapeDataDialog()
 
 void ShapeDataDialog::loadShapesDatas(ShapeList shapes)
 {
+    // 清空数据
     this->shapes = shapes;
     data_lists.clear();
     _activated_string.clear();
+    ui->tableWidget->clear();
+    ui->diffLabel->clear();
     if (shapes.length() == 0)
     {
         shape = nullptr;

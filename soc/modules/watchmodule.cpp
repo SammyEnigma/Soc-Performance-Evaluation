@@ -34,6 +34,11 @@ void WatchModule::setTarget(ModulePort *mp)
     setToolTip(static_cast<ShapeBase *>(target_port->getShape())->getText() + "的port");
 }
 
+ModuleBase *WatchModule::getTargetModule()
+{
+    return target_module;
+}
+
 ModulePort *WatchModule::getTargetPort()
 {
     return target_port;

@@ -95,6 +95,8 @@ private:
     void connectPortEvent(PortBase *port);
     QString getRandomPortId();
     void removePortCable(PortBase *port);
+    void removePortWatch(PortBase *port);
+    void removeModuleWatch(ShapeBase *module);
 
 signals:
     void signalSave();     // 必须保存的

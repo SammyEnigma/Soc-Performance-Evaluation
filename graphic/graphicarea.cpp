@@ -336,6 +336,7 @@ void GraphicArea::remove(ShapeBase *shape)
     selected_shapes.removeOne(shape);
     shape_lists.removeOne(shape);
     clip_board.removeOne(shape);
+    removeModuleWatch(shape);
 
     // 删除形状的端口
     if (shape->getLargeType() != CableType) // 本身不是连接线
@@ -350,6 +351,7 @@ void GraphicArea::remove(ShapeBase *shape)
                 PortBase *port = (*it);
                 log("delete shape's port" + port->getPortId());
                 removePortCable(port);
+                removePortWatch(port);
 
                 // 删除后自动移到下一个，不需要自增
                 ports_map.erase(it);
@@ -982,6 +984,7 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
     connect(shape, &ShapeBase::signalPortDeleted, this, [=](PortBase *port) {
         // 删除端口连接线
         removePortCable(port);
+        removePortWatch(port);
 
         // 端口列表中删除端口
         ports_map.remove(port->getPortId());
@@ -1070,6 +1073,9 @@ QString GraphicArea::getRandomPortId()
     return id;
 }
 
+/**
+ * 删除端口前，预先删除端口的连接线
+ */
 void GraphicArea::removePortCable(PortBase *port)
 {
     log("GraphicArea::removePortCable" + port->getPortId());
@@ -1086,6 +1092,40 @@ void GraphicArea::removePortCable(PortBase *port)
                 cable->getToPort()->clearCable();
             // 删除线控件
             remove(cable);
+        }
+    }
+}
+
+/**
+ * 删除端口前，预先删除端口的监视控件
+ */
+void GraphicArea::removePortWatch(PortBase *port)
+{
+    for (int i = 0; i < shape_lists.size(); i++)
+    {
+        auto shape = shape_lists.at(i);
+        if (shape->getClass() == "WatchModule"
+                && static_cast<WatchModule*>(shape)->getTargetPort() == port)
+        {
+            remove(shape);
+            i--;
+        }
+    }
+}
+
+/**
+ * 删除模块前，预先删除监视控件
+ */
+void GraphicArea::removeModuleWatch(ShapeBase *module)
+{
+    for (int i = 0; i < shape_lists.size(); i++)
+    {
+        auto shape = shape_lists.at(i);
+        if (shape->getClass() == "WatchModule"
+                && static_cast<WatchModule*>(shape)->getTargetModule() == module)
+        {
+            remove(shape);
+            i--;
         }
     }
 }
