@@ -14,7 +14,7 @@ class MasterModule : public MasterSlave
 {
     // Q_OBJECT // 这个不能加！否则会爆 'QObject' is an ambiguous base of 'MasterModule' 的问题
 public:
-    MasterModule(QWidget* parent = nullptr);
+    MasterModule(QWidget *parent = nullptr);
 
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
@@ -29,13 +29,12 @@ public:
     void updatePacketPosHorizone();
 
 protected:
-	void paintEvent(QPaintEvent *event) override;
-    
+    void paintEvent(QPaintEvent *event) override;
+
     virtual void drawShapePixmap(QPainter &painter, QRect draw_rect);
 
 private:
     QFont big_font, normal_font, bold_font;
-    
 };
 
 #endif // MASTERMODULE_H

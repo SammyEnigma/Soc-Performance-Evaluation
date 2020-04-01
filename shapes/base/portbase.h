@@ -30,19 +30,19 @@ class PortBase : public QWidget
     Q_OBJECT
 public:
     PortBase(QWidget *parent = nullptr);
-    virtual PortBase* newInstanceBySelf(QWidget* parent = nullptr);
+    virtual PortBase *newInstanceBySelf(QWidget *parent = nullptr);
     virtual QString getClass();
 
     void setPortId(QString id);
     QString getPortId();
     void setRoutingID(int id);
     int getRoutingID();
-    QWidget* getShape();
-    void setOppositePort(PortBase* port);
+    QWidget *getShape();
+    void setOppositePort(PortBase *port);
     PortBase *getOppositePort();
     QWidget *getOppositeShape();
-    void setCable(CableBase* cable);
-    CableBase* getCable();
+    void setCable(CableBase *cable);
+    CableBase *getCable();
     void clearCable();
 
     void setText(QString text);
@@ -68,18 +68,18 @@ signals:
     void signalToken();
 
 public slots:
-    void slotMenuShowed(const QPoint&);
+    void slotMenuShowed(const QPoint &);
     virtual void slotDataList();
-	
+
 protected:
-    QWidget* widget;   // 自己所在的形状。因为类嵌套关系，无法直接使用ShapeBase，因此使用基类QWidget
-	QString _text;
+    QWidget *widget; // 自己所在的形状。因为类嵌套关系，无法直接使用ShapeBase，因此使用基类QWidget
+    QString _text;
     QString _port_id;
     int routing_id;
     QPointF _prop_pos; // 相对于形状的比例（x比例、y比例）
-    
-    PortBase* opposite; // 连接对面的端口。可通过端口获取形状
-    CableBase* cable;   // 连接线
+
+    PortBase *opposite; // 连接对面的端口。可通过端口获取形状
+    CableBase *cable;   // 连接线
 
     qint64 _press_timestamp;
 };

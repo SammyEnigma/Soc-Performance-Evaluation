@@ -13,7 +13,8 @@
 #include <QMessageBox>
 #include "shapebase.h"
 
-namespace Ui {
+namespace Ui
+{
 class ShapeDataDialog;
 }
 
@@ -27,7 +28,7 @@ class ShapeDataDialog : public QDialog
     Q_OBJECT
 
 public:
-    ShapeDataDialog(ShapeList shapes = QList<ShapeBase*>{});
+    ShapeDataDialog(ShapeList shapes = QList<ShapeBase *>{});
     ~ShapeDataDialog();
 
 public slots:
@@ -53,12 +54,12 @@ private:
 
 private:
     Ui::ShapeDataDialog *ui;
-    ShapeBase* shape;
+    ShapeBase *shape;
     ShapeList shapes;
-    QList<CustomDataList*> data_lists; // 选中形状的所有数据
+    QList<CustomDataList *> data_lists; // 选中形状的所有数据
 
     QString _activated_string; // 激活时的字符串（用来响应双击事件）
-    bool _system_changing; // 系统改变时不触发表格内容编辑事件
+    bool _system_changing;     // 系统改变时不触发表格内容编辑事件
 };
 
 #endif // SHAPEDATADIALOG_H

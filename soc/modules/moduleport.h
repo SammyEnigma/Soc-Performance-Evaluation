@@ -66,7 +66,7 @@ public:
     int getTotalReceived();
     int getBeginWaited();
     double getLiveFrequence();
-    
+
     void showTokenChangeAnimation(QString text, QColor color);
 
 protected:
@@ -76,11 +76,11 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 signals:
-    void signalDequeueTokenDelayFinished();                        // TODO: 父控件出queue后发送此信号，延迟返回给Master的token延迟结束（发送token）
-    void signalOutPortReceived(DataPacket *packet);                // 队列延迟结束，进入父控件
-    void signalOutPortToSend(DataPacket *packet);                  // 队列延迟结束，发送至cable
-    void signalResponseSended(DataPacket *packet);                 // 处理结束后返回给某个端口（发送response）
-//    void signalDataReceived(ModulePort *port, DataPacket *packet); // 收到信号的槽函数触发的接收信号，发送给父控件(Switch)
+    void signalDequeueTokenDelayFinished();         // TODO: 父控件出queue后发送此信号，延迟返回给Master的token延迟结束（发送token）
+    void signalOutPortReceived(DataPacket *packet); // 队列延迟结束，进入父控件
+    void signalOutPortToSend(DataPacket *packet);   // 队列延迟结束，发送至cable
+    void signalResponseSended(DataPacket *packet);  // 处理结束后返回给某个端口（发送response）
+    //    void signalDataReceived(ModulePort *port, DataPacket *packet); // 收到信号的槽函数触发的接收信号，发送给父控件(Switch)
 
 public slots:
     void slotDataList() override;                      // 请求编辑数据列表
@@ -112,12 +112,12 @@ private:
     // bool discard_response; // Master的port收到response，没有实际作用，丢弃数据包
 
     // 运行统计
-    int total_sended;               // 运行到现在总共发送多少request
-    int total_received;             // 运行到现在总共收到request
-    int begin_waited;               // 一开始运行的等待时间 (注意：按帧算，不是clock。clock=begin_waited/rt->standar_frame。在standar_frame=1(即没有1clock发多个时)时两者相等)
-    int sended_count_in_this_frame; // 每一帧发送的数量，默认为0
+    int total_sended;                 // 运行到现在总共发送多少request
+    int total_received;               // 运行到现在总共收到request
+    int begin_waited;                 // 一开始运行的等待时间 (注意：按帧算，不是clock。clock=begin_waited/rt->standar_frame。在standar_frame=1(即没有1clock发多个时)时两者相等)
+    int sended_count_in_this_frame;   // 每一帧发送的数量，默认为0
     int received_count_in_this_frame; // 每一帧收到的数量，默认为0
-    QQueue<int> frq_queue;          // 运行的频率实时计算。按frame来，如果当前frame未发送，则传入一个0，有发送则传入一个1；计算方式为：frq=sum(queue.items)/queue.length
+    QQueue<int> frq_queue;            // 运行的频率实时计算。按frame来，如果当前frame未发送，则传入一个0，有发送则传入一个1；计算方式为：frq=sum(queue.items)/queue.length
     QQueue<int> frq2_queue;
 };
 

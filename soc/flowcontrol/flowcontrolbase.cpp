@@ -99,7 +99,7 @@ void FlowControlBase::nextStep()
 void FlowControlBase::gotoClock(int c)
 {
     if (c < 0 || c > 0x3f3f3f3f)
-        return ;
+        return;
 
     bool paused = !run_timer->isActive();
     rt->ignore_view_changed = true;
@@ -140,16 +140,17 @@ void FlowControlBase::initData()
     // 获取所有bandwidth总和的最小公倍数，然后把帧数设置成这个
     int com_mul = 1;
     QList<int> nums; // 所有分子
-    foreach (PortBase* port, graphic->ports_map)
+    foreach (PortBase *port, graphic->ports_map)
     {
-        ModulePort* mp = static_cast<ModulePort*>(port);
+        ModulePort *mp = static_cast<ModulePort *>(port);
         int num = qMax(mp->getBandwidth().getNumerator(), 1);
         nums.append(num);
     }
-    foreach (ShapeBase* shape, graphic->shape_lists)
+    foreach (ShapeBase *shape, graphic->shape_lists)
     {
-        if (shape->getClass() == "Switch") {
-            ModuleBase* module = static_cast<ModuleBase*>(shape);
+        if (shape->getClass() == "Switch")
+        {
+            ModuleBase *module = static_cast<ModuleBase *>(shape);
             nums.append(TimeFrame(module->getDataValue("picker_bandwidth", 1).toString()).getNumerator());
         }
     }
@@ -157,14 +158,14 @@ void FlowControlBase::initData()
     rt->runningOut("最小帧数：1 clock = " + QString::number(com_mul) + " frame");
     current_clock.setDenominator(com_mul);
     rt->standard_frame = com_mul;
-    
+
     /* 
      * 比如：bandwidth = 8，那么 1 clock 发 8 个，则 standar_frame = 8
      * 反之，bandwidth = 1/8，那么 8 clock 发 1 个，则依旧 standar_frame = 1
      */
-    
+
     // 初始化所有控件的数据
-    foreach (ShapeBase* shape, graphic->shape_lists)
+    foreach (ShapeBase *shape, graphic->shape_lists)
     {
         shape->ensureDataList();
     }
@@ -217,17 +218,15 @@ void FlowControlBase::initOneClock()
 
 void FlowControlBase::passOneClock()
 {
-    
 }
 
 void FlowControlBase::uninitOneClock()
 {
-    
 }
 
 void FlowControlBase::refreshUI()
 {
-    foreach (CableBase* cable, graphic->cable_lists)
+    foreach (CableBase *cable, graphic->cable_lists)
     {
         cable->raise(); // 提高箭头的Z轴位置，以便于看清
     }
@@ -235,7 +234,7 @@ void FlowControlBase::refreshUI()
     {
         view->raise(); // 显示在最上层（点击形状会置顶，这时候会覆盖此控件）
     }
-    foreach (WatchWidget* watch, watch_widgets)
+    foreach (WatchWidget *watch, watch_widgets)
     {
         watch->raise();
         watch->update();
@@ -282,10 +281,10 @@ int FlowControlBase::lcm(int a, int b)
 int FlowControlBase::lcm(QList<int> numbers)
 {
     int i;
-    int s=1;
-    for (i=0;i<numbers.size();i++)
+    int s = 1;
+    for (i = 0; i < numbers.size(); i++)
     {
-        s = lcm(s,numbers[i]);
+        s = lcm(s, numbers[i]);
     }
     return s;
 }
@@ -302,7 +301,7 @@ DataPacket *FlowControlBase::createToken(QString tag)
     packet->resetDelay(0);
     all_packets.append(packet);
     emit signalTokenCreated(packet);
-    connect(packet, &DataPacket::signalDeleted, this, [=]{ // 比如Master收到Response后，销毁数据
+    connect(packet, &DataPacket::signalDeleted, this, [=] { // 比如Master收到Response后，销毁数据
         all_packets.removeOne(packet);
         for (int i = 0; i < all_packet_view.size(); i++)
             if (all_packet_view.at(i)->getPacket() == packet)
@@ -347,8 +346,8 @@ void FlowControlBase::printfAllData()
  */
 void FlowControlBase::delayRun(int delay, RunType &f)
 {
-    RunType* func = new RunType(f);
-    DelayRunBean* drb = new DelayRunBean(delay, func);
+    RunType *func = new RunType(f);
+    DelayRunBean *drb = new DelayRunBean(delay, func);
     delay_runs.append(drb);
 }
 
@@ -363,7 +362,7 @@ void FlowControlBase::changeSpeed(double ratio)
     us->setVal("us/clock_interval", interval);
     run_timer->setInterval(interval);
 
-    foreach (DataPacketView* view, all_packet_view)
+    foreach (DataPacketView *view, all_packet_view)
     {
         view->setAnimationDuration(interval);
     }
@@ -371,5 +370,4 @@ void FlowControlBase::changeSpeed(double ratio)
 
 void FlowControlBase::modifyRoutingTable()
 {
-
 }

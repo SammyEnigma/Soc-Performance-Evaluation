@@ -18,10 +18,10 @@ void FlowControlAutomatic::initData()
     FlowControlBase::initData();
 
     // 模块数据初始化
-    foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase *shape, shapes)
     {
         QString _class = shape->getClass();
-        ModuleBase* module = static_cast<ModuleBase*>(shape);
+        ModuleBase *module = static_cast<ModuleBase *>(shape);
         if (_class != "ModuleCable")
         {
             module->initData();
@@ -30,16 +30,16 @@ void FlowControlAutomatic::initData()
             if (module->getClass() == "Switch")
             {
                 // 设置Hub的Picker
-                SwitchModule* hub = static_cast<SwitchModule*>(shape);
+                SwitchModule *hub = static_cast<SwitchModule *>(shape);
                 QString picker_string = hub->getData("picker")->value().toString();
                 QStringList groups = picker_string.split(";");
                 foreach (QString pickers_string, groups)
                 {
                     QStringList pickers = pickers_string.split(",");
-                    QList<ShapeBase*>picker_shapes;
+                    QList<ShapeBase *> picker_shapes;
                     foreach (QString picker, pickers)
                     {
-                        ShapeBase* shape = graphic->findShapeByText(picker);
+                        ShapeBase *shape = graphic->findShapeByText(picker);
                         picker_shapes.append(shape);
                     }
                     if (picker_shapes.size())
@@ -52,17 +52,17 @@ void FlowControlAutomatic::initData()
     }
 
     // 设置连接
-    foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase *shape, shapes)
     {
         QString _class = shape->getClass();
         if (_class == "ModuleCable")
-            static_cast<ModuleCable*>(shape)->initData();
+            static_cast<ModuleCable *>(shape)->initData();
     }
 }
 
 void FlowControlAutomatic::clearData()
 {
-    foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase *shape, shapes)
     {
         QString _class = shape->getClass();
         ModuleBase *module = static_cast<ModuleBase *>(shape);
@@ -78,7 +78,7 @@ void FlowControlAutomatic::initOneClock()
 {
     FlowControlBase::initOneClock();
 
-    foreach (ModuleBase* module, getModules())
+    foreach (ModuleBase *module, getModules())
     {
         module->initOneClock();
     }
@@ -90,7 +90,8 @@ void FlowControlAutomatic::passOneClock()
 
     // 如果这个clock一直有数据包在传送，反复循环
     // 直到所有数据包都已经延迟结束
-    do {
+    do
+    {
         rt->need_passOn_this_clock = false;
         foreach (ShapeBase *shape, shapes)
         {
@@ -115,7 +116,7 @@ void FlowControlAutomatic::passOneClock()
         }
     } while (rt->need_passOn_this_clock);
 
-    foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase *shape, shapes)
     {
         QString _class = shape->getClass();
         ModuleBase *module = static_cast<ModuleBase *>(shape);
@@ -126,7 +127,7 @@ void FlowControlAutomatic::passOneClock()
 void FlowControlAutomatic::uninitOneClock()
 {
     FlowControlBase::uninitOneClock();
-	
+
     foreach (ModuleBase *module, getModules())
     {
         module->uninitOneClock();
@@ -137,16 +138,16 @@ void FlowControlAutomatic::refreshUI()
 {
     FlowControlBase::refreshUI();
 
-    foreach (ShapeBase* shape, shapes)
+    foreach (ShapeBase *shape, shapes)
     {
         shape->update();
     }
 }
 
-QList<ModuleBase*> FlowControlAutomatic::getModules()
+QList<ModuleBase *> FlowControlAutomatic::getModules()
 {
-    QList<ModuleBase*> modules;
-    foreach (ShapeBase* shape, shapes)
-        modules.append(static_cast<ModuleBase*>(shape));
+    QList<ModuleBase *> modules;
+    foreach (ShapeBase *shape, shapes)
+        modules.append(static_cast<ModuleBase *>(shape));
     return modules;
 }

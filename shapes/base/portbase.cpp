@@ -18,13 +18,13 @@ PortBase::PortBase(QWidget *parent) : QWidget(parent), widget(parent), opposite(
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotMenuShowed(const QPoint &)));
 
     _prop_pos = QPointF(0.5, 0.5);
-    
+
     _press_timestamp = 0;
 }
 
 PortBase *PortBase::newInstanceBySelf(QWidget *parent)
 {
-    PortBase* port = new PortBase(parent);
+    PortBase *port = new PortBase(parent);
     port->_text = this->_text;
     port->_prop_pos = this->_prop_pos;
     return port;
@@ -166,11 +166,11 @@ void PortBase::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
     QPainter painter(this);
-    painter.fillRect(0,0,width(),width(),QColor(128,128,128,16));
+    painter.fillRect(0, 0, width(), width(), QColor(128, 128, 128, 16));
 
     QPainterPath path;
-    path.addRect(0,0,width()-1,height()-1);
-    painter.setPen(QColor(0,0,0,16));
+    path.addRect(0, 0, width() - 1, height() - 1);
+    painter.setPen(QColor(0, 0, 0, 16));
     painter.drawPath(path);
 }
 
@@ -178,7 +178,7 @@ void PortBase::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        if (_press_timestamp+400 >= getTimestamp()) // 双击
+        if (_press_timestamp + 400 >= getTimestamp()) // 双击
         {
 #ifdef Q_OS_ANDROID
             slotMenuShowed(event->pos());
@@ -190,40 +190,40 @@ void PortBase::mousePressEvent(QMouseEvent *event)
         event->accept();
         return;
     }
-    
+
     return QWidget::mousePressEvent(event);
 }
 
 void PortBase::slotMenuShowed(const QPoint &)
 {
-    QMenu* menu = new QMenu(this);
-    QAction* data_action = new QAction("data", this);
-    QAction* link_action = new QAction("watch", this);
-    QAction* position_action = new QAction("position", this);
-    QAction* delete_action = new QAction("delete", this);
-    QAction* token_action = new QAction("token", this);
+    QMenu *menu = new QMenu(this);
+    QAction *data_action = new QAction("data", this);
+    QAction *link_action = new QAction("watch", this);
+    QAction *position_action = new QAction("position", this);
+    QAction *delete_action = new QAction("delete", this);
+    QAction *token_action = new QAction("token", this);
     menu->addAction(data_action);
     menu->addAction(link_action);
     menu->addSeparator();
     menu->addAction(position_action);
     menu->addAction(delete_action);
-   // menu->addAction(token_action);
-    
+    // menu->addAction(token_action);
+
     connect(data_action, SIGNAL(triggered()), this, SLOT(slotDataList()));
 
-    connect(position_action, &QAction::triggered, [=]{
+    connect(position_action, &QAction::triggered, [=] {
         emit signalModifyPosition();
     });
-    
-    connect(delete_action, &QAction::triggered, [=]{
+
+    connect(delete_action, &QAction::triggered, [=] {
         emit signalDelete();
     });
-    
-    connect(link_action, &QAction::triggered, [=]{
+
+    connect(link_action, &QAction::triggered, [=] {
         emit signalWatch();
     });
 
-    connect(token_action, &QAction::triggered, [=]{
+    connect(token_action, &QAction::triggered, [=] {
         emit signalToken();
     });
     menu->exec(QCursor::pos());
@@ -232,5 +232,4 @@ void PortBase::slotMenuShowed(const QPoint &)
 
 void PortBase::slotDataList()
 {
-
 }

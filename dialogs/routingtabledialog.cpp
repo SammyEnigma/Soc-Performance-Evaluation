@@ -1,9 +1,9 @@
 #include "routingtabledialog.h"
 #include "ui_routingtabledialog.h"
 
-RoutingTableDialog::RoutingTableDialog(SwitchModule* swch) :
-    QDialog(swch),
-    ui(new Ui::RoutingTableDialog), swch(swch)
+RoutingTableDialog::RoutingTableDialog(SwitchModule *swch)
+    : QDialog(swch),
+      ui(new Ui::RoutingTableDialog), swch(swch)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose, true);
@@ -23,7 +23,6 @@ RoutingTableDialog::~RoutingTableDialog()
  */
 void RoutingTableDialog::on_pushButton_2_clicked()
 {
-
 }
 
 /**
@@ -31,5 +30,4 @@ void RoutingTableDialog::on_pushButton_2_clicked()
  */
 void RoutingTableDialog::on_pushButton_clicked()
 {
-
 }

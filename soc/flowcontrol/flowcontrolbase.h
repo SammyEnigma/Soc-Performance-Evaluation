@@ -22,35 +22,36 @@
 #define FCDEB \
     if (1)    \
     qDebug() <<
-typedef std::function<void ()>const RunType;
+typedef std::function<void()> const RunType;
 
 class FlowControlBase : public QObject
 {
     Q_OBJECT
 public:
     FlowControlBase(GraphicArea *ga, QObject *parent = nullptr);
-    
-    struct DelayRunBean {
-        DelayRunBean(int dly, RunType* func, bool after = false) : total_delay(dly), func(func), curr_delay(0), after(after)
+
+    struct DelayRunBean
+    {
+        DelayRunBean(int dly, RunType *func, bool after = false) : total_delay(dly), func(func), curr_delay(0), after(after)
         {
         }
 
         int total_delay; // 延迟的 clock 数
-        RunType* func;   // 可执行函数(Lambda)
+        RunType *func;   // 可执行函数(Lambda)
         int curr_delay;  // 当前延迟
         bool after;      // 是否等其他代码运行完后再运行
     };
 
 public slots:
-    void startRun();  // 开始运行
-    void stopRun();   // 中止运行
-    void pauseRun();  // 暂停运行
-    void resumeRun(); // 继续运行
-    void nextStep();  // 运行下一步
+    void startRun();       // 开始运行
+    void stopRun();        // 中止运行
+    void pauseRun();       // 暂停运行
+    void resumeRun();      // 继续运行
+    void nextStep();       // 运行下一步
     void gotoClock(int c); // 跳转到clock
 
     void printfAllData(); // 调试输出
-    void delayRun(int delay, RunType& f);
+    void delayRun(int delay, RunType &f);
     void changeSpeed(double ratio = 2);
     void modifyRoutingTable(); // 设置routing
 
@@ -80,8 +81,8 @@ signals:
 protected:
     GraphicArea *graphic;
     QTimer *run_timer;
-    TimeFrame current_clock;      // 当前时钟位置
-    QList<DelayRunBean*>delay_runs;
+    TimeFrame current_clock; // 当前时钟位置
+    QList<DelayRunBean *> delay_runs;
     PacketList all_packets; // 所有数据包（指针）的列表
     QList<DataPacketView *> all_packet_view;
     QList<WatchWidget *> watch_widgets;

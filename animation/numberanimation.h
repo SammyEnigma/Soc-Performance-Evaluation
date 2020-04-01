@@ -10,8 +10,8 @@ class NumberAnimation : public QLabel
     Q_PROPERTY(int fontSize READ getFontSize WRITE setFontSize)
     Q_PROPERTY(int alpha READ getAlpha WRITE setAlpha)
 public:
-    NumberAnimation(QWidget* parent = nullptr);
-    NumberAnimation(QString text, QColor color = Qt::red, QWidget* parent = nullptr);
+    NumberAnimation(QWidget *parent = nullptr);
+    NumberAnimation(QString text, QColor color = Qt::red, QWidget *parent = nullptr);
 
     void setCenter(QPoint p);
     void setText(QString text);
@@ -27,7 +27,7 @@ public:
     void startAnimation();
 
 private:
-    int fontSize;   // 字体大小动画变量
+    int fontSize; // 字体大小动画变量
     int alpha;
     QColor color;
     double endProp; // 最终大小比例

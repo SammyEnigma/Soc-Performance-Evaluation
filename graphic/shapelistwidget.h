@@ -38,11 +38,11 @@
 
 class ShapeListWidget : public QListWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
     ShapeListWidget(QWidget *parent = nullptr);
 
-    ShapeBase* getShapeByName(QString name);
+    ShapeBase *getShapeByName(QString name);
     void recoverDragPrevIndex();
 
 protected:
@@ -50,12 +50,12 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
-    void loadShapes();                     // 加载所有形状
-    void loadCustomShape(ShapeBase* shape); // 加载自定义的形状
-    void loadOneShape(const QString name); // 从文件中读取一个形状
-    
+    void loadShapes();                      // 加载所有形状
+    void loadCustomShape(ShapeBase *shape); // 加载自定义的形状
+    void loadOneShape(const QString name);  // 从文件中读取一个形状
+
 signals:
-	
+
 public slots:
     void slotItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 

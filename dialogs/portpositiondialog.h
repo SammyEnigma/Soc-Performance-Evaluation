@@ -14,13 +14,13 @@ class PortPositionDialog : public QDialog
 {
     Q_OBJECT
 public:
-    PortPositionDialog(QWidget *widget, PortBase* port);
+    PortPositionDialog(QWidget *widget, PortBase *port);
 
-    static bool getPortPosition(QWidget* widget, PortBase* port);
+    static bool getPortPosition(QWidget *widget, PortBase *port);
 
 protected:
-    void resizeEvent(QResizeEvent* event) override;
-    void paintEvent(QPaintEvent * event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     void initView();
@@ -33,10 +33,10 @@ public slots:
 private:
     QList<QPointF> points; // 已有
     QPointF current_point; // 当前（暂存）
-    PortBase* port;
+    PortBase *port;
 
-    QPushButton* bg_btn;
-    QPushButton* po_btn;
+    QPushButton *bg_btn;
+    QPushButton *po_btn;
 };
 
 #endif // PORTPOSITIONDIALOG_H

@@ -40,9 +40,9 @@ void MasterSlave::initData()
                 rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = " + QString::number(passed) + " clock");
                 packet->deleteLater();
                 port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
-                return ;
+                return;
             }
-            
+
             if (data_list.size() >= getToken()) // 已经满了，不让发了
             {
                 rt->runningOut(getText() + " data queue 已经满了，无法收取更多");
@@ -106,8 +106,6 @@ int MasterSlave::getProcessDelay()
     return process_delay->i();
 }
 
-
-
 void MasterSlave::passOnPackets()
 {
     foreach (PortBase *port, ShapeBase::ports)
@@ -151,7 +149,7 @@ void MasterSlave::passOnPackets()
             dequeue_list.append(packet);
             packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
             port->resetBandwidthBuffer();
-            
+
             // 如果是从IP真正下发的
             if (packet->getFirstPickedClock() == -1)
             {
@@ -190,7 +188,7 @@ void MasterSlave::passOnPackets()
             port = static_cast<ModulePort *>(packet->getComePort());
             if (port)
                 port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
-            
+
             rt->need_passOn_this_clock = true;
         }
     }
@@ -213,7 +211,7 @@ void MasterSlave::passOnPackets()
         packet->resetDelay(getDataValue("latency", 0).toInt());
         rt->need_passOn_this_clock = true;
     }
-    
+
     changeRequestsToResponse(); // 如果是只有一个端口的Slave，则将要发送的数据都变成response
 
     // 延迟发送
@@ -307,17 +305,17 @@ void MasterSlave::updatePacketPos()
     //int line_height = fm.lineSpacing();
     //int right = width() / 2 + this->pos().x();
     //double one_piece = PACKET_SIZE + 4; // 一小块packet的位置（相对于left）
-    
-   // l = left;
+
+    // l = left;
     //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, enqueue_list.size()));
     foreach (DataPacket *packet, enqueue_list)
     {
         packet->setDrawPos(QPoint(l, top));
-      //  l += one_piece;
+        //  l += one_piece;
     }
 
-   // l = left;
-   // top += PACKET_SIZE + 4;
+    // l = left;
+    // top += PACKET_SIZE + 4;
     //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, data_list.size()));
     foreach (DataPacket *packet, data_list)
     {
@@ -325,22 +323,22 @@ void MasterSlave::updatePacketPos()
         //l += one_piece;
     }
 
-   // top += PACKET_SIZE + 4;
-   // l = left;
+    // top += PACKET_SIZE + 4;
+    // l = left;
     //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, dequeue_list.size()));
     foreach (DataPacket *packet, dequeue_list)
     {
         packet->setDrawPos(QPoint(l, top));
-     //   l += one_piece;
+        //   l += one_piece;
     }
 
-  //  l = left;
+    //  l = left;
     //top += PACKET_SIZE + 4;
     //one_piece = qMin((double)PACKET_SIZE, (right - left - PACKET_SIZE) / (double)qMax(1, send_delay_list.size()));
     foreach (DataPacket *packet, send_delay_list)
     {
         packet->setDrawPos(QPoint(l, top));
-       // l += one_piece;
+        // l += one_piece;
     }
 }
 
@@ -373,15 +371,14 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
  */
 void MasterSlave::changeRequestsToResponse()
 {
-    
 }
 
 int MasterSlave::getReqCount()
 {
     int req_count = 0;
-    foreach(DataPacket *packet, data_list + dequeue_list + enqueue_list)
+    foreach (DataPacket *packet, data_list + dequeue_list + enqueue_list)
     {
-        if(packet->isRequest())
+        if (packet->isRequest())
         {
             req_count++;
         }
@@ -392,9 +389,9 @@ int MasterSlave::getReqCount()
 int MasterSlave::getRspCount()
 {
     int rsp_count = 0;
-    foreach(DataPacket *packet, data_list + dequeue_list + enqueue_list)
+    foreach (DataPacket *packet, data_list + dequeue_list + enqueue_list)
     {
-      if(packet->isResponse())
+        if (packet->isResponse())
         {
             rsp_count++;
         }
@@ -407,62 +404,62 @@ void MasterSlave::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     QFontMetrics fm(this->font());
-    painter.setPen(QColor(211, 211, 211) );
+    painter.setPen(QColor(211, 211, 211));
     QFont font = this->font();
-    painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
+    painter.setRenderHint(QPainter::Antialiasing, true); //抗锯齿
 
     // 竖向的进度条
-    if(getClass() == "Master" || getClass() == "Slave")
+    if (getClass() == "Master" || getClass() == "Slave")
     {
         painter.save();
         QPainterPath path;
         //画整个进度条
-        int bar_x_req = (width() - PACKET_SIZE * 16) / 2;//request的进度条
+        int bar_x_req = (width() - PACKET_SIZE * 16) / 2; //request的进度条
         int bar_y = height() / 5;
-        int bar_x_rsp = (width() + PACKET_SIZE * 16) / 2;//response的进度条
-            int line_height = fm.lineSpacing();
+        int bar_x_rsp = (width() + PACKET_SIZE * 16) / 2; //response的进度条
+        int line_height = fm.lineSpacing();
         //画request
         path.addRoundedRect(bar_x_req, bar_y,
                             PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
-        painter.fillPath(path,QColor(211, 211, 211));//填充
+        painter.fillPath(path, QColor(211, 211, 211)); //填充
 
         painter.setPen(QColor(105, 105, 105));
         path.addRoundedRect(bar_x_req - 2, bar_y - 2,
-                            PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+                            PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3); //边界
         painter.drawPath(path);
         int req_count = 0, rsp_count = 0;
-        foreach(DataPacket *packet, dequeue_list + enqueue_list)
+        foreach (DataPacket *packet, dequeue_list + enqueue_list)
         {
-            if(packet->isRequest())
+            if (packet->isRequest())
             {
                 req_count++;
             }
-            else if(packet->isResponse())
+            else if (packet->isResponse())
             {
                 rsp_count++;
             }
         }
         //request数据
-        int token = getToken();//总的data
+        int token = getToken(); //总的data
         int current_token_req = data_list.size() + req_count;
         int per = 64;
         int count_req = (current_token_req * per + token / per / 2.0) / token;
         //画response
         path.addRoundedRect(bar_x_rsp, bar_y,
                             PACKET_SIZE * 2, height() * 3 / 5, 3, 3);
-        painter.fillPath(path,QColor(211, 211, 211));//填充
+        painter.fillPath(path, QColor(211, 211, 211)); //填充
         painter.setPen(QColor(105, 105, 105));
         path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
-                            PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3);//边界
+                            PACKET_SIZE * 2 + 4, height() * 3 / 5 + 4, 3, 3); //边界
         painter.drawPath(path);
         //response数据
         int current_token_rsp = response_list.size() + rsp_count;
         int count_rsp = (current_token_rsp * per + token / per / 2.0) / token;
 
         //req动画
-        path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5 ,
-                            PACKET_SIZE * 2, height() * 3 * count_req / per / 5 , 3, 3);
-        painter.fillPath(path,QColor(85, 107, 47));//填充
+        path.addRoundedRect(bar_x_req, bar_y + height() * 3 * (per - count_req) / per / 5,
+                            PACKET_SIZE * 2, height() * 3 * count_req / per / 5, 3, 3);
+        painter.fillPath(path, QColor(85, 107, 47)); //填充
         //req文字
         painter.setPen(QColor(0, 0, 0));
         painter.setFont(normal_font);
@@ -474,15 +471,15 @@ void MasterSlave::paintEvent(QPaintEvent *event)
                          QString("%1").arg(current_token_req));
         //painter.drawText(word_x, word_y + line_height / 2 * line++,
         //                 QString("%1").arg("——"));
-        painter.drawLine(word_req_x, word_y  + line_height / 4.5 * line++ ,
-                        word_req_x + fm.horizontalAdvance(QString("%1").arg(getToken())), word_y + line_height /4.5 * line );
+        painter.drawLine(word_req_x, word_y + line_height / 4.5 * line++,
+                         word_req_x + fm.horizontalAdvance(QString("%1").arg(getToken())), word_y + line_height / 4.5 * line);
         painter.drawText(word_req_x, word_y + line_height / 2 * line++,
                          QString("%1").arg(getToken()));
         path.clear();
         //rsp动画
-        path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
-                            PACKET_SIZE * 2, height() * 3 * count_rsp / per / 5 , 3, 3);
-        painter.fillPath(path,QColor(220, 20, 60));//填充
+        path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * (per - count_rsp) / per / 5,
+                            PACKET_SIZE * 2, height() * 3 * count_rsp / per / 5, 3, 3);
+        painter.fillPath(path, QColor(220, 20, 60)); //填充
         //rsp文字
         painter.setPen(QColor(13, 51, 255));
         painter.setFont(normal_font);
@@ -492,8 +489,8 @@ void MasterSlave::paintEvent(QPaintEvent *event)
                          QString("%1").arg(current_token_rsp));
         //painter.drawText((width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2, height() / 2 + line_height / 2 * line++,
         //                 QString("%1").arg("-"));
-        painter.drawLine(word_rsp_x, word_y  + line_height /4.5 * line++ ,
-                        word_rsp_x + fm.horizontalAdvance(QString("%1").arg(getToken())), word_y + line_height /4.5 * line );
+        painter.drawLine(word_rsp_x, word_y + line_height / 4.5 * line++,
+                         word_rsp_x + fm.horizontalAdvance(QString("%1").arg(getToken())), word_y + line_height / 4.5 * line);
         painter.drawText(word_rsp_x,
                          word_y + line_height / 2 * line++,
                          QString("%1").arg(getToken()));

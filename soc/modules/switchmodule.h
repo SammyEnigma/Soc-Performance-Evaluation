@@ -17,9 +17,9 @@ typedef QHash<MID, PID> RoutingTable;
 
 class SwitchModule : public ModuleBase
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-    SwitchModule(QWidget* parent = nullptr);
+    SwitchModule(QWidget *parent = nullptr);
 
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
@@ -29,7 +29,7 @@ public:
     void clearData() override;
     virtual void setDefaultDataList() override;
     int getToken();
-    
+
     virtual void passOnPackets() override;
     virtual void delayOneClock() override;
 
@@ -37,34 +37,34 @@ public:
     void linkPickerPorts(QList<ShapeBase *> shapes);
 
     void updatePacketPos() override;
-    
+
     void setRoutingTable(RoutingTable table);
     RoutingTable getRoutingTable();
     PID getRouting(MID destination);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    
+
     virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
 
     QList<QAction *> addinMenuActions() override;
 
 private:
-    QList<ModulePort *> getToPorts(PortBase* from_port);
-    QList<ModulePort *> getReturnPorts(PortBase* to_port);
-    ModulePort* getPortByShapeName(QString text);
+    QList<ModulePort *> getToPorts(PortBase *from_port);
+    QList<ModulePort *> getReturnPorts(PortBase *to_port);
+    ModulePort *getPortByShapeName(QString text);
 
 signals:
     void signalOpenRouting();
 
 public slots:
-	void slotDataReceived(ModulePort* port, DataPacket *packet);
-    
+    void slotDataReceived(ModulePort *port, DataPacket *packet);
+
 private:
-    QQueue<DataPacket*> request_queue;
-    QQueue<DataPacket*> response_queue;
-    
-    QList<SwitchPicker*> pickers;
+    QQueue<DataPacket *> request_queue;
+    QQueue<DataPacket *> response_queue;
+
+    QList<SwitchPicker *> pickers;
     PacketList picked_delay_list;
     RoutingTable routing_table;
 

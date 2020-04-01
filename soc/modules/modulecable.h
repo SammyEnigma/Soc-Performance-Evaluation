@@ -19,32 +19,34 @@
 #define PADDING 10
 #define PORT_SIZE 8
 #define ARROW_LENGTH 24
-#define ARROW_DEGREES PI/6
+#define ARROW_DEGREES PI / 6
 #define PI 3.1415926
 #define DEF_VAL -0x3f3f3f3f
 
-enum PASS_ONE_CLOCK_FLAG {
+enum PASS_ONE_CLOCK_FLAG
+{
     PASS_REQUEST,
     PASS_RESPONSE
 };
 
 class ModuleCable : public CableBase
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-    ModuleCable(QWidget* parent = nullptr);
+    ModuleCable(QWidget *parent = nullptr);
 
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
 
-    enum LINE_TYPE {
-        REQUEST_LINE, 
-        RESPONSE_LINE, 
-        REQUEST_DATA_LINE, 
+    enum LINE_TYPE
+    {
+        REQUEST_LINE,
+        RESPONSE_LINE,
+        REQUEST_DATA_LINE,
         RESPONSE_DATA_LINE
     };
 
-    virtual ModuleCable* newInstanceBySelf(QWidget *parent = nullptr) override;
+    virtual ModuleCable *newInstanceBySelf(QWidget *parent = nullptr) override;
     void initData() override;
     void clearData() override;
     virtual void setDefaultDataList() override;
@@ -57,7 +59,7 @@ public:
 
     void setTransferDelay(int delay);
     int getTransferDelay();
-    
+
 private:
     void paintCableLine(QPainter &painter, int x1, int y1, int x2, int y2, bool reverse = false);
     void paintCableLine(QPainter &painter, QPoint pos1, QPoint pos2, bool reverse = false);
@@ -73,14 +75,14 @@ signals:
 
 protected:
     QList<PacketList> packet_lists; // 所有的数据（二维），为扩展线数量做准备
-    CustomDataType* IPTD; // 包传输延迟 IPPacketTransferDelay
+    CustomDataType *IPTD;           // 包传输延迟 IPPacketTransferDelay
 
 public:
     // 来自 packet_lists 的元素别名（非真正的新成员变量）
-    PacketList& request_list;
-    PacketList& request_data_list;
-    PacketList& response_list;
-    PacketList& response_data_list;
+    PacketList &request_list;
+    PacketList &request_data_list;
+    PacketList &response_list;
+    PacketList &response_data_list;
 
 private:
     int _breadth_x, _breadth_y, _space_x, _space_y;

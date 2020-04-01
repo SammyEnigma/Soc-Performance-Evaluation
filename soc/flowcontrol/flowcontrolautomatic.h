@@ -21,7 +21,7 @@ protected:
     void refreshUI() override;
 
 private:
-	QList<ModuleBase*> getModules();
+    QList<ModuleBase *> getModules();
 
 private:
     ShapeList shapes;

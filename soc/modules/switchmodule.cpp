@@ -262,23 +262,22 @@ void SwitchModule::updatePacketPos()
         //l = 2 + PACKET_SIZE;
     }
 
-   // h += height + 2;
-   // l = 2;
+    // h += height + 2;
+    // l = 2;
     foreach (DataPacket *packet, response_queue)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-       // l = 2 + PACKET_SIZE;
+        // l = 2 + PACKET_SIZE;
     }
 
-  //  h += height + 2;
-   // l = 2;
+    //  h += height + 2;
+    // l = 2;
     foreach (DataPacket *packet, picked_delay_list)
     {
         packet->setDrawPos(pos() + QPoint(l, h));
-       // l = 2 + PACKET_SIZE;
+        // l = 2 + PACKET_SIZE;
     }
 }
-
 
 void SwitchModule::setRoutingTable(RoutingTable table)
 {
@@ -304,7 +303,7 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     QFontMetrics fm(this->font());
     painter.setPen(QColor(211, 211, 211));
     QFont font = this->font();
-    painter.setRenderHint(QPainter::Antialiasing, true);//抗锯齿
+    painter.setRenderHint(QPainter::Antialiasing, true); //抗锯齿
     painter.save();
     QPainterPath path;
 
@@ -312,83 +311,83 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     int bar_y = height() / 5;
     int bar_x_rsp = (width() + PACKET_SIZE * 8) / 2;
     int line_height = fm.lineSpacing();
-//画req
+    //画req
     path.addRoundedRect(bar_x_req, bar_y,
-                        PACKET_SIZE, height() * 3/ 5, 3, 3);
-    painter.fillPath(path,QColor(211, 211, 211));//填充
+                        PACKET_SIZE, height() * 3 / 5, 3, 3);
+    painter.fillPath(path, QColor(211, 211, 211)); //填充
     //
     painter.setPen(QColor(85, 107, 47));
     path.addRoundedRect(bar_x_req - 2, bar_y - 2,
-                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3);//边界
+                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3); //边界
     painter.drawPath(path);
-   // path.clear();
-//画rsp
+    // path.clear();
+    //画rsp
     path.addRoundedRect(bar_x_rsp, bar_y,
                         PACKET_SIZE, height() * 3 / 5, 3, 3);
-    painter.fillPath(path,QColor(211, 211, 211));//填充
-   //
+    painter.fillPath(path, QColor(211, 211, 211)); //填充
+                                                   //
     painter.setPen(QColor(85, 107, 47));
     path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
-                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3);//边界
+                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3); //边界
     painter.drawPath(path);
     //path.clear();
     int req_count = 0, rsp_count = 0;
-    foreach(DataPacket *packet, response_queue + request_queue)
+    foreach (DataPacket *packet, response_queue + request_queue)
     {
-        if(packet->isRequest())
+        if (packet->isRequest())
         {
             req_count++;
         }
-        else if(packet->isResponse())
+        else if (packet->isResponse())
         {
             rsp_count++;
         }
     }
-//req数据
+    //req数据
     int token = getDataValue("token").toInt();
     int current_token_req = req_count;
     int per = 64;
     int count_req = (current_token_req * per + token / per / 2.0) / token;
-//rsp数据
+    //rsp数据
     int current_token_rsp = rsp_count;
     int count_rsp = (current_token_rsp * per + token / per / 2.0) / token;
-//req动画
-    path.addRoundedRect(bar_x_req, bar_y + height() * 3 * ( per - count_req) / per / 5,
-                        PACKET_SIZE, height() * 3 * count_req / per / 5 , 3, 3);
-    painter.fillPath(path,QColor(85, 107, 47));//填充
+    //req动画
+    path.addRoundedRect(bar_x_req, bar_y + height() * 3 * (per - count_req) / per / 5,
+                        PACKET_SIZE, height() * 3 * count_req / per / 5, 3, 3);
+    painter.fillPath(path, QColor(85, 107, 47)); //填充
     painter.setPen(QColor(0, 0, 0));
     painter.setFont(normal_font);
     int line = 0;
     int word_req_x = (width() - PACKET_SIZE * 16 - fm.horizontalAdvance(_text)) / 2;
-    int word_rsp_x = (width() + PACKET_SIZE * 16 - fm.horizontalAdvance(_text)/**/) / 2;
+    int word_rsp_x = (width() + PACKET_SIZE * 16 - fm.horizontalAdvance(_text) /**/) / 2;
     int word_y = height() / 2;
-    painter.drawText(word_req_x, word_y + line_height / 2* line++,
+    painter.drawText(word_req_x, word_y + line_height / 2 * line++,
                      QString("%1").arg(current_token_req));
     //painter.drawText(word_req_x, word_y + line_height / 2 * line++,
     //                 QString("%1").arg("-"));
-    painter.drawLine(word_req_x, word_y  + line_height / 4.5 * line++ ,
-                    word_req_x + fm.horizontalAdvance(QString("%1").arg(getDataValue("token").toInt())), word_y + line_height /4.5 * line );
+    painter.drawLine(word_req_x, word_y + line_height / 4.5 * line++,
+                     word_req_x + fm.horizontalAdvance(QString("%1").arg(getDataValue("token").toInt())), word_y + line_height / 4.5 * line);
     painter.drawText(word_req_x, word_y + line_height / 2 * line++,
                      QString("%1").arg(getDataValue("token").toInt()));
     path.clear();
-//rsp动画
-    path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * ( per - count_rsp) / per / 5 ,
-                        PACKET_SIZE, height() * 3 * count_rsp / per / 5 , 3, 3);
-    painter.fillPath(path,QColor(220, 20, 60/*85, 107, 47*/));//填充
+    //rsp动画
+    path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * (per - count_rsp) / per / 5,
+                        PACKET_SIZE, height() * 3 * count_rsp / per / 5, 3, 3);
+    painter.fillPath(path, QColor(220, 20, 60 /*85, 107, 47*/)); //填充
     painter.setPen(QColor(220, 20, 60));
     painter.setFont(normal_font);
     line = 0;
-    painter.drawText(word_rsp_x, word_y + line_height / 2* line++,
+    painter.drawText(word_rsp_x, word_y + line_height / 2 * line++,
                      QString("%1").arg(current_token_rsp));
     //painter.drawText((width() + PACKET_SIZE * 16 + fm.horizontalAdvance(_text)) / 2, height() / 2 + line_height / 2 * line++,
     //                 QString("%1").arg("-"));
-    painter.drawLine(word_rsp_x, word_y  + line_height /4.5 * line++ ,
-                    word_rsp_x + fm.horizontalAdvance(QString("%1").arg(getDataValue("token").toInt())), word_y + line_height /4.5 * line );
+    painter.drawLine(word_rsp_x, word_y + line_height / 4.5 * line++,
+                     word_rsp_x + fm.horizontalAdvance(QString("%1").arg(getDataValue("token").toInt())), word_y + line_height / 4.5 * line);
     painter.drawText(word_rsp_x, word_y + line_height / 2 * line++,
                      QString("%1").arg(getDataValue("token").toInt()));
     painter.drawPath(path);
     painter.restore();
-  /*
+    /*
     ModulePort *port1 = nullptr, *port2 = nullptr;
     foreach (PortBase *port, ports)
     {
@@ -519,7 +518,7 @@ void SwitchModule::linkPickerPorts(QList<ShapeBase *> shapes)
 void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
 {
     int count = ports.size();
-    QRect& r = draw_rect;
+    QRect &r = draw_rect;
     int w = draw_rect.width(), h = draw_rect.height();
     //const double pi = 3.14;
     QPainterPath path;
@@ -528,7 +527,7 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
         // 固定四边形
         path.addRect(r);
     }
-   /* else if (count == 5)//五边形
+    /* else if (count == 5)//五边形
     {
        double radius = qMin(r.width() / 2 / cos(9 / pi), r.height() / (1 + cos(18 / pi)));
        path.moveTo(r.center() - QPoint(0, radius));
@@ -547,12 +546,12 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
         //获取到凸包算法以后的点坐标
         QList<QPoint> position = convex.getPoints();
         path.moveTo(position.first());
-        for(int i = 1; i < position.size(); i++)
+        for (int i = 1; i < position.size(); i++)
         {
             path.lineTo(position.at(i));
         }
         path.lineTo(position.first());
-       /*
+        /*
         path.moveTo(ports.first()->geometry().center());
         for (int i = 1; i < ports.size(); i++)
         {
@@ -561,7 +560,8 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
         path.lineTo(ports.first()->geometry().center());*/
     }
 
-    if (0){
+    if (0)
+    {
         // 画六边形
         // 3a^2 + 2wa - w^2 - h^2 = 0
         double delta = (2 * w) * (2 * w) - 4 * 3 * (-w * w - h * h);
@@ -590,9 +590,9 @@ void SwitchModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
 
 QList<QAction *> SwitchModule::addinMenuActions()
 {
-    QAction* routing_action = new QAction("routing table", this);
-    connect(routing_action, &QAction::triggered, this, [=]{
+    QAction *routing_action = new QAction("routing table", this);
+    connect(routing_action, &QAction::triggered, this, [=] {
         emit signalOpenRouting();
     });
-    return QList<QAction*>{routing_action};
+    return QList<QAction *>{routing_action};
 }

@@ -88,7 +88,7 @@ void MainWindow::readFromFile(QString file_path)
         if (StringUtil::getXmlInt(shape_string, "SELECTED") != 0)
             ui->scrollAreaWidgetContents_2->select(shape, true);
     }
-    
+
     // 遍历连接（因为需要等port全部加载完成后）
     QMap<QString, PortBase *> ports = ui->scrollAreaWidgetContents_2->ports_map;
     foreach (ShapeBase *shape, ui->scrollAreaWidgetContents_2->shape_lists)
@@ -115,10 +115,9 @@ void MainWindow::readFromFile(QString file_path)
         else if (shape->getClass() == "WatchModule") // 监视控件
         {
             // 恢复监视的端口
-            
         }
     }
-    
+
     // 其他操作
     //    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
@@ -249,7 +248,7 @@ void MainWindow::on_actionRun_triggered()
     ui->actionFaster->setEnabled(true);
     ui->actionSlower->setEnabled(true);
 
-    connect(flow_control, &FlowControlBase::signalOneClockPassed, this, [=]{
+    connect(flow_control, &FlowControlBase::signalOneClockPassed, this, [=] {
         ui->plainTextEdit->setPlainText(rt->running_out.join("\n"));
         ui->plainTextEdit->verticalScrollBar()->setSliderPosition(ui->plainTextEdit->verticalScrollBar()->maximum());
     });
@@ -324,7 +323,7 @@ void MainWindow::on_actionGithub_G_triggered()
 
 void MainWindow::on_actionTen_Step_T_triggered()
 {
-    for (int i = 0; i < 10; i ++)
+    for (int i = 0; i < 10; i++)
         flow_control->nextStep();
 }
 
@@ -332,11 +331,11 @@ void MainWindow::on_actionGo_To_triggered()
 {
     QString rst = QInputDialog::getText(this, "跳转", "请输入要跳转到的clock（int）\n若小于当前clock，将重新开始运行", QLineEdit::Normal, us->getStr("recent/go_to_clock"));
     if (rst.trimmed().isEmpty())
-        return ;
+        return;
     bool ok;
     int i = rst.toInt(&ok);
     if (!ok)
-        return ;
+        return;
     us->setVal("recent/go_to_clock", rst);
 
     // 跳转到这个clock
@@ -370,7 +369,7 @@ void MainWindow::on_lineEdit_editingFinished()
 {
     QString text = ui->lineEdit->text();
     if (text.isEmpty())
-        return ;
+        return;
     ui->lineEdit->clear();
     system(text.toLocal8Bit());
 }

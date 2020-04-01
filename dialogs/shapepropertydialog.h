@@ -17,8 +17,9 @@
 #include "ui_shapepropertydialog.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-    class ShapePropertyDialog;
+namespace Ui
+{
+class ShapePropertyDialog;
 }
 QT_END_NAMESPACE
 
@@ -34,12 +35,12 @@ public:
     friend class ShapeBase;
 
 private:
-    void setBtnColor(QPushButton* btn, QColor c, bool fore = false);
+    void setBtnColor(QPushButton *btn, QColor c, bool fore = false);
 
 signals:
 
 public slots:
-	
+
 private slots:
     void on_text_color_btn_clicked();
     void on_pixmap_name_btn_clicked();
@@ -59,14 +60,13 @@ private slots:
 
     void on_radioButton_3_clicked();
 
-
 private:
     Ui::ShapePropertyDialog *ui;
-	ShapeBase* shape;
+    ShapeBase *shape;
     ShapeList shapes;
 
     QList<Qt::Alignment> aligns = {Qt::AlignTop | Qt::AlignHCenter, Qt::AlignBottom | Qt::AlignHCenter, Qt::AlignLeft | Qt::AlignVCenter, Qt::AlignRight | Qt::AlignVCenter, Qt::AlignCenter,
-                                    Qt::AlignTop | Qt::AlignLeft, Qt::AlignTop | Qt::AlignRight, Qt::AlignBottom | Qt::AlignLeft, Qt::AlignBottom | Qt::AlignRight};
+                                   Qt::AlignTop | Qt::AlignLeft, Qt::AlignTop | Qt::AlignRight, Qt::AlignBottom | Qt::AlignLeft, Qt::AlignBottom | Qt::AlignRight};
 };
 
 #endif // SHAPEPROPERTYDIALOG_H

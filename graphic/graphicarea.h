@@ -72,8 +72,8 @@ public:
 
     // 视口与监视操作
     void zoomIn(double prop);
-    void linkWatchPort(WatchModule* watch, ModulePort* port);
-    void linkWatchModule(WatchModule* watch, ModuleBase* module);
+    void linkWatchPort(WatchModule *watch, ModulePort *port);
+    void linkWatchModule(WatchModule *watch, ModuleBase *module);
     void setWatchModule(PortBase *port);
 
     // 流控操作
@@ -118,16 +118,16 @@ public slots:
     void actionPaste();
     void actionDelete();
     void slotShowData();
-    
+
     void slotWatch();
-//    void slotWatchClock();
-    void slotWatchPort(WatchModule* watch);
-    void slotWatchPortID(WatchModule* watch, QString portID);
-    void slotWatchModule(WatchModule* watch);
-    void slotWatchModuleID(WatchModule* watch, QString text);    
+    //    void slotWatchClock();
+    void slotWatchPort(WatchModule *watch);
+    void slotWatchPortID(WatchModule *watch, QString portID);
+    void slotWatchModule(WatchModule *watch);
+    void slotWatchModuleID(WatchModule *watch, QString text);
     void slotSetFrequence(ModulePanel *panel);
     void slotGetFrequence(ModulePanel *panel, double *bandwidth);
-    void slotOpenRouting(SwitchModule* swch);
+    void slotOpenRouting(SwitchModule *swch);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象

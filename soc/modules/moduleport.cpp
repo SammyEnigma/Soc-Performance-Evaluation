@@ -12,7 +12,7 @@ ModulePort::ModulePort(QWidget *parent)
       another_can_receive(0),
       bandwidth(1),
       latency(1), into_port_delay(0), outo_port_delay(0),
-      return_delay(0), 
+      return_delay(0),
       send_update_delay(0), receive_update_delay(0), token(1),
       total_sended(0), total_received(0), begin_waited(0)
 {
@@ -77,7 +77,7 @@ void ModulePort::uninitOneClock()
     frq_queue.enqueue(sended_count_in_this_frame);
     if (frq_queue.length() > rt->frq_period_length)
         frq_queue.dequeue();
-    
+
     frq2_queue.enqueue(received_count_in_this_frame);
     if (frq2_queue.length() > rt->frq_period_length)
         frq2_queue.dequeue();
@@ -108,13 +108,13 @@ void ModulePort::passOnPackets()
             continue;
         if (packet->getComePort() == this) // 是从当前这个端口进来的，则进入模块
         {
-            rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：模块内部");
+            rt->runningOut(getPortId() + " 出来 " + packet->getID() + "，进入下一步：模块内部");
             emit signalOutPortReceived(packet);
             // sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // the delay on the return of the Token
         }
         else // 从这个端口出去
         {
-            rt->runningOut(getPortId() + " 出来 "+packet->getID()+"，进入下一步：发送至线");
+            rt->runningOut(getPortId() + " 出来 " + packet->getID() + "，进入下一步：发送至线");
             // 先判断对方能不能接收（模块一对一的时候问题不大，但是一对多时延迟结束后对方不一定能接收）
             if (!anotherCanRecive()) // 对方不能接收，取消发送和remove
                 continue;
@@ -123,7 +123,7 @@ void ModulePort::passOnPackets()
         outo_port_list.removeAt(i--);
         rt->need_passOn_this_clock = true;
     }
-    
+
     // 发送后自己token-1
     for (int i = 0; i < send_update_delay_list.size(); i++)
     {
@@ -132,7 +132,7 @@ void ModulePort::passOnPackets()
             continue;
         rt->runningOut(getPortId() + " send token-1 延迟结束，当前token = " + QString::number(another_can_receive) + "-1");
         another_can_receive--;
-        
+
         if (us->show_animation)
         {
             showTokenChangeAnimation("-1", Qt::red);
@@ -241,7 +241,7 @@ void ModulePort::paintEvent(QPaintEvent *event)
     PortBase::paintEvent(event);
 
     // 显示数字
-   /* QPainter painter(this);
+    /* QPainter painter(this);
     QFontMetrics fm(this->font());
     int w = fm.horizontalAdvance(QString::number(another_can_receive));
     painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));*/
@@ -269,7 +269,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     case DATA_REQUEST:
         emit signalOutPortToSend(packet);
         send_update_delay_list.append(new DataPacket(send_update_delay));
-        
+
         total_sended++;
         sended_count_in_this_frame++;
         if (begin_waited == 0)
@@ -278,7 +278,7 @@ void ModulePort::sendData(DataPacket *packet, DATA_TYPE type)
     case DATA_RESPONSE:
         emit signalResponseSended(packet);
         send_update_delay_list.append(new DataPacket(send_update_delay));
-        
+
         sended_count_in_this_frame++;
         break;
     case DATA_TOKEN:
@@ -299,13 +299,13 @@ void ModulePort::slotDataReceived(DataPacket *packet)
         begin_waited = rt->total_frame;
     received_count_in_this_frame++;
 
-    packet->setComePort(this);                                      // 出port后，如果 come_port == this_port，则判定为进入
-    
+    packet->setComePort(this); // 出port后，如果 come_port == this_port，则判定为进入
+
     // 开始进入模块
     rt->runningOut("  " + getPortId() + ": 开始进port " + packet->getID());
     into_port_list.append(packet);
     packet->resetDelay(into_port_delay);
-//    emit signalDataReceived(this, packet);
+    //    emit signalDataReceived(this, packet);
 }
 
 void ModulePort::prepareSendData(DataPacket *packet)
@@ -408,9 +408,9 @@ double ModulePort::getLiveFrequence()
 
 void ModulePort::showTokenChangeAnimation(QString text, QColor color)
 {
-	if (rt->ignore_view_changed)
-    	return ;
-    NumberAnimation* animation = new NumberAnimation(text, color, parentWidget()->parentWidget());
-    animation->setCenter(getGlobalPos() + QPoint(rand() % 32-16, rand()%32-16));
+    if (rt->ignore_view_changed)
+        return;
+    NumberAnimation *animation = new NumberAnimation(text, color, parentWidget()->parentWidget());
+    animation->setCenter(getGlobalPos() + QPoint(rand() % 32 - 16, rand() % 32 - 16));
     animation->startAnimation();
 }

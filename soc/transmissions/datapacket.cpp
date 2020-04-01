@@ -22,7 +22,7 @@ DataPacket::DataPacket(QString tag, QObject *parent) : DataPacket(parent)
     this->tag = tag;
 }
 
-DataPacket::DataPacket(int delay, QObject *parent) :DataPacket(parent)
+DataPacket::DataPacket(int delay, QObject *parent) : DataPacket(parent)
 {
     resetDelay(delay);
 }
@@ -148,12 +148,12 @@ void DataPacket::setComePort(PortBase *port)
     history_come_ports.append(port);
 }
 
-PortBase* DataPacket::getTargetPort()
+PortBase *DataPacket::getTargetPort()
 {
     return target_port;
 }
 
-void DataPacket::setTargetPort(PortBase* port)
+void DataPacket::setTargetPort(PortBase *port)
 {
     target_port = port;
 }
@@ -171,7 +171,7 @@ QList<PortBase *> DataPacket::getHistoryPorts()
  */
 PortBase *DataPacket::getReturnPort(QList<PortBase *> ports, PortBase *exclude_port)
 {
-    foreach (PortBase* port, ports)
+    foreach (PortBase *port, ports)
     {
         if (port == exclude_port)
             continue;

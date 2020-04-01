@@ -361,7 +361,7 @@ void ModuleCable::paintEvent(QPaintEvent *event)
                     paintLinePort(painter, QPoint(i * LINE_SPACE + PADDING, height() - PADDING), i == LINE_COUNT - 1);
                 }
 
-                int  i = 0;
+                int i = 0;
                 painter.setPen(ReqColor);
                 paintLineArrow(painter, QPoint(i * LINE_SPACE + PADDING, i * LINE_SPACE + PADDING), QPoint(i * LINE_SPACE + PADDING, height() - PADDING));
                 i = LINE_COUNT - 1;
@@ -492,15 +492,14 @@ void ModuleCable::paintLineArrow(QPainter &painter, QPoint pos1, QPoint pos2)
     QPoint arr2(
         pos2.x() + ARROW_LENGTH * cos(angle + ARROW_DEGREES),
         pos2.y() + ARROW_LENGTH * sin(angle + ARROW_DEGREES));
-//    painter.drawLine(pos2, arr1);
-//    painter.drawLine(pos2, arr2);
+    //    painter.drawLine(pos2, arr1);
+    //    painter.drawLine(pos2, arr2);
     QPainterPath path;
     path.moveTo(pos2);
     path.lineTo(arr1);
     path.lineTo(arr2);
     path.lineTo(pos2);
     painter.fillPath(path, painter.pen().color());
-
 }
 
 void ModuleCable::adjustGeometryByPorts()
@@ -547,7 +546,7 @@ void ModuleCable::adjustGeometryByPorts()
     {
         _breadth_x = _breadth_y = breadth;
         _space_x = _space_y = LINE_SPACE;
-        
+
         if (_line_type == 1) // 横竖
         {
             top -= _breadth_y / 2;
@@ -570,7 +569,7 @@ void ModuleCable::adjustGeometryByPorts()
     int delta_x1 = 0, delta_y1 = 0, delta_x2 = 0, delta_y2 = 0;
     if (gx2y2 > PORT_SQUARE * 5)
     {
-        const int OFFSET = PORT_SQUARE*2/3;
+        const int OFFSET = PORT_SQUARE * 2 / 3;
         if (_line_type == 0) // 直线
         {
             if (right - left > OFFSET * 5)

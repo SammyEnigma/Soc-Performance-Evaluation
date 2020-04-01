@@ -49,7 +49,7 @@ public:
     ShapeBase(QString text, QWidget *parent = nullptr);
     ShapeBase(QString text, QPixmap pixmap, QWidget *parent = nullptr);
     ~ShapeBase() override;
-    
+
     friend class MainWindow;
     friend class GraphicArea;
     friend class ShapePropertyDialog;
@@ -74,10 +74,10 @@ public:
     bool isEdgeShowed();
     void setLightEdgeShowed(bool show);
 
-    virtual PortBase* createPort();
+    virtual PortBase *createPort();
     virtual void addPort(PortBase *port);
     QList<PortBase *> getPorts();
-    PortBase *getPortByOpposite(ShapeBase* shape);
+    PortBase *getPortByOpposite(ShapeBase *shape);
 
     void setPressOperatorEffected();
     void simulatePress(QMouseEvent *event);
@@ -92,7 +92,7 @@ public:
     // 数据
     void setRoutingID(int id);
     int getRoutingID();
-    CustomDataType* getData(QString name);
+    CustomDataType *getData(QString name);
     bool containsData(QString name);
     QVariant getDataValue(QString name, QVariant def = 0);
     DataType getDataType(QString name);
@@ -112,7 +112,7 @@ protected:
     virtual QPainterPath getShapePainterPath();                  // 获取绘图区域（基类）
     virtual void initDrawArea();                                 // 设置绘制区域大小
     virtual void resizeDrawArea(QSize old_size, QSize new_size); // 调整控件大小时，调整绘制区域的大小
-    virtual QList<QAction*> addinMenuActions();                  // 添加shape对应的右键菜单
+    virtual QList<QAction *> addinMenuActions();                 // 添加shape对应的右键菜单
 
 protected:
     void adjustPortsPosition();
@@ -139,7 +139,7 @@ signals:
 public slots:
 
 protected:
-	// 形状属性
+    // 形状属性
     QString _class;            // 形状类名（默认设为前景文字）
     QString _text;             // 前景文字（也当做ID，必须唯一）
     int routing_id;            // 用户自定义路由ID

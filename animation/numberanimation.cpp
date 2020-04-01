@@ -2,7 +2,6 @@
 
 NumberAnimation::NumberAnimation(QWidget *parent) : NumberAnimation("", Qt::red, parent)
 {
-
 }
 
 NumberAnimation::NumberAnimation(QString text, QColor color, QWidget *parent) : QLabel(parent)
@@ -19,7 +18,7 @@ NumberAnimation::NumberAnimation(QString text, QColor color, QWidget *parent) : 
 
 void NumberAnimation::setCenter(QPoint p)
 {
-    move(p.x() - width()/2, p.y() - height());
+    move(p.x() - width() / 2, p.y() - height());
 }
 
 void NumberAnimation::setText(QString text)
@@ -71,7 +70,7 @@ void NumberAnimation::startAnimation()
 {
     int duration = 500;
 
-    QPropertyAnimation* ani = new QPropertyAnimation(this, "fontSize");
+    QPropertyAnimation *ani = new QPropertyAnimation(this, "fontSize");
     ani->setStartValue(fontSize);
     ani->setEndValue(fontSize * endProp);
     ani->setDuration(duration);
@@ -79,16 +78,16 @@ void NumberAnimation::startAnimation()
     connect(ani, SIGNAL(finished()), ani, SLOT(deleteLater()));
     ani->start();
 
-    QPropertyAnimation* ani2 = new QPropertyAnimation(this, "pos");
+    QPropertyAnimation *ani2 = new QPropertyAnimation(this, "pos");
     ani2->setStartValue(pos());
-    ani2->setEndValue(QPoint(pos().x(), pos().y()-fontSize*2));
+    ani2->setEndValue(QPoint(pos().x(), pos().y() - fontSize * 2));
     ani2->setDuration(duration);
     ani2->setEasingCurve(QEasingCurve::OutCubic);
     connect(ani2, SIGNAL(finished()), ani2, SLOT(deleteLater()));
     connect(ani2, SIGNAL(finished()), this, SLOT(deleteLater()));
     ani2->start();
 
-    QPropertyAnimation* ani3 = new QPropertyAnimation(this, "alpha");
+    QPropertyAnimation *ani3 = new QPropertyAnimation(this, "alpha");
     ani3->setStartValue(255);
     ani3->setEndValue(0x0);
     ani3->setDuration(duration);

@@ -16,7 +16,7 @@ SlaveModule::SlaveModule(QWidget *parent) : MasterSlave(parent)
     QPixmap pixmap(DEFAULT_SIZE, DEFAULT_SIZE);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawShapePixmap(painter, QRect(BORDER_SIZE,BORDER_SIZE,DEFAULT_SIZE-BORDER_SIZE*2,DEFAULT_SIZE-BORDER_SIZE*2));
+    drawShapePixmap(painter, QRect(BORDER_SIZE, BORDER_SIZE, DEFAULT_SIZE - BORDER_SIZE * 2, DEFAULT_SIZE - BORDER_SIZE * 2));
     _pixmap = pixmap;
 }
 
@@ -29,7 +29,7 @@ SlaveModule *SlaveModule::newInstanceBySelf(QWidget *parent)
 }
 
 void SlaveModule::initData()
-{   
+{
     this->process_delay = getData("process_delay");
     MasterSlave::initData();
 }

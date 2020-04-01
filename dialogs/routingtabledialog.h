@@ -4,16 +4,16 @@
 #include <QDialog>
 #include "switchmodule.h"
 
-namespace Ui {
+namespace Ui
+{
 class RoutingTableDialog;
 }
 
 class RoutingTableDialog : public QDialog
 {
     Q_OBJECT
-
 public:
-    explicit RoutingTableDialog(SwitchModule* swch);
+    explicit RoutingTableDialog(SwitchModule *swch);
     ~RoutingTableDialog();
 
 private slots:
@@ -23,7 +23,7 @@ private slots:
 
 private:
     Ui::RoutingTableDialog *ui;
-    SwitchModule* swch;
+    SwitchModule *swch;
 };
 
 #endif // ROUTINGTABLEDIALOG_H

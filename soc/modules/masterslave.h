@@ -26,15 +26,15 @@ public:
 
     int getReqCount();
     int getRspCount();
-    
-    ModulePort* getOutPort(DataPacket* packet);
+
+    ModulePort *getOutPort(DataPacket *packet);
 
 protected:
-	virtual void changeRequestsToResponse();
+    virtual void changeRequestsToResponse();
     void paintEvent(QPaintEvent *event) override;
 
 signals:
-	void signalTokenSendStarted(DataPacket* packet); // token开始发送（刚从模块进入延迟发送队列，还未发送出去）
+    void signalTokenSendStarted(DataPacket *packet); // token开始发送（刚从模块进入延迟发送队列，还未发送出去）
 
 public slots:
     virtual void passOnPackets() override; // 1、queue中packet延迟满后，传入到下一个queue
@@ -52,6 +52,7 @@ public:
 protected:
     CustomDataType *token;
     CustomDataType *process_delay;
+
 private:
     QFont big_font, normal_font, bold_font;
 };

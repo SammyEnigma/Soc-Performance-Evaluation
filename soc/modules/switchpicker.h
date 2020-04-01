@@ -5,7 +5,8 @@
 #include "datapacket.h"
 #include "moduleport.h"
 
-enum PICKER_MODE {
+enum PICKER_MODE
+{
     Round_Robin_Scheduling
 };
 
@@ -14,16 +15,16 @@ class SwitchPicker : public QObject
     Q_OBJECT
 public:
     SwitchPicker(QObject *parent = nullptr);
-    SwitchPicker(QList<ModulePort*> ports, QObject *parent = nullptr);
-    
+    SwitchPicker(QList<ModulePort *> ports, QObject *parent = nullptr);
+
     friend class SwitchModule;
 
-    void setPorts(QList<ModulePort*> ports);
+    void setPorts(QList<ModulePort *> ports);
     void setMode(PICKER_MODE mode);
     ModulePort *getPickPort();
 
     void delayOneClock();
-    
+
     void setBandwidth(int b);
     bool isBandwidthBufferFinished();
     void resetBandwidthBuffer();
@@ -33,7 +34,7 @@ signals:
 public slots:
 
 private:
-    QList<ModulePort*> ports;
+    QList<ModulePort *> ports;
     int bandwidth;
     int bandwidth_buffer;
 

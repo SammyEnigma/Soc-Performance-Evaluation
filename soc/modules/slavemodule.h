@@ -26,7 +26,7 @@ public:
     void updatePacketPos() override;
 
 protected:
-	void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
     virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
     virtual void changeRequestsToResponse();
 

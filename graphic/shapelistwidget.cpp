@@ -51,7 +51,7 @@ void ShapeListWidget::recoverDragPrevIndex()
 void ShapeListWidget::mousePressEvent(QMouseEvent *event)
 {
     _drag_prev_index = currentRow(); // 保存拖拽前的位置
-	
+
     QListWidget::mousePressEvent(event);
 
     if (event->button() == Qt::LeftButton)
@@ -185,7 +185,7 @@ void ShapeListWidget::slotItemChanged(QListWidgetItem *current, QListWidgetItem 
         }
     }
 
-    if (name.contains("Cable",Qt::CaseInsensitive) || name.contains("Line",Qt::CaseInsensitive))
+    if (name.contains("Cable", Qt::CaseInsensitive) || name.contains("Line", Qt::CaseInsensitive))
     {
         rt->auto_stick_ports = true;
     }

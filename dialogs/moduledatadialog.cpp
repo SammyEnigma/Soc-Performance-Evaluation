@@ -1,8 +1,9 @@
 #include "moduledatadialog.h"
 #include "ui_moduledatadialog.h"
 
-ModuleDataDialog::ModuleDataDialog(ShapeList shapes) : QDialog(shapes.first()), shape(shapes.first()), shapes(shapes),
-                                                       ui(new Ui::ModuleDataDialog)
+ModuleDataDialog::ModuleDataDialog(ShapeList shapes)
+    : QDialog(shapes.first()), shape(shapes.first()), shapes(shapes),
+      ui(new Ui::ModuleDataDialog)
 {
     ui->setupUi(this);
     ui->tableWidget->setRowCount(shapes.size());

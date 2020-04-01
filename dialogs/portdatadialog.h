@@ -4,7 +4,8 @@
 #include <QDialog>
 #include "moduleport.h"
 
-namespace Ui {
+namespace Ui
+{
 class PortDataDialog;
 }
 
@@ -35,7 +36,7 @@ private slots:
 
 private:
     Ui::PortDataDialog *ui;
-    ModulePort* port;
+    ModulePort *port;
 };
 
 #endif // PORTDATADIALOG_H

@@ -7,13 +7,13 @@
 #include "fileutil.h"
 
 bool DEBUG_MODE = true;
-RuntimeInfo* rt;
-USettings* us;
+RuntimeInfo *rt;
+USettings *us;
 
 void initGlobal()
 {
     rt = new RuntimeInfo();
-    us = new USettings(rt->DATA_PATH+"settings.ini");
+    us = new USettings(rt->DATA_PATH + "settings.ini");
 }
 
 QString log(QVariant str)
@@ -62,7 +62,7 @@ Fraction operator"" _bw(long double d)
 /**
  * 重载分数：字符串形式
  */
-Fraction operator"" _fr(const char* str, size_t size)
+Fraction operator"" _fr(const char *str, size_t size)
 {
     Q_UNUSED(size)
     QString s(str);
@@ -74,18 +74,18 @@ Fraction operator"" _fr(const char* str, size_t size)
     }
     else if (dot == 0) // 没有分子，为 1/分母
     {
-        s = s.right(s.length()-1);
+        s = s.right(s.length() - 1);
         return Fraction(1, s.toInt());
     }
-    else if (dot >= s.length()-1) // 小数点在末尾，为 分子/1
+    else if (dot >= s.length() - 1) // 小数点在末尾，为 分子/1
     {
-        s = s.left(s.length()-1);
+        s = s.left(s.length() - 1);
         return Fraction(s.toInt());
     }
     else // 分数形式
     {
         QString nume = s.left(dot);
-        QString deno = s.right(s.length()-dot-1);
+        QString deno = s.right(s.length() - dot - 1);
         return Fraction(nume.toInt(), deno.toInt());
     }
 }

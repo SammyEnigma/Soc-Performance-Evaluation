@@ -31,7 +31,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void enterEvent(QEvent *event) override;
-    void leaveEvent(QEvent* event) override;
+    void leaveEvent(QEvent *event) override;
 
 private:
     bool isInEdge(QPoint pos);

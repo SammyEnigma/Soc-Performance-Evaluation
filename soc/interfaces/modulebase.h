@@ -8,27 +8,27 @@
 class ModuleBase : public ShapeBase, public ModuleInterface
 {
 public:
-    ModuleBase(QWidget* parent = nullptr) : ShapeBase(parent)
+    ModuleBase(QWidget *parent = nullptr) : ShapeBase(parent)
     {
         _class = _text = "Module";
-        
+
         QPixmap pixmap(128, 128);
         pixmap.fill(Qt::transparent);
         QPainter painter(&pixmap);
         drawShapePixmap(painter, QRect(2, 2, 124, 124));
         _pixmap = pixmap;
     }
-    
-    virtual PortBase* createPort() override
+
+    virtual PortBase *createPort() override
     {
         return new ModulePort(this);
     }
-    
-    virtual QList<ModulePort*> getPorts()
+
+    virtual QList<ModulePort *> getPorts()
     {
-        QList<ModulePort*> mports;
-        foreach (PortBase* port, ports)
-            mports.append(static_cast<ModulePort*>(port));
+        QList<ModulePort *> mports;
+        foreach (PortBase *port, ports)
+            mports.append(static_cast<ModulePort *>(port));
         return mports;
     }
 
@@ -41,18 +41,18 @@ public:
             port->clearData();
         }
     }
-    
+
     void initOneClock()
     {
         // 模块让它自己初始化
-        
+
         // 所有端口的当前帧数据需要初始化，用来统计临时的发送频率
-        foreach (ModulePort*port, getPorts())
+        foreach (ModulePort *port, getPorts())
         {
             port->initOneClock();
         }
     }
-    
+
     void uninitOneClock()
     {
         // 所有端口的当前帧数据需要首尾，用来统计临时的发送频率

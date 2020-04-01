@@ -61,24 +61,24 @@ public:
     void delayToNext();                            // 延迟到下一个阶段
     bool isDelayFinished();                        // 延迟是否已经结束了
     double currentProp();
-    
+
     void setID(QString id);
     QString getID();
-    
+
     void setFirstPickedCLock(int frame);
     int getFirstPickedClock();
 
     QString toString();
-    
+
     QPoint getDrawPos();
     void setDrawPos(QPoint pos);
-    
-    PortBase* getComePort();
+
+    PortBase *getComePort();
     void setComePort(PortBase *port);
-    PortBase* getTargetPort();
+    PortBase *getTargetPort();
     void setTargetPort(PortBase *port);
-    QList<PortBase*> getHistoryPorts();
-    PortBase* getReturnPort(QList<PortBase*> ports, PortBase* exclude_port);
+    QList<PortBase *> getHistoryPorts();
+    PortBase *getReturnPort(QList<PortBase *> ports, PortBase *exclude_port);
 
 signals:
     void signalDelayFinished();
@@ -86,7 +86,7 @@ signals:
     void signalContentChanged();
     void signalDeleted();
 
-public slots: 
+public slots:
     void deleteLater();
 
 public:
@@ -101,18 +101,17 @@ public:
     int chain;
     bool isAck;
 
-
 protected:
     QString token_id;
-    bool valid;      // 是否有效
-    int package_size; // package大小
-    char par;        // 忘了是什么了
+    bool valid;             // 是否有效
+    int package_size;       // package大小
+    char par;               // 忘了是什么了
     int first_picked_clock; // 第一次发送的clock，用来计算最终回去后经过了多久的时间（latency）
-    
-    PortBase* come_port;   // 来的端口
-    PortBase* target_port; // 要发送的端口方向
+
+    PortBase *come_port;   // 来的端口
+    PortBase *target_port; // 要发送的端口方向
     // QList<PortBase*> target_ports; // 要发送的端口list（来的方向只有一个，但是去的方向可以有多个）
-    QList<PortBase*> history_come_ports;
+    QList<PortBase *> history_come_ports;
 
 private:
     TimeFrame delay_step; // 数据包传送有延迟，查看延迟的位置

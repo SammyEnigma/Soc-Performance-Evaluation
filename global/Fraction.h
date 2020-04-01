@@ -29,7 +29,7 @@ public:
             denominator = -denominator;
         }
     }
-    
+
     Fraction(int i)
     {
         if (i == 0)
@@ -41,12 +41,12 @@ public:
             *this = Fraction(i, 1);
         }
     }
-    
+
     Fraction()
     {
         *this = Fraction(0, 0);
     }
-    
+
     bool isValid()
     {
         return denominator != 0;
@@ -92,7 +92,7 @@ public:
     {
         auto_reduction = b;
     }
-    
+
     bool isZero() const
     {
         return numerator == 0;
@@ -134,7 +134,7 @@ public:
             int dot = s.indexOf(".");
             if (dot == 0) // 小数点在开头，.123
             {
-                s = "0"+s;
+                s = "0" + s;
                 return Fraction::fromDecimal(s.toDouble());
             }
             else if (dot >= s.length() - 1) // 小数点在末尾，123.
@@ -248,7 +248,7 @@ public:
                 break;
         }
 
-        return Fraction((nega?-1:1) * (suit_nume + integer * suit_deno), suit_deno);
+        return Fraction((nega ? -1 : 1) * (suit_nume + integer * suit_deno), suit_deno);
     }
 
     void setValue(int n, int d)
@@ -624,8 +624,8 @@ private:
     }
 
 protected:
-    int numerator;   // 分子
-    int denominator; // 分母
+    int numerator;       // 分子
+    int denominator;     // 分母
     bool auto_reduction; // 乘法/加法是否自动约分
     bool padding_size_to_4;
 };

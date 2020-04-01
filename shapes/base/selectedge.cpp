@@ -54,42 +54,43 @@ void SelectEdge::mouseMoveEvent(QMouseEvent *event)
         QPoint event_global = QCursor::pos();
         QPoint delta = event_global - press_global;
         press_global = event_global;
-        if (delta == QPoint(0,0)) return;
+        if (delta == QPoint(0, 0))
+            return;
         int delta_x = delta.x(), delta_y = delta.y();
-        int min_w = qMax(widget->minimumWidth(), 4),  min_h = qMax(widget->minimumHeight(), 4);
+        int min_w = qMax(widget->minimumWidth(), 4), min_h = qMax(widget->minimumHeight(), 4);
         QRect geo(widget->geometry());
-        
+
         if (lefting) // 移动 左
         {
             if (widget->width() - delta_x < min_w) // 限制最小宽度
                 delta_x = widget->width() - min_w;
-            geo.setLeft(geo.left()+delta_x);
+            geo.setLeft(geo.left() + delta_x);
         }
         else if (righting) // 移动 右
         {
             if (widget->width() + delta_x < min_w)
                 delta_x = widget->width() - min_w;
-            geo.setRight(geo.right()+delta_x);
+            geo.setRight(geo.right() + delta_x);
         }
-        
+
         if (topping) // 移动 上
         {
-            if (widget->height()-delta_y<min_h)
+            if (widget->height() - delta_y < min_h)
                 delta_y = widget->height() - min_h;
-            geo.setTop(geo.top()+delta_y);
+            geo.setTop(geo.top() + delta_y);
         }
         else if (bottoming) // 移动 下
         {
-            if (widget->height()+delta_y< min_h)
+            if (widget->height() + delta_y < min_h)
                 delta_y = widget->height() - min_h;
-            geo.setBottom(geo.bottom()+delta_y);
+            geo.setBottom(geo.bottom() + delta_y);
         }
         widget->setGeometry(geo);
 
         event->accept();
         return;
     }
-    else if (event->buttons()==Qt::NoButton)
+    else if (event->buttons() == Qt::NoButton)
     {
         adjustCursor(event->pos());
     }
@@ -173,15 +174,15 @@ bool SelectEdge::isInEdge(QPoint pos)
 void SelectEdge::adjustCursor(QPoint p)
 {
     // 根据不同的位置变成不同的光标
-    bool t = p.y() <= EDGE_LINE_SIZE, b = p.y() >= height()-EDGE_LINE_SIZE;
-    bool l = p.x() <= EDGE_LINE_SIZE, r = p.x() >= width()-EDGE_LINE_SIZE;
-    if ((t&&l) || (b&&r))
+    bool t = p.y() <= EDGE_LINE_SIZE, b = p.y() >= height() - EDGE_LINE_SIZE;
+    bool l = p.x() <= EDGE_LINE_SIZE, r = p.x() >= width() - EDGE_LINE_SIZE;
+    if ((t && l) || (b && r))
         setCursor(Qt::SizeFDiagCursor);
-    else if ((t&&r) || (b&&l))
+    else if ((t && r) || (b && l))
         setCursor(Qt::SizeBDiagCursor);
-    else if (l||r)
+    else if (l || r)
         setCursor(Qt::SizeHorCursor);
-    else if (t||b)
+    else if (t || b)
         setCursor(Qt::SizeVerCursor);
     else
         setCursor(Qt::ArrowCursor);
