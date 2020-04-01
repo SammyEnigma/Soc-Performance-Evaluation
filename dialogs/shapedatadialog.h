@@ -30,6 +30,9 @@ public:
     ShapeDataDialog(ShapeList shapes = QList<ShapeBase*>{});
     ~ShapeDataDialog();
 
+public slots:
+    void loadShapesDatas(ShapeList shapes);
+
 private slots:
     void on_insertBtn_clicked();
     void on_removeBtn_clicked();

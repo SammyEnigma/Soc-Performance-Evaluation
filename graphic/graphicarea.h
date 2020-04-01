@@ -103,6 +103,7 @@ signals:
     void signalEnsurePosVisible(int x, int y);
     void signalScrollAreaScroll(int h, int v);
     void signalTurnBackToPointer();
+    void signalSelectedChanged(ShapeList shapes);
 
 public slots:
     void slotMenuShowed(const QPoint &p);

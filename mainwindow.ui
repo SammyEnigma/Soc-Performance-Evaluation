@@ -339,6 +339,12 @@ border: 1px solid #6495ED</string>
      </property>
      <item>
       <widget class="QTabWidget" name="tabWidget">
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>

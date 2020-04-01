@@ -141,6 +141,7 @@ void GraphicArea::select(ShapeBase *shape, bool ctrl)
     log("select: " + shape->getClass() + "." + shape->getText());
     selected_shapes.append(shape);
     shape->showEdge();
+    emit signalSelectedChanged(selected_shapes);
 }
 
 /**
@@ -158,6 +159,7 @@ void GraphicArea::select(ShapeList shapes, bool ctrl)
         selected_shapes.append(shape);
         shape->showEdge();
     }
+    emit signalSelectedChanged(selected_shapes);
 }
 
 /**
@@ -207,6 +209,7 @@ void GraphicArea::select(QRect rect, bool ctrl)
             }
         }
     }
+    emit signalSelectedChanged(selected_shapes);
 }
 
 /**
@@ -233,6 +236,7 @@ void GraphicArea::unselect(ShapeBase *shape, bool ctrl)
         unselect();
     selected_shapes.removeOne(shape);
     shape->hideEdge();
+    emit signalSelectedChanged(selected_shapes);
 }
 
 /**
@@ -253,6 +257,7 @@ void GraphicArea::unselect(ShapeList shapes, bool ctrl)
         selected_shapes.removeOne(shape);
         shape->hideEdge();
     }
+    emit signalSelectedChanged(selected_shapes);
 }
 
 /**

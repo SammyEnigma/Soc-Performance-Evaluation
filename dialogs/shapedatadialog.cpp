@@ -13,11 +13,31 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
       shapes(shapes)
 {
     ui->setupUi(this);
-    _system_changing = true;
 
     // 如果没有传入参数，就不进行初始化变量值
     if (shapes.length() == 0)
         return ;
+
+    loadShapesDatas(shapes);
+}
+
+ShapeDataDialog::~ShapeDataDialog()
+{
+    delete ui;
+}
+
+void ShapeDataDialog::loadShapesDatas(ShapeList shapes)
+{
+    this->shapes = shapes;
+    data_lists.clear();
+    _activated_string.clear();
+    if (shapes.length() == 0)
+    {
+        shape = nullptr;
+        return ;
+    }
+
+    _system_changing = true;
     shape = shapes.first();
 
     // 设置名字
@@ -89,11 +109,6 @@ ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
     }
 
     _system_changing = false;
-}
-
-ShapeDataDialog::~ShapeDataDialog()
-{
-    delete ui;
 }
 
 void ShapeDataDialog::setTableRow(int row, CustomDataType data)

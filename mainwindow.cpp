@@ -180,6 +180,7 @@ void MainWindow::initView()
         if (us->drag_shape_auto_return)
             ui->listWidget->recoverDragPrevIndex(); // 实现绘制完一个模块后调色板上的选项回到先前位置
     });
+    connect(ui->scrollAreaWidgetContents_2, SIGNAL(signalSelectedChanged(ShapeList)), ui->tab, SLOT(loadShapesDatas(ShapeList)));
 }
 
 /**
