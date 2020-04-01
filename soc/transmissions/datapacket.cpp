@@ -27,6 +27,41 @@ DataPacket::DataPacket(int delay, QObject *parent) :DataPacket(parent)
     resetDelay(delay);
 }
 
+QString DataPacket::getTag()
+{
+    return tag;
+}
+
+void DataPacket::setPackageSize(int size)
+{
+    package_size = size;
+}
+
+int DataPacket::getPackageSize()
+{
+    return package_size;
+}
+
+void DataPacket::setDataType(DATA_TYPE type)
+{
+    data_type = type;
+}
+
+DATA_TYPE DataPacket::getDataType()
+{
+    return data_type;
+}
+
+bool DataPacket::isRequest()
+{
+    return data_type == DATA_REQUEST;
+}
+
+bool DataPacket::isResponse()
+{
+    return data_type == DATA_RESPONSE;
+}
+
 /**
  * 数据包所在的阶段更改后，重新设置延迟
  * @param ignore 是否忽略一次延迟（因为后续位置的遍历可能会用到改数据包）
@@ -91,11 +126,6 @@ int DataPacket::getFirstPickedClock()
     return first_picked_clock;
 }
 
-QString DataPacket::getTag()
-{
-    return tag;
-}
-
 QPoint DataPacket::getDrawPos()
 {
     return draw_pos;
@@ -151,28 +181,8 @@ PortBase *DataPacket::getReturnPort(QList<PortBase *> ports, PortBase *exclude_p
     return nullptr;
 }
 
-void DataPacket::setDataType(DATA_TYPE type)
-{
-    data_type = type;
-}
-
-DATA_TYPE DataPacket::getDataType()
-{
-    return data_type;
-}
-
 void DataPacket::deleteLater()
 {
     emit signalDeleted();
     QObject::deleteLater();
-}
-
-bool DataPacket::isRequest()
-{
-    return data_type == DATA_REQUEST;
-}
-
-bool DataPacket::isResponse()
-{
-    return data_type == DATA_RESPONSE;
 }

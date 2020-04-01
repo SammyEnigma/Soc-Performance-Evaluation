@@ -47,6 +47,16 @@ public:
     DataPacket(QString tag, QObject *parent = nullptr);
     DataPacket(int delay, QObject *parent = nullptr);
 
+    /*================package真正部分================*/
+    QString getTag();
+    void setPackageSize(int size);
+    int getPackageSize();
+    void setDataType(DATA_TYPE type);
+    DATA_TYPE getDataType();
+    bool isRequest();
+    bool isResponse();
+
+    /*================保持运行需要的部分===============*/
     void resetDelay(int max, bool ignore = false); // 重新设置延迟
     void delayToNext();                            // 延迟到下一个阶段
     bool isDelayFinished();                        // 延迟是否已经结束了
@@ -59,7 +69,6 @@ public:
     int getFirstPickedClock();
 
     QString toString();
-    QString getTag();
     
     QPoint getDrawPos();
     void setDrawPos(QPoint pos);
@@ -70,11 +79,6 @@ public:
     void setTargetPort(PortBase *port);
     QList<PortBase*> getHistoryPorts();
     PortBase* getReturnPort(QList<PortBase*> ports, PortBase* exclude_port);
-
-    void setDataType(DATA_TYPE type);
-    DATA_TYPE getDataType();
-    bool isRequest();
-    bool isResponse();
 
 signals:
     void signalDelayFinished();
@@ -101,6 +105,7 @@ public:
 protected:
     QString token_id;
     bool valid;      // 是否有效
+    int package_size; // package大小
     char par;        // 忘了是什么了
     int first_picked_clock; // 第一次发送的clock，用来计算最终回去后经过了多久的时间（latency）
     
