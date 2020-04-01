@@ -240,6 +240,7 @@ void FlowControlBase::refreshUI()
         watch->raise();
         watch->update();
     }
+    emit signalOneClockPassed();
 }
 
 /**

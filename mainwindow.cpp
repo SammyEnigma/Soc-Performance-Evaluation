@@ -246,6 +246,11 @@ void MainWindow::on_actionRun_triggered()
     ui->actionGo_To->setEnabled(true);
     ui->actionFaster->setEnabled(true);
     ui->actionSlower->setEnabled(true);
+
+    connect(flow_control, &FlowControlBase::signalOneClockPassed, this, [=]{
+        ui->plainTextEdit->setPlainText(rt->running_out.join("\n"));
+        ui->plainTextEdit->verticalScrollBar()->setSliderPosition(ui->plainTextEdit->verticalScrollBar()->maximum());
+    });
 }
 
 void MainWindow::on_actionPause_P_triggered()
@@ -357,4 +362,9 @@ void MainWindow::on_actionSet_Log_Filter_triggered()
         rt->log_filter = text;
         us->setVal("recent/log_filter", text);
     }
+}
+
+void MainWindow::on_lineEdit_editingFinished()
+{
+    qDebug() << "xxxxxxxxxxxxxxxxxxxx";
 }

@@ -75,6 +75,7 @@ private:
 signals:
     void signalTokenCreated(DataPacket *packet); // 发送给流控View，同步创建可视化控件
     void signalTokenDeleted(DataPacket *packet); // 发送给流控View，同步删除可视化控件
+    void signalOneClockPassed();
 
 protected:
     GraphicArea *graphic;
