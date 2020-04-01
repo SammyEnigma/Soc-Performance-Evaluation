@@ -33,6 +33,8 @@ void ShapeDataDialog::loadShapesDatas(ShapeList shapes)
     data_lists.clear();
     _activated_string.clear();
     ui->tableWidget->clear();
+    ui->tableWidget->setRowCount(0);
+    ui->nameLabel->setText("选中形状的属性");
     ui->diffLabel->clear();
     if (shapes.length() == 0)
     {

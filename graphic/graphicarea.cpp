@@ -1401,6 +1401,7 @@ void GraphicArea::actionPaste()
 void GraphicArea::actionDelete()
 {
     remove();
+    emit signalSelectedChanged(selected_shapes);
     autoSave();
 }
 
