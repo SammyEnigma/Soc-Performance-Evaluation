@@ -366,5 +366,14 @@ void MainWindow::on_actionSet_Log_Filter_triggered()
 
 void MainWindow::on_lineEdit_editingFinished()
 {
-    qDebug() << "xxxxxxxxxxxxxxxxxxxx";
+    QString text = ui->lineEdit->text();
+    if (text.isEmpty())
+        return ;
+    qDebug() << "执行命令：" << text;
+    /*QProcess p(0);
+    p.execute(text);
+    p.waitForFinished(30000);
+    qDebug()<<QString::fromLocal8Bit(p.readAllStandardError());*/
+    system(text.toLocal8Bit());
+    ui->lineEdit->clear();
 }

@@ -12,6 +12,8 @@
 #include <QListWidgetItem>
 #include <QLabel>
 #include <QDesktopServices>
+#include <QProcess>
+#include <windows.h>
 #include "shapebase.h"
 #include "globalvars.h"
 #include "flowcontrol_master1_slave1.h"
