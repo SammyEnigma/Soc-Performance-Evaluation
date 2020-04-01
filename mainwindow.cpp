@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     log("初始化MainWindow");
     ui->setupUi(this);
+    setWindowState(Qt::WindowMaximized);
 
     initSystem();
     initView();
@@ -369,11 +370,6 @@ void MainWindow::on_lineEdit_editingFinished()
     QString text = ui->lineEdit->text();
     if (text.isEmpty())
         return ;
-    qDebug() << "执行命令：" << text;
-    /*QProcess p(0);
-    p.execute(text);
-    p.waitForFinished(30000);
-    qDebug()<<QString::fromLocal8Bit(p.readAllStandardError());*/
-    system(text.toLocal8Bit());
     ui->lineEdit->clear();
+    system(text.toLocal8Bit());
 }

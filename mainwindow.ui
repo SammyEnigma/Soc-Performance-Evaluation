@@ -36,7 +36,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
-       <number>6</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
@@ -54,11 +54,21 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>782</width>
-           <height>363</height>
+           <width>711</width>
+           <height>521</height>
           </rect>
          </property>
         </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="placeholderText">
+         <string>run command ...</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -287,7 +297,7 @@
       <widget class="ShapeListWidget" name="listWidget">
        <property name="maximumSize">
         <size>
-         <width>160</width>
+         <width>88</width>
          <height>16777215</height>
         </size>
        </property>
@@ -300,18 +310,62 @@ border: 1px solid #6495ED</string>
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_2">
+  <widget class="QDockWidget" name="dockWidget_3">
    <property name="toolTip">
-    <string>console</string>
+    <string>properties</string>
    </property>
+   <property name="windowTitle">
+    <string>属性</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_8">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Module</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Ports</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_4">
    <property name="windowTitle">
     <string>输出</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>8</number>
+    <number>2</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_7">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+   <widget class="QWidget" name="dockWidgetContents_9">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -339,40 +393,15 @@ border: 1px solid #6495ED</string>
         <string>debug</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPlainTextEdit {
-	background: black;
-	color: white;
-}</string>
+        <string notr="true"/>
        </property>
        <property name="maximumBlockCount">
         <number>1000</number>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit">
-       <property name="styleSheet">
-        <string notr="true">QLineEdit {
-	background: black;
-	color: white;
-}</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockWidget_3">
-   <property name="toolTip">
-    <string>properties</string>
-   </property>
-   <property name="windowTitle">
-    <string>属性</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_8"/>
   </widget>
   <action name="actionSave">
    <property name="icon">
