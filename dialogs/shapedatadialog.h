@@ -27,7 +27,7 @@ class ShapeDataDialog : public QDialog
     Q_OBJECT
 
 public:
-    ShapeDataDialog(ShapeList shapes);
+    ShapeDataDialog(ShapeList shapes = QList<ShapeBase*>{});
     ~ShapeDataDialog();
 
 private slots:

@@ -342,7 +342,7 @@ border: 1px solid #6495ED</string>
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="tab">
+       <widget class="ShapeDataDialog" name="tab">
         <attribute name="title">
          <string>Module</string>
         </attribute>
@@ -1032,6 +1032,12 @@ border: 1px solid #6495ED</string>
    <class>ShapeListWidget</class>
    <extends>QListWidget</extends>
    <header>shapelistwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ShapeDataDialog</class>
+   <extends>QWidget</extends>
+   <header>shapedatadialog.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

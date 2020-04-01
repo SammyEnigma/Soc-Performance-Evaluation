@@ -9,11 +9,16 @@
 #include "ui_shapedatadialog.h"
 
 ShapeDataDialog::ShapeDataDialog(ShapeList shapes)
-    : QDialog(shapes.first()), ui(new Ui::ShapeDataDialog),
-      shape(shapes.first()), shapes(shapes)
+    : QDialog(shapes.length() ? shapes.first() : nullptr), ui(new Ui::ShapeDataDialog),
+      shapes(shapes)
 {
     ui->setupUi(this);
     _system_changing = true;
+
+    // 如果没有传入参数，就不进行初始化变量值
+    if (shapes.length() == 0)
+        return ;
+    shape = shapes.first();
 
     // 设置名字
     QSet<QString> class_names;
