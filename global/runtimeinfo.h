@@ -42,6 +42,8 @@ public:
 
     void runningOut(QString s)
     {
+        if (running_out.length() > 1000)
+            running_out.removeFirst();
         running_out.append(s);
         if (log_filter.isEmpty() || s.contains(QRegExp(log_filter)) || s.contains("warning") || s.contains("error"))
             qDebug().noquote() << s;
