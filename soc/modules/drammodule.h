@@ -18,6 +18,7 @@ protected:
     
 private:
 	int token_receive_count;
+    QFont big_font, normal_font, bold_font;
 };
 
 #endif // DRAMMODULE_H

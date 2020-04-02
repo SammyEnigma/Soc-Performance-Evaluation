@@ -173,6 +173,8 @@ protected:
 
     // 存储
     QString _readed_text; // 读取时的内容（即fromString的文本）
+private:
+    QFont big_font, normal_font, bold_font;
 };
 
 #endif // SHAPEBASE_H

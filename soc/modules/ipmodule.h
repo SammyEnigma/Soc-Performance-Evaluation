@@ -16,6 +16,7 @@ protected:
     
 private:
 	int token_send_count; // 从运行开始，token发送的数量
+    QFont big_font, normal_font, bold_font;
 };
 
 #endif // IPMODULE_H
