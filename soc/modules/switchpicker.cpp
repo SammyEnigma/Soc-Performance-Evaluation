@@ -30,18 +30,6 @@ ModulePort *SwitchPicker::getPickPort()
 
 void SwitchPicker::delayOneClock()
 {
-    switch (mode)
-    {
-    case Round_Robin_Scheduling: // 轮询调度
-    {
-        if (round_index < 0) // 出错的轮询
-            round_index = 0;
-        else // 下一个轮询
-            round_index++;
-        if (round_index >= ports.size()) // 一轮结束，恢复到一开始的索引
-            round_index = 0;
-    }
-    }
     bandwidth_buffer++;
 }
 
@@ -59,4 +47,20 @@ bool SwitchPicker::isBandwidthBufferFinished()
 void SwitchPicker::resetBandwidthBuffer()
 {
     bandwidth_buffer = 0;
+}
+
+void SwitchPicker::slotPacketSended(DataPacket *)
+{
+    switch (mode)
+    {
+    case Round_Robin_Scheduling: // 轮询调度
+    {
+        if (round_index < 0) // 出错的轮询
+            round_index = 0;
+        else // 下一个轮询
+            round_index++;
+        if (round_index >= ports.size()) // 一轮结束，恢复到一开始的索引
+            round_index = 0;
+    }
+    }
 }

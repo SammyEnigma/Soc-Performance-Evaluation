@@ -32,6 +32,7 @@ public:
 signals:
 
 public slots:
+    void slotPacketSended(DataPacket* packet);
 
 private:
     QList<ModulePort *> ports;

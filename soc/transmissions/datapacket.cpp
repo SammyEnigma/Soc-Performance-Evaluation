@@ -103,7 +103,7 @@ double DataPacket::currentProp()
 
 QString DataPacket::toString()
 {
-    return QString("%1(%4): %2 / %3").arg(tag).arg(delay_step).arg(delay_max).arg(data_type);
+    return QString("%1(%5): %2 / %3 (%4)").arg(tag).arg(delay_step).arg(delay_max).arg(data_type).arg(getID());
 }
 
 void DataPacket::setID(QString id)
