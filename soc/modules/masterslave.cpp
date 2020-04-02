@@ -153,7 +153,7 @@ void MasterSlave::passOnPackets()
             // 如果是从IP真正下发的
             if (packet->getFirstPickedClock() == -1)
             {
-                qDebug() << "记录开始发送的时间：" << rt->total_frame;
+//                qDebug() << "记录开始发送的时间：" << rt->total_frame;
                 packet->setFirstPickedCLock(rt->total_frame);
             }
 

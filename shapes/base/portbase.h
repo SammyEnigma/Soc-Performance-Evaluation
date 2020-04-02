@@ -59,6 +59,8 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 signals:
     void signalModifyPosition();
@@ -82,6 +84,8 @@ protected:
     CableBase *cable;   // 连接线
 
     qint64 _press_timestamp;
+    QPoint press_pos;
+    QPoint moved_pos;
 };
 
 #endif // PORTBASE_H

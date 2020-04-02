@@ -111,6 +111,14 @@ void SwitchModule::passOnPackets()
                 if (!picker->isBandwidthBufferFinished()) // 带宽足够
                     continue;
                 ModulePort *pick_port = picker->getPickPort();
+                if (getText() == "S6")
+                {
+                    qDebug() << "S6 picker.current:" << pick_port->getPortId();
+                    qDebug() << "can to ports:";
+                    foreach (auto port, ports) {
+                        qDebug() << "    " << port->getPortId();
+                    }
+                }
                 if (!ports.contains(pick_port)) // 轮询到这个端口
                     continue;
                 if (!pick_port->anotherCanRecive()) // 没有token了
@@ -143,7 +151,7 @@ void SwitchModule::passOnPackets()
         }
         else
         {
-            rt->runningOut("packet 没有找到对应的 to port");
+            rt->runningOut(getText() + " packet:"+packet->getID()+" 没有找到对应的 to port");
         }
     }
 
@@ -230,6 +238,8 @@ void SwitchModule::delayOneClock()
     foreach (SwitchPicker *picker, pickers)
     {
         picker->delayOneClock();
+        if (getText() == "S6")
+            qDebug() << "====" << picker->ports.size() << picker->getPickPort()->getPortId();
     }
 
     updatePacketPos();
@@ -438,9 +448,13 @@ QList<ModulePort *> SwitchModule::getToPorts(PortBase *from_port)
                     }
                 }
             }
+            if (shape_name == "S6")
+                qDebug() << "====" << routes << to_ports.size();
             return to_ports;
         }
     }
+    // 没有找到对应的 to_ports
+    rt->runningOut(from_port->getPortId() + " "+shape_name+ " => (" + getDataValue("route").toString() + ")");
     return to_ports;
 }
 

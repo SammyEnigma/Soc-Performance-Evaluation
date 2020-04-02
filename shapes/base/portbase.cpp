@@ -194,6 +194,18 @@ void PortBase::mousePressEvent(QMouseEvent *event)
     return QWidget::mousePressEvent(event);
 }
 
+void PortBase::mouseMoveEvent(QMouseEvent *event)
+{
+    
+    return QWidget::mouseMoveEvent(event);
+}
+
+void PortBase::mouseReleaseEvent(QMouseEvent *event)
+{
+    
+    return QWidget::mouseReleaseEvent(event);
+}
+
 void PortBase::slotMenuShowed(const QPoint &)
 {
     QMenu *menu = new QMenu(this);

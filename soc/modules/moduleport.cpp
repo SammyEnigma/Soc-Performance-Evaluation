@@ -114,7 +114,8 @@ void ModulePort::passOnPackets()
         }
         else // 从这个端口出去
         {
-            rt->runningOut(getPortId() + " 出来 " + packet->getID() + "，进入下一步：发送至线");
+            rt->runningOut(getPortId() + " 出来 " + packet->getID() + "，进入下一步：发送至线 (come:" +
+                           (packet->getComePort() == nullptr ? "null" : packet->getComePort()->getPortId()) + ")");
             // 先判断对方能不能接收（模块一对一的时候问题不大，但是一对多时延迟结束后对方不一定能接收）
             if (!anotherCanRecive()) // 对方不能接收，取消发送和remove
                 continue;
@@ -241,10 +242,10 @@ void ModulePort::paintEvent(QPaintEvent *event)
     PortBase::paintEvent(event);
 
     // 显示数字
-    /* QPainter painter(this);
+    QPainter painter(this);
     QFontMetrics fm(this->font());
     int w = fm.horizontalAdvance(QString::number(another_can_receive));
-    painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));*/
+    painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));
 }
 
 void ModulePort::slotDataList()

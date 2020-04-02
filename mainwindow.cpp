@@ -100,12 +100,12 @@ void MainWindow::readFromFile(QString file_path)
             QString portID2 = StringUtil::getXml(cable->readedText(), "TO_PORT_ID");
             if (portID1.isEmpty() || portID2.isEmpty())
             {
-                ERR("无法读取连接的ID")
+                ERR("有线未进行连接：端口：" + portID1 + ", " + portID2)
                 continue;
             }
             if (!ports.contains(portID1) || !ports.contains(portID2))
             {
-                ERR("不存在连接ID")
+                ERR("不存在连接ID，两端口：" + portID1 + ", " + portID2)
                 continue;
             }
             cable->setPorts(ports.value(portID1), ports.value(portID2));
