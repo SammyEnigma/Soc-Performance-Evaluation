@@ -9,6 +9,11 @@ DRAMModule::DRAMModule(QWidget *parent) : SlaveModule(parent), token_receive_cou
     QPainter painter(&pixmap);
     drawShapePixmap(painter, QRect(BORDER_SIZE,BORDER_SIZE,DEFAULT_SIZE-BORDER_SIZE*2,DEFAULT_SIZE-BORDER_SIZE*2));
     _pixmap = pixmap;
+    big_font = normal_font = bold_font = font();
+    big_font.setPointSize(normal_font.pointSize() * 2);
+    bold_font.setBold(true);
+    big_font.setBold(true);
+    normal_font.setBold(true);
 }
 
 DRAMModule *DRAMModule::newInstanceBySelf(QWidget *parent)
@@ -54,7 +59,18 @@ void DRAMModule::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     QFontMetrics fm(this->font());
+    int height = fm.lineSpacing();
+    painter.setPen(_text_color);
+    QFont font = this->font();
+    painter.setFont(big_font);
 
+    if(getPorts().size() > 0)
+    {
+
+    painter.drawText((width()) / 2 - fm.horizontalAdvance(QString("%1Ghz").arg(getPorts().first()->getBandwidth())),
+                     height * 2, QString("%1Ghz").arg(getPorts().first()->getBandwidth()));
+    // painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1 %2%").arg(token_send_count).arg(prop));
+    }
    // painter.drawText(4, 4+fm.lineSpacing(), QString("接收：%1").arg(token_receive_count));
 }
 
