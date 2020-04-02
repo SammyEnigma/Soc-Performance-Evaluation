@@ -307,28 +307,28 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     painter.save();
     QPainterPath path;
 
-    int bar_x_req = (width() - PACKET_SIZE * 8) / 2;
+    int bar_x_req = (width() - height() / 2) / 2;
     int bar_y = height() / 5;
-    int bar_x_rsp = (width() + PACKET_SIZE * 8) / 2;
+    int bar_x_rsp = (width() + height() / 3) / 2;
     int line_height = fm.lineSpacing();
     //画req
     path.addRoundedRect(bar_x_req, bar_y,
-                        PACKET_SIZE, height() * 3 / 5, 3, 3);
+                        width() / 24, height() * 3 / 5, 3, 3);
     painter.fillPath(path, QColor(211, 211, 211)); //填充
     //
     painter.setPen(QColor(85, 107, 47));
     path.addRoundedRect(bar_x_req - 2, bar_y - 2,
-                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3); //边界
+                        width() / 24 + 4, height() * 3 / 5 + 3, 3, 3); //边界
     painter.drawPath(path);
     // path.clear();
     //画rsp
     path.addRoundedRect(bar_x_rsp, bar_y,
-                        PACKET_SIZE, height() * 3 / 5, 3, 3);
+                        width() / 24, height() * 3 / 5, 3, 3);
     painter.fillPath(path, QColor(211, 211, 211)); //填充
                                                    //
     painter.setPen(QColor(85, 107, 47));
     path.addRoundedRect(bar_x_rsp - 2, bar_y - 2,
-                        PACKET_SIZE + 4, height() * 3 / 5 + 3, 3, 3); //边界
+                        width() / 24 + 4, height() * 3 / 5 + 3, 3, 3); //边界
     painter.drawPath(path);
     //path.clear();
     int req_count = 0, rsp_count = 0;
@@ -353,13 +353,14 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     int count_rsp = (current_token_rsp * per + token / per / 2.0) / token;
     //req动画
     path.addRoundedRect(bar_x_req, bar_y + height() * 3 * (per - count_req) / per / 5,
-                        PACKET_SIZE, height() * 3 * count_req / per / 5, 3, 3);
+                        width() / 24, height() * 3 * count_req / per / 5, 3, 3);
     painter.fillPath(path, QColor(85, 107, 47)); //填充
     painter.setPen(QColor(0, 0, 0));
     painter.setFont(normal_font);
     int line = 0;
-    int word_req_x = (width() - PACKET_SIZE * 16 - fm.horizontalAdvance(_text)) / 2;
-    int word_rsp_x = (width() + PACKET_SIZE * 16 - fm.horizontalAdvance(_text) /**/) / 2;
+    int word_req_x = (width() - height()
+                      - fm.horizontalAdvance(_text)) / 2;
+    int word_rsp_x = (width() + height() - fm.horizontalAdvance(_text) /**/) / 2;
     int word_y = height() / 2;
     painter.drawText(word_req_x, word_y + line_height / 2 * line++,
                      QString("%1").arg(current_token_req));
@@ -372,7 +373,7 @@ void SwitchModule::paintEvent(QPaintEvent *event)
     path.clear();
     //rsp动画
     path.addRoundedRect(bar_x_rsp, bar_y + height() * 3 * (per - count_rsp) / per / 5,
-                        PACKET_SIZE, height() * 3 * count_rsp / per / 5, 3, 3);
+                        width() / 24, height() * 3 * count_rsp / per / 5, 3, 3);
     painter.fillPath(path, QColor(220, 20, 60 /*85, 107, 47*/)); //填充
     painter.setPen(QColor(220, 20, 60));
     painter.setFont(normal_font);

@@ -19,6 +19,11 @@ ShapeBase::ShapeBase(QWidget *parent)
     setObjectName("shape");                                       // 使用ID来设置stylesheet，可以不影响子控件（否则背景透明时菜单背景会变成黑色的）
     setStyleSheet("QWidget#shape { background: transparent; } "); // 设置之后才可以获取透明背景，实现点击透明区域穿透
     hideEdge();
+    big_font = normal_font = bold_font = font();
+    big_font.setPointSize(normal_font.pointSize() * 2);
+    bold_font.setBold(true);
+    big_font.setBold(true);
+    normal_font.setBold(true);
 }
 
 ShapeBase::ShapeBase(QString text, QWidget *parent) : ShapeBase(parent)
@@ -410,12 +415,14 @@ void ShapeBase::paintEvent(QPaintEvent *event)
 
     // 一行文字的高度
     QFontMetrics fm(this->font());
+   // QFontMetrics fm(big_font);
     int spacing = fm.lineSpacing();
     int text_height = spacing < height() ? spacing : height() / 2; // 如果连一行文字的高度都不到，最多两个平分高度
 
     // 根据是否有文字判断是否要缩减图标区域
     QRect draw_rect(_area);
-    //QRect text_rect = _area;
+    QRect text_rect = _area;
+
     if (!_text.isEmpty())
     {
         if ((_text_align & Qt::AlignTop) || (_text_align & Qt::AlignBottom))
@@ -447,11 +454,15 @@ void ShapeBase::paintEvent(QPaintEvent *event)
     }
 
     // 绘制文字
+    if(_class == "IP" || _class == "DRAM")
+    {
+    painter.setFont(big_font);
+    }
     if (!_text.isEmpty())
     {
         painter.setPen(_text_color);
-        //painter.drawText(text_rect, _text_align, _text);
-        painter.drawText((width() - fm.horizontalAdvance(_text)) / 8, (height() - spacing) / 4, _text);
+        painter.drawText(text_rect, _text_align, _text);
+        //painter.drawText((width() - fm.horizontalAdvance(_text)) / 8, (height() - spacing) / 4, _text);
 
     }
 
