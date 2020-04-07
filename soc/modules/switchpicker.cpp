@@ -49,7 +49,7 @@ void SwitchPicker::resetBandwidthBuffer()
     bandwidth_buffer = 0;
 }
 
-void SwitchPicker::slotPacketSended(DataPacket *)
+void SwitchPicker::slotRoundToNext(DataPacket *)
 {
     switch (mode)
     {

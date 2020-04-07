@@ -121,7 +121,7 @@ void SwitchModule::passOnPackets()
                 request_queue.removeAt(i--);
                 packet->resetDelay(cable->getData("delay")->i());
                 pick_port->sendData(packet, packet->getDataType());
-                picker->slotPacketSended(packet);
+//                picker->slotRoundToNext(packet);
 
                 // 不直接发送，先进入pick后的延迟队列
                 /* packet->setTargetPort(pick_port);
@@ -151,33 +151,16 @@ void SwitchModule::passOnPackets()
     for (int i = 0; i < response_queue.size(); ++i)
     {
         DataPacket *packet = response_queue.at(i);
-        if (getText() == "S3")
-        {
-            qDebug() << "S3--------------------" << packet->toString();
-        }
         if (!packet->isDelayFinished())
             continue;
 
         // 判断packet的传输目标
         QList<ModulePort *> ports = getReturnPorts(packet->getComePort());
-        if (getText() == "S3")
-        {
-            qDebug() << "to ports: " << ports.size() << " by come:" << (packet->getComePort() ? packet->getComePort()->getPortId() : "null_port");
-                qDebug() << ports;
-            foreach (ModulePort* port, ports)
-                if (port)
-                    qDebug() << "    " << port->getPortId();
-        }
         if (ports.size() != 0)
         {
             foreach (SwitchPicker *picker, pickers)
             {
                 ModulePort *pick_port = picker->getPickPort();
-                if (getText() == "S3")
-                {
-                    qDebug() << "S3.current_picker:" << pick_port->getPortId() << "      port.to:";
-                    qDebug() << packet->getComePort()->getPortId() << picker->isBandwidthBufferFinished() << ports.contains(pick_port) << pick_port->anotherCanRecive();
-                }
                 if (!picker->isBandwidthBufferFinished()) // 带宽足够
                     continue;
                 if (!ports.contains(pick_port)) // 轮询到这个端口
@@ -188,14 +171,10 @@ void SwitchModule::passOnPackets()
                 ModuleCable *cable = static_cast<ModuleCable *>(pick_port->getCable());
                 if (cable == nullptr)
                     continue;
-                if (getText() == "S3")
-                {
-                    qDebug() << "发送";
-                }
                 response_queue.removeAt(i--);
                 packet->resetDelay(cable->getData("delay")->i());
                 pick_port->sendData(packet, packet->getDataType());
-                picker->slotPacketSended(packet);
+//                picker->slotRoundToNext(packet);
 
                 // 不直接发送，先进入pick后的延迟队列
                 /* packet->setTargetPort(pick_port);
@@ -256,6 +235,7 @@ void SwitchModule::delayOneClock()
 
     foreach (SwitchPicker *picker, pickers)
     {
+        picker->slotRoundToNext(nullptr);
         picker->delayOneClock();
     }
 

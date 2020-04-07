@@ -139,7 +139,8 @@ void MainWindow::initSystem()
  */
 void MainWindow::initView()
 {
-    // 其他的在UI设计师中初始化，不需要在重新设置了
+    // 和数据挂钩的设置
+    ui->actionToken_Animation->setChecked(us->show_animation);
 
     // 连接绘图区域信号槽
     connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollToPos, this, [=](int x, int y) {
@@ -372,4 +373,11 @@ void MainWindow::on_lineEdit_editingFinished()
         return;
     ui->lineEdit->clear();
     system(text.toLocal8Bit());
+}
+
+void MainWindow::on_actionToken_Animation_triggered()
+{
+    us->show_animation = !us->show_animation;
+    us->setVal("us/show_animation", us->show_animation);
+    ui->actionToken_Animation->setChecked(us->show_animation);
 }

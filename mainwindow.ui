@@ -54,7 +54,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>711</width>
+           <width>678</width>
            <height>521</height>
           </rect>
          </property>
@@ -205,6 +205,8 @@
     <addaction name="separator"/>
     <addaction name="actionZoom_In_I"/>
     <addaction name="actionZoom_Out_O"/>
+    <addaction name="separator"/>
+    <addaction name="actionToken_Animation"/>
    </widget>
    <widget class="QMenu" name="menu_9">
     <property name="title">
@@ -1024,6 +1026,14 @@ border: 1px solid #6495ED</string>
    </property>
    <property name="text">
     <string>Set Log Filter</string>
+   </property>
+  </action>
+  <action name="actionToken_Animation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Token Animation</string>
    </property>
   </action>
  </widget>
