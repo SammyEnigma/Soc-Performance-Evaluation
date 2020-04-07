@@ -88,6 +88,12 @@ private slots:
 
     void on_actionAuto_Watch_Port_triggered();
 
+    void on_actionShow_Dock_Modules_triggered();
+
+    void on_actionShow_Dock_Properties_triggered();
+
+    void on_actionShow_Dock_Console_triggered();
+
 private:
     void initSystem(); // 初始化系统（比如目录结构）
     void initView();   // 初始化布局
