@@ -67,6 +67,8 @@ void DataPacketView::updatePosition(QPoint old_pos, QPoint new_pos)
         this->move(new_pos - QPoint(PACKET_SIZE / 2, PACKET_SIZE / 2));
         return;
     }
+    // 错位显示，以便观察
+    new_pos += QPoint(rand() % 8 - 4, rand() % 8 - 4);
     QPropertyAnimation *ani = new QPropertyAnimation(this, "pos");
     ani->setStartValue(this->pos());
     ani->setEndValue(new_pos - QPoint(PACKET_SIZE / 2, PACKET_SIZE / 2));

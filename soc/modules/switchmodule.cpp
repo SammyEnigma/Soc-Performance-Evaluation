@@ -120,7 +120,7 @@ void SwitchModule::passOnPackets()
                     continue;
                 request_queue.removeAt(i--);
                 packet->resetDelay(cable->getData("delay")->i());
-                pick_port->sendData(packet, DATA_REQUEST);
+                pick_port->sendData(packet, packet->getDataType());
                 picker->slotPacketSended(packet);
 
                 // 不直接发送，先进入pick后的延迟队列
@@ -151,46 +151,73 @@ void SwitchModule::passOnPackets()
     for (int i = 0; i < response_queue.size(); ++i)
     {
         DataPacket *packet = response_queue.at(i);
+        if (getText() == "S3")
+        {
+            qDebug() << "S3--------------------" << packet->toString();
+        }
         if (!packet->isDelayFinished())
             continue;
 
         // 判断packet的传输目标
-        if (packet->getComePort() != nullptr)
+        QList<ModulePort *> ports = getReturnPorts(packet->getComePort());
+        if (getText() == "S3")
         {
-            ModulePort *port = static_cast<ModulePort *>(packet->getReturnPort(this->ports, packet->getComePort())); // 返回的端口
-            if (port == nullptr || !port->anotherCanRecive())                                                        // 端口没有对应的token
-                continue;
-            ModuleCable *cable = static_cast<ModuleCable *>(port->getCable());
-            if (cable == nullptr)
-                continue;
-
+            qDebug() << "to ports: " << ports.size() << " by come:" << (packet->getComePort() ? packet->getComePort()->getPortId() : "null_port");
+                qDebug() << ports;
+            foreach (ModulePort* port, ports)
+                if (port)
+                    qDebug() << "    " << port->getPortId();
+        }
+        if (ports.size() != 0)
+        {
             foreach (SwitchPicker *picker, pickers)
             {
-                if (picker->isBandwidthBufferFinished() && picker->getPickPort() == port)
+                ModulePort *pick_port = picker->getPickPort();
+                if (getText() == "S3")
                 {
-                    // 发送数据
-                    rt->runningOut("Hub response延迟结束，" + port->getPortId() + "返回，对方能接收：" + QString::number(port->getReceiveToken()) + "-1");
-                    response_queue.removeAt(i--);
-                    packet->resetDelay(cable->getData("delay")->i());
-                    port->sendData(packet, DATA_RESPONSE);
-                    picker->slotPacketSended(packet);
-                    // 不直接发送，先进入pick后的延迟队列
-                    /* packet->setTargetPort(port);
-                    packet->resetDelay(getData("picked_delay")->i());
-                    picked_delay_list.append(packet); */
-
-                    picker->resetBandwidthBuffer();
-
-                    // 通过进来的端口，返回发送出去的token（依赖port的return delay）
-                    if (packet->getComePort() != nullptr)
-                    {
-                        port = static_cast<ModulePort *>(packet->getComePort());
-                        port->sendDequeueTokenToComeModule(new DataPacket());
-                        break;
-                    }
-                    rt->need_passOn_this_clock = true;
+                    qDebug() << "S3.current_picker:" << pick_port->getPortId() << "      port.to:";
+                    qDebug() << packet->getComePort()->getPortId() << picker->isBandwidthBufferFinished() << ports.contains(pick_port) << pick_port->anotherCanRecive();
                 }
+                if (!picker->isBandwidthBufferFinished()) // 带宽足够
+                    continue;
+                if (!ports.contains(pick_port)) // 轮询到这个端口
+                    continue;
+                if (!pick_port->anotherCanRecive()) // 没有token了
+                    continue;
+                // 选定要发送的数据
+                ModuleCable *cable = static_cast<ModuleCable *>(pick_port->getCable());
+                if (cable == nullptr)
+                    continue;
+                if (getText() == "S3")
+                {
+                    qDebug() << "发送";
+                }
+                response_queue.removeAt(i--);
+                packet->resetDelay(cable->getData("delay")->i());
+                pick_port->sendData(packet, packet->getDataType());
+                picker->slotPacketSended(packet);
+
+                // 不直接发送，先进入pick后的延迟队列
+                /* packet->setTargetPort(pick_port);
+                packet->resetDelay(getData("picked_delay")->i());
+                picked_delay_list.append(packet); */
+
+                picker->resetBandwidthBuffer();
+                rt->runningOut("Hub pick出去（进入延迟）：" + packet->getID());
+
+                // 通过进来的端口，返回发送出去的token（依赖port的return delay）
+                if (packet->getComePort() != nullptr)
+                {
+                    ModulePort *from_port = static_cast<ModulePort *>(packet->getComePort());
+                    from_port->sendDequeueTokenToComeModule(new DataPacket());
+                    break;
+                }
+                rt->need_passOn_this_clock = true;
             }
+        }
+        else
+        {
+            rt->runningOut(getText() + " packet:"+packet->getID()+" 没有找到对应的 to port");
         }
     }
 
@@ -439,7 +466,7 @@ QList<ModulePort *> SwitchModule::getToPorts(PortBase *from_port)
                     }
                 }
             }
-            return to_ports;
+//            return to_ports; // 支持重复键
         }
     }
     // 没有找到对应的 to_ports
@@ -449,6 +476,7 @@ QList<ModulePort *> SwitchModule::getToPorts(PortBase *from_port)
 
 /**
  * 通过之前发送出去的端口，原路返回 response（多对多）
+ * @param to_port 之前发送出去的端口（现在是进来的端口）
  */
 QList<ModulePort *> SwitchModule::getReturnPorts(PortBase *to_port)
 {
@@ -471,10 +499,14 @@ QList<ModulePort *> SwitchModule::getReturnPorts(PortBase *to_port)
         {
             foreach (PortBase *port, ports)
             {
-                if (port == to_port) // 是这个端口没错了
+                if (static_cast<ShapeBase*>(port->getOppositeShape()) && static_cast<ShapeBase*>(port->getOppositeShape())->getText() == to)
                 {
                     from_ports.append(getPortByShapeName(from));
                 }
+                /*if (port == to_port) // 是这个端口没错了
+                {
+                    from_ports.append(getPortByShapeName(from));
+                }*/
             }
         }
     }
