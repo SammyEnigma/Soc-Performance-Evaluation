@@ -69,7 +69,7 @@ void IPModule::paintEvent(QPaintEvent *event)
     if(getPorts().size() > 0)
     {
 
-    painter.drawText((width()) / 2 - fm.horizontalAdvance(QString("%1Ghz").arg(getPorts().first()->getBandwidth())),
+    painter.drawText((width()) / 2 - fm.horizontalAdvance(QString("%1Ghz").arg(getPorts().first()->getOriginalBandwidth())),
                      height * 2, QString("%1Ghz").arg(getPorts().first()->getBandwidth()));
     // painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1 %2%").arg(token_send_count).arg(prop));
     }

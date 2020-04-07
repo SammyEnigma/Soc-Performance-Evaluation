@@ -238,7 +238,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.drawText(left, height * line, live_frq_str);
             
             painter.setFont(normal_font);
-            painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + target_port->getBandwidth() * rt->DEFAULT_PACKET_BYTE /*+ "GByte"*/);
+            painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + target_port->getOriginalBandwidth() * rt->DEFAULT_PACKET_BYTE /*+ "GByte"*/);
 
             painter.drawText(left /*+ fm.horizontalAdvance(live_frq_str)*/, height * 4/5 * line++, "GByte");
 
@@ -303,7 +303,7 @@ void WatchModule::paintEvent(QPaintEvent *event)
                 }
                 painter.drawText(left, height * line, live_frq_str);
                 painter.setFont(normal_font);
-                painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
+                painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getOriginalBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
                 /*
                 painter.setFont(big_font);
                 painter.setPen(TokenColor);
@@ -325,10 +325,10 @@ void WatchModule::paintEvent(QPaintEvent *event)
         //painter.setFont(bold_font);
         painter.setFont(big_font);
         painter.setPen(BandWithColor);
-        painter.drawText(left, height * line++, target_port->getBandwidth());
+        painter.drawText(left, height * line++, target_port->getOriginalBandwidth());
         //painter.setFont(bold_font);
         painter.setFont(normal_font);
-        painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
+        painter.drawText(left + fm.horizontalAdvance(target_port->getOriginalBandwidth()), height * (line - 1), "Ghz × "+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte");
     }
     else if(watch_type == WATCH_CLOCK)
     {
@@ -337,10 +337,10 @@ void WatchModule::paintEvent(QPaintEvent *event)
             //painter.setFont(bold_font);
             painter.setFont(big_font);
             painter.setPen(BandWithColor);
-            painter.drawText(left, height * line++, target_port->getBandwidth());
+            painter.drawText(left, height * line++, target_port->getOriginalBandwidth());
             //painter.setFont(bold_font);
             painter.setFont(normal_font);
-            painter.drawText(left + fm.horizontalAdvance(target_port->getBandwidth()), height * (line - 1), "Ghz"/*+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte"*/);
+            painter.drawText(left + fm.horizontalAdvance(target_port->getOriginalBandwidth()), height * (line - 1), "Ghz"/*+QString::number(rt->DEFAULT_PACKET_BYTE)+" Byte"*/);
         }
 
     }
