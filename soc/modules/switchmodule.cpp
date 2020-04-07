@@ -93,6 +93,31 @@ int SwitchModule::getToken()
     return getDataValue("token").toInt();
 }
 
+void SwitchModule::fromStringAppend(QString s)
+{
+    RoutingTable& table = routing_table;
+    table.clear();
+    QString text = StringUtil::getXml(s, "ROUTING_TABLE");
+    QStringList lines = text.split("\n", QString::SkipEmptyParts);
+    foreach (auto line, lines) {
+        QStringList cell = line.split(QRegExp("\\s"));
+        if (cell.size() < 2)
+            continue;
+        table.insert(cell.at(0).toInt(), cell.at(1).toInt());
+    }
+}
+
+QString SwitchModule::toStringAppend()
+{
+    QString full = "";
+    QString indent = "\n\t";
+    RoutingTable table = routing_table;
+    QString text = "";
+    for (auto i = table.begin(); i != table.end(); i++)
+        text += QString("%1\t%2\n").arg(i.key()).arg(i.value());
+    return indent + StringUtil::makeXml(text, "ROUTING_TABLE");
+}
+
 void SwitchModule::passOnPackets()
 {
     // request queue
@@ -102,7 +127,7 @@ void SwitchModule::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
         // 判断packet的传输目标
-        QList<ModulePort *> ports = getToPorts(packet->getComePort());
+        QList<ModulePort *> ports = getOutPortsByRoutingTable(packet)/*getToPorts(packet->getComePort())*/;
         if (ports.size() != 0)
         {
             foreach (SwitchPicker *picker, pickers)
@@ -155,7 +180,7 @@ void SwitchModule::passOnPackets()
             continue;
 
         // 判断packet的传输目标
-        QList<ModulePort *> ports = getReturnPorts(packet->getComePort());
+        QList<ModulePort *> ports = getOutPortsByRoutingTable(packet)/*getReturnPorts(packet->getComePort())*/;
         if (ports.size() != 0)
         {
             foreach (SwitchPicker *picker, pickers)
@@ -491,6 +516,19 @@ QList<ModulePort *> SwitchModule::getReturnPorts(PortBase *to_port)
         }
     }
     return from_ports;
+}
+
+QList<ModulePort *> SwitchModule::getOutPortsByRoutingTable(DataPacket* packet)
+{
+    QList<ModulePort*> ports;
+    MID dstID = packet->dstID;
+    PID outID = routing_table.value(dstID, 0);
+    foreach (PortBase* port, this->ports)
+    {
+        if (port->getRoutingID() == outID)
+            ports.append(static_cast<ModulePort*>(port));
+    }
+    return ports;
 }
 
 ModulePort *SwitchModule::getPortByShapeName(QString text)

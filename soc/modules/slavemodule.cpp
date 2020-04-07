@@ -46,10 +46,12 @@ void SlaveModule::changeRequestsToResponse()
     {
         foreach (DataPacket *packet, send_delay_list)
         {
-            if (packet->getDataType() == DATA_RESPONSE)
+            if (packet->getDataType() != DATA_REQUEST)
                 continue;
             packet->setDataType(DATA_TYPE::DATA_RESPONSE);
             packet->setComePort(nullptr);
+            packet->dstID = packet->srcID;
+            packet->srcID = getDataValue("routing_id", 0).toInt();
             rt->runningOut(getText() + " 设置 " + packet->getID() + " 为 response，并返回");
         }
     }

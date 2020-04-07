@@ -14,6 +14,7 @@ MasterSlave::MasterSlave(QWidget *parent)
 void MasterSlave::initData()
 {
     token = getData("token");
+    routing_id = getDataValue("routing_id", 0).toInt();
     foreach (PortBase *p, ports)
     {
         ModulePort *port = static_cast<ModulePort *>(p);
@@ -152,15 +153,19 @@ void MasterSlave::passOnPackets()
             packet->resetDelay(getDataValue("dequeue_delay", 1).toInt());
             port->resetBandwidthBuffer();
 
-            // 如果是从IP真正下发的
             if (packet->getFirstPickedClock() == -1)
             {
 //                qDebug() << "记录开始发送的时间：" << rt->total_frame;
                 packet->setFirstPickedCLock(rt->total_frame);
             }
 
+            // 如果是从IP真正下发的
             if (getClass() == "IP" && packet->isResponse()) // IP发送的request不需要返回给下一个模块token
-                ;
+            {
+                // 设置 SourceID、DestinationID
+                packet->srcID = getDataValue("routing_id", 0).toInt();
+                packet->dstID = getDataValue("dst_id", 0).toInt();
+            }
             else
             {
                 port = static_cast<ModulePort *>(packet->getComePort());
@@ -214,7 +219,7 @@ void MasterSlave::passOnPackets()
         rt->need_passOn_this_clock = true;
     }
 
-    changeRequestsToResponse(); // 如果是只有一个端口的Slave，则将要发送的数据都变成response
+    // changeRequestsToResponse(); // 如果是只有一个端口的Slave，则将要发送的数据都变成response
 
     // 延迟发送
     for (int i = 0; i < send_delay_list.size(); i++)
@@ -376,6 +381,7 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
  */
 void MasterSlave::changeRequestsToResponse()
 {
+	
 }
 
 int MasterSlave::getReqCount()

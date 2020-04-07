@@ -15,8 +15,6 @@
 #include "timeframe.h"
 #include "numberanimation.h"
 
-typedef int PID; // port怎switch中的索引
-
 enum PASS_ONE_CLOCK_FLAG_PORT
 {
     PASS_NONE,

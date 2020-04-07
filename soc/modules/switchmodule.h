@@ -13,7 +13,7 @@
 #include "switchpicker.h"
 #include "convexhull.h"
 
-typedef QHash<MID, PID> RoutingTable;
+typedef QMap<MID, PID> RoutingTable;
 
 class SwitchModule : public ModuleBase
 {
@@ -23,12 +23,16 @@ public:
 
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
+    friend class RoutingTableDialog;
 
     virtual SwitchModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     void initData() override;
     void clearData() override;
     virtual void setDefaultDataList() override;
     int getToken();
+
+    virtual void fromStringAppend(QString s) override;
+    virtual QString toStringAppend() override;
 
     virtual void passOnPackets() override;
     virtual void delayOneClock() override;
@@ -52,6 +56,7 @@ protected:
 private:
     QList<ModulePort *> getToPorts(PortBase *from_port);
     QList<ModulePort *> getReturnPorts(PortBase *to_port);
+    QList<ModulePort *> getOutPortsByRoutingTable(DataPacket *packet);
     ModulePort *getPortByShapeName(QString text);
 
 signals:

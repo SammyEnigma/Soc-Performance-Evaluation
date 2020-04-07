@@ -34,6 +34,8 @@ private slots:
 
     void on_spinBox_7_valueChanged(int arg1);
 
+    void on_spinBox_8_valueChanged(int arg1);
+
 private:
     Ui::PortDataDialog *ui;
     ModulePort *port;
