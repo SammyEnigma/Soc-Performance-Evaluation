@@ -127,7 +127,7 @@ void SwitchModule::passOnPackets()
         if (!packet->isDelayFinished())
             continue;
         // 判断packet的传输目标
-        QList<ModulePort *> ports = getToPorts(packet->getComePort());
+        QList<ModulePort *> ports = getOutPortsByRoutingTable(packet)/*getToPorts(packet->getComePort())*/;
         if (ports.size() != 0)
         {
             foreach (SwitchPicker *picker, pickers)
@@ -180,7 +180,7 @@ void SwitchModule::passOnPackets()
             continue;
 
         // 判断packet的传输目标
-        QList<ModulePort *> ports = getReturnPorts(packet->getComePort());
+        QList<ModulePort *> ports = getOutPortsByRoutingTable(packet)/*getReturnPorts(packet->getComePort())*/;
         if (ports.size() != 0)
         {
             foreach (SwitchPicker *picker, pickers)
@@ -516,6 +516,19 @@ QList<ModulePort *> SwitchModule::getReturnPorts(PortBase *to_port)
         }
     }
     return from_ports;
+}
+
+QList<ModulePort *> SwitchModule::getOutPortsByRoutingTable(DataPacket* packet)
+{
+    QList<ModulePort*> ports;
+    MID dstID = packet->dstID;
+    PID outID = routing_table.value(dstID, 0);
+    foreach (PortBase* port, this->ports)
+    {
+        if (port->getRoutingID() == outID)
+            ports.append(static_cast<ModulePort*>(port));
+    }
+    return ports;
 }
 
 ModulePort *SwitchModule::getPortByShapeName(QString text)

@@ -56,6 +56,7 @@ protected:
 private:
     QList<ModulePort *> getToPorts(PortBase *from_port);
     QList<ModulePort *> getReturnPorts(PortBase *to_port);
+    QList<ModulePort *> getOutPortsByRoutingTable(DataPacket *packet);
     ModulePort *getPortByShapeName(QString text);
 
 signals:
