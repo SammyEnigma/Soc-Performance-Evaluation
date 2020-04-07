@@ -37,6 +37,10 @@ public:
     void saveToFile(QString file_path);
     void readFromFile(QString file_path);
 
+protected:
+    void showEvent(QShowEvent* event);
+    void closeEvent(QCloseEvent* event);
+
 private slots:
     void on_actionSave_triggered();
 
@@ -79,6 +83,10 @@ private slots:
     void on_lineEdit_editingFinished();
 
     void on_actionToken_Animation_triggered();
+
+    void on_actionShow_All_Dock_triggered();
+
+    void on_actionAuto_Watch_Port_triggered();
 
 private:
     void initSystem(); // 初始化系统（比如目录结构）

@@ -122,6 +122,20 @@ void MainWindow::readFromFile(QString file_path)
     //    ui->scrollAreaWidgetContents_2->setMinimumSize(widthest, heightest);
 }
 
+void MainWindow::showEvent(QShowEvent *event)
+{
+    restoreGeometry(us->getVar("window/geometry").toByteArray());
+    restoreState(us->getVar("window/state").toByteArray());
+    QMainWindow::showEvent(event);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    us->setVal("window/geometry", saveGeometry());
+    us->setVal("window/state", saveState());
+    QMainWindow::closeEvent(event);
+}
+
 /**
  * 初始化整个系统
  * 比如初始化目录结构
@@ -380,4 +394,16 @@ void MainWindow::on_actionToken_Animation_triggered()
     us->show_animation = !us->show_animation;
     us->setVal("us/show_animation", us->show_animation);
     ui->actionToken_Animation->setChecked(us->show_animation);
+}
+
+void MainWindow::on_actionShow_All_Dock_triggered()
+{
+    ui->dockWidget->show();
+    ui->dockWidget_3->show();
+    ui->dockWidget_4->show();
+}
+
+void MainWindow::on_actionAuto_Watch_Port_triggered()
+{
+
 }
