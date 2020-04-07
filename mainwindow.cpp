@@ -410,3 +410,18 @@ void MainWindow::on_actionAuto_Watch_Port_triggered()
     us->setVal("us/port_auto_watch", us->port_auto_watch);
     ui->actionAuto_Watch_Port->setChecked(us->port_auto_watch);
 }
+
+void MainWindow::on_actionShow_Dock_Modules_triggered()
+{
+    ui->dockWidget->show();
+}
+
+void MainWindow::on_actionShow_Dock_Properties_triggered()
+{
+    ui->dockWidget_3->show();
+}
+
+void MainWindow::on_actionShow_Dock_Console_triggered()
+{
+    ui->dockWidget_4->show();
+}

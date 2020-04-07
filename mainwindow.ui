@@ -54,8 +54,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>678</width>
-           <height>521</height>
+           <width>671</width>
+           <height>508</height>
           </rect>
          </property>
         </widget>
@@ -81,7 +81,7 @@
      <x>0</x>
      <y>0</y>
      <width>1028</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -211,6 +211,9 @@
     <addaction name="actionToken_Animation"/>
     <addaction name="separator"/>
     <addaction name="actionShow_All_Dock"/>
+    <addaction name="actionShow_Dock_Modules"/>
+    <addaction name="actionShow_Dock_Properties"/>
+    <addaction name="actionShow_Dock_Console"/>
    </widget>
    <widget class="QMenu" name="menu_9">
     <property name="title">
@@ -1051,6 +1054,21 @@ border: 1px solid #6495ED</string>
    </property>
    <property name="text">
     <string>Port Auto Watch</string>
+   </property>
+  </action>
+  <action name="actionShow_Dock_Modules">
+   <property name="text">
+    <string>Show Dock Modules</string>
+   </property>
+  </action>
+  <action name="actionShow_Dock_Properties">
+   <property name="text">
+    <string>Show Dock Properties</string>
+   </property>
+  </action>
+  <action name="actionShow_Dock_Console">
+   <property name="text">
+    <string>Show Dock Console</string>
    </property>
   </action>
  </widget>
