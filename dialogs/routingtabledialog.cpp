@@ -7,6 +7,12 @@ RoutingTableDialog::RoutingTableDialog(SwitchModule *swch)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose, true);
+
+    RoutingTable table = swch->routing_table;
+    QString text = "";
+    for (auto i = table.begin(); i != table.end(); i++)
+        text += QString("%1\t%2\n").arg(i.key()).arg(i.value());
+    ui->plainTextEdit->setPlainText(text);
 }
 
 RoutingTableDialog::~RoutingTableDialog()
@@ -14,20 +20,16 @@ RoutingTableDialog::~RoutingTableDialog()
     delete ui;
 }
 
-/**
- * 从Excel格式（不是Excel）的字符串中导入
- * 格式：
- * - 每一行为一个 src
- * - 每一列为一排 des
- * - 同一行用 tab 隔开
- */
-void RoutingTableDialog::on_pushButton_2_clicked()
-{
-}
-
-/**
- * 确定按钮，保存Routing的内容
- */
 void RoutingTableDialog::on_pushButton_clicked()
 {
+    RoutingTable& table = swch->routing_table;
+    table.clear();
+    QStringList lines = ui->plainTextEdit->toPlainText().split("\n", QString::SkipEmptyParts);
+    foreach (auto line, lines) {
+        QStringList cell = line.split(QRegExp("\\s"));
+        if (cell.size() < 2)
+            continue;
+        table.insert(cell.at(0).toInt(), cell.at(1).toInt());
+    }
+    close();
 }
