@@ -17,6 +17,8 @@ void MasterSlave::initData()
     foreach (PortBase *p, ports)
     {
         ModulePort *port = static_cast<ModulePort *>(p);
+        port->setBandwidthMultiple(getDataValue("package_size").toString() == "64byte" ? 2 : 1);
+        port->initData();
         port->setToken(token->i());
 
         // ==== 发送部分（Master） ====
@@ -43,9 +45,9 @@ void MasterSlave::initData()
                 return;
             }
 
-            if (data_list.size() >= getToken()) // 已经满了，不让发了
+            if ((packet->isRequest() && data_list.size() >= getToken()) || (packet->isResponse() && response_list.size() >= getToken())) // 已经满了，不让发了
             {
-                rt->runningOut(getText() + " data queue 已经满了，无法收取更多");
+                rt->runningOut("warning!!! " + getText() + " data queue 已经满了，无法收取更多");
                 return;
             }
 
@@ -272,6 +274,9 @@ void MasterSlave::delayOneClock()
         ModulePort *port = static_cast<ModulePort *>(p);
         port->delayOneClock();
     }
+
+    QString s = QString("enqueue:%1\ndata_list:%2\nresponse:%3\ndequeue:%4").arg(enqueue_list.size()).arg(data_list.size()).arg(response_list.size()).arg(dequeue_list.size());
+    setToolTip(s);
 
     updatePacketPos();
 }

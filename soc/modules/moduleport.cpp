@@ -10,7 +10,7 @@
 ModulePort::ModulePort(QWidget *parent)
     : PortBase(parent),
       another_can_receive(0),
-      bandwidth(1),
+      bandwidth(1), bandwidth_multiple(1), real_bandwidth(1),
       latency(1), into_port_delay(0), outo_port_delay(0),
       return_delay(0),
       send_update_delay(0), receive_update_delay(0), token(1),
@@ -39,6 +39,13 @@ QString ModulePort::getClass()
     return "ModulePort";
 }
 
+void ModulePort::initData()
+{
+	real_bandwidth = bandwidth;
+    real_bandwidth.setNumerator(bandwidth.getNumerator() * bandwidth_multiple);
+    qDebug() << "real_bandwidth" << real_bandwidth;
+}
+
 void ModulePort::clearData()
 {
     into_port_list.clear();
@@ -46,7 +53,7 @@ void ModulePort::clearData()
     return_delay_list.clear();
     receive_update_delay_list.clear();
     send_update_delay_list.clear();
-    bandwidth.resetBuffer();
+    real_bandwidth.resetBuffer();
     frq_queue.clear();
     frq2_queue.clear();
     total_sended = total_received = begin_waited = 0;
@@ -55,8 +62,8 @@ void ModulePort::clearData()
 QString ModulePort::getShowedString(QString split)
 {
     QStringList ss;
-    if (!bandwidth.isZero())
-        ss.append(QString("bandwidth:%1").arg(bandwidth));
+    if (!real_bandwidth.isZero())
+        ss.append(QString("bandwidth:%1").arg(real_bandwidth));
     if (latency != 0)
         ss.append(QString("latency:%1").arg(latency));
     if (return_delay != 0)
@@ -322,7 +329,7 @@ int ModulePort::getLatency()
 
 TimeFrame ModulePort::getBandwidth()
 {
-    return bandwidth;
+    return real_bandwidth;
 }
 
 int ModulePort::getReturnDelay()
@@ -330,32 +337,45 @@ int ModulePort::getReturnDelay()
     return return_delay;
 }
 
+void ModulePort::setBandwidthMultiple(int x)
+{
+    bandwidth_multiple = x;
+    qDebug() << "bandwidth_multiple" << x;
+}
+
 void ModulePort::initBandwidthBufer()
 {
-    bandwidth.resetBuffer();
+    real_bandwidth.resetBuffer();
 }
 
 bool ModulePort::nextBandwidthBuffer()
 {
-    return bandwidth.nextBuffer();
+    return real_bandwidth.nextBuffer();
 }
 
 bool ModulePort::isBandwidthBufferFinished()
 {
-    return bandwidth.isBufferFinished();
+    return real_bandwidth.isBufferFinished();
 }
 
 void ModulePort::resetBandwidthBuffer()
 {
-    if (bandwidth.getNumerator() != 0)
-        bandwidth.resetBuffer(bandwidth.getDenominator() * rt->standard_frame / bandwidth.getNumerator());
+    if (real_bandwidth.getNumerator() != 0)
+        real_bandwidth.resetBuffer(real_bandwidth.getDenominator() * rt->standard_frame / real_bandwidth.getNumerator());
     else
-        bandwidth.resetBuffer(0);
+        real_bandwidth.resetBuffer(0);
 }
 
 void ModulePort::setBandwidth(TimeFrame bandwidth)
 {
     this->bandwidth = bandwidth;
+    real_bandwidth = bandwidth;
+    real_bandwidth.setNumerator(bandwidth.getNumerator() * bandwidth_multiple);
+}
+
+TimeFrame ModulePort::getOriginalBandwidth()
+{
+    return bandwidth;
 }
 
 void ModulePort::initReceiveToken(int x)

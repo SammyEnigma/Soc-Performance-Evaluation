@@ -37,6 +37,7 @@ public:
     friend class ModuleCable;
     virtual ModulePort *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual QString getClass() override;
+    void initData();
     void clearData();
     virtual QString getShowedString(QString split = ";");
 
@@ -50,6 +51,8 @@ public:
     TimeFrame getBandwidth();
     int getReturnDelay();
 
+    void setBandwidthMultiple(int x = 1);
+    TimeFrame getOriginalBandwidth();
     void initBandwidthBufer();
     bool nextBandwidthBuffer();
     bool isBandwidthBufferFinished();
@@ -98,7 +101,9 @@ public:
 
 private:
     // 属性配置
-    TimeFrame bandwidth;      // 带宽，多少个clock发送1个token（越大越慢）
+    TimeFrame bandwidth;      // 带宽，多少个clock发送1个token（越大越快）
+    int bandwidth_multiple;   // 16/32:1,  64:2
+    TimeFrame real_bandwidth; // 乘上倍数的带宽
     int latency;              // the delay of the sending the request/response
     int into_port_delay;      // 进入port的delay
     int outo_port_delay;      // 从port出去的delay

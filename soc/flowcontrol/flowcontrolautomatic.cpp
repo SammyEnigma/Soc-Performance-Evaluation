@@ -15,8 +15,6 @@ bool FlowControlAutomatic::initModules()
 
 void FlowControlAutomatic::initData()
 {
-    FlowControlBase::initData();
-
     // 模块数据初始化
     foreach (ShapeBase *shape, shapes)
     {
@@ -58,6 +56,9 @@ void FlowControlAutomatic::initData()
         if (_class == "ModuleCable")
             static_cast<ModuleCable *>(shape)->initData();
     }
+    
+    // 由于需要先设置bandwidth*multiple, 所以放到后面再初始化clock
+    FlowControlBase::initData();
 }
 
 void FlowControlAutomatic::clearData()
