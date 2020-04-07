@@ -25,6 +25,7 @@ PortDataDialog::PortDataDialog(ModulePort *port)
     ui->spinBox_6->setValue(port->token);
     ui->spinBox->setValue(port->into_port_delay);
     ui->spinBox_7->setValue(port->outo_port_delay);
+    ui->spinBox_8->setValue(port->routing_id);
 }
 
 PortDataDialog::~PortDataDialog()
@@ -70,4 +71,9 @@ void PortDataDialog::on_spinBox_valueChanged(int)
 void PortDataDialog::on_spinBox_7_valueChanged(int)
 {
     port->outo_port_delay = ui->spinBox_7->value();
+}
+
+void PortDataDialog::on_spinBox_8_valueChanged(int)
+{
+    port->routing_id = ui->spinBox_8->value();
 }

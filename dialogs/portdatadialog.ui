@@ -30,7 +30,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label">
        <property name="toolTip">
         <string>1 / send speed</string>
@@ -40,7 +40,30 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="lineEdit_2"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>enter into port delay</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="spinBox"/>
+     </item>
      <item row="4" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>come out port delay</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QSpinBox" name="spinBox_7"/>
+     </item>
+     <item row="5" column="0">
       <widget class="QLabel" name="label_3">
        <property name="toolTip">
         <string>Send delay</string>
@@ -50,79 +73,66 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <widget class="QSpinBox" name="spinBox_2"/>
      </item>
-     <item row="5" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>picker to token delay</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <widget class="QSpinBox" name="spinBox_3"/>
      </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>token-1 delay</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="7" column="1">
+      <widget class="QSpinBox" name="spinBox_4"/>
+     </item>
+     <item row="8" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>receive to token delay</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>token</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QSpinBox" name="spinBox_4"/>
-     </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <widget class="QSpinBox" name="spinBox_5">
        <property name="value">
         <number>0</number>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>token</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
       <widget class="QSpinBox" name="spinBox_6">
        <property name="value">
         <number>5</number>
        </property>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Routing ID</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_2"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>enter into port delay</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="spinBox"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>come out port delay</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QSpinBox" name="spinBox_7"/>
+      <widget class="QSpinBox" name="spinBox_8"/>
      </item>
     </layout>
    </item>

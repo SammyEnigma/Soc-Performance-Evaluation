@@ -14,6 +14,7 @@ MasterSlave::MasterSlave(QWidget *parent)
 void MasterSlave::initData()
 {
     token = getData("token");
+    routing_id = getDataValue("routing_id", 0).toInt();
     foreach (PortBase *p, ports)
     {
         ModulePort *port = static_cast<ModulePort *>(p);
