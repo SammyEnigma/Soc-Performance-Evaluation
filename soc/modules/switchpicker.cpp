@@ -55,12 +55,16 @@ void SwitchPicker::slotPacketSended(DataPacket *)
     {
     case Round_Robin_Scheduling: // 轮询调度
     {
-        if (round_index < 0) // 出错的轮询
-            round_index = 0;
-        else // 下一个轮询
-            round_index++;
-        if (round_index >= ports.size()) // 一轮结束，恢复到一开始的索引
-            round_index = 0;
+        int started_index = round_index; // 避免死循环
+        do {
+            if (round_index < 0) // 出错的轮询
+                round_index = 0;
+            else // 下一个轮询
+                round_index++;
+            if (round_index >= ports.size()) // 一轮结束，恢复到一开始的索引
+                round_index = 0;
+        } while (round_index != started_index && ports.at(round_index)->getOppositePort() == nullptr);
+
     }
     }
 }
