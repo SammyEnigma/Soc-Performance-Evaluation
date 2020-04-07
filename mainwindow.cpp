@@ -155,6 +155,7 @@ void MainWindow::initView()
 {
     // 和数据挂钩的设置
     ui->actionToken_Animation->setChecked(us->show_animation);
+    ui->actionAuto_Watch_Port->setChecked(us->port_auto_watch);
 
     // 连接绘图区域信号槽
     connect(ui->scrollAreaWidgetContents_2, &GraphicArea::signalScrollToPos, this, [=](int x, int y) {
@@ -405,5 +406,7 @@ void MainWindow::on_actionShow_All_Dock_triggered()
 
 void MainWindow::on_actionAuto_Watch_Port_triggered()
 {
-
+    us->port_auto_watch = !us->port_auto_watch;
+    us->setVal("us/port_auto_watch", us->port_auto_watch);
+    ui->actionAuto_Watch_Port->setChecked(us->port_auto_watch);
 }

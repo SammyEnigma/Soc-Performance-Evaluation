@@ -1046,8 +1046,11 @@ border: 1px solid #6495ED</string>
    </property>
   </action>
   <action name="actionAuto_Watch_Port">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Auto Watch Port</string>
+    <string>Port Auto Watch</string>
    </property>
   </action>
  </widget>

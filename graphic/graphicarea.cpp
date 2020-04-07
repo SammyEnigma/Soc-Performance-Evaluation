@@ -609,7 +609,7 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
             if ((event->pos() - _press_pos).manhattanLength() > QApplication::startDragDistance() * 2 // 拖拽生成形状
                 && _drag_prev_shape != nullptr)                                                       // ESC取消创建，但是鼠标拖拽事件还在
             {
-                // 松开自动停靠
+                // 松开自动停靠(CableBase/ModuleCable)
                 if (rt->auto_stick_ports)
                 {
                     // 遍历寻找最近的端口
@@ -644,43 +644,40 @@ void GraphicArea::mouseReleaseEvent(QMouseEvent *event)
                         if (!had) // 未被占用，可以使用
                         {
                             cable->setPorts(_stick_from_port, nearest_port);
-                            cable->adjustGeometryByPorts();
+                            // QTimer::singleShot(100, [=]{
+                                cable->adjustGeometryByPorts();
+                            // });
                             _select_rect = cable->geometry();
                             ShapeBase *c = insertShapeByRect(_drag_prev_shape, cable->geometry());
                             cable_lists.append(static_cast<CableBase *>(c));
+
                             //添加端口监控
-                            //判断是否已经存在监控
-                            bool watched = false;
-                            foreach (ShapeBase *base, shape_lists)
+                            if (us->port_auto_watch)
                             {
-                                if (base->getClass() == "WatchModule")
+                                //判断是否已经存在监控
+                                bool watched1 = false, watched2 = false;
+                                foreach (ShapeBase *base, shape_lists)
                                 {
-                                    if (static_cast<WatchModule *>(base)->getTargetPort() == _stick_from_port)
+                                    if (base->getClass() == "WatchModule")
                                     {
-                                        watched = true;
-                                        break;
+                                        if (static_cast<WatchModule *>(base)->getTargetPort() == _stick_from_port)
+                                        {
+                                            watched1 = true;
+                                        }
+                                        else if (static_cast<WatchModule *>(base)->getTargetPort() == nearest_port)
+                                        {
+                                            watched2 = true;
+                                        }
                                     }
                                 }
-                            }
-                            if (!watched)
-                            {
-                                setWatchModule(_stick_from_port);
-                            }
-                            watched = false;
-                            foreach (ShapeBase *base, shape_lists)
-                            {
-                                if (base->getClass() == "WatchModule")
+                                if (!watched1)
                                 {
-                                    if (static_cast<WatchModule *>(base)->getTargetPort() == nearest_port)
-                                    {
-                                        watched = true;
-                                        break;
-                                    }
+                                    setWatchModule(_stick_from_port);
                                 }
-                            }
-                            if (!watched)
-                            {
-                                setWatchModule(nearest_port);
+                                if (!watched2)
+                                {
+                                    setWatchModule(nearest_port);
+                                }
                             }
                         }
                         else // 已经被占用了
