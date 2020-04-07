@@ -93,6 +93,31 @@ int SwitchModule::getToken()
     return getDataValue("token").toInt();
 }
 
+void SwitchModule::fromStringAppend(QString s)
+{
+    RoutingTable& table = routing_table;
+    table.clear();
+    QString text = StringUtil::getXml(s, "ROUTING_TABLE");
+    QStringList lines = text.split("\n", QString::SkipEmptyParts);
+    foreach (auto line, lines) {
+        QStringList cell = line.split(QRegExp("\\s"));
+        if (cell.size() < 2)
+            continue;
+        table.insert(cell.at(0).toInt(), cell.at(1).toInt());
+    }
+}
+
+QString SwitchModule::toStringAppend()
+{
+    QString full = "";
+    QString indent = "\n\t";
+    RoutingTable table = routing_table;
+    QString text = "";
+    for (auto i = table.begin(); i != table.end(); i++)
+        text += QString("%1\t%2\n").arg(i.key()).arg(i.value());
+    return indent + StringUtil::makeXml(text, "ROUTING_TABLE");
+}
+
 void SwitchModule::passOnPackets()
 {
     // request queue

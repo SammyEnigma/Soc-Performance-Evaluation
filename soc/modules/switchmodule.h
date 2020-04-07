@@ -31,6 +31,9 @@ public:
     virtual void setDefaultDataList() override;
     int getToken();
 
+    virtual void fromStringAppend(QString s) override;
+    virtual QString toStringAppend() override;
+
     virtual void passOnPackets() override;
     virtual void delayOneClock() override;
 
