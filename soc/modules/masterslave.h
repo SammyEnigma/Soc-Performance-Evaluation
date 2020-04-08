@@ -31,6 +31,7 @@ public:
 
 protected:
     virtual void changeRequestsToResponse();
+    virtual void setSrcIDAndDstID(DataPacket *packet);
     void paintEvent(QPaintEvent *event) override;
 
 signals:

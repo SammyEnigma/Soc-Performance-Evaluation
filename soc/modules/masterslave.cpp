@@ -145,6 +145,8 @@ void MasterSlave::passOnPackets()
             rt->runningOut(getText() + " 由于没有可发送的端口，无法发送 " + packet->getID());
             continue;
         }
+        
+        // Master/IP/Slave/DRAM 发送数据包
         if (port->isBandwidthBufferFinished() && port->anotherCanRecive())
         {
             rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 data_list >> dequeue");
@@ -164,14 +166,15 @@ void MasterSlave::passOnPackets()
             {
                 
             }
-            else if (getClass() == "IP")
-            {
-                // 设置 SourceID、DestinationID
-                packet->srcID = getDataValue("routing_id", 0).toInt();
-                packet->dstID = getDataValue("dst_id", 0).toInt();
-            }
             else
             {
+                // 设置 package 的 srcID 和 dstID
+                if (getClass() == "Master" && packet->isRequest())
+                {
+                    setSrcIDAndDstID(packet);
+                }
+                
+                // 发送出队列的信号
                 port = static_cast<ModulePort *>(packet->getComePort());
                 if (port)
                     port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
@@ -386,6 +389,18 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
 void MasterSlave::changeRequestsToResponse()
 {
 	
+}
+
+/**
+ * - Master发送Request
+ * - Slave返回Response
+ * 两种情况，设置
+ */
+void MasterSlave::setSrcIDAndDstID(DataPacket *packet)
+{
+    // 设置 SourceID、DestinationID
+    packet->srcID = getDataValue("routing_id", 0).toInt();
+    packet->dstID = getDataValue("dst_id", 0).toInt();
 }
 
 int MasterSlave::getReqCount()
