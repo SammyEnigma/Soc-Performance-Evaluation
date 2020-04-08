@@ -161,17 +161,35 @@ void MasterSlave::passOnPackets()
                 packet->setFirstPickedCLock(rt->total_frame);
             }
 
-            // 如果是从IP真正下发的
+            // Master/Slave/IP/DRAM 真正发送发送数据的 Logic
             if (getClass() == "IP" && packet->isResponse()) // IP发送的request不需要返回给下一个模块token
             {
                 
             }
             else
             {
-                // 设置 package 的 srcID 和 dstID
-                if (getClass() == "Master" && packet->isRequest())
+                if (packet->isRequest())
                 {
-                    setSrcIDAndDstID(packet);
+                    if (getClass() == "IP")
+                    {
+                        // 设置 package 的 unitID
+                        packet->unitID = getDataValue("unit_id").toString();
+                    }
+                    else if (getClass() == "Master")
+                    {
+                        // 设置 package 的 srcID 和 dstID
+                        setSrcIDAndDstID(packet);
+                        // TODO: 编码 package 的 tag 至自己维护的一个 tag_map 队列中
+                        // encodePackageTag(packet);
+                    }
+                }
+                else if (packet->isResponse())
+                {
+                    if (getClass() == "Master")
+                    {
+                        // TODO: 从 tag_map 对 package 的 tag 进行解码
+                        // decodePackageTag(packet);
+                    }
                 }
                 
                 // 发送出队列的信号
