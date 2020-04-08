@@ -10,6 +10,8 @@
 
 #include "masterslave.h"
 
+typedef QMap<TagType, TagType> TagsMap;
+
 class MasterModule : public MasterSlave
 {
     // Q_OBJECT // 这个不能加！否则会爆 'QObject' is an ambiguous base of 'MasterModule' 的问题
@@ -37,6 +39,7 @@ protected:
 
 private:
     QFont big_font, normal_font, bold_font;
+    TagsMap tags_map; // 维护 tags 映射，decode: logic中唯一tag => IP设定的tag
 };
 
 #endif // MASTERMODULE_H

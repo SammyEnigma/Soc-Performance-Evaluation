@@ -84,8 +84,6 @@ void DataPacketView::updateToolTip()
         setToolTip(tr("没有 packet"));
         return ;
     }
-    QString s = packet->getID();
-    s += " " + packet->toString();
-    s += QString("\n%1 => %2").arg(packet->srcID).arg(packet->dstID);
+    QString s = packet->toString();
     setToolTip(s);
 }

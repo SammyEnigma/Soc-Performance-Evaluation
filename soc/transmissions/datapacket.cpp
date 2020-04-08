@@ -16,7 +16,7 @@ DataPacket::DataPacket(QObject *parent)
 {
 }
 
-DataPacket::DataPacket(QString tag, QObject *parent) : DataPacket(parent)
+DataPacket::DataPacket(TagType tag, QObject *parent) : DataPacket(parent)
 {
     this->valid = true;
     this->tag = tag;
@@ -27,7 +27,7 @@ DataPacket::DataPacket(int delay, QObject *parent) : DataPacket(parent)
     resetDelay(delay);
 }
 
-QString DataPacket::getTag()
+TagType DataPacket::getTag()
 {
     return tag;
 }
@@ -103,7 +103,7 @@ double DataPacket::currentProp()
 
 QString DataPacket::toString()
 {
-    return QString("%1(%5): %6 (%2 / %3) [%4]").arg(tag).arg(delay_step).arg(delay_max).arg(data_type).arg(getID()).arg(unitID);
+    return QString("%1(%5): %6 (%2 / %3) [%4] %7 => %8").arg(tag).arg(delay_step).arg(delay_max).arg(data_type).arg(getID()).arg(unitID).arg(packet->srcID).arg(packet->dstID);
 }
 
 void DataPacket::setID(QString id)

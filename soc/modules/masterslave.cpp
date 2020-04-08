@@ -35,18 +35,11 @@ void MasterSlave::initData()
 
         // ==== 接收部分（Slave） ====
         connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet) {
-            // 如果是IP收到了response，则走完一个完整的流程，计算latency，然后丢弃这个数据包
-            if (getClass() == "IP" && packet->getDataType() == DATA_RESPONSE)
-            {
-                int passed = rt->total_frame - packet->getFirstPickedClock();
-                passed /= rt->standard_frame;
-                rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = " + QString::number(passed) + " clock");
-                packet->deleteLater();
-                port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
-                return;
-            }
+            // 例如：IP接管
+            if (packageReceiveEvent(port, packet))
+                return ;
 
-            if ((packet->isRequest() && data_list.size() >= getToken()) || (packet->isResponse() && response_list.size() >= getToken())) // 已经满了，不让发了
+            if ((packet->isRequest() && data_list.size() >= getToken()) || (packet->isResponse() && response_list.size() >= getToken())) // 已经满了，不让收了
             {
                 rt->runningOut("warning!!! " + getText() + " data queue 已经满了，无法收取更多");
                 return;
@@ -379,17 +372,28 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
 }
 
 /**
+ * 即将从 data_list 发送 package 事件（dequeue之前）
+ * 由子类添加数据
+ */
+void MasterSlave::packageSendEvent(DataPacket *package)
+{
+}
+
+/**
+ * 接收到 package 事件（enqueue之前）
+ */
+bool MasterSlave::packageReceiveEvent(ModulePort *port, DataPacket *package)
+{
+    return false;
+}
+
+/**
  * 将send_delay_list中的request变成response
  * 由子类（Slave）判断
  */
 void MasterSlave::changeRequestsToResponse()
 {
 	
-}
-
-void MasterSlave::packageSendEvent(DataPacket* package)
-{
-    
 }
 
 int MasterSlave::getReqCount()
