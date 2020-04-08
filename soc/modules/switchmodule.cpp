@@ -263,6 +263,8 @@ void SwitchModule::delayOneClock()
         picker->slotRoundToNext(nullptr);
         picker->delayOneClock();
     }
+    
+    // QString s = QString("picker.nextPort:%1").arg(picker->currentPort()->getPortId());
 
     updatePacketPos();
 }
@@ -523,9 +525,10 @@ QList<ModulePort *> SwitchModule::getOutPortsByRoutingTable(DataPacket* packet)
     QList<ModulePort*> ports;
     MID dstID = packet->dstID;
     PID outID = routing_table.value(dstID, 0);
-    qDebug() << getText() << packet->srcID << packet->dstID;
+    qDebug() << getText() << packet->srcID << packet->dstID << outID;
     foreach (PortBase* port, this->ports)
     {
+        qDebug() << "    " << port->getRoutingID();
         if (port->getRoutingID() == outID)
         {
             ports.append(static_cast<ModulePort*>(port));
