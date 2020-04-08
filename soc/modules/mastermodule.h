@@ -29,9 +29,11 @@ public:
     void updatePacketPosHorizone();
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    virtual void packageSendEvent(DataPacket *packet) override;
+    void setSrcIDAndDstID(DataPacket *packet);
 
-    virtual void drawShapePixmap(QPainter &painter, QRect draw_rect);
+    void paintEvent(QPaintEvent *event) override;
+    virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
 
 private:
     QFont big_font, normal_font, bold_font;

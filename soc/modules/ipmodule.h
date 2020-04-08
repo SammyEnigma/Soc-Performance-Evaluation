@@ -12,6 +12,7 @@ public:
     virtual void initData();
     
 protected:
+	virtual void packageSendEvent(DataPacket *packet) override;
 	void paintEvent(QPaintEvent *event) override;
     
 private:

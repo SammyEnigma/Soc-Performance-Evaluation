@@ -168,29 +168,7 @@ void MasterSlave::passOnPackets()
             }
             else
             {
-                if (packet->isRequest())
-                {
-                    if (getClass() == "IP")
-                    {
-                        // 设置 package 的 unitID
-                        packet->unitID = getDataValue("unit_id").toString();
-                    }
-                    else if (getClass() == "Master")
-                    {
-                        // 设置 package 的 srcID 和 dstID
-                        setSrcIDAndDstID(packet);
-                        // TODO: 编码 package 的 tag 至自己维护的一个 tag_map 队列中
-                        // encodePackageTag(packet);
-                    }
-                }
-                else if (packet->isResponse())
-                {
-                    if (getClass() == "Master")
-                    {
-                        // TODO: 从 tag_map 对 package 的 tag 进行解码
-                        // decodePackageTag(packet);
-                    }
-                }
+                packageSendEvent(packet); // 交给MasterSlave控制的数据发送事件
                 
                 // 发送出队列的信号
                 port = static_cast<ModulePort *>(packet->getComePort());
@@ -409,16 +387,9 @@ void MasterSlave::changeRequestsToResponse()
 	
 }
 
-/**
- * - Master发送Request
- * - Slave返回Response
- * 两种情况，设置
- */
-void MasterSlave::setSrcIDAndDstID(DataPacket *packet)
+void MasterSlave::packageSendEvent(DataPacket* package)
 {
-    // 设置 SourceID、DestinationID
-    packet->srcID = getDataValue("routing_id", 0).toInt();
-    packet->dstID = getDataValue("dst_id", 0).toInt();
+    
 }
 
 int MasterSlave::getReqCount()
