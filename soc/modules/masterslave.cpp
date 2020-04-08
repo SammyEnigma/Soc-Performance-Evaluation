@@ -162,6 +162,10 @@ void MasterSlave::passOnPackets()
             // 如果是从IP真正下发的
             if (getClass() == "IP" && packet->isResponse()) // IP发送的request不需要返回给下一个模块token
             {
+                
+            }
+            else if (getClass() == "IP")
+            {
                 // 设置 SourceID、DestinationID
                 packet->srcID = getDataValue("routing_id", 0).toInt();
                 packet->dstID = getDataValue("dst_id", 0).toInt();
@@ -219,7 +223,7 @@ void MasterSlave::passOnPackets()
         rt->need_passOn_this_clock = true;
     }
 
-    // changeRequestsToResponse(); // 如果是只有一个端口的Slave，则将要发送的数据都变成response
+    changeRequestsToResponse(); // 如果是只有一个端口的Slave，则将要发送的数据都变成response
 
     // 延迟发送
     for (int i = 0; i < send_delay_list.size(); i++)

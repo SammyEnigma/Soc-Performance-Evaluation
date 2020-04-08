@@ -86,5 +86,6 @@ void DataPacketView::updateToolTip()
     }
     QString s = packet->getID();
     s += " " + packet->toString();
+    s += QString("\n%1 => %2").arg(packet->srcID).arg(packet->dstID);
     setToolTip(s);
 }

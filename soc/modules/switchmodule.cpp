@@ -523,10 +523,14 @@ QList<ModulePort *> SwitchModule::getOutPortsByRoutingTable(DataPacket* packet)
     QList<ModulePort*> ports;
     MID dstID = packet->dstID;
     PID outID = routing_table.value(dstID, 0);
+    qDebug() << getText() << packet->srcID << packet->dstID;
     foreach (PortBase* port, this->ports)
     {
         if (port->getRoutingID() == outID)
+        {
             ports.append(static_cast<ModulePort*>(port));
+            qDebug() << "find" << port->getRoutingID()<< port->getPortId();
+        }
     }
     return ports;
 }
