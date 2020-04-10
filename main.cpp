@@ -2,6 +2,10 @@
 
 #include <QApplication>
 #include "globalvars.h"
+#include "xlsxworksheet.h"
+#include "xlsxdocument.h"
+#include "xlsxformat.h"
+#include "xlsxcellrange.h"
 
 int main(int argc, char *argv[])
 {

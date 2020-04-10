@@ -57,8 +57,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>678</width>
-           <height>521</height>
+           <width>671</width>
+           <height>508</height>
           </rect>
          </property>
         </widget>
@@ -84,7 +84,7 @@
      <x>0</x>
      <y>0</y>
      <width>1028</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -167,6 +167,8 @@
     <property name="title">
      <string>Data (&amp;D)</string>
     </property>
+    <addaction name="actionEdit_Database_E"/>
+    <addaction name="separator"/>
     <addaction name="actionFind"/>
     <addaction name="actionFind_Next"/>
     <addaction name="actionFind_Previous"/>
@@ -502,7 +504,7 @@ border: 1px solid #6495ED</string>
   </action>
   <action name="actionUndo">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Undo (&amp;U)</string>
@@ -513,7 +515,7 @@ border: 1px solid #6495ED</string>
   </action>
   <action name="actionRedo">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Redo (&amp;R)</string>
@@ -1072,6 +1074,11 @@ border: 1px solid #6495ED</string>
   <action name="actionShow_Dock_Console">
    <property name="text">
     <string>Show Dock Console</string>
+   </property>
+  </action>
+  <action name="actionEdit_Database_E">
+   <property name="text">
+    <string>Edit Database (&amp;E)</string>
    </property>
   </action>
  </widget>

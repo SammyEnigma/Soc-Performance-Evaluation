@@ -19,6 +19,7 @@
 #include "flowcontrol_master1_slave1.h"
 #include "flowcontrol_master2_switch_slave2.h"
 #include "flowcontrolautomatic.h"
+#include "xlsx_edit.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -93,6 +94,8 @@ private slots:
     void on_actionShow_Dock_Properties_triggered();
 
     void on_actionShow_Dock_Console_triggered();
+
+    void on_actionEdit_Database_E_triggered();
 
 private:
     void initSystem(); // 初始化系统（比如目录结构）

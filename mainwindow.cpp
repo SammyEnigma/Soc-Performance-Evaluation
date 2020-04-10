@@ -7,6 +7,10 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "xlsxdocument.h"
+#include "xlsxworksheet.h"
+#include "xlsxcellrange.h"
+#include "xlsxsheetmodel.h"
 #include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -424,4 +428,9 @@ void MainWindow::on_actionShow_Dock_Properties_triggered()
 void MainWindow::on_actionShow_Dock_Console_triggered()
 {
     ui->dockWidget_4->show();
+}
+
+void MainWindow::on_actionEdit_Database_E_triggered()
+{
+   Xlsx_Edit::xlsx_edit();
 }

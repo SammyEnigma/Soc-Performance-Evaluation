@@ -1,4 +1,7 @@
-QT       += core gui
+TARGET = xlsxwidget
+QT += widgets
+
+QT       += core gui sql xlsx
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,6 +33,7 @@ INCLUDEPATH += \
     soc/flowcontrol \
     soc/tools \
     animation \
+    utils/xlsx \
 
 SOURCES += \
     animation/numberanimation.cpp \
@@ -76,7 +80,10 @@ SOURCES += \
     soc/tools/convexhull.cpp \
     soc/tools/watchwidget.cpp \
     soc/transmissions/datapacket.cpp \
-    soc/transmissions/datapacketview.cpp
+    soc/transmissions/datapacketview.cpp \
+    soc/transmissions/xlsx_edit.cpp \
+    soc/transmissions/xlsxsheetmodel.cpp
+
 
 HEADERS += \
     animation/numberanimation.h \
@@ -125,6 +132,9 @@ HEADERS += \
     soc/tools/watchwidget.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \
+    soc/transmissions/xlsx_edit.h \
+    soc/transmissions/xlsxsheetmodel.h \
+    soc/transmissions/xlsxsheetmodel_p.h \
     utils/bytearrayutil.h \
     utils/fileutil.h \
     global/globalvars.h \
@@ -135,6 +145,7 @@ HEADERS += \
 
 FORMS += \
     dialogs/moduledatadialog.ui \
+    dialogs/mysqldialog.ui \
     dialogs/portdatadialog.ui \
     dialogs/routingtabledialog.ui \
     mainwindow.ui \
@@ -169,4 +180,11 @@ DISTFILES += \
 contains(ANDROID_TARGET_ARCH,x86) {
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
+# 该路径是mysql的头文件路径
+   # INCLUDEPATH +="C:/Program Files/MySQL/MySQL Server 8.0/include"
+
+#install
+    #target.path = $$[QT_INSTALL_EXAMPLES]/xlsx/xlsxwidget
+    #INSTALLS += target
+
 }
