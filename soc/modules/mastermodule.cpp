@@ -52,6 +52,35 @@ void MasterModule::updatePacketPos()
     return updatePacketPosVertical();
 }
 
+void MasterModule::packageSendEvent(DataPacket *packet)
+{
+    if (packet->isRequest())
+    {
+        // 设置 package 的 srcID 和 dstID
+        setSrcIDAndDstID(packet);
+        
+        // TODO: 编码 package 的 tag 至自己维护的一个 tag_map 队列中
+        // encodePackageTag(packet);
+    }
+    else if (packet->isResponse())
+    {
+        // TODO: 从 tag_map 对 package 的 tag 进行解码
+        // decodePackageTag(packet);
+    }
+}
+
+/**
+ * - Master发送Request
+ * - Slave返回Response
+ * 两种情况，设置
+ */
+void MasterModule::setSrcIDAndDstID(DataPacket *packet)
+{
+    // 设置 SourceID、DestinationID
+    packet->srcID = getDataValue("routing_id", 0).toInt();
+    packet->dstID = getDataValue("dst_id", 0).toInt();
+}
+
 void MasterModule::updatePacketPosVertical()
 {
     ModulePort *port = nullptr;      // 接收IP的port

@@ -50,8 +50,10 @@ void SlaveModule::changeRequestsToResponse()
                 continue;
             packet->setDataType(DATA_TYPE::DATA_RESPONSE);
             packet->setComePort(nullptr);
-            packet->dstID = packet->srcID;
-            packet->srcID = getDataValue("routing_id", 0).toInt();
+            // 调换 srcID 和 dstID
+            MID temp = packet->srcID;
+            packet->srcID = packet->dstID;
+            packet->dstID = temp;
             rt->runningOut(getText() + " 设置 " + packet->getID() + " 为 response，并返回");
         }
     }

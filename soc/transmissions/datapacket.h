@@ -31,6 +31,7 @@ enum PriorityLevel
     URGENT
 };
 
+typedef QString TagType;
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 
 class PortBase;
@@ -48,7 +49,7 @@ public:
     DataPacket(int delay, QObject *parent = nullptr);
 
     /*================package真正部分================*/
-    QString getTag();
+    TagType getTag();
     void setPackageSize(int size);
     int getPackageSize();
     void setDataType(DATA_TYPE type);
@@ -90,13 +91,14 @@ public slots:
     void deleteLater();
 
 public:
-    QString tag;         // 例如 0~511 循环使用（和srcID一起要保证全局唯一）
-    DATA_TYPE data_type; // 数据类型：request/response/token
-    DataFormat data;     // 数据（复杂格式）
-    MID srcID;           // 发出来的ID
-    MID dstID;           // 目的地的ID
-    PriorityLevel pri;   // 优先级：low, normal, high, urgent
-    int vc;              // visual channel
+    TagType tag; // 例如 0~511 循环使用（和srcID一起要保证全局唯一）
+    QString unitID;
+    DATA_TYPE data_type = DATA_REQUEST; // 数据类型：request/response/token
+    DataFormat data;                    // 数据（复杂格式）
+    MID srcID = 0;                      // 发出来的ID
+    MID dstID = 0;                      // 目的地的ID
+    PriorityLevel pri;                  // 优先级：low, normal, high, urgent
+    int vc;                             // visual channel
     int order_road;
     int chain;
     bool isAck;

@@ -30,6 +30,8 @@ public:
     ModulePort *getOutPort(DataPacket *packet);
 
 protected:
+    virtual void packageSendEvent(DataPacket *packet);
+    virtual bool packageReceiveEvent(ModulePort *port, DataPacket *packet);
     virtual void changeRequestsToResponse();
     void paintEvent(QPaintEvent *event) override;
 

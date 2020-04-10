@@ -35,18 +35,11 @@ void MasterSlave::initData()
 
         // ==== 接收部分（Slave） ====
         connect(port, &ModulePort::signalOutPortReceived, this, [=](DataPacket *packet) {
-            // 如果是IP收到了response，则走完一个完整的流程，计算latency，然后丢弃这个数据包
-            if (getClass() == "IP" && packet->getDataType() == DATA_RESPONSE)
-            {
-                int passed = rt->total_frame - packet->getFirstPickedClock();
-                passed /= rt->standard_frame;
-                rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = " + QString::number(passed) + " clock");
-                packet->deleteLater();
-                port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget()));
-                return;
-            }
+            // 例如：IP接管
+            if (packageReceiveEvent(port, packet))
+                return ;
 
-            if ((packet->isRequest() && data_list.size() >= getToken()) || (packet->isResponse() && response_list.size() >= getToken())) // 已经满了，不让发了
+            if ((packet->isRequest() && data_list.size() >= getToken()) || (packet->isResponse() && response_list.size() >= getToken())) // 已经满了，不让收了
             {
                 rt->runningOut("warning!!! " + getText() + " data queue 已经满了，无法收取更多");
                 return;
@@ -145,6 +138,8 @@ void MasterSlave::passOnPackets()
             rt->runningOut(getText() + " 由于没有可发送的端口，无法发送 " + packet->getID());
             continue;
         }
+        
+        // Master/IP/Slave/DRAM 发送数据包
         if (port->isBandwidthBufferFinished() && port->anotherCanRecive())
         {
             rt->runningOut("  " + getText() + " 中 " + packet->getID() + " 从 data_list >> dequeue");
@@ -159,19 +154,16 @@ void MasterSlave::passOnPackets()
                 packet->setFirstPickedCLock(rt->total_frame);
             }
 
-            // 如果是从IP真正下发的
+            // Master/Slave/IP/DRAM 真正发送发送数据的 Logic
             if (getClass() == "IP" && packet->isResponse()) // IP发送的request不需要返回给下一个模块token
             {
                 
             }
-            else if (getClass() == "IP")
-            {
-                // 设置 SourceID、DestinationID
-                packet->srcID = getDataValue("routing_id", 0).toInt();
-                packet->dstID = getDataValue("dst_id", 0).toInt();
-            }
             else
             {
+                packageSendEvent(packet); // 交给MasterSlave控制的数据发送事件
+                
+                // 发送出队列的信号
                 port = static_cast<ModulePort *>(packet->getComePort());
                 if (port)
                     port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
@@ -377,6 +369,22 @@ ModulePort *MasterSlave::getOutPort(DataPacket *packet)
         else
             return static_cast<ModulePort *>(ports.first());
     }
+}
+
+/**
+ * 即将从 data_list 发送 package 事件（dequeue之前）
+ * 由子类添加数据
+ */
+void MasterSlave::packageSendEvent(DataPacket *package)
+{
+}
+
+/**
+ * 接收到 package 事件（enqueue之前）
+ */
+bool MasterSlave::packageReceiveEvent(ModulePort *port, DataPacket *package)
+{
+    return false;
 }
 
 /**
