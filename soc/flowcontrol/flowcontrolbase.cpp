@@ -300,7 +300,7 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
     packet->setDrawPos(QPoint(-1, -1));
     packet->resetDelay(0);
     //读取表格数据
-    if(shape != nullptr && rt->package_tables.contains(shape->getText()))
+   if(shape != nullptr && rt->package_tables.contains(shape->getText()))
     {
         auto row = rt->package_tables[shape->getText()][++rt->current_package_rows[shape->getText()]];
         packet->data_type  = (DATA_TYPE)row[data_type_col].toInt();
@@ -313,6 +313,10 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
         packet->chain = row[chain_col].toInt();
         packet->isAck = row[isAck_col].toInt();
     }
+    else
+    {
+        rt->runningOut(shape->getText() + " 凭空创建数据以便于发送");
+   }
     all_packets.append(packet);
     emit signalTokenCreated(packet);
     connect(packet, &DataPacket::signalDeleted, this, [=] { // 比如Master收到Response后，销毁数据
