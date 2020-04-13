@@ -79,6 +79,7 @@ SOURCES += \
     soc/modules/watchmodule.cpp \
     soc/tools/convexhull.cpp \
     soc/tools/watchwidget.cpp \
+    soc/transmissions/csvtool.cpp \
     soc/transmissions/datapacket.cpp \
     soc/transmissions/datapacketview.cpp \
     soc/transmissions/xlsx_edit.cpp \
@@ -130,6 +131,7 @@ HEADERS += \
     soc/modules/watchmodule.h \
     soc/tools/convexhull.h \
     soc/tools/watchwidget.h \
+    soc/transmissions/csvtool.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \
     soc/transmissions/xlsx_edit.h \
