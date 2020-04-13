@@ -163,6 +163,7 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES += \
+    README.md \
     android/AndroidManifest.xml \
     android/AndroidManifest.xml \
     android/build.gradle \
