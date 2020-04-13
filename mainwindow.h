@@ -97,6 +97,8 @@ private slots:
 
     void on_actionEdit_Database_E_triggered();
 
+    void on_actionRead_CSV_C_triggered();
+
 private:
     void initSystem(); // 初始化系统（比如目录结构）
     void initView();   // 初始化布局

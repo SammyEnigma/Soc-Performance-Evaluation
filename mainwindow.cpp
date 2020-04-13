@@ -434,3 +434,8 @@ void MainWindow::on_actionEdit_Database_E_triggered()
 {
    Xlsx_Edit::xlsx_edit();
 }
+
+void MainWindow::on_actionRead_CSV_C_triggered()
+{
+
+}

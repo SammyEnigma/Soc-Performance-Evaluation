@@ -168,6 +168,7 @@
      <string>Data (&amp;D)</string>
     </property>
     <addaction name="actionEdit_Database_E"/>
+    <addaction name="actionRead_CSV_C"/>
     <addaction name="separator"/>
     <addaction name="actionFind"/>
     <addaction name="actionFind_Next"/>
@@ -1079,6 +1080,11 @@ border: 1px solid #6495ED</string>
   <action name="actionEdit_Database_E">
    <property name="text">
     <string>Edit Database (&amp;E)</string>
+   </property>
+  </action>
+  <action name="actionRead_CSV_C">
+   <property name="text">
+    <string>Read CSV(&amp;C)</string>
    </property>
   </action>
  </widget>
