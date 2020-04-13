@@ -437,5 +437,16 @@ void MainWindow::on_actionEdit_Database_E_triggered()
 
 void MainWindow::on_actionRead_CSV_C_triggered()
 {
-
+    QString filePath = QFileDialog::getExistingDirectory(this, "Open Directory", QString("debug/data"));
+    if (filePath.isEmpty())
+        return ;
+    QDir dir(filePath);
+    foreach (auto file, dir.entryInfoList())
+    {
+        if(file.isFile())
+        {
+            rt->current_package_rows.insert(file.baseName(), 0);
+            rt->package_tables.insert(file.baseName(), CSVTool::getCSV(FileUtil::readTextFile(file.absoluteFilePath())));
+        }
+    }
 }

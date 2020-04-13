@@ -6,7 +6,7 @@
 class CSVTool
 {
 public:
-    static QList<QStringList> getCVS(QString full);
+    static QList<QStringList> getCSV(QString full);
 };
 
 #endif // CSVTOOL_H

@@ -59,38 +59,8 @@ public:
     QString SHAPE_PATH;
     int DEFAULT_PACKET_BYTE; // 默认一个packet的包的大小，32byte
     
-    int routing_table_size = -1;
-    int** routing_table = nullptr;
-    
-    /**
-     * 重新更改ROutingTable的大小
-     */
-    void resizeRoutingTable(int x)
-    {
-        if (routing_table_size) // 如果之前已经有了，先释放掉
-        {
-            delete[] routing_table;
-            routing_table = nullptr;
-        }
-        
-        // 创建固定大小的table
-        routing_table_size = x;
-        routing_table = new int*[routing_table_size];
-        for (int i = 0; i < routing_table_size; i++)
-            routing_table[i] = new int[routing_table_size];
-        memset(routing_table, 0, sizeof(routing_table));
-    }
-    
-    /**
-     * 获取switch出去的路径
-     * 如果是空的话，就返回-1
-     */
-    int getRouting(int src, int des)
-    {
-        if (routing_table_size < 0 || src >= routing_table_size || des >= routing_table_size)
-            return -1;
-        return routing_table[src][des];
-    }
+    QHash<QString, QList<QStringList>> package_tables;
+    QHash<QString, int> current_package_rows;
 
     ShapeBase *current_choosed_shape;
     bool auto_stick_ports;

@@ -291,7 +291,7 @@ int FlowControlBase::lcm(QList<int> numbers)
 /**
  * 创建一个顺序编号的token的工厂方法
  */
-DataPacket *FlowControlBase::createToken(QString tag)
+DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
 {
     static int token_index = 0;
     QString token_id = "token_" + QString::number(++token_index);
@@ -299,6 +299,20 @@ DataPacket *FlowControlBase::createToken(QString tag)
     packet->setID(token_id);
     packet->setDrawPos(QPoint(-1, -1));
     packet->resetDelay(0);
+    //读取表格数据
+    if(shape != nullptr && rt->package_tables.contains(shape->getText()))
+    {
+        auto row = rt->package_tables[shape->getText()][++rt->current_package_rows[shape->getText()]];
+        packet->data_type  = (DATA_TYPE)row[data_type_col].toInt();
+        packet->data = row[data_col].toInt();
+        packet->srcID = row[srcID_col].toInt();
+        packet->dstID = row[dstID_col].toInt();
+        packet->pri = (PriorityLevel)row[pri_col].toInt();
+        packet->vc = row[vc_col].toInt();
+        packet->order_road = row[order_road_col].toInt();
+        packet->chain = row[chain_col].toInt();
+        packet->isAck = row[isAck_col].toInt();
+    }
     all_packets.append(packet);
     emit signalTokenCreated(packet);
     connect(packet, &DataPacket::signalDeleted, this, [=] { // 比如Master收到Response后，销毁数据

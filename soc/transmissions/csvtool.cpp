@@ -1,6 +1,6 @@
 #include "csvtool.h"
 
-QList<QStringList> CSVTool::getCVS(QString full)
+QList<QStringList> CSVTool::getCSV(QString full)
 {
     QList<QStringList> lists;
     foreach (QString line, full.split("\n"))

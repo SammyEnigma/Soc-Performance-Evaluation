@@ -20,6 +20,7 @@
 #include "flowcontrol_master2_switch_slave2.h"
 #include "flowcontrolautomatic.h"
 #include "xlsx_edit.h"
+#include "csvtool.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

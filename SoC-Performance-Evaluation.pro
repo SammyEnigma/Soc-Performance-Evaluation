@@ -82,6 +82,7 @@ SOURCES += \
     soc/transmissions/csvtool.cpp \
     soc/transmissions/datapacket.cpp \
     soc/transmissions/datapacketview.cpp \
+    soc/transmissions/sheetdata.cpp \
     soc/transmissions/xlsx_edit.cpp \
     soc/transmissions/xlsxsheetmodel.cpp
 
@@ -134,6 +135,7 @@ HEADERS += \
     soc/transmissions/csvtool.h \
     soc/transmissions/datapacket.h \
     soc/transmissions/datapacketview.h \
+    soc/transmissions/sheetdata.h \
     soc/transmissions/xlsx_edit.h \
     soc/transmissions/xlsxsheetmodel.h \
     soc/transmissions/xlsxsheetmodel_p.h \

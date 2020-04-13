@@ -41,6 +41,18 @@ public:
         int curr_delay;  // 当前延迟
         bool after;      // 是否等其他代码运行完后再运行
     };
+    enum COL
+    {
+        data_type_col,
+        data_col,
+        srcID_col,
+        dstID_col,
+        pri_col,
+        vc_col,
+        order_road_col,
+        chain_col,
+        isAck_col,
+    };
 
 public slots:
     void startRun();       // 开始运行
@@ -64,7 +76,7 @@ protected:
     virtual void uninitOneClock();
     virtual void refreshUI();
 
-    DataPacket *createToken(QString tag = "");
+    DataPacket *createToken(QString tag = "", ShapeBase *shape = nullptr);
     void deleteToken(DataPacket *packet);
     CableBase *getModuleCable(ShapeBase *shape1, ShapeBase *shape2, bool single = false);
 
