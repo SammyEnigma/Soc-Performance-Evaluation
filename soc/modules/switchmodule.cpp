@@ -168,7 +168,7 @@ void SwitchModule::passOnPackets()
         }
         else
         {
-            rt->runningOut(getText() + " packet:"+packet->getID()+" 没有找到对应的 to port");
+            rt->runningOut(getText() + " packet:"+packet->toString()+" 没有找到对应的 to port：" + QString::number(packet->dstID));
         }
     }
 
@@ -221,7 +221,7 @@ void SwitchModule::passOnPackets()
         }
         else
         {
-            rt->runningOut(getText() + " packet:"+packet->getID()+" 没有找到对应的 to port");
+            rt->runningOut(getText() + " packet:"+packet->toString()+" 没有找到对应的 to port：" + QString::number(packet->dstID));
         }
     }
 
