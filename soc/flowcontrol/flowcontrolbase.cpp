@@ -164,6 +164,12 @@ void FlowControlBase::initData()
      * 反之，bandwidth = 1/8，那么 8 clock 发 1 个，则依旧 standar_frame = 1
      */
 
+    // 初始化全局输入数据
+    for (auto it = rt->current_package_rows.begin(); it != rt->current_package_rows.end(); it++)
+    {
+        *it = 0;
+    }
+
     // 初始化所有控件的数据
     foreach (ShapeBase *shape, graphic->shape_lists)
     {

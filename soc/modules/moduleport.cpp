@@ -340,7 +340,6 @@ int ModulePort::getReturnDelay()
 void ModulePort::setBandwidthMultiple(int x)
 {
     bandwidth_multiple = x;
-    qDebug() << "bandwidth_multiple" << x;
 }
 
 void ModulePort::initBandwidthBufer()

@@ -60,13 +60,13 @@ void MasterModule::packageSendEvent(DataPacket *packet)
         // 设置 package 的 srcID 和 dstID
         setSrcIDAndDstID(packet);
         
-        // TODO: 编码 package 的 tag 至自己维护的一个 tag_map 队列中
-        // encodePackageTag(packet);
+        // 编码 package 的 tag 至自己维护的一个 tag_map 队列中
+        encodePackageTag(packet);
     }
     else if (packet->isResponse())
     {
-        // TODO: 从 tag_map 对 package 的 tag 进行解码
-        // decodePackageTag(packet);
+        // 从 tag_map 对 package 的 tag 进行解码
+        decodePackageTag(packet);
     }
 }
 
@@ -89,8 +89,9 @@ void MasterModule::setSrcIDAndDstID(DataPacket *packet)
  */
 void MasterModule::encodePackageTag(DataPacket *package)
 {
-    QString id = QString::number(sended_unitID_pointer++);
-    tags_map.insert(id, package->tag);
+    TagType id = QString::number(sended_unitID_pointer++);
+    rt->runningOut(getText() + " Master进行编码：" + package->tag + " => " + id);
+    tags_map.insert(id, package->tag); // 反向映射：新 => 旧，保证键唯一，也便于恢复
     package->tag = id;
 }
 
@@ -100,6 +101,7 @@ void MasterModule::encodePackageTag(DataPacket *package)
  */
 void MasterModule::decodePackageTag(DataPacket *package)
 {
+    rt->runningOut(getText() + " Master进行解码：" + tags_map.value(package->tag) + " <= " + package->tag);
     package->tag = tags_map.value(package->tag);
 }
 

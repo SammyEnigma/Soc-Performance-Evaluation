@@ -46,14 +46,13 @@ void IPModule::packageSendEvent(DataPacket *packet)
         TagType tag = "0";
         if (tags_queue.isEmpty())
         {
-            tag = "0";
             rt->runningOut("warning!!! " + getText() + " 没有可用的 tag，将使用默认TAG（0）");
         }
         else
         {
             tag = tags_queue.dequeue();
+            rt->runningOut(getText() + " 发送时编号Tag：" + tag + ", 剩余数量：" + QString::number(tags_queue.size()));
         }
-        
         packet->tag = tag;
     }
 }
@@ -67,6 +66,7 @@ bool IPModule::packageReceiveEvent(ModulePort* port, DataPacket*packet)
         if (packet->tag != "0")
         {
             tags_queue.enqueue(packet->tag);
+            rt->runningOut(getText() + " 收回编号tag:" + packet->tag + ", 剩余数量：" + QString::number(tags_queue.size()));
         }
         
         // 计算数据包发送
