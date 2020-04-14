@@ -109,8 +109,6 @@ void FlowControlAutomatic::passOneClock()
                 MasterSlave *IP = static_cast<MasterSlave *>(shape);
                 while (IP->data_list.size() < 5 && (!debug_one_packet || create_count++ < 1))
                 {
-
-                    rt->runningOut(IP->getText() + " 凭空创建数据以便于发送");
                     IP->data_list.append(createToken(IP->getText(), IP));
                 }
             }
