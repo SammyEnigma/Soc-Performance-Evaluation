@@ -35,6 +35,7 @@ MasterModule *MasterModule::newInstanceBySelf(QWidget *parent)
 void MasterModule::initData()
 {
     MasterSlave::initData();
+    sended_unitID_pointer = 0;
 }
 
 void MasterModule::setDefaultDataList()
@@ -80,6 +81,26 @@ void MasterModule::setSrcIDAndDstID(DataPacket *packet)
     packet->srcID = getDataValue("routing_id", 0).toInt();
     if (packet->dstID == 0)
         packet->dstID = getDataValue("dst_id", 0).toInt();
+}
+
+/**
+ * 编码package的tag
+ * 发送的循环id => 该Master唯一code
+ */
+void MasterModule::encodePackageTag(DataPacket *package)
+{
+    QString id = QString::number(sended_unitID_pointer++);
+    tags_map.insert(id, package->tag);
+    package->tag = id;
+}
+
+/**
+ * 解码package的tag
+ * 该Master唯一code => 发送的循环id
+ */
+void MasterModule::decodePackageTag(DataPacket *package)
+{
+    package->tag = tags_map.value(package->tag);
 }
 
 void MasterModule::updatePacketPosVertical()
