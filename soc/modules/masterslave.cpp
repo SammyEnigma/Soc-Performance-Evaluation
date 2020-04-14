@@ -155,19 +155,13 @@ void MasterSlave::passOnPackets()
             }
 
             // Master/Slave/IP/DRAM 真正发送发送数据的 Logic
-            if (getClass() == "IP" && packet->isResponse())
-            {
-                // IP发送的response直接丢掉，不理会
-            }
-            else
-            {
-                packageSendEvent(packet); // 交给Master/Slave控制的数据发送事件
-                
-                // 发送出队列的信号
-                port = static_cast<ModulePort *>(packet->getComePort());
-                if (port)
-                    port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
-            }
+            packageSendEvent(packet); // 交给Master/Slave控制的数据发送事件
+
+            // 发送出队列的信号
+            port = static_cast<ModulePort *>(packet->getComePort());
+            if (port)
+                port->sendDequeueTokenToComeModule(new DataPacket(this->parentWidget())); // 队列里面的数据出来了，发送token让来的那个token + 1
+
             rt->need_passOn_this_clock = true;
         }
     }
