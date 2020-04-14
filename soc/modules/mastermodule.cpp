@@ -78,7 +78,8 @@ void MasterModule::setSrcIDAndDstID(DataPacket *packet)
 {
     // 设置 SourceID、DestinationID
     packet->srcID = getDataValue("routing_id", 0).toInt();
-    packet->dstID = getDataValue("dst_id", 0).toInt();
+    if (packet->dstID == 0)
+        packet->dstID = getDataValue("dst_id", 0).toInt();
 }
 
 void MasterModule::updatePacketPosVertical()
