@@ -60,6 +60,7 @@ public:
     int DEFAULT_PACKET_BYTE; // 默认一个packet的包的大小，32byte
     
     QHash<QString, QList<QStringList>> package_tables;
+    //可选方案：改为QHash<QString, QHash<QString, QStringList>> package_tables; 会变得更慢，但是数据顺序可以乱序。出于性能考虑，不使用
     QHash<QString, int> current_package_rows;
 
     ShapeBase *current_choosed_shape;

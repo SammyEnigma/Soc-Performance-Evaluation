@@ -306,12 +306,15 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
     packet->setDrawPos(QPoint(-1, -1));
     packet->resetDelay(0);
     //读取表格数据
-   if(shape != nullptr && rt->package_tables.contains(shape->getText()))
+   if(shape != nullptr && rt->package_tables.contains(shape->getText()) && rt->package_tables[shape->getText()].size() > 0)
     {
+       if(rt->current_package_rows[shape->getText()] >= rt->package_tables[shape->getText()].size() - 1)
+           rt->current_package_rows[shape->getText()] = 0;
         auto row = rt->package_tables[shape->getText()][++rt->current_package_rows[shape->getText()]];
         packet->data_type  = (DATA_TYPE)row[data_type_col].toInt();
         packet->data = row[data_col].toInt();
-        packet->srcID = row[srcID_col].toInt();
+        // packet->srcID = row[srcID_col].toInt();
+        //todo:根据srcID判断dstID
         packet->dstID = row[dstID_col].toInt();
         packet->pri = (PriorityLevel)row[pri_col].toInt();
         packet->vc = row[vc_col].toInt();
