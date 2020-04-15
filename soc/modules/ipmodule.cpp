@@ -41,7 +41,7 @@ void IPModule::packageSendEvent(DataPacket *packet)
     {
         // 设置 package 的 unitID
         packet->unitID = getDataValue("unit_id").toString();
-        
+
         // 分发tag
         TagType tag = "0";
         if (tags_queue.isEmpty())
