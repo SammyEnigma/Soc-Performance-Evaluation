@@ -309,7 +309,8 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
    if(shape != nullptr && rt->package_tables.contains(shape->getText()) && rt->package_tables[shape->getText()].size() > 0)
     {
        if(rt->current_package_rows[shape->getText()] >= rt->package_tables[shape->getText()].size() - 1)
-           rt->current_package_rows[shape->getText()] = 0;
+          // rt->current_package_rows[shape->getText()] = 0;
+           return nullptr;
         auto row = rt->package_tables[shape->getText()][++rt->current_package_rows[shape->getText()]];
         packet->data_type  = (DATA_TYPE)row[data_type_col].toInt();
         packet->data = row[data_col].toInt();
@@ -324,7 +325,7 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
     }
     else
     {
-        //return nullptr;
+        return nullptr;
         rt->runningOut(shape->getText() + " 凭空创建数据以便于发送");
    }
     all_packets.append(packet);
