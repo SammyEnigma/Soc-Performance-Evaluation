@@ -34,7 +34,7 @@ public:
         running = false;
         standard_frame = 1;
         total_clock = total_frame = 0;
-        frq_period_length = 16;
+        frq_period_length = 512;
         
         need_passOn_this_clock = false;
         ignore_view_changed = false;
