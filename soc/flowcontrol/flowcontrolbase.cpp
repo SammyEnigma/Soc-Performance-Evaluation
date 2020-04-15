@@ -324,6 +324,7 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
     }
     else
     {
+        //return nullptr;
         rt->runningOut(shape->getText() + " 凭空创建数据以便于发送");
    }
     all_packets.append(packet);
