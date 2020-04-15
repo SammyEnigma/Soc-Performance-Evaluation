@@ -79,7 +79,7 @@
      <item row="6" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>picker to token delay</string>
+        <string>out queue and return token delay</string>
        </property>
       </widget>
      </item>
@@ -99,7 +99,7 @@
      <item row="8" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>receive to token delay</string>
+        <string>token+1 delay</string>
        </property>
       </widget>
      </item>

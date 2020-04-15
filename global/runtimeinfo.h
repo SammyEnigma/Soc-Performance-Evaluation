@@ -34,7 +34,7 @@ public:
         running = false;
         standard_frame = 1;
         total_clock = total_frame = 0;
-        frq_period_length = 16;
+        frq_period_length = 512;
         
         need_passOn_this_clock = false;
         ignore_view_changed = false;
@@ -52,7 +52,7 @@ public:
     void runningOut2(QString s) // 更加具体的log，只在设置了过滤词生效
     {
         if (!log_filter.isEmpty() && s.contains(QRegExp(log_filter)))
-            qDebug().noquote() << s;
+            runningOut(s);
     }
 
     QString DATA_PATH;
