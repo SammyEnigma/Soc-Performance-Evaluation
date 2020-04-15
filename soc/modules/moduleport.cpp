@@ -43,7 +43,6 @@ void ModulePort::initData()
 {
 	real_bandwidth = bandwidth;
     real_bandwidth.setNumerator(bandwidth.getNumerator() * bandwidth_multiple);
-    qDebug() << "real_bandwidth" << real_bandwidth;
 }
 
 void ModulePort::clearData()

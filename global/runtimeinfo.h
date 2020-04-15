@@ -52,7 +52,7 @@ public:
     void runningOut2(QString s) // 更加具体的log，只在设置了过滤词生效
     {
         if (!log_filter.isEmpty() && s.contains(QRegExp(log_filter)))
-            qDebug().noquote() << s;
+            runningOut(s);
     }
 
     QString DATA_PATH;
