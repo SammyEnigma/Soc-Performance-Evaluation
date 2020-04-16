@@ -243,9 +243,9 @@ void WatchModule::paintEvent(QPaintEvent *event)
             painter.drawText(left /*+ fm.horizontalAdvance(live_frq_str)*/, height * 4/5 * line++, "GByte");
 
             // Latency
-            painter.setFont(big_font);
-            painter.setPen(LatencyColor);
-            painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getLatency()));
+                painter.setFont(big_font);
+                painter.setPen(LatencyColor);
+                painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getLatency()));
 
             // Token
             painter.setPen(TokenColor);
@@ -304,11 +304,18 @@ void WatchModule::paintEvent(QPaintEvent *event)
                 painter.drawText(left, height * line, live_frq_str);
                 painter.setFont(normal_font);
                 painter.drawText(left + fm.horizontalAdvance(live_frq_str), height * line++, "/" + port->getOriginalBandwidth() * rt->DEFAULT_PACKET_BYTE + "GByte");
+                if (cls == "IP")
+                {
+                    painter.setFont(big_font);
+                    painter.setPen(LatencyColor);
+                    painter.drawText(left, height * line++, QString::number(static_cast<IPModule *>(target_module)->getAveLatency()));
+                }
                 /*
                 painter.setFont(big_font);
                 painter.setPen(TokenColor);
                 painter.drawText(left, height * line++, QString::number(target_module->getDataValue("token").toInt() - static_cast<MasterSlave *>(target_module)->getReqCount()));*/
             }
+
         }
 
         else

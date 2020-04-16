@@ -1,6 +1,6 @@
 #include "ipmodule.h"
 
-IPModule::IPModule(QWidget *parent) : MasterModule(parent), token_send_count(0)
+IPModule::IPModule(QWidget *parent) : MasterModule(parent), token_send_count(0), total_latency(0)
 {
     _class = _text = "IP";
 
@@ -25,7 +25,8 @@ IPModule *IPModule::newInstanceBySelf(QWidget *parent)
 void IPModule::initData()
 {
     MasterModule::initData();
-
+    every_latency.clear();
+    total_latency = 0;
     token_send_count = 0;
     
     // 初始化 queue
@@ -33,6 +34,13 @@ void IPModule::initData()
     int tag_count = getDataValue("tag_count", 512).toInt();
     for (int i = 0; i < tag_count; i++)
         tags_queue.enqueue(QString::number(i));
+}
+
+double IPModule::getAveLatency()
+{
+    if(every_latency.size() == 0)
+        return 0;
+    return static_cast<double> (total_latency) / every_latency.size();
 }
 
 void IPModule::packageSendEvent(DataPacket *packet)
@@ -72,6 +80,9 @@ bool IPModule::packageReceiveEvent(ModulePort* port, DataPacket*packet)
         // 计算数据包发送
         int passed = rt->total_frame - packet->getFirstPickedClock();
         passed /= rt->standard_frame;
+        int current_frame = rt->total_frame / rt->standard_frame;
+        every_latency.enqueue(QPair<int, int>(rt->total_clock, passed));//把每个数据用到的latency,和当前clock存入list数组
+        total_latency += current_frame;
         rt->runningOut("result: " + getText() + " 收到 " + packet->getID() + ", 完整的发送流程结束，latency = " + QString::number(passed) + " clock");
         packet->deleteLater();
         
@@ -125,5 +136,14 @@ void IPModule::paintEvent(QPaintEvent *event)
         painter.drawText((width()) / 2 - fm.horizontalAdvance(QString("%1Ghz").arg(getPorts().first()->getOriginalBandwidth())),
                          height * 2, QString("%1Ghz").arg(getPorts().first()->getBandwidth()));
         // painter.drawText(4, 4+fm.lineSpacing(), QString("发送：%1 %2%").arg(token_send_count).arg(prop));
+    }
+}
+
+void IPModule::uninitOneClock()
+{
+    ModuleBase::uninitOneClock();
+    while(every_latency.size() > 0 && every_latency.first().first + rt->frq_period_length < rt->total_clock)
+    {
+      every_latency.dequeue();
     }
 }

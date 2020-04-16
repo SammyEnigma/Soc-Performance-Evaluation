@@ -449,4 +449,5 @@ void MainWindow::on_actionRead_CSV_C_triggered()
             rt->package_tables.insert(file.baseName(), CSVTool::getCSV(FileUtil::readTextFile(file.absoluteFilePath())));
         }
     }
+    us->setVal("csv_path", filePath);
 }

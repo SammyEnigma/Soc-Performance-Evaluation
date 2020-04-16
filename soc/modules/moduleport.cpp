@@ -41,6 +41,8 @@ QString ModulePort::getClass()
 
 void ModulePort::initData()
 {
+    total_frq_send = 0;
+    total_frq_receive = 0;
 	real_bandwidth = bandwidth;
     real_bandwidth.setNumerator(bandwidth.getNumerator() * bandwidth_multiple);
 }
@@ -81,12 +83,14 @@ void ModulePort::initOneClock()
 void ModulePort::uninitOneClock()
 {
     frq_queue.enqueue(sended_count_in_this_frame);
-    if (frq_queue.length() > rt->frq_period_length)
-        frq_queue.dequeue();
+    total_frq_send += sended_count_in_this_frame;
+    if (frq_queue.length() > rt->frq_period_length)       
+        total_frq_send -= frq_queue.dequeue();
 
     frq2_queue.enqueue(received_count_in_this_frame);
-    if (frq2_queue.length() > rt->frq_period_length)
-        frq2_queue.dequeue();
+    total_frq_receive += received_count_in_this_frame;
+    if (frq2_queue.length() > rt->frq_period_length)       
+        total_frq_receive -= frq2_queue.dequeue();
 }
 
 void ModulePort::passOnPackets()
@@ -336,6 +340,8 @@ int ModulePort::getReturnDelay()
     return return_delay;
 }
 
+
+
 void ModulePort::setBandwidthMultiple(int x)
 {
     bandwidth_multiple = x;
@@ -420,8 +426,8 @@ double ModulePort::getLiveFrequence()
 {
     if (!frq_queue.size() && !frq2_queue.size())
         return 0.0;
-    double frq1 = std::accumulate(frq_queue.begin(), frq_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
-    double frq2 = std::accumulate(frq2_queue.begin(), frq2_queue.end(), 0) / (double)rt->frq_period_length /* frq_queue.size() */;
+    double frq1 = total_frq_send / (double)rt->frq_period_length /* frq_queue.size() */;
+    double frq2 = total_frq_receive / (double)rt->frq_period_length /* frq_queue.size() */;
     return qMax(frq1, frq2);
 }
 

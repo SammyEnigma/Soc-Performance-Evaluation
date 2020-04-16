@@ -49,6 +49,7 @@ public:
     TimeFrame getBandwidth();
     int getReturnDelay();
 
+
     void setBandwidthMultiple(int x = 1);
     TimeFrame getOriginalBandwidth();
     void initBandwidthBufer();
@@ -122,6 +123,8 @@ private:
     int received_count_in_this_frame; // 每一帧收到的数量，默认为0
     QQueue<int> frq_queue;            // 运行的频率实时计算。按frame来，如果当前frame未发送，则传入一个0，有发送则传入一个1；计算方式为：frq=sum(queue.items)/queue.length
     QQueue<int> frq2_queue;
+    int total_frq_send;
+    int total_frq_receive;
 };
 
 #endif // MODULEPORT_H

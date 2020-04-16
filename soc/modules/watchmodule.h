@@ -8,6 +8,7 @@
 #include "slavemodule.h"
 #include "switchmodule.h"
 #include "modulecable.h"
+#include "ipmodule.h"
 
 class WatchModule : public ModuleBase
 {
