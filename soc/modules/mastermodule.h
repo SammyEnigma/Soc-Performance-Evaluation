@@ -14,6 +14,12 @@ typedef QMap<TagType, TagType> TagsMap;
 
 class MasterModule : public MasterSlave
 {
+    struct LookUpRange {
+        QString min;
+        QString max;
+        MID dstID;
+    };
+
     // Q_OBJECT // 这个不能加！否则会爆 'QObject' is an ambiguous base of 'MasterModule' 的问题
 public:
     MasterModule(QWidget *parent = nullptr);
@@ -29,6 +35,8 @@ public:
     void updatePacketPos() override;
     void updatePacketPosVertical();
     void updatePacketPosHorizone();
+
+    void setLookUpTable(QList<QStringList> table);
 
 protected:
     virtual void packageSendEvent(DataPacket *packet) override;
@@ -46,7 +54,7 @@ private:
     TagsMap tags_map; // 维护 tags 映射，decode: logic中唯一tag => IP设定的tag
     int sended_unitID_pointer;
 
-
+    QList<LookUpRange> look_up_table;
 };
 
 #endif // MASTERMODULE_H
