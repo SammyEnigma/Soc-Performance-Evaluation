@@ -210,6 +210,16 @@ void MainWindow::initData()
 {
     graphic_file_path = rt->DATA_PATH + "graphic.xml";
     readFromFile(graphic_file_path);
+    QString filePath = us->getStr("recent/csv_path");
+    QDir dir(filePath);
+    foreach (auto file, dir.entryInfoList())
+    {
+        if(file.isFile())
+        {
+            rt->current_package_rows.insert(file.baseName(), 0);
+            rt->package_tables.insert(file.baseName(), CSVTool::getCSV(FileUtil::readTextFile(file.absoluteFilePath())));
+        }
+    }
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -449,5 +459,5 @@ void MainWindow::on_actionRead_CSV_C_triggered()
             rt->package_tables.insert(file.baseName(), CSVTool::getCSV(FileUtil::readTextFile(file.absoluteFilePath())));
         }
     }
-    us->setVal("csv_path", filePath);
+    us->setVal("recent/csv_path", filePath);
 }
