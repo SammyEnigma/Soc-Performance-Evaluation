@@ -102,6 +102,7 @@ public:
     int order_road;
     int chain;
     bool isAck;
+    QString address;                    //数据地址
 
 protected:
     QString token_id;

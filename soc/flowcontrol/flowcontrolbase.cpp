@@ -315,13 +315,14 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
         packet->data_type  = (DATA_TYPE)row[data_type_col].toInt();
         packet->data = row[data_col].toInt();
         // packet->srcID = row[srcID_col].toInt();
-        //todo:根据srcID判断dstID
-        packet->dstID = row[dstID_col].toInt();
+        //todo:根据srcID判断dstID;添加数据地址
+        //packet->dstID = row[dstID_col].toInt();
         packet->pri = (PriorityLevel)row[pri_col].toInt();
         packet->vc = row[vc_col].toInt();
         packet->order_road = row[order_road_col].toInt();
         packet->chain = row[chain_col].toInt();
         packet->isAck = row[isAck_col].toInt();
+        packet->address = row[address_col];
     }
     else
     {

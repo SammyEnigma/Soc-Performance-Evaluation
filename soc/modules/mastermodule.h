@@ -39,10 +39,14 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     virtual void drawShapePixmap(QPainter &painter, QRect draw_rect) override;
 
+
+
 private:
     QFont big_font, normal_font, bold_font;
     TagsMap tags_map; // 维护 tags 映射，decode: logic中唯一tag => IP设定的tag
     int sended_unitID_pointer;
+
+
 };
 
 #endif // MASTERMODULE_H

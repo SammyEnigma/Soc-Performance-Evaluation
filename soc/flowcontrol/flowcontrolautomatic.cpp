@@ -44,6 +44,10 @@ void FlowControlAutomatic::initData()
                         hub->linkPickerPorts(picker_shapes);
                 }
             }
+            if(module->getClass() == "Master")
+            {
+                rt->package_tables[module->getText()];
+            }
         }
         else // 连接线需要等待所有模块初始化结束后才初始化
             continue;

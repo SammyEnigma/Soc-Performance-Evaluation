@@ -81,6 +81,7 @@ void MasterModule::setSrcIDAndDstID(DataPacket *packet)
     packet->srcID = getDataValue("routing_id", 0).toInt();
     if (packet->dstID == 0)
         packet->dstID = getDataValue("dst_id", 0).toInt();
+
 }
 
 /**
@@ -481,3 +482,5 @@ void MasterModule::drawShapePixmap(QPainter &painter, QRect draw_rect)
         painter.drawPath(path);
     }
 }
+
+

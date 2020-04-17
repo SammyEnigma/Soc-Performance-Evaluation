@@ -129,6 +129,7 @@ void GraphicArea::slotOpenRouting(SwitchModule *swch)
     rtd->exec();
 }
 
+
 /**
  * 选中某一个形状
  * @param shape 要选中的形状

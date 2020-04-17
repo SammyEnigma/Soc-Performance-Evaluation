@@ -46,12 +46,13 @@ public:
         data_type_col,
         data_col,
         //srcID_col,
-        dstID_col,
+        //dstID_col,
         pri_col,
         vc_col,
         order_road_col,
         chain_col,
         isAck_col,
+        address_col
     };
 
 public slots:
