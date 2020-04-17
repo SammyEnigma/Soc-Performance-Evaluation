@@ -79,8 +79,8 @@ void MasterModule::setSrcIDAndDstID(DataPacket *packet)
 {
     // 设置 SourceID、DestinationID
     packet->srcID = getDataValue("routing_id", 0).toInt();
-    /*if (packet->dstID == 0)
-        packet->dstID = getDataValue("dst_id", 0).toInt();*/
+    if (packet->dstID == 0)
+        packet->dstID = getDataValue("dst_id", 0).toInt();
     foreach (LookUpRange range, look_up_table)
     {
         if (packet->address >= range.min && packet->address <= range.max)
@@ -292,6 +292,8 @@ void MasterModule::updatePacketPosHorizone()
 void MasterModule::setLookUpTable(QList<QStringList> table)
 {
     look_up_table.clear();
+    if(table.size() == 0)
+        return;
     table.removeAt(0);
     foreach (QStringList row, table)
     {

@@ -43,10 +43,12 @@ void FlowControlAutomatic::initData()
                     if (picker_shapes.size())
                         hub->linkPickerPorts(picker_shapes);
                 }
+
             }
             else if(module->getClass() == "Master")
             {
-                static_cast<MasterModule*>(module)->setLookUpTable(rt->package_tables[module->getText()]);
+                if(rt->package_tables.contains(module->getText()))
+                    static_cast<MasterModule*>(module)->setLookUpTable(rt->package_tables[module->getText()]);
             }
         }
         else // 连接线需要等待所有模块初始化结束后才初始化
