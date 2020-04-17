@@ -292,6 +292,7 @@ void MasterModule::updatePacketPosHorizone()
 void MasterModule::setLookUpTable(QList<QStringList> table)
 {
     look_up_table.clear();
+    table.removeAt(0);
     foreach (QStringList row, table)
     {
         look_up_table.append(LookUpRange{
