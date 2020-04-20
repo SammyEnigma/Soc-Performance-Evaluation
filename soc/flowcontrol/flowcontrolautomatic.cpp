@@ -43,10 +43,12 @@ void FlowControlAutomatic::initData()
                     if (picker_shapes.size())
                         hub->linkPickerPorts(picker_shapes);
                 }
+
             }
             else if(module->getClass() == "Master")
             {
-                static_cast<MasterModule*>(module)->setLookUpTable(rt->package_tables[module->getText()]);
+                if(rt->package_tables.contains(module->getText()))
+                    static_cast<MasterModule*>(module)->setLookUpTable(rt->package_tables[module->getText()]);
             }
         }
         else // 连接线需要等待所有模块初始化结束后才初始化
@@ -112,7 +114,8 @@ void FlowControlAutomatic::passOneClock()
             {
                 MasterSlave *IP = static_cast<MasterSlave *>(shape);
                 while (IP->data_list.size() < 5 && (!debug_one_packet || create_count++ < 1))
-                {   DataPacket *temp = createToken(IP->getText(), IP);
+                {
+                    DataPacket *temp = createToken(IP->getText(), IP);
                     if(temp == nullptr)
                             break;
                     IP->data_list.append(temp);

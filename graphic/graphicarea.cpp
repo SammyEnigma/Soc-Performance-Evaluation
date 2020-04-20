@@ -129,6 +129,12 @@ void GraphicArea::slotOpenRouting(SwitchModule *swch)
     rtd->exec();
 }
 
+void GraphicArea::slotOpenLookUp(MasterModule *ms)
+{
+    LookUpTableDialog *lutd = new LookUpTableDialog(ms);
+    lutd->exec();
+}
+
 
 /**
  * 选中某一个形状
@@ -1023,6 +1029,14 @@ void GraphicArea::connectShapeEvent(ShapeBase *shape)
         SwitchModule *swch = static_cast<SwitchModule *>(shape);
         connect(swch, &SwitchModule::signalOpenRouting, this, [=] {
             slotOpenRouting(swch);
+        });
+    }
+    else if (shape->getClass() == "Master")
+    {
+        //lookuptable
+        MasterModule *ms = static_cast<MasterModule *>(shape);
+        connect(ms, &MasterModule::signalOpenLookUp, this, [=]{
+            slotOpenLookUp(ms);
         });
     }
     else if (shape->getClass() == "WatchModule")

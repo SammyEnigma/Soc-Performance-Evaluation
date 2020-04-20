@@ -33,6 +33,7 @@
 #include "moduledatadialog.h"
 #include "modulepanel.h"
 #include "routingtabledialog.h"
+#include "lookuptabledialog.h"
 
 #define DEB qDebug()
 
@@ -128,6 +129,7 @@ public slots:
     void slotSetFrequence(ModulePanel *panel);
     void slotGetFrequence(ModulePanel *panel, double *bandwidth);
     void slotOpenRouting(SwitchModule *swch);
+    void slotOpenLookUp(MasterModule *ms);
 
 public:
     ShapeList shape_lists;               // 添加的形状对象
