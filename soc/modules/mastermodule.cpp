@@ -296,13 +296,14 @@ void MasterModule::setLookUpTable(QList<QStringList> table)
         return;
     table.removeAt(0);
     foreach (QStringList row, table)
-    {
+    {//导入的数据
         look_up_table.append(LookUpRange{
                                  row[0],
                                  row[1],
                                  row[2].toInt()
                              });
     }
+
 }
 
 void MasterModule::paintEvent(QPaintEvent *event)

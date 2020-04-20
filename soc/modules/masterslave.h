@@ -55,6 +55,11 @@ protected:
     CustomDataType *token;
     CustomDataType *process_delay;
 
+    QList<QAction *> addinMenuActions() override;
+
+signals:
+    void signalOpenLookUp();
+
 private:
     QFont big_font, normal_font, bold_font;
 };

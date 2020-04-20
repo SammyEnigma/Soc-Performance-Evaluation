@@ -345,6 +345,15 @@ void MasterSlave::updatePacketPos()
     }
 }
 
+QList<QAction *> MasterSlave::addinMenuActions()
+{
+    QAction *lookup_action = new QAction("lookup table", this);
+    connect(lookup_action, &QAction::triggered, this, [=]{
+        emit signalOpenLookUp();
+    });
+    return QList<QAction *>{lookup_action};
+}
+
 /**
  * 根据 packet 进来的端口，获取这个 packet 出去的端口
  */

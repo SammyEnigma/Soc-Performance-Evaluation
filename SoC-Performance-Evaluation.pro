@@ -37,6 +37,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     animation/numberanimation.cpp \
+    dialogs/lookuptabledialog.cpp \
     dialogs/moduledatadialog.cpp \
     dialogs/portdatadialog.cpp \
     dialogs/portpositiondialog.cpp \
@@ -89,6 +90,7 @@ SOURCES += \
 
 HEADERS += \
     animation/numberanimation.h \
+    dialogs/lookuptabledialog.h \
     dialogs/moduledatadialog.h \
     dialogs/portdatadialog.h \
     dialogs/portpositiondialog.h \
@@ -148,6 +150,7 @@ HEADERS += \
     utils/stringutil.h
 
 FORMS += \
+    dialogs/lookuptabledialog.ui \
     dialogs/moduledatadialog.ui \
     dialogs/mysqldialog.ui \
     dialogs/portdatadialog.ui \

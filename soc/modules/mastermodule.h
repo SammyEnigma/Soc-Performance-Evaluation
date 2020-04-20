@@ -26,6 +26,7 @@ public:
 
     friend class FlowControlBase;
     friend class FlowControl_Master1_Slave1;
+    friend class LookUpTableDialog;
 
     virtual MasterModule *newInstanceBySelf(QWidget *parent = nullptr) override;
     virtual void initData() override;
