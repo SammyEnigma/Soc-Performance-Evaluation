@@ -22,10 +22,10 @@ void LookUpTableDialog::loadShapeDatas(ShapeBase *shape)
 {
     //清空数据
     this->shape = shape;
-    data_list.clear();
+    //data_list.clear();
     _activated_string.clear();
     ui->tableWidget->clear();
-    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setRowCount(data_list.size());
     ui->nameLabel->setText("选中形状的属性");
     if(shape == nullptr)
     {
@@ -35,6 +35,7 @@ void LookUpTableDialog::loadShapeDatas(ShapeBase *shape)
 
     //set name
     ui->nameLabel->setText(shape->getText());
+
     for (int i = 0; i < data_list.size(); i++)
     {
         setTableRow(i,data_list.at(i));
@@ -49,7 +50,7 @@ void LookUpTableDialog::setTableRow(int row, MasterModule::LookUpRange data)
     QTableWidgetItem *item1 = new QTableWidgetItem(data.max);
     ui->tableWidget->setItem(row, CUSTOM_MAX_COL, item1);
 
-    QTableWidgetItem *item2 = new QTableWidgetItem(data.dstID);
+    QTableWidgetItem *item2 = new QTableWidgetItem(QString::number(data.dstID));
     ui->tableWidget->setItem(row, CUSTOM_DSTID_COL, item2);
 
 }
@@ -62,7 +63,7 @@ bool LookUpTableDialog::isIntersection(int row)
 {
     for (int i = 0; i < data_list.size();i++)
     {
-        if(i = row)//本身
+        if(i == row)//本身
             continue;
         else if(data_list.at(row).min > data_list.at(i).max || data_list.at(row).max < data_list.at(i).min)//新建区间不相交
         {
@@ -71,7 +72,40 @@ bool LookUpTableDialog::isIntersection(int row)
         else
             return false;
       }
-   return true;
+    return true;
+}
+
+QString LookUpTableDialog::createsuitableRange()
+{
+    QString range = "min";
+    int index = 0;
+    if(!isRangeExist(range))
+        return range;
+    while (++index && isRangeExist(range + QString::number(index)))
+        ;
+    return  range + QString::number(index);
+
+}
+
+bool LookUpTableDialog::isRangeExist(QString range)
+{
+    foreach (MasterModule::LookUpRange data, data_list) {
+        for (int i = 0; i < data_list.size(); i++) {
+            MasterModule::LookUpRange data = data_list.at(i);
+            if(data_list.at(i).min == range)
+                return true;
+        }
+    }
+    return  false;
+}
+
+void LookUpTableDialog::showAllRange()
+{//没啥用，拿来调试的
+    int row = ui->tableWidget->rowCount();
+    for(int i = 0; i < row; i++)
+    {
+        qDebug()<<data_list.at(i).dstID;
+    }
 }
 
 void LookUpTableDialog::on_insertBtn_clicked()
@@ -81,12 +115,14 @@ void LookUpTableDialog::on_insertBtn_clicked()
     int row = ui->tableWidget->rowCount();
     ui->tableWidget->setRowCount(row + 1);
 
-    MasterModule::LookUpRange data;
+    //QString range = createsuitableRange();
+    MasterModule::LookUpRange data{"0", "0", 0};
     setTableRow(row, data);
 
-    //_activated_string
+    //_activated_string = range;
     ui->tableWidget->edit(ui->tableWidget->model()->index(row, CUSTOM_MIN_COL));
     data_list.append(data);
+    //qDebug()<<data_list.size();
     _system_changing = false;
 }
 
@@ -134,6 +170,9 @@ void LookUpTableDialog::on_tableWidget_cellChanged(int row, int column)
        if(isIntersection(row))
        {
            data_list[row].min = text;
+          // qDebug()<<data_list.at(row).min;
+          // qDebug()<<static_cast<MasterModule *>(shape)->look_up_table.at(row).min;
+          // showAllRange();
        }
 
    }
@@ -146,7 +185,8 @@ void LookUpTableDialog::on_tableWidget_cellChanged(int row, int column)
    }
    else if(column == CUSTOM_DSTID_COL)//修改dstID
    {
-       data_list[row].dstID = text.toInt();
+       showAllRange();
+        data_list[row].dstID = text.toInt();
    }
    _system_changing = false;
 }

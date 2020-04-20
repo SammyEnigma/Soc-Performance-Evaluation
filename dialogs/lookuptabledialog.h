@@ -38,6 +38,9 @@ private slots:
 private:
     void setTableRow(int row, MasterModule::LookUpRange data);
     bool isIntersection(int row);
+    QString createsuitableRange();
+    bool isRangeExist(QString range);
+    void showAllRange();
 
 private:
     Ui::LookUpTableDialog *ui;
