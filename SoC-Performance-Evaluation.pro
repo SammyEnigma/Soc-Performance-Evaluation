@@ -34,6 +34,7 @@ INCLUDEPATH += \
     soc/tools \
     animation \
     utils/xlsx \
+    animation/interactive_buttons \
 
 SOURCES += \
     animation/numberanimation.cpp \
