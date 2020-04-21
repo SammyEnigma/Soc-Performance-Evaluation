@@ -422,6 +422,11 @@ void MasterModule::paintEvent(QPaintEvent *event)
                          word_y + line_height / 2 * line++,
                          QString("%1").arg(getToken()));
         path.clear();
+        //画id
+        painter.setPen(QColor(255,255,255));
+        painter.setFont(normal_font);
+        line = 0;
+        painter.drawText((width() - fm.horizontalAdvance(getDataValue("routing_id").toString()))/ 2, height() / 3, getDataValue("routing_id").toString());
         painter.drawPath(path);
         painter.restore();
     }
