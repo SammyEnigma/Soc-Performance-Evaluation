@@ -35,6 +35,7 @@ INCLUDEPATH += \
     animation \
     utils/xlsx \
     animation/interactive_buttons \
+    animation/facile_menu \
 
 SOURCES += \
     animation/numberanimation.cpp \

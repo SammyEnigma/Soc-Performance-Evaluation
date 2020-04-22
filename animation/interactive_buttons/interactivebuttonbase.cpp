@@ -28,7 +28,7 @@ InteractiveButtonBase::InteractiveButtonBase(QWidget *parent)
       unified_geometry(false), _l(0), _t(0), _w(32), _h(32),
       jitter_animation(true), elastic_coefficient(1.2), jitter_duration(300),
       water_animation(true), water_press_duration(800), water_release_duration(400), water_finish_duration(300),
-      align(Qt::AlignCenter), _state(false), leave_after_clicked(false),
+      align(Qt::AlignCenter), _state(false), leave_after_clicked(false), _block_hover(false),
       double_clicked(false), double_timer(nullptr), double_prevent(false)
 {
     setMouseTracking(true); // 鼠标没有按下时也能捕获移动事件
@@ -732,7 +732,7 @@ void InteractiveButtonBase::setFixedForeSize(bool f, int addin)
     fixed_fore_size = f;
 
     if (!f) return ;
-    if (model == PaintModel::Text)
+    if (model == PaintModel::Text || model == PaintModel::IconText || model == PaintModel::PixmapText)
     {
         QFont font = this->font();
         if (font_size > 0)
@@ -805,6 +805,18 @@ void InteractiveButtonBase::setPretendFocus(bool f)
 {
     focusing = f;
     update();
+}
+
+/**
+ * 如果按钮被做成一个组合，在显示的时候开启动画
+ * 一开始鼠标下的按钮一直在hover状态，移开也不会变
+ * 开启后临时屏蔽，记得在动画结束后关闭
+ */
+void InteractiveButtonBase::setBlockHover(bool b)
+{
+    _block_hover = b;
+    if (b && hovering)
+        leaveEvent(nullptr);
 }
 
 /**
@@ -971,10 +983,54 @@ void InteractiveButtonBase::simulateStatePress(bool s, bool a)
 }
 
 /**
+ * 模拟鼠标悬浮的效果
+ * 适用于键盘操作时，模拟鼠标hover状态
+ * 用 discardHoverPress 取消状态
+ */
+void InteractiveButtonBase::simulateHover()
+{
+    if (!hovering)
+    {
+        if (_block_hover)
+            setBlockHover(false); // 可能已经临时屏蔽掉鼠标 enter 事件，强制hover
+        enterEvent(nullptr);
+    }
+}
+
+/**
+ * 强制丢弃hover、press状态
+ * 适用于悬浮/点击后，弹出模态浮窗
+ * 浮窗关闭后调用此方法
+ * @param force 如果鼠标仍在此按钮内，是否强制取消hover/press状态
+ */
+void InteractiveButtonBase::discardHoverPress(bool force)
+{
+    if (!force && inArea(mapFromGlobal(QCursor::pos()))) // 鼠标还在这范围内
+        return ;
+
+    if (hovering)
+    {
+        leaveEvent(nullptr);
+    }
+
+    if (pressing)
+    {
+        mouseReleaseEvent(new QMouseEvent(QMouseEvent::Type::None, QPoint(size().width()/2,size().height()/2), Qt::LeftButton, Qt::NoButton, Qt::NoModifier));
+    }
+}
+
+/**
  * 鼠标移入事件，触发 hover 时间戳
  */
 void InteractiveButtonBase::enterEvent(QEvent *event)
 {
+    if (_block_hover) // 临时屏蔽hover事件
+    {
+        if (event)
+            event->accept();
+        return ;
+    }
+
     if (!anchor_timer->isActive())
     {
         anchor_timer->start();
@@ -1121,6 +1177,12 @@ void InteractiveButtonBase::mouseReleaseEvent(QMouseEvent* event)
  */
 void InteractiveButtonBase::mouseMoveEvent(QMouseEvent *event)
 {
+    if (_block_hover) // 临时屏蔽hover事件
+    {
+        if (event)
+            event->accept();
+        return ;
+    }
     if (hovering == false) // 失去焦点又回来了
     {
         enterEvent(nullptr);
@@ -1374,7 +1436,7 @@ void InteractiveButtonBase::paintEvent(QPaintEvent* event)
         }
         else if (model == Icon) // 绘制图标
         {
-            icon.paint(&painter, rect, align);
+            icon.paint(&painter, rect, align, getIconMode());
         }
         else if (model == PixmapMask)
         {
@@ -1387,14 +1449,13 @@ void InteractiveButtonBase::paintEvent(QPaintEvent* event)
             int& sz = icon_text_size;
             QRect icon_rect(rect.left(), rect.top() + rect.height()/2 - sz / 2, sz, sz);
             icon_rect.moveTo(icon_rect.left() - quick_sqrt(offset_pos.x()), icon_rect.top() - quick_sqrt(offset_pos.y()));
-            if (model == IconText)
-                icon.paint(&painter, icon_rect, align);
-            else if (model == PixmapText)
-                painter.drawPixmap(icon_rect, pixmap);
+            drawIconBeforeText(painter, icon_rect);
             rect.setLeft(rect.left() + sz + icon_text_padding);
 
             // 绘制文字
+            // 扩展文字范围，确保文字可见
             painter.setPen(isEnabled()?text_color:getOpacityColor(text_color));
+            rect.setWidth(rect.width() + sz + icon_text_padding);
             if (font_size > 0)
             {
                 QFont font = painter.font();
@@ -1410,6 +1471,18 @@ void InteractiveButtonBase::paintEvent(QPaintEvent* event)
 //    painter.drawEllipse(QRect(effect_pos.x()-2, effect_pos.y()-2, 4, 4)); // 影响位置锚点
 
     //    return QPushButton::paintEvent(event); // 不绘制父类背景了
+}
+
+/**
+ * IconText/PixmapText模式下，绘制图标
+ * 可扩展到绘制图标背景色（模仿menu选中、禁用情况）等
+ */
+void InteractiveButtonBase::drawIconBeforeText(QPainter& painter, QRect icon_rect)
+{
+    if (model == IconText)
+        icon.paint(&painter, icon_rect, align, getIconMode());
+    else if (model == PixmapText)
+        painter.drawPixmap(icon_rect, pixmap);
 }
 
 /**
@@ -1725,6 +1798,11 @@ double InteractiveButtonBase::getNolinearProg(int p, InteractiveButtonBase::Noli
     }
 }
 
+QIcon::Mode InteractiveButtonBase::getIconMode()
+{
+    return isEnabled() ? (getState() ? QIcon::Selected : (hovering||pressing ? QIcon::Active : QIcon::Normal)) : QIcon::Disabled;
+}
+
 /**
  * 锚点变成到鼠标位置的定时时钟
  * 同步计算所有和时间或者帧数有关的动画和属性
@@ -1788,10 +1866,10 @@ void InteractiveButtonBase::anchorTimeOut()
             if (press_progress <= 0)
             {
                 press_progress = 0;
-                if (mouse_press_event)
+                if (mouse_release_event)
                 {
-                    emit signalMousePressLater(mouse_press_event);
-                    mouse_press_event = nullptr;
+                    emit signalMouseReleaseLater(mouse_release_event);
+                    mouse_release_event = nullptr;
                 }
             }
         }
@@ -1804,11 +1882,7 @@ void InteractiveButtonBase::anchorTimeOut()
                 if (hover_progress >= 100)
                 {
                     hover_progress = 100;
-                    if (mouse_release_event)
-                    {
-                        emit signalMouseReleaseLater(mouse_release_event);
-                        mouse_release_event = nullptr;
-                    }
+                    emit signalMouseEnterLater();
                 }
             }
         }
