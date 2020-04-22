@@ -1192,6 +1192,13 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
         slotWatch();
     })->hide(hasWatch)->disable(!count);
 
+    if (count)
+    {
+        auto actions = selected_shapes.first()->addinMenuActions();
+        foreach (auto action, actions)
+            menu->addAction(action);
+    }
+
     menu->execute(QCursor::pos());
 }
 
