@@ -34,6 +34,7 @@
 #include "modulepanel.h"
 #include "routingtabledialog.h"
 #include "lookuptabledialog.h"
+#include "facilemenu.h"
 
 #define DEB qDebug()
 

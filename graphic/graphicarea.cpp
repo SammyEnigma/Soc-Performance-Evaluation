@@ -1145,123 +1145,61 @@ void GraphicArea::removeModuleWatch(ShapeBase *module)
  */
 void GraphicArea::slotMenuShowed(const QPoint &p)
 {
-    _press_pos = p; // 用来记录粘贴的位置
+    FacileMenu* menu = new FacileMenu(this);
 
-    log("自定义菜单");
-    QMenu *menu = new QMenu("menu", this);
-    QAction *property_action = new QAction("Appearance", this);
-    QAction *data_action = new QAction("Data List", this);
-    QAction *add_port_action = new QAction("Add Port", this);
-    QAction *select_all_action = new QAction("Select All", this);
-    QAction *copy_action = new QAction("Copy", this);
-    QAction *paste_action = new QAction("Paste", this);
-    QAction *delete_action = new QAction("Delete", this);
-    QAction *watch_action = new QAction("Watch", this);
-    //   QAction *watch_clock_action = new QAction("Watch Clock", this);
-    //  QAction *show_data_action = new QAction("Show Data", this);
-
-    menu->addAction(property_action);
-    menu->addAction(data_action);
-    menu->addSeparator();
-    menu->addAction(add_port_action);
-    menu->addSeparator();
-    menu->addAction(select_all_action);
-    menu->addAction(copy_action);
-    menu->addAction(paste_action);
-    menu->addAction(delete_action);
-    // menu->addAction(show_data_action);
-    menu->addAction(watch_action);
-    // menu->addAction(watch_clock_action);
+    int count = selected_shapes.size();
+    bool hasWatch = false;
+    QString multi = count > 1 ? " [multi]" : "";
     foreach (auto shape, selected_shapes)
     {
         if (shape->getClass() == "WatchModule")
         {
-            property_action->setVisible(false);
-            data_action->setVisible(false);
-            add_port_action->setVisible(false);
-            select_all_action->setVisible(false);
-            copy_action->setVisible(false);
-            paste_action->setVisible(false);
-            watch_action->setVisible(false);
+            hasWatch = true;
+            break;
         }
     }
-    // 没有选中形状，禁用删除等菜单
-    if (selected_shapes.size() == 0)
+
+    menu->addAction("Appearance"+multi, [=]{
+        slotShapeProperty();
+    })->hide(hasWatch)->disable(!count);
+
+    menu->addAction("Data List"+multi, [=]{
+        slotShapeData();
+    })->hide(hasWatch)->disable(!count);
+
+    menu->split()->addAction("Add Port"+multi, [=]{
+        actionInsertPort();
+    })->hide(hasWatch)->disable(!count);
+
+    menu->split()->addAction("Select All", [=]{
+        actionSelectAll();
+    })->hide(hasWatch)->disable(!count);
+
+    menu->addAction("Copy"+multi, [=]{
+        actionCopy();
+    })->hide(hasWatch)->disable(!count);
+
+    menu->addAction("Paste", [=]{
+        actionPaste();
+    })->disable(!clip_board.count())
+      ->text(clip_board.count(), "paste (" + QString::number(clip_board.count()) + ")");
+
+    menu->addAction("Delete"+multi, [=]{
+        actionDelete();
+    })->hide(hasWatch)->disable(!count)->disable(rt->running);
+
+    menu->addAction("Watch"+multi, [=]{
+        slotWatch();
+    })->hide(hasWatch)->disable(!count);
+
+    if (count)
     {
-        property_action->setEnabled(false);
-        copy_action->setEnabled(false);
-        data_action->setEnabled(false);
-        delete_action->setEnabled(false);
-        add_port_action->setEnabled(false);
-        watch_action->setEnabled(false);
-        //show_data_action->setEnabled(false);
-        // watch_clock_action->setEnabled(false);
-    }
-    // 如果选中了多个
-    else if (selected_shapes.size() > 1)
-    {
-        property_action->setText(property_action->text() + " [multi]");
-        data_action->setText(data_action->text() + " [multi]");
-        add_port_action->setText(add_port_action->text() + " [multi]");
-        copy_action->setText(copy_action->text() + " [multi]");
-        delete_action->setText(delete_action->text() + " [multi]");
-        watch_action->setText(watch_action->text() + "[multi]");
-        // watch_clock_action->setText(watch_clock_action->text() + "[multi]");
-        //show_data_action->setText(show_data_action->text() + " [multi]");
-    }
-    else // 选中了一个
-    {
-        ShapeBase *shape = selected_shapes.first();
-        // 判断对应的操作
-        QList<QAction *> actions = shape->addinMenuActions();
-        if (actions.size())
-        {
-            menu->addSeparator();
-            foreach (QAction *action, actions)
-            {
-                menu->addAction(action);
-            }
-        }
-    }
-    if (selected_shapes.count() == shape_lists.count())
-    {
-        select_all_action->setEnabled(false);
-    }
-    // 剪贴板
-    if (clip_board.count() == 0)
-    {
-        paste_action->setEnabled(false);
-    }
-    else
-    {
-        paste_action->setText(paste_action->text() + " (" + QString::number(clip_board.count()) + ")");
+        auto actions = selected_shapes.first()->addinMenuActions();
+        foreach (auto action, actions)
+            menu->addAction(action);
     }
 
-    // 如果正在运行
-    if (rt->running)
-    {
-        delete_action->setEnabled(false);
-    }
-
-    // 形状属性
-    connect(property_action, &QAction::triggered, this, &GraphicArea::slotShapeProperty);
-    connect(data_action, &QAction::triggered, this, &GraphicArea::slotShapeData);
-    connect(watch_action, &QAction::triggered, this, &GraphicArea::slotWatch);
-    //connect(show_data_action, &QAction::triggered, this, &GraphicArea::slotShowData);
-    //connect(watch_clock_action, &QAction::triggered, this, &GraphicArea::slotWatchClock);
-
-    connect(select_all_action, &QAction::triggered, this, &GraphicArea::actionSelectAll);
-    connect(copy_action, &QAction::triggered, this, &GraphicArea::actionCopy);
-    connect(paste_action, &QAction::triggered, this, &GraphicArea::actionPaste);
-    connect(delete_action, &QAction::triggered, this, &GraphicArea::actionDelete);
-
-    // 添加端口
-    connect(add_port_action, &QAction::triggered, this, &GraphicArea::actionInsertPort);
-
-    // 显示菜单
-    menu->exec(QCursor::pos());
-    delete menu;
-    _press_pos = QPoint(-1, -1);
+    menu->execute(QCursor::pos());
 }
 
 void GraphicArea::slotShapeProperty()

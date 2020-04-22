@@ -35,8 +35,23 @@ INCLUDEPATH += \
     animation \
     utils/xlsx \
     animation/interactive_buttons \
+    animation/facile_menu \
 
 SOURCES += \
+    animation/facile_menu/facilemenu.cpp \
+    animation/facile_menu/facilemenuitem.cpp \
+    animation/interactive_buttons/interactivebuttonbase.cpp \
+    animation/interactive_buttons/pointmenubutton.cpp \
+    animation/interactive_buttons/threedimenbutton.cpp \
+    animation/interactive_buttons/watercirclebutton.cpp \
+    animation/interactive_buttons/waterfloatbutton.cpp \
+    animation/interactive_buttons/waterzoombutton.cpp \
+    animation/interactive_buttons/winclosebutton.cpp \
+    animation/interactive_buttons/winmaxbutton.cpp \
+    animation/interactive_buttons/winmenubutton.cpp \
+    animation/interactive_buttons/winminbutton.cpp \
+    animation/interactive_buttons/winrestorebutton.cpp \
+    animation/interactive_buttons/winsidebarbutton.cpp \
     animation/numberanimation.cpp \
     dialogs/lookuptabledialog.cpp \
     dialogs/moduledatadialog.cpp \
@@ -90,6 +105,20 @@ SOURCES += \
 
 
 HEADERS += \
+    animation/facile_menu/facilemenu.h \
+    animation/facile_menu/facilemenuitem.h \
+    animation/interactive_buttons/interactivebuttonbase.h \
+    animation/interactive_buttons/pointmenubutton.h \
+    animation/interactive_buttons/threedimenbutton.h \
+    animation/interactive_buttons/watercirclebutton.h \
+    animation/interactive_buttons/waterfloatbutton.h \
+    animation/interactive_buttons/waterzoombutton.h \
+    animation/interactive_buttons/winclosebutton.h \
+    animation/interactive_buttons/winmaxbutton.h \
+    animation/interactive_buttons/winmenubutton.h \
+    animation/interactive_buttons/winminbutton.h \
+    animation/interactive_buttons/winrestorebutton.h \
+    animation/interactive_buttons/winsidebarbutton.h \
     animation/numberanimation.h \
     dialogs/lookuptabledialog.h \
     dialogs/moduledatadialog.h \
