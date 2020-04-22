@@ -461,3 +461,29 @@ void MainWindow::on_actionRead_CSV_C_triggered()
     }
     us->setVal("recent/csv_path", filePath);
 }
+
+
+
+void MainWindow::on_actionTrace_T_triggered()
+{
+    ui->actionTrace_T->setChecked(true);
+    ui->actionFix_F->setChecked(false);
+    ui->actionRandom_R->setChecked(false);
+    us->data_mode = Trace;
+}
+
+void MainWindow::on_actionFix_F_triggered()
+{
+    ui->actionTrace_T->setChecked(false);
+    ui->actionFix_F->setChecked(true);
+    ui->actionRandom_R->setChecked(false);
+    us->data_mode = Fix;
+}
+
+void MainWindow::on_actionRandom_R_triggered()
+{
+    ui->actionTrace_T->setChecked(false);
+    ui->actionFix_F->setChecked(false);
+    ui->actionRandom_R->setChecked(true);
+    us->data_mode = Random;
+}

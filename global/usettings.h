@@ -10,6 +10,12 @@
 
 #include "settings.h"
 
+enum DataPattern{
+    Trace,
+    Fix,
+    Random
+};
+
 class USettings : public Settings
 {
     Q_OBJECT
@@ -22,6 +28,7 @@ public:
     bool show_port_info = getBool("us/show_port_info", true);
     bool port_auto_watch = getBool("us/port_auto_watch", false);
     bool show_animation = getBool("us/show_animation", false);
+    DataPattern data_mode = static_cast<DataPattern>(getInt("us/data_mode", 0));
     
     
 };

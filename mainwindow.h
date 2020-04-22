@@ -100,6 +100,14 @@ private slots:
 
     void on_actionRead_CSV_C_triggered();
 
+
+
+    void on_actionTrace_T_triggered();
+
+    void on_actionFix_F_triggered();
+
+    void on_actionRandom_R_triggered();
+
 private:
     void initSystem(); // 初始化系统（比如目录结构）
     void initView();   // 初始化布局

@@ -525,7 +525,7 @@ void MasterSlave::paintEvent(QPaintEvent *event)
                          QString("%1").arg(getToken()));
         path.clear();
         //画id
-        painter.setPen(QColor(255,255,255));
+        painter.setPen(QColor(13,51,255));
         painter.setFont(normal_font);
         line = 0;
         painter.drawText((width() - fm.horizontalAdvance(getDataValue("routing_id").toString()))/ 2, height() / 3, getDataValue("routing_id").toString());
