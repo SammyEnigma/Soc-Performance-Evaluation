@@ -32,12 +32,16 @@ public:
     virtual void initData() override;
     virtual void setDefaultDataList() override;
 
+    virtual void fromStringAppend(QString s) override;
+    virtual QString toStringAppend() override;
+
     void passOnPackets() override;
     void updatePacketPos() override;
     void updatePacketPosVertical();
     void updatePacketPosHorizone();
 
     void setLookUpTable(QList<QStringList> table);
+    QList<LookUpRange> getLookUpTable();
 
 protected:
     virtual void packageSendEvent(DataPacket *packet) override;

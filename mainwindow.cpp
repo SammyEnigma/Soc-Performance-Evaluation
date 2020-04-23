@@ -220,6 +220,19 @@ void MainWindow::initData()
             rt->package_tables.insert(file.baseName(), CSVTool::getCSV(FileUtil::readTextFile(file.absoluteFilePath())));
         }
     }
+    us->data_mode = static_cast<DataPattern>(us->getInt("us/data_mode"));
+    if(us->data_mode == Trace)
+    {
+        ui->actionTrace_T->setChecked(true);
+    }
+    else if(us->data_mode == Fix)
+    {
+        ui->actionFix_F->setChecked(true);
+    }
+    else if(us->data_mode == Random)
+    {
+        ui->actionRandom_R->setChecked(true);
+    }
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -470,6 +483,7 @@ void MainWindow::on_actionTrace_T_triggered()
     ui->actionFix_F->setChecked(false);
     ui->actionRandom_R->setChecked(false);
     us->data_mode = Trace;
+    us->setVal("us/data_mode", us->data_mode);
 }
 
 void MainWindow::on_actionFix_F_triggered()
@@ -478,6 +492,7 @@ void MainWindow::on_actionFix_F_triggered()
     ui->actionFix_F->setChecked(true);
     ui->actionRandom_R->setChecked(false);
     us->data_mode = Fix;
+    us->setVal("us/data_mode", us->data_mode);
 }
 
 void MainWindow::on_actionRandom_R_triggered()
@@ -486,4 +501,5 @@ void MainWindow::on_actionRandom_R_triggered()
     ui->actionFix_F->setChecked(false);
     ui->actionRandom_R->setChecked(true);
     us->data_mode = Random;
+    us->setVal("us/data_mode", us->data_mode);
 }

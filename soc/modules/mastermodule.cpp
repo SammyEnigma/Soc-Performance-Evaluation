@@ -43,6 +43,36 @@ void MasterModule::setDefaultDataList()
     custom_data_list.append(new CustomDataType("token", 16, 16));
 }
 
+void MasterModule::fromStringAppend(QString s)
+{
+    QList<LookUpRange>& table = look_up_table;
+    table.clear();
+    QString text = StringUtil::getXml(s, "LOOK_UP_TABLE");
+    QStringList lines = text.split("\n", QString::SkipEmptyParts);
+    foreach (auto line, lines) {
+        QStringList cell = line.split(QRegExp("\\s"));
+        if (cell.size() < 3)
+            continue;
+        //table.append(cell.at(0).toInt(), cell.at(1).toInt(), cell.at(2).toInt());
+        table.append(LookUpRange {
+                         cell.at(0),
+                         cell.at(1),
+                         cell.at(2).toInt()
+                     });
+    }
+}
+
+QString MasterModule::toStringAppend()
+{
+    QString full = "";
+    QString indent = "\n\t";
+    QList<LookUpRange> table = look_up_table;
+    QString text = "";
+    for (auto i = table.begin(); i != table.end(); i++)
+        text += QString("%1\t%2\t%3\n").arg(i->min).arg(i->max).arg(i->dstID);
+    return indent + StringUtil::makeXml(text, "LOOK_UP_TABLE");
+}
+
 void MasterModule::passOnPackets()
 {
     MasterSlave::passOnPackets();
@@ -306,6 +336,10 @@ void MasterModule::setLookUpTable(QList<QStringList> table)
 
 }
 
+QList<MasterModule::LookUpRange> MasterModule::getLookUpTable()
+{
+    return look_up_table;
+}
 void MasterModule::paintEvent(QPaintEvent *event)
 {
     ModuleBase::paintEvent(event);

@@ -1103,6 +1103,9 @@ border: 1px solid #6495ED</string>
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Trace(&amp;T)</string>
    </property>
