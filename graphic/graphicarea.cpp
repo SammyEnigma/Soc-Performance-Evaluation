@@ -1161,7 +1161,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
 
     menu->addAction("Appearance"+multi, [=]{
         slotShapeProperty();
-    })->hide(hasWatch)->disable(!count);
+    })->disable(!count);
 
     menu->addAction("Data List"+multi, [=]{
         slotShapeData();
@@ -1173,7 +1173,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
 
     menu->split()->addAction("Select All", [=]{
         actionSelectAll();
-    })->hide(hasWatch)->disable(!count);
+    })->disable(!count);
 
     menu->addAction("Copy"+multi, [=]{
         actionCopy();
@@ -1186,7 +1186,7 @@ void GraphicArea::slotMenuShowed(const QPoint &p)
 
     menu->addAction("Delete"+multi, [=]{
         actionDelete();
-    })->hide(hasWatch)->disable(!count)->disable(rt->running);
+    })->disable(!count)->disable(rt->running);
 
     menu->addAction("Watch"+multi, [=]{
         slotWatch();
