@@ -29,6 +29,7 @@ public:
     bool port_auto_watch = getBool("us/port_auto_watch", false);
     bool show_animation = getBool("us/show_animation", false);
     DataPattern data_mode = static_cast<DataPattern>(getInt("us/data_mode", 0));
+    bool watchmodule_visible = getBool("us/watchmodule_visible", false);
     
     
 };

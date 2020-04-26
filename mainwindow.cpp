@@ -233,6 +233,9 @@ void MainWindow::initData()
     {
         ui->actionRandom_R->setChecked(true);
     }
+    us->watchmodule_visible = us->getBool("us/watchmodule_visible");
+    ui->actionWatchModule_Show_S->setChecked(us->watchmodule_visible);
+
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -503,3 +506,21 @@ void MainWindow::on_actionRandom_R_triggered()
     us->data_mode = Random;
     us->setVal("us/data_mode", us->data_mode);
 }
+
+void MainWindow::on_actionWatchModule_Show_S_triggered()
+{
+    us->watchmodule_visible = !us->watchmodule_visible;
+    ui->actionWatchModule_Show_S->setChecked(us->watchmodule_visible);
+    us->setVal("us/watchmodule_visible", us->watchmodule_visible);
+    if(us->watchmodule_visible)
+    {
+        ui->scrollAreaWidgetContents_2->slotWatchModuleShow();
+    }
+    else
+    {
+        ui->scrollAreaWidgetContents_2->slotWatchModuleHide();
+    }
+
+}
+
+

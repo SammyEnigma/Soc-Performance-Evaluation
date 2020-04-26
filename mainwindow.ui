@@ -179,6 +179,8 @@
     <addaction name="menuMode"/>
     <addaction name="actionEdit_Database_E"/>
     <addaction name="separator"/>
+    <addaction name="actionWatchModule_Show_S"/>
+    <addaction name="separator"/>
     <addaction name="actionFind"/>
     <addaction name="actionFind_Next"/>
     <addaction name="actionFind_Previous"/>
@@ -1124,6 +1126,22 @@ border: 1px solid #6495ED</string>
    </property>
    <property name="text">
     <string>Random(&amp;R)</string>
+   </property>
+  </action>
+  <action name="actionWatchModule_Show_S">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>WatchModule Show(&amp;S)</string>
+   </property>
+  </action>
+  <action name="actionWatchModule_Hide_H">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>WatchModule Hide(&amp;H)</string>
    </property>
   </action>
  </widget>

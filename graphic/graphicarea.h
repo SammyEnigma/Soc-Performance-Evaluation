@@ -131,6 +131,10 @@ public slots:
     void slotGetFrequence(ModulePanel *panel, double *bandwidth);
     void slotOpenRouting(SwitchModule *swch);
     void slotOpenLookUp(MasterModule *ms);
+    void slotWatchModuleShow();
+    void slotWatchModuleHide();
+
+
 
 public:
     ShapeList shape_lists;               // 添加的形状对象

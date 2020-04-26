@@ -135,6 +135,57 @@ void GraphicArea::slotOpenLookUp(MasterModule *ms)
     lutd->exec();
 }
 
+void GraphicArea::slotWatchModuleShow()
+{
+
+    foreach(PortBase *port, ports_map)
+    {
+        if(static_cast<ShapeBase *>(port->getShape())->getClass() == "IP"
+                || static_cast<ShapeBase *>(port->getShape())->getClass() == "DRAM"
+                || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "IP"
+                || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "DRAM")
+        {
+            bool watched = false;
+            foreach(ShapeBase *shape, shape_lists)
+            {
+                if(shape->getClass() == "WatchModule")
+                {
+                    if(static_cast<WatchModule>(shape).getTargetPort() == port)
+                    {
+                        watched = true;
+                        break;
+                    }
+                }
+            }
+            if(!watched)
+            {
+                setWatchModule(port);
+            }
+        }
+    }
+}
+
+void GraphicArea::slotWatchModuleHide()
+{
+
+    foreach(ShapeBase *shape, shape_lists)
+    {
+        if(shape->getClass() == "WatchModule")
+        {
+           ModulePort  *port = static_cast<WatchModule *>(shape)->getTargetPort();
+           if(port == nullptr)
+               continue;
+           if(static_cast<ShapeBase *>(port->getShape())->getClass() == "IP"
+                           || static_cast<ShapeBase *>(port->getShape())->getClass() == "DRAM"
+                           || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "IP"
+                           || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "DRAM")
+           {
+               remove(shape);
+           }
+        }
+    }
+}
+
 
 /**
  * 选中某一个形状
