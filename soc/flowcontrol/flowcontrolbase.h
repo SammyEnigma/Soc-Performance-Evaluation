@@ -52,7 +52,8 @@ public:
         order_road_col,
         chain_col,
         isAck_col,
-        address_col
+        address_col,
+        command
     };
 
 public slots:
@@ -99,6 +100,7 @@ protected:
     PacketList all_packets; // 所有数据包（指针）的列表
     QList<DataPacketView *> all_packet_view;
     QList<WatchWidget *> watch_widgets;
+    QList<int> command_list;
 };
 
 #endif // FLOWCONTROLBASE_H

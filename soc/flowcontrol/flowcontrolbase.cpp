@@ -306,11 +306,32 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
     packet->setDrawPos(QPoint(-1, -1));
     packet->resetDelay(0);
     //读取表格数据
-   if(shape != nullptr && rt->package_tables.contains(shape->getText()) && rt->package_tables[shape->getText()].size() > 0)
+    if(shape != nullptr && rt->package_tables.contains(shape->getText()) && rt->package_tables[shape->getText()].size() > 0)
     {
-       if(rt->current_package_rows[shape->getText()] >= rt->package_tables[shape->getText()].size() - 1)
-          // rt->current_package_rows[shape->getText()] = 0;
-           return nullptr;
+        if(us->data_mode == Trace)
+        {
+            if(rt->current_package_rows[shape->getText()] >= rt->package_tables[shape->getText()].size() - 1)
+                return nullptr;
+        }
+        else if(us->data_mode == Random)
+        {
+            if(rt->current_package_rows[shape->getText()] >= rt->package_tables[shape->getText()].size() - 1)
+                rt->current_package_rows[shape->getText()] = rand() % 4;
+        }
+        else if(us->data_mode == Fix)
+        {
+                if(command_list.size() == 0)
+                {
+                    int group = rand() % (rt->package_tables[shape->getText()].size()) / 4;
+                    command_list << group << group + 1 << group + 2 << group + 3;
+                }
+                rt->current_package_rows[shape->getText()] = command_list.first();
+                command_list.removeFirst();
+           }
+            else
+                return nullptr;
+
+
         auto row = rt->package_tables[shape->getText()][++rt->current_package_rows[shape->getText()]];
         packet->data_type  = (DATA_TYPE)row[data_type_col].toInt();
         packet->data = row[data_col].toInt();
@@ -323,6 +344,8 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
         packet->chain = row[chain_col].toInt();
         packet->isAck = row[isAck_col].toInt();
         packet->address = row[address_col];
+        packet->command = row[command] == "R64" ? R64 :row[command] == "W64" ? W64 :row[command] == "R32" ? R32 :W32;
+        qDebug()<<row;
     }
     else
     {
@@ -342,6 +365,8 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
     });
     return packet;
 }
+
+
 
 /**
  * 收到某一个response

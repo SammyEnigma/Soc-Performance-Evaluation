@@ -31,6 +31,13 @@ enum PriorityLevel
     URGENT
 };
 
+enum COMMAND
+{
+    R64,
+    W64,
+    R32,
+    W32
+};
 typedef QString TagType;
 typedef int DataFormat; // 复杂数据格式，暂时用这个声明
 
@@ -39,6 +46,7 @@ class DataPacket;                       // typedef 之前需要预先声明变�
 typedef QList<DataPacket *> PacketList; // 常用的列表，直接重定义了
 
 typedef int MID;
+
 
 class DataPacket : public QObject
 {
@@ -103,6 +111,7 @@ public:
     int chain;
     bool isAck;
     QString address;                    //数据地址
+    COMMAND command;
 
 protected:
     QString token_id;

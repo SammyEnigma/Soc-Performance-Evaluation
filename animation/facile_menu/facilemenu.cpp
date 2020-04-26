@@ -412,6 +412,10 @@ void FacileMenu::setActionButton(InteractiveButtonBase *btn, bool isChip)
     btn->setHoverColor(hover_bg);
     btn->setPressColor(press_bg);
     btn->setTextColor(text_fg);
+
+    QFont font(btn->font());
+    font.setWeight(QFont::Medium);
+    btn->setFont(font);
 }
 
 void FacileMenu::showSubMenu(FacileMenuItem *item)

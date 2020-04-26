@@ -167,7 +167,16 @@
     <property name="title">
      <string>Data (&amp;D)</string>
     </property>
+    <widget class="QMenu" name="menuMode">
+     <property name="title">
+      <string>Mode(&amp;M)</string>
+     </property>
+     <addaction name="actionTrace_T"/>
+     <addaction name="actionFix_F"/>
+     <addaction name="actionRandom_R"/>
+    </widget>
     <addaction name="actionRead_CSV_C"/>
+    <addaction name="menuMode"/>
     <addaction name="actionEdit_Database_E"/>
     <addaction name="separator"/>
     <addaction name="actionFind"/>
@@ -610,7 +619,7 @@ border: 1px solid #6495ED</string>
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Replace (&amp;R)</string>
+    <string>Replace ()</string>
    </property>
   </action>
   <action name="actionPreference">
@@ -1088,6 +1097,33 @@ border: 1px solid #6495ED</string>
   <action name="actionRead_CSV_C">
    <property name="text">
     <string>Read CSV(&amp;C)</string>
+   </property>
+  </action>
+  <action name="actionTrace_T">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Trace(&amp;T)</string>
+   </property>
+  </action>
+  <action name="actionFix_F">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fix(&amp;F)</string>
+   </property>
+  </action>
+  <action name="actionRandom_R">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Random(&amp;R)</string>
    </property>
   </action>
  </widget>
