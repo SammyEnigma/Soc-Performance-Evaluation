@@ -245,8 +245,10 @@ void WatchModule::paintEvent(QPaintEvent *event)
             // Latency
                 painter.setFont(big_font);
                 painter.setPen(LatencyColor);
+                if(static_cast<ShapeBase *>(target_port->getShape())->getClass() == "IP")
+                painter.drawText(left, height * line++ - height / 2, QString::number(static_cast<IPModule *>(target_port->getShape())->getAveLatency()));
+                else
                 painter.drawText(left, height * line++ - height / 2, QString::number(target_port->getLatency()));
-
             // Token
             painter.setPen(TokenColor);
             int req_count = 0;
