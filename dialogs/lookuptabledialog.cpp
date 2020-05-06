@@ -44,6 +44,7 @@ void LookUpTableDialog::loadShapeDatas(ShapeBase *shape)
     {
         setTableRow(i,data_list.at(i));
     }
+    _system_changing = false;
 }
 
 void LookUpTableDialog::setTableRow(int row, MasterModule::LookUpRange data)
@@ -173,6 +174,7 @@ void LookUpTableDialog::on_tableWidget_cellChanged(int row, int column)
    _system_changing = true;
    if(column == CUSTOM_MIN_COL)//修改最小值
    {
+
        if(isIntersection(row))
        {
            data_list[row].min = text;
