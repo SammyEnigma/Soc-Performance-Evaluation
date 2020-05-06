@@ -133,6 +133,7 @@ void LookUpTableDialog::on_removeBtn_clicked()
     if (row == -1)
         return;
     data_list.removeAt(row);
+    ui->tableWidget->removeRow(row);
 }
 
 void LookUpTableDialog::on_clearBtn_clicked()
@@ -144,6 +145,7 @@ void LookUpTableDialog::on_clearBtn_clicked()
         ui->tableWidget->setCurrentCell(size, 0);
         on_removeBtn_clicked();
     }
+    ui->tableWidget->clear();
 }
 
 
