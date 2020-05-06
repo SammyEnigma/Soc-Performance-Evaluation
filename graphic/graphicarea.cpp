@@ -2,8 +2,8 @@
 /*
  * @Author: MRXY001
  * @Date: 2019-11-29 14:46:24
- * @LastEditors: MRXY001
- * @LastEditTime: 2019-12-17 10:53:34
+ * @LastEditors: XyLan
+ * @LastEditTime: 2020-04-30 16:00:43
  * @Description: 添加图形元素并且连接的区域
  * 即实现电路图的绘图/运行区域
  */
@@ -133,6 +133,57 @@ void GraphicArea::slotOpenLookUp(MasterModule *ms)
 {
     LookUpTableDialog *lutd = new LookUpTableDialog(ms);
     lutd->exec();
+}
+
+void GraphicArea::slotWatchModuleShow()
+{
+
+    foreach(PortBase *port, ports_map)
+    {
+        if(static_cast<ShapeBase *>(port->getShape())->getClass() == "IP"
+                || static_cast<ShapeBase *>(port->getShape())->getClass() == "DRAM"
+                || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "IP"
+                || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "DRAM")
+        {
+            bool watched = false;
+            foreach(ShapeBase *shape, shape_lists)
+            {
+                if(shape->getClass() == "WatchModule")
+                {
+                    if(static_cast<WatchModule>(shape).getTargetPort() == port)
+                    {
+                        watched = true;
+                        break;
+                    }
+                }
+            }
+            if(!watched)
+            {
+                setWatchModule(port);
+            }
+        }
+    }
+}
+
+void GraphicArea::slotWatchModuleHide()
+{
+
+    foreach(ShapeBase *shape, shape_lists)
+    {
+        if(shape->getClass() == "WatchModule")
+        {
+           ModulePort  *port = static_cast<WatchModule *>(shape)->getTargetPort();
+           if(port == nullptr)
+               continue;
+           if(static_cast<ShapeBase *>(port->getShape())->getClass() == "IP"
+                           || static_cast<ShapeBase *>(port->getShape())->getClass() == "DRAM"
+                           || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "IP"
+                           || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "DRAM")
+           {
+               remove(shape);
+           }
+        }
+    }
 }
 
 
