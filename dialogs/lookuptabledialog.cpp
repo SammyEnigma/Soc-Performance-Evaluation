@@ -8,6 +8,8 @@ LookUpTableDialog::LookUpTableDialog(ShapeBase *shape, QWidget *parent) :
     data_list(static_cast<MasterModule *>(shape)->look_up_table)
 {
     ui->setupUi(this);
+   /* QStringList strs = {"Min", "Max", "DstID"};
+    ui->tableWidget->setHorizontalHeaderLabels(strs);*/
     if(shape == nullptr)
         return;
     loadShapeDatas(shape);
@@ -25,6 +27,8 @@ void LookUpTableDialog::loadShapeDatas(ShapeBase *shape)
     //data_list.clear();
     _activated_string.clear();
     ui->tableWidget->clear();
+    QStringList strs = {"Min", "Max", "DstID"};
+        ui->tableWidget->setHorizontalHeaderLabels(strs);
     ui->tableWidget->setRowCount(data_list.size());
     ui->nameLabel->setText("选中形状的属性");
     if(shape == nullptr)
