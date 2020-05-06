@@ -1,4 +1,4 @@
-TARGET = xlsxwidget
+TARGET = Soc-Performance-Evaluation
 QT += widgets
 
 QT       += core gui sql xlsx

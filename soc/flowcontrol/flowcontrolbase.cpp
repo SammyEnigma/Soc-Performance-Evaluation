@@ -310,13 +310,13 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
     {
         if(us->data_mode == Trace)
         {
-            if(rt->current_package_rows[shape->getText()] >= rt->package_tables[shape->getText()].size() - 1)
+            if(rt->current_package_rows[shape->getText()] >= (rt->package_tables[shape->getText()].size() - 1))
                 return nullptr;
         }
         else if(us->data_mode == Random)
         {
-            if(rt->current_package_rows[shape->getText()] >= rt->package_tables[shape->getText()].size() - 1)
-                rt->current_package_rows[shape->getText()] = rand() % 4;
+            if(rt->current_package_rows[shape->getText()] >= (rt->package_tables[shape->getText()].size() - 1))
+                rt->current_package_rows[shape->getText()] = rand() % (rt->package_tables[shape->getText()].size() - 1);
         }
         else if(us->data_mode == Fix)
         {

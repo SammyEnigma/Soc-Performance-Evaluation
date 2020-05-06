@@ -43,7 +43,7 @@ void ModulePort::initData()
 {
     total_frq_send = 0;
     total_frq_receive = 0;
-	real_bandwidth = bandwidth;
+    real_bandwidth = bandwidth;
     real_bandwidth.setNumerator(bandwidth.getNumerator() * bandwidth_multiple);
 }
 
@@ -84,12 +84,12 @@ void ModulePort::uninitOneClock()
 {
     frq_queue.enqueue(sended_count_in_this_frame);
     total_frq_send += sended_count_in_this_frame;
-    if (frq_queue.length() > rt->frq_period_length)       
+    if (frq_queue.length() > rt->frq_period_length)
         total_frq_send -= frq_queue.dequeue();
 
     frq2_queue.enqueue(received_count_in_this_frame);
     total_frq_receive += received_count_in_this_frame;
-    if (frq2_queue.length() > rt->frq_period_length)       
+    if (frq2_queue.length() > rt->frq_period_length)
         total_frq_receive -= frq2_queue.dequeue();
 }
 
@@ -254,8 +254,16 @@ void ModulePort::paintEvent(QPaintEvent *event)
     // 显示数字
     QPainter painter(this);
     QFontMetrics fm(this->font());
-    int w = fm.horizontalAdvance(QString::number(another_can_receive));
-    painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));
+    if(routing_id == 0)
+    {
+        int w = fm.horizontalAdvance(QString::number(another_can_receive));
+        painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(another_can_receive));
+    }
+    else {
+        int w = fm.horizontalAdvance(QString::number(routing_id));
+        painter.drawText((width() - w) / 2, (height() + fm.height()) / 2, QString::number(routing_id));
+    }
+
 }
 
 void ModulePort::slotDataList()

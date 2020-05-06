@@ -11,9 +11,9 @@
 #include "settings.h"
 
 enum DataPattern{
-    Trace,
-    Fix,
-    Random
+    Trace,//按表格跑一遍
+    Fix,//表格按组随机
+    Random//表格随机
 };
 
 class USettings : public Settings

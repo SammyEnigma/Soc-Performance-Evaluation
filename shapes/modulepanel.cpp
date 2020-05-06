@@ -43,7 +43,7 @@ void ModulePanel::paintEvent(QPaintEvent *event)
     QFontMetrics fm(big_font);
     int height = fm.lineSpacing();
     painter.setFont(big_font);
-    double bandwidth;
+    double bandwidth = 0;
     emit signalGetFrequence(this, &bandwidth);
     painter.drawText(width()-fm.horizontalAdvance(QString("%1Ghz").arg(bandwidth)), height, QString("%1Ghz").arg(bandwidth));
 }
