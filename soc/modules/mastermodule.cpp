@@ -113,7 +113,15 @@ void MasterModule::setSrcIDAndDstID(DataPacket *packet)
         packet->dstID = getDataValue("dst_id", 0).toInt();
     foreach (LookUpRange range, look_up_table)
     {
-        if (packet->address >= range.min && packet->address <= range.max)
+        auto judge = [](QString a, QString b) {
+            int len = qMax(a.length(), b.length());
+            while (a.length() < len)
+                a = "0" + a;
+            while (b.length() < len)
+                b = "0" + b;
+            return a == b ? 0 : a < b ? -1 : 1;
+        };
+        if (judge(packet->address, range.min) >= 0 && judge(packet->address, range.max) <= 0)
         {
             packet->dstID = range.dstID;
             break;
