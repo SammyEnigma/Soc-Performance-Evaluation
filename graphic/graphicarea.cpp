@@ -1569,6 +1569,35 @@ void GraphicArea::setWatchModule(PortBase *port)
     select(shape);
 }
 
+bool GraphicArea::areIPsAndDRAMsAllWatched()
+{
+    foreach(PortBase *port, ports_map)
+    {
+        if(static_cast<ShapeBase *>(port->getShape())->getClass() == "IP"
+                || static_cast<ShapeBase *>(port->getShape())->getClass() == "DRAM"
+                || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "IP"
+                || static_cast<ShapeBase *>(port->getOppositeShape())->getClass() == "DRAM")
+        {
+            bool watched = false;
+            foreach(ShapeBase *shape, shape_lists)
+            {
+                if(shape->getClass() == "WatchModule")
+                {
+                    if(static_cast<WatchModule>(shape).getTargetPort() == port)
+                    {
+                        return false;
+                    }
+                }
+            }
+            if(!watched)
+            {
+                setWatchModule(port);
+            }
+        }
+    }
+    return true;
+}
+
 /**
  * 图形拖拽进来的事件，只支持本程序的图形
  * 只判断，不进行其他操作

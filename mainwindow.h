@@ -110,6 +110,10 @@ private slots:
 
     void on_actionWatchModule_Show_S_triggered();
 
+    void on_actionNew_triggered();
+
+    void on_actionOpen_triggered();
+
 private:
     void initSystem(); // 初始化系统（比如目录结构）
     void initView();   // 初始化布局

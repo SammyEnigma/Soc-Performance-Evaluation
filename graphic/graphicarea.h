@@ -77,6 +77,7 @@ public:
     void linkWatchPort(WatchModule *watch, ModulePort *port);
     void linkWatchModule(WatchModule *watch, ModuleBase *module);
     void setWatchModule(PortBase *port);
+    bool areIPsAndDRAMsAllWatched();
 
     // 流控操作
     ShapeBase *findShapeByText(QString text);

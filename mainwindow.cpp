@@ -208,8 +208,11 @@ void MainWindow::initView()
  */
 void MainWindow::initData()
 {
+    // 读取形状
     graphic_file_path = rt->DATA_PATH + "graphic.xml";
     readFromFile(graphic_file_path);
+
+    // 恢复额外数据
     QString filePath = us->getStr("recent/csv_path");
     QDir dir(filePath);
     foreach (auto file, dir.entryInfoList())
@@ -221,6 +224,8 @@ void MainWindow::initData()
         }
     }
     us->data_mode = static_cast<DataPattern>(us->getInt("us/data_mode"));
+
+    // 设置菜单
     if(us->data_mode == Trace)
     {
         ui->actionTrace_T->setChecked(true);
@@ -233,9 +238,9 @@ void MainWindow::initData()
     {
         ui->actionRandom_R->setChecked(true);
     }
-    us->watchmodule_visible = us->getBool("us/watchmodule_visible");
+//    us->watchmodule_visible = us->getBool("us/watchmodule_visible");
+    us->watchmodule_visible = ui->scrollAreaWidgetContents_2->areIPsAndDRAMsAllWatched();
     ui->actionWatchModule_Show_S->setChecked(us->watchmodule_visible);
-
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -523,4 +528,33 @@ void MainWindow::on_actionWatchModule_Show_S_triggered()
 
 }
 
+void MainWindow::on_actionNew_triggered()
+{
+    if (rt->running)
+    {
+        QMessageBox::critical(this, "警告", "正在运行中...\n\n请先停止正在运行的程序");
+        return ;
+    }
 
+    // 关闭原先文件
+
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    if (rt->running)
+    {
+        QMessageBox::critical(this, "警告", "正在运行中...\n\n请先停止正在运行的程序");
+        return ;
+    }
+
+    QString recent = us->getStr("recent/open_path", "");
+    QString path = QFileDialog::getOpenFileName(this, "选择打开的配置文件", recent, "*.xml");
+    if (path.isEmpty())
+        return ;
+
+    // 打开这个配置文件
+
+
+
+}
