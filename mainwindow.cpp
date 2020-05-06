@@ -466,6 +466,8 @@ void MainWindow::on_actionRead_CSV_C_triggered()
     QString filePath = QFileDialog::getExistingDirectory(this, "Open Directory", QString("debug/data"));
     if (filePath.isEmpty())
         return ;
+    rt->current_package_rows.clear();
+    rt->package_tables.clear();
     QDir dir(filePath);
     foreach (auto file, dir.entryInfoList())
     {
