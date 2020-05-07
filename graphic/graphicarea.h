@@ -58,6 +58,7 @@ public:
     ShapeBase *insertShapeByType(ShapeBase *type, QPoint point = QPoint(-1, -1)); // 根据种类自动生成形状
     ShapeBase *insertShapeByRect(ShapeBase *type, QRect rect);
 
+    void clearAll();
     void save();
     void autoSave();
     QString toString();

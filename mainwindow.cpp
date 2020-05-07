@@ -58,6 +58,8 @@ void MainWindow::readFromFile(QString file_path)
     if (full_string.trimmed().isEmpty())
         return;
 
+    ui->scrollAreaWidgetContents_2->clearAll();
+
     int graphic_width = StringUtil::getXmlInt(full_string, "GRAPHIC_WIDTH");
     int graphic_height = StringUtil::getXmlInt(full_string, "GRAPHIC_HEIGHT");
     if (graphic_width != 0 && graphic_height != 0)
@@ -209,7 +211,9 @@ void MainWindow::initView()
 void MainWindow::initData()
 {
     // 读取形状
-    graphic_file_path = rt->DATA_PATH + "graphic.xml";
+    graphic_file_path = us->getStr("recent/open_path");
+    if (graphic_file_path.isEmpty())
+        graphic_file_path = rt->DATA_PATH + "graphic.xml";
     readFromFile(graphic_file_path);
 
     // 恢复额外数据
@@ -539,7 +543,15 @@ void MainWindow::on_actionNew_triggered()
     }
 
     // 关闭原先文件
+    QString recent = us->getStr("recent/open_path", "");
+    QString path = QFileDialog::getSaveFileName(this, "选择打开的配置文件", recent, "*.xml");
+    if (path.isEmpty())
+        return ;
+    graphic_file_path = path;
+    us->setVal("recent/open_path", path);
 
+    // 打开新文件
+    readFromFile(path);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -554,9 +566,9 @@ void MainWindow::on_actionOpen_triggered()
     QString path = QFileDialog::getOpenFileName(this, "选择打开的配置文件", recent, "*.xml");
     if (path.isEmpty())
         return ;
+    graphic_file_path = path;
+    us->setVal("recent/open_path", path);
 
     // 打开这个配置文件
-
-
-
+    readFromFile(path);
 }

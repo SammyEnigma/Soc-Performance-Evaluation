@@ -59,6 +59,14 @@ ShapeBase *GraphicArea::insertShapeByRect(ShapeBase *type, QRect rect)
     return shape;
 }
 
+/**
+ * 清空全部数据，当做刚打开的样子
+ */
+void GraphicArea::clearAll()
+{
+
+}
+
 void GraphicArea::save()
 {
     emit signalSave();
