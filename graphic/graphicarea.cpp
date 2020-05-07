@@ -64,7 +64,8 @@ ShapeBase *GraphicArea::insertShapeByRect(ShapeBase *type, QRect rect)
  */
 void GraphicArea::clearAll()
 {
-
+    while (shape_lists.size())
+        remove(shape_lists.first());
 }
 
 void GraphicArea::save()
