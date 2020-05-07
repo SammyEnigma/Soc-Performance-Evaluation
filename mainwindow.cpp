@@ -553,7 +553,8 @@ void MainWindow::on_actionNew_triggered()
     graphic_file_path = path;
     us->setVal("recent/open_path", path);
 
-    // 打开新文件
+    // 清空
+    ui->scrollAreaWidgetContents_2->clearAll(); // 虽然读取时也会清空旧的但是……文件不存在的话，不会读取
     readFromFile(path);
 }
 
