@@ -224,7 +224,6 @@ void MainWindow::initData()
         }
     }
     us->data_mode = static_cast<DataPattern>(us->getInt("us/data_mode"));
-
     // 设置菜单
     if(us->data_mode == Trace)
     {
