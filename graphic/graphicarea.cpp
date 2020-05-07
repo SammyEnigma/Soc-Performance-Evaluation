@@ -1594,13 +1594,15 @@ bool GraphicArea::areIPsAndDRAMsAllWatched()
                 {
                     if(static_cast<WatchModule>(shape).getTargetPort() == port)
                     {
-                        return false;
+                        watched = true;
+                        break;
                     }
                 }
             }
             if(!watched)
             {
-                setWatchModule(port);
+                //setWatchModule(port);
+                return false;
             }
         }
     }
