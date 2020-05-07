@@ -496,6 +496,7 @@ void MainWindow::on_actionTrace_T_triggered()
     ui->actionTrace_T->setChecked(true);
     ui->actionFix_F->setChecked(false);
     ui->actionRandom_R->setChecked(false);
+    ui->actionNoneMode->setChecked(false);
     us->data_mode = Trace;
     us->setVal("us/data_mode", us->data_mode);
 }
@@ -505,6 +506,7 @@ void MainWindow::on_actionFix_F_triggered()
     ui->actionTrace_T->setChecked(false);
     ui->actionFix_F->setChecked(true);
     ui->actionRandom_R->setChecked(false);
+    ui->actionNoneMode->setChecked(false);
     us->data_mode = Fix;
     us->setVal("us/data_mode", us->data_mode);
 }
@@ -514,6 +516,7 @@ void MainWindow::on_actionRandom_R_triggered()
     ui->actionTrace_T->setChecked(false);
     ui->actionFix_F->setChecked(false);
     ui->actionRandom_R->setChecked(true);
+    ui->actionNoneMode->setChecked(false);
     us->data_mode = Random;
     us->setVal("us/data_mode", us->data_mode);
 }
@@ -571,4 +574,14 @@ void MainWindow::on_actionOpen_triggered()
 
     // 打开这个配置文件
     readFromFile(path);
+}
+
+void MainWindow::on_actionNoneMode_triggered()
+{
+    ui->actionTrace_T->setChecked(false);
+    ui->actionFix_F->setChecked(false);
+    ui->actionRandom_R->setChecked(false);
+    ui->actionNoneMode->setChecked(true);
+    us->data_mode = NoneMode;
+    us->setVal("us/data_mode", us->data_mode);
 }

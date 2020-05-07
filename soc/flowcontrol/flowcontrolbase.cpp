@@ -320,16 +320,16 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
         }
         else if(us->data_mode == Fix)
         {
-                if(command_list.size() == 0)
-                {
-                    int group = rand() % (rt->package_tables[shape->getText()].size()) / 4;
-                    command_list << group << group + 1 << group + 2 << group + 3;
-                }
-                rt->current_package_rows[shape->getText()] = command_list.first();
-                command_list.removeFirst();
-           }
-            else
-                return nullptr;
+            if(command_list.size() == 0)
+            {
+                int group = rand() % (rt->package_tables[shape->getText()].size()) / 4;
+                command_list << group << group + 1 << group + 2 << group + 3;
+            }
+            rt->current_package_rows[shape->getText()] = command_list.first();
+            command_list.removeFirst();
+        }
+        else
+            return nullptr;
 
 
         auto row = rt->package_tables[shape->getText()][++rt->current_package_rows[shape->getText()]];
@@ -347,11 +347,14 @@ DataPacket *FlowControlBase::createToken(QString tag, ShapeBase *shape)
         packet->command = row[command] == "R64" ? R64 :row[command] == "W64" ? W64 :row[command] == "R32" ? R32 :W32;
         qDebug()<<row;
     }
-    else
+    else if (us->data_mode != NoneMode)
     {
         return nullptr;
+    }
+    else // NoneMode
+    {
         rt->runningOut(shape->getText() + " 凭空创建数据以便于发送");
-   }
+    }
     all_packets.append(packet);
     emit signalTokenCreated(packet);
     connect(packet, &DataPacket::signalDeleted, this, [=] { // 比如Master收到Response后，销毁数据
